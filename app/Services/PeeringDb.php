@@ -3,7 +3,7 @@
 namespace IXP\Services;
 
 /*
- * Copyright (C) 2009 - 2024 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -37,7 +37,7 @@ use Illuminate\Support\Facades\Log;
  * @author     Yann Robin       <yann@islandbridgenetworks.ie>
  * @category   PeeringDB
  * @package    IXP\Services\PeeringDb
- * @copyright  Copyright (C) 2009 - 2024 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class PeeringDb
@@ -80,9 +80,7 @@ class PeeringDb
      */
     public function getNetworkByAsn( int $asn ): array|false
     {
-        $response = $this->execute(
-            $this->generateBasePeeringDbUrl( "/net.json?asn={$asn}&depth=2" )
-        );
+        $response = $this->execute( "/net.json?asn={$asn}&depth=2" );
 
         if( $response->ok() ) {
             return $response->json()['data'][0];
@@ -125,9 +123,7 @@ class PeeringDb
 
         $ixps = [];
 
-        $ixs = $this->execute(
-            $this->generateBasePeeringDbUrl( '/ix.json' )
-        );
+        $ixs = $this->execute( '/ix.json' );
 
         if( $ixs === null ) {
             if( $this->exception ) {
@@ -181,9 +177,7 @@ class PeeringDb
 
         $facilities = [];
 
-        $facs = $this->execute(
-            $this->generateBasePeeringDbUrl( '/fac.json' )
-        );
+        $facs = $this->execute( '/fac.json' );
 
         if( $facs === null ) {
             if( $this->exception ) {
@@ -219,9 +213,7 @@ class PeeringDb
      */
     public function getPeeringAsns(): array|false
     {
-        $response = $this->execute(
-            $this->generateBasePeeringDbUrl( "/net.json?fields=asn" )
-        );
+        $response = $this->execute( "/net.json?fields=asn" );
         
         if( $response->ok() ) {
             $asns = [];
@@ -279,6 +271,7 @@ ENDWHOIS;
      */
     private function execute( string $query ): ?HttpResponse
     {
+        $url = config( 'ixp_api.peeringDB.url' ) . $query;
         $this->reset();
 
         // Typically testing Http::fake() belongs in unit test classes but we require it here as
@@ -301,7 +294,7 @@ ENDWHOIS;
             $response = Http::withHeaders( $headers )
                 ->withUserAgent( 'IXP-Manager/' . APPLICATION_VERSION )
                 ->accept( 'application/json' )
-                ->get( $query );
+                ->get( $url );
 
             $this->status = $response->status();
 
@@ -345,33 +338,6 @@ ENDWHOIS;
 
 
     /**
-     * Generate the PeeringDB URL for making the request.
-     *
-     * @param string $query API endpoint
-     * @return string Full URL including username/password authentication if appropriate
-     */
-    private function generateBasePeeringDbUrl( string $query = "" ): string
-    {
-        /** @var string|null $un */
-        $un = config( 'ixp_api.peeringDB.username' );
-        /** @var string|null $pw */
-        $pw = config( 'ixp_api.peeringDB.password' );
-
-        if( config( 'ixp_api.peeringDB.api-key' ) !== null ) {
-            $credentials = '';
-        } else if( $un === null || $pw === null ) {
-            Log::warning( 'Neither PeeringDb API Key nor deprecated username / password set in .env. Only public data will be retrieved. Please set an API Key' );
-            $credentials = '';
-        } else {
-            $credentials = urlencode( $un ) . ":" . urlencode( $pw ) . "@";
-        }
-
-        // e.g. https://username:password@www.peeringdb.com/api/ix.json
-        return sprintf( config( 'ixp_api.peeringDB.url' ), $credentials ) . $query;
-    }
-
-
-    /**
      * Reset class members.
      * @return void
      */
@@ -383,7 +349,7 @@ ENDWHOIS;
     }
     
     /**
-     * Give appropriate errors when api/username not set
+     * Give appropriate errors when api not set, or username and password still configured
      */
     public function warnOnBadAuthMethods(): array {
         
@@ -397,15 +363,7 @@ ENDWHOIS;
                 . "Without an API key, only public information will be returned and PeeringDB request throttling will apply.\n"
                 . str_repeat( '-', 70 ) . "\n\n";
         }
-        
-        if( config('ixp_api.peeringDB.username') !== null && config('ixp_api.peeringDB.password') !== null) {
-            $warnings[] =
-                str_repeat( '-', 70 ) . "\n"
-                . "Username and password are set in .env for PeeringDB. This is deprecated and they should be replaced with an API key.\n\n"
-                . "See https://docs.peeringdb.com/howto/api_keys/ and set IXP_API_PEERING_DB_API_KEY in .env.\n"
-                . str_repeat( '-', 70 ) . "\n\n";
-        }
-        
+
         return $warnings;
     }
 

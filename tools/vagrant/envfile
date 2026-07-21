@@ -204,11 +204,10 @@ GRAPHER_BACKEND_MRTG_LOGDIR="/srv/mrtg"
 ## PeeringDB Authentication
 ##
 ## PeeringDb's API is used, for example, to pre-populate new customer details. If you
-## provide a working PeeringDb username/password then these will be used to get more
-## complete information.
+## provide a working PeeringDb API key then these will be used to get more complete
+## information.
 ##
-## IXP_API_PEERING_DB_USERNAME=username
-## IXP_API_PEERING_DB_PASSWORD=password
+## IXP_API_PEERING_DB_API_KEY=key
 #
 #
 #
