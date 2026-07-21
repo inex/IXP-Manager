@@ -573,8 +573,18 @@ return [
                     'type'       => 'radio',
                     'rules'      => 'boolean',
                     'name'       => 'Unsecured API Access Enabled',
-                    'docs_url'   => 'https://docs.ixpmanager.org/install/security/',
+                    'docs_url'   => 'https://docs.ixpmanager.org/latest/install/security/',
                     'help'       => 'IXP Manager v7.1.0 introduced an admin/ prepend on APIs for securing them. For v7.1.0 only, unsecured access will be enabled by default to allow administrators migrate their API clients.',
+                ],
+
+                'api_get_via_get'      => [
+                    'config_key' => 'ixp_api.allow_apikeys_get_parameter',
+                    'dotenv_key' => 'IXP_ALLOW_DEPRECATED_APIKEYS_VIA_GET',
+                    'type'       => 'radio',
+                    'rules'      => 'boolean',
+                    'name'       => 'Allow API authentication via GET parameter',
+                    'docs_url'   => 'https://docs.ixpmanager.org/latest/install/security/',
+                    'help'       => 'This setting determines whether IXP Manager will accept API keys provided via GET parameter. It is on by default in v7.3.0, but will be disabled by default in v7.4.0.',
                 ],
             
             ],
