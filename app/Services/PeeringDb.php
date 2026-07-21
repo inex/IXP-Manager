@@ -91,7 +91,7 @@ class PeeringDb
             return false;
         }
 
-        $this->error = $response->json()[ 'message' ] ?? 'Error';
+        $this->error = $response->json()[ 'message' ] ?? $response->json()[ 'meta' ][ 'error' ] ?? 'Error';
         return false;
     }
 
@@ -223,8 +223,8 @@ class PeeringDb
             
             return $asns;
         }
-        
-        $this->error = $response->json()[ 'message' ] ?? 'Error';
+
+        $this->error = $response->json()[ 'message' ] ?? $response->json()[ 'meta' ][ 'error' ] ?? 'Error';
         return false;
     }
     
@@ -308,7 +308,7 @@ ENDWHOIS;
                     return $response;
 
                 default:
-                    $this->error = $response->json()[ 'message' ] ?? 'Error';
+                    $this->error = $response->json()[ 'message' ] ?? $response->json()[ 'meta' ][ 'error' ] ?? 'Error';
                     return $response;
             }
         } catch( Exception $e ) {
