@@ -254,11 +254,19 @@ if( !function_exists( 'base62_decode' ) )
 
 
 if( !function_exists( 'documentation_url' ) ) {
+    /**
+     * Generate a link to the IXP Manager documentation.
+     *
+     * This takes a URI fragment, and builds the complete URL using the base url from configuration.
+     *
+     * @param string $uri
+     * @return string
+     */
     function documentation_url( string $uri): string
     {
         if ($uri && $uri[0] != '/') {
             $uri = '/' . $uri;
         }
-        return "https://docs.ixpmanager.org/" . DOCUMENTATION_VERSION . $uri;
+        return config('ixp_fe.documentation.base_url') . $uri;
     }
 }

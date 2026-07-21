@@ -59,9 +59,9 @@ class ScheduledTasksValidator implements Validator
         $schedulerLastRun = TaskLastRun::whereTaskKey( TaskLastRun::SCHEDULER_CRON_JOB )->first();
 
         if ( !$schedulerLastRun ) {
-            $backend->error( "No record of task scheduler running - your automated tasks are not running!" );
+            $backend->error( "No record of task scheduler running - your automated tasks are not running!", documentation_url( "features/cronjobs/" ) );
         } else if( $schedulerLastRun->last_run_at->diffInMinutes( Carbon::now() ) > 10 ) {
-            $backend->error( "Task scheduler hasn't run for 10 minutes - your automated tasks are not running!" );
+            $backend->error( "Task scheduler hasn't run for 10 minutes - your automated tasks are not running!", documentation_url( "features/cronjobs/" ) );
         } else {
             $backend->info( "Task scheduler is running" );
         }

@@ -65,19 +65,26 @@ class ConfigValidator implements Validator
         }
 
         if ( !config ( 'ixp.as112.ui_active' ) ) {
-            $backend->suggestion( "Did you know IXP-Manager can help you run an AS112 service?", docsLink: documentation_url("features/as112"));
+            $backend->suggestion( "Did you know IXP-Manager can help you run an AS112 service?", docsLink: documentation_url("features/as112/"));
         } else {
             $backend->info("AS112 UI is enabled.");
         }
 
+        if ( !config ( 'ixp.as112.ui_active' ) ) {
+            $backend->suggestion( "Did you know IXP-Manager can help you run an AS112 service?", docsLink: documentation_url("features/as112/"));
+        } else {
+            $backend->info("AS112 UI is enabled.");
+        }
+
+
         if ( config( 'ixp_fe.frontend.disabled.settings' ) ) {
-            $backend->suggestion( "Did you know there is a UI for editing the IXP Manager .env file?", docsLink: documentation_url("features/settings"));
+            $backend->suggestion( "Did you know there is a UI for editing the IXP Manager .env file?", docsLink: documentation_url("features/settings/"));
         } else {
             $backend->info( "Settings UI is enabled." );
         }
 
         if ( config('ixp_fe.frontend.disabled.lg' ) ) {
-            $backend->suggestion( "Did you know IXP Manager has a built in Looking Glass UI?", docsLink: documentation_url("features/looking-glass"));
+            $backend->suggestion( "Did you know IXP Manager has a built in Looking Glass UI?", docsLink: documentation_url("features/looking-glass/"));
         } else {
             $backend->info( "Looking Glass UI is enabled." );
         }

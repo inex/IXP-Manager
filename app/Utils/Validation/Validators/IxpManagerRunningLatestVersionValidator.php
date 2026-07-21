@@ -62,7 +62,8 @@ class IxpManagerRunningLatestVersionValidator implements Validator
         // Github sorts results by their version string.
         $tags = $apiResponse->json();
         if ( version_compare( ltrim(APPLICATION_VERSION, "v"), ltrim( $tags[0]['name'], "v" ), '<' ) ) {
-            $backend->error( "A newer version of IXP-Manager is available: " . htmlentities( $tags[0]['name'], ENT_QUOTES, 'UTF-8' ) );
+            $backend->warning( "A newer version of IXP-Manager is available: " .
+                htmlentities( $tags[0]['name'], ENT_QUOTES, 'UTF-8' ) , documentation_url('install/upgrading/'));
         } else if ( version_compare( ltrim(APPLICATION_VERSION, "v"), ltrim( $tags[0]['name'], "v" ), '=' ) ) {
             $backend->info( "Running latest version of IXP-Manager" );
         }

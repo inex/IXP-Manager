@@ -82,9 +82,9 @@ class GrapherValidator implements Validator
         // Warn if there are no active backends, or only dummy is configured. Otherwise print active backends & providers.
         // Relevant setting: GRAPHER_BACKENDS
         if (count(config('grapher.backend')) === 0) {
-            $backend->warning("No backends configured");
+            $backend->warning("No backends configured", documentation_url('grapher/introduction/'));
         } else if (count(config('grapher.backend')) === 1 && config('grapher.backend')[0] === "dummy") {
-            $backend->warning("Only the dummy backend is active.");
+            $backend->warning("Only the dummy backend is active.", documentation_url('grapher/introduction/'));
         } else {
             $backend->info("Backends enabled: " . implode(",", config('grapher.backend')));
             $backend->info("Providers defined: " . implode(",", array_keys(config('grapher.providers'))));
@@ -121,26 +121,26 @@ class GrapherValidator implements Validator
         $infraGraphs = ['ixp', 'infrastructure', 'location', 'switch',  'vlan', 'trunk', 'core-bundle'];
         $infraAllowedOptions = array_keys(User::$PRIVILEGES_ALL);
 
-        $memberGraphs = ['customer', 'p2p', 'latency'];
+        $memberGraphs = ['customer', 'p2p', 'latency', 'physicalinterface', 'vlaninterface', 'virtualinterface'];
         $memberAllowedOptions = array_merge(array_keys(User::$PRIVILEGES_ALL), ['own_graphs_only']);
 
         foreach ($infraGraphs as $graphType) {
             if (!in_array(config('grapher.access.' . $graphType), $infraAllowedOptions)) {
-                $backend->error("Invalid access level for $graphType graph " . config('grapher.access.' . $graphType));
+                $backend->error("Invalid access level for $graphType graph " . config('grapher.access.' . $graphType), documentation_url('grapher/api/#accessibility-of-aggregate-graphs'));
             }
         }
 
         $publicMemberGraphs = [];
         foreach ($memberGraphs as $graphType) {
             if (!in_array(config('grapher.access.' . $graphType), $memberAllowedOptions)) {
-                $backend->error("Invalid access level for $graphType graph " . config('grapher.access.' . $graphType));
+                $backend->error("Invalid access level for $graphType graph " . config('grapher.access.' . $graphType), documentation_url('grapher/api/#access-to-member-graphs'));
             } else if (config('grapher.access.' . $graphType) === User::AUTH_PUBLIC) {
                 $publicMemberGraphs[] = $graphType;
             }
         }
 
         if (count($publicMemberGraphs) > 0) {
-            $backend->warning("Member " . implode(", ", $publicMemberGraphs) . " graphs configured with public access - is this intentional?");
+            $backend->warning("Member " . implode(", ", $publicMemberGraphs) . " graphs configured with public access - is this intentional?", documentation_url('grapher/api/#access-to-member-graphs'));
         }
     }
 
@@ -158,7 +158,7 @@ class GrapherValidator implements Validator
     private function checkBackendMrtg( ValidationBackend $backend): void
     {
         if (config('grapher.backends.mrtg.dbtype') != 'log' && config('grapher.backends.mrtg.dbtype') != 'rrd') {
-            $backend->error("MRTG dbtype is not 'log' or 'rrd'.");
+            $backend->error("MRTG dbtype is not 'log' or 'rrd'.", documentation_url('grapher/mrtg/#mrtg-setup-and-configuration'));
         }
 
         if (str_starts_with(config('grapher.backends.mrtg.logdir'), 'http://') || str_starts_with(config('grapher.backends.mrtg.logdir'), 'https://')) {
@@ -191,7 +191,7 @@ class GrapherValidator implements Validator
     private function checkBackendSflow( ValidationBackend $backend): void
     {
         if (in_array('sflow', config('grapher.backend')) && ! config('grapher.backends.sflow.enabled')) {
-            $backend->warning("sflow backend active but not enabled in frontend");
+            $backend->warning("sflow backend active but not enabled in frontend", documentation_url('features/sflow-p2p/#displaying-the-graphs'));
         }
 
         if (str_starts_with(config('grapher.backends.sflow.root'), 'http://') || str_starts_with(config('grapher.backends.sflow.root'), 'https://')) {
@@ -201,11 +201,11 @@ class GrapherValidator implements Validator
         } else {
             // Assumed local file
             if (!file_exists(config('grapher.backends.sflow.root'))) {
-                $backend->error( "Sflow root does not exist." );
+                $backend->error( "Sflow root does not exist." , documentation_url( 'features/sflow-p2p/#displaying-the-graphs' ) );
             } else if (!is_dir(config('grapher.backends.sflow.root'))) {
-                $backend->error( "Sflow root is not set to a directory." );
+                $backend->error( "Sflow root is not set to a directory.", documentation_url( 'features/sflow-p2p/#displaying-the-graphs' ) );
             } else if (!is_readable(config('grapher.backends.sflow.root'))) {
-                $backend->error( "No read permissions for sflow root." );
+                $backend->error( "No read permissions for sflow root.", documentation_url( 'features/sflow-p2p/#displaying-the-graphs' ) );
             }
         }
     }
@@ -213,19 +213,19 @@ class GrapherValidator implements Validator
     private function checkBackendSmokeping( ValidationBackend $backend): void
     {
         if (in_array('smokeping', config('grapher.backend')) && ! config('grapher.backends.smokeping.enabled')) {
-            $backend->warning("smokeping backend active but not enabled in frontend");
+            $backend->warning("smokeping backend active but not enabled in frontend", documentation_url('grapher/smokeping/#ixp-manager-configuration'));
         }
 
         // todo: check vlans in this file exist
         if (file_exists(config_path('grapher_smokeping_overrides.php'))) {
-            $backend->info("Found grapher_smokeping_overrides.php configuration file");
+            $backend->info("Found grapher_smokeping_overrides.php configuration file", documentation_url('grapher/smokeping/#ixp-manager-configuration'));
         }
         if (config()->has('grapher.backends.smokeping.overrides.per_vlan_urls')) {
             $numOverrides = count(config('grapher.backends.smokeping.overrides.per_vlan_urls'));
             $backend->info($numOverrides . " per vlan overrides defined");
             foreach (config('grapher.backends.smokeping.overrides.per_vlan_urls') as $vlan => $url) {
                 if (null === Vlan::whereNumber($vlan)->first()) {
-                    $backend->warning("Vlan " . $vlan . " used in overrides does not exist. Please check grapher_smokeping_overrides.php file.");
+                    $backend->warning("Vlan " . $vlan . " used in overrides does not exist. Please check grapher_smokeping_overrides.php file.", documentation_url('grapher/smokeping/#ixp-manager-configuration'));
                 }
             }
         }

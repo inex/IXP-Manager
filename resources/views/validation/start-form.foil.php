@@ -8,11 +8,6 @@ $this->layout( 'layouts/ixpv4' )
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
-    <div class="btn-group btn-group-sm" role="group">
-        <a class="btn btn-white" href="<?= route ( 'validation@list', [ ] ) ?>" title="list">
-            <i class="fa fa-list"></i>
-        </a>
-    </div>
 <?php $this->append() ?>
 
 <?php $this->section( 'content' ) ?>
@@ -30,7 +25,6 @@ $this->layout( 'layouts/ixpv4' )
                 ?>
 
                 <?=Former::actions( Former::primary_submit( 'Run Validations' )->class( "mb-2 mb-sm-0"),
-                    Former::secondary_link( 'Cancel' )->href( route ( 'validation@list' ) )->class( "mb-2 mb-sm-0"),
                     Former::success_button( 'Help' )->id( 'help-btn' )->class( "mb-2 mb-sm-0")
                 );?>
 

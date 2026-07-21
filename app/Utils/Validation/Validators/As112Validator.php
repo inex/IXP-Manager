@@ -60,7 +60,7 @@ class As112Validator implements Validator
         }
 
         foreach ($this->findVlansAndProtocolsMissingAs112Router() as $vlan) {
-            $backend->warning("Missing AS112 IPv" . $vlan->protocol . " router on " . $vlan->name);
+            $backend->warning("Missing AS112 IPv" . $vlan->protocol . " router on " . $vlan->name, docsLink: documentation_url('/features/as112/'));
         }
     }
 

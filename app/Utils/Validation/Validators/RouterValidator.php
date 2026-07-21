@@ -54,8 +54,9 @@ class RouterValidator implements Validator
     public function run( ValidationBackend $backend ): void
     {
         if (Router::where('type', Router::TYPE_ROUTE_SERVER)->count() === 0) {
-            $backend->suggestion("Did you know that IXP Manager can generate configuration for route servers?");
+            $backend->suggestion("Did you know that IXP Manager can generate configuration for route servers?", docsLink: documentation_url('features/rpki/'));
         } else {
+            // Make a list of routers which do not have RPKI enabled.
             $routeServersNoRpki = [];
             foreach (Vlan::all() as $vlan) {
                 $rsNoRpki = Router::where('vlan_id', $vlan->id)
@@ -67,15 +68,17 @@ class RouterValidator implements Validator
             }
 
             if (!is_string(config('ixp.rpki.rtr1.host')) && !is_string(config('ixp.rpki.rtr1.host'))) {
-                // neither set..
-                $backend->suggestion("Did you know IXP-Manager supports RPKI for route server configuration?");
+                // No RPKI servers configured - suggest they setup the feature
+                $backend->suggestion("Did you know IXP-Manager supports RPKI for route server configuration?", docsLink: documentation_url('features/rpki/'));
             } else if (!is_string(config('ixp.rpki.rtr1.host')) || !is_string(config('ixp.rpki.rtr2.host'))) {
-                $backend->warning("A second RPKI instance is recommended for redundancy.");
+                // Only missing one RPKI server.. suggest a second.
+                $backend->suggestion("A second RPKI instance is recommended for redundancy.", docsLink: documentation_url('features/rpki/'));
             }
 
             if ( (is_string( config('ixp.rpki.rtr1.host') ) || is_string( config('ixp.rpki.rtr2.host') ) ) && count($routeServersNoRpki) > 0) {
+                // Have an RPKI server, but there are route servers without RPKI:
                 $backend->warning("Found Route Servers without RPKI enabled: " . implode(", ",
-                        array_map(fn($router) => $router->handle, $routeServersNoRpki)));
+                        array_map(fn($router) => $router->handle, $routeServersNoRpki)), docsLink: documentation_url('features/rpki/'));
             }
         }
 
@@ -86,7 +89,7 @@ class RouterValidator implements Validator
                 if ($router->api_type === null || $router->api_type == 0) {
                     $needsLookingGlass[] = $router->handle;
                 } else if ($router->api === null) {
-                    $backend->error("Router " . $router->handle . " has Looking Glass API type configured, but API endpoint is empty");
+                    $backend->error("Router " . $router->handle . " has Looking Glass API type configured, but API endpoint is empty", docsLink: documentation_url('features/looking-glass/'));
                 }
 
                 if ($router->updated_at === null) {
@@ -98,7 +101,7 @@ class RouterValidator implements Validator
             }
         }
         if (count($needsLookingGlass) > 0) {
-            $backend->warning("We recommend configuring Looking Glass on all routers - some found without: " . implode(", ", $needsLookingGlass));
+            $backend->warning("We recommend configuring Looking Glass on all routers - some found without: " . implode(", ", $needsLookingGlass), docsLink: documentation_url('features/looking-glass/'));
         }
     }
 }

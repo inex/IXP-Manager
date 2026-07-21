@@ -61,19 +61,18 @@ class PeeringDbValidator implements Validator
     private function checkPeeringDbOauthIntegration( ValidationBackend $backend ): void
     {
         if (!config('auth.peeringdb.enabled')) {
-            $backend->suggestion("Did you know that IXP Manager supports login with PeeringDb?");
+            $backend->suggestion("Did you know that IXP Manager supports login with PeeringDb?", documentation_url('features/peeringdb-oauth/'));
         } else {
             $missingConfig = array_filter([ 'client_id', 'client_secret', 'redirect' ], fn( $field ) => config( "services.peeringdb." . $field ) === null );
             if (count($missingConfig) > 0) {
-                $backend->error( "PeeringDB OAUTH settings are not complete. Please check your service settings (" . implode(", ", $missingConfig) . ")." );
+                $backend->error( "PeeringDB OAUTH settings are not complete. Please check your service settings (" . implode(", ", $missingConfig) . ").", documentation_url('features/peeringdb-oauth/'));
             }
         }
     }
 
     private function checkPeeringDbApiIntegration( ValidationBackend $backend ): void
     {
-        // todo: refactor this - PeeringDB doesn't support Basic Auth..
-        if (array_all(['ixp_api.peeringDB.username', 'ixp_api.peeringDB.password', 'ixp_api.peeringDB.api-key'], fn( $field ) => config( $field ) === null)) {
+        if (array_all(['ixp_api.peeringDB.api-key'], fn( $field ) => config( $field ) === null)) {
             // have nothing setup
             $backend->suggestion("Did you know you can integrate with PeeringDB to load network and facility information?");
             return;
@@ -87,10 +86,14 @@ class PeeringDbValidator implements Validator
             $pdb = app(PeeringDb::class);
             try {
                 $pdb->getPeeringAsns();
-                if ($pdb->status !== 200) {
+                if ($pdb->status === 200) {
+                    $backend->info("PeeringDB API integration is successful");
+                } else {
                     if ($pdb->status === 401) {
-                        $backend->error("Received 401 Not Authorized from PeeringDB. Your API Key may be invalid.");
+                        $backend->error( "Received 401 Not Authorized from PeeringDB. Your API Key may be invalid." );
                     } else if ($pdb->error != null) {
+                        $backend->error("Error while performing PeeringDB API request (HTTP status " . $pdb->status . ") : " . $pdb->error);
+                    } else {
                         $backend->error("Error while performing PeeringDB API request (HTTP status " . $pdb->status . ") : " . $pdb->error);
                     }
                 }

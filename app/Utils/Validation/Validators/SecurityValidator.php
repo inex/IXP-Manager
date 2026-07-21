@@ -52,7 +52,7 @@ class SecurityValidator implements Validator
     public function run( ValidationBackend $backend ): void
     {
         if (config('ixp_api.unsecured_api_access')) {
-            $backend->error("Unsecured API Access is enabled - this is strongly discouraged, and support will be removed in a future release. Update any dependent software and disable this ASAP.");
+            $backend->error("Unsecured API Access is enabled - this is strongly discouraged, and support will be removed in a future release. Update any dependent software and disable this ASAP.", documentation_url( "install/security/" ) );
         }
 
         if (config('ixp_api.allow_apikeys_get_parameter')) {

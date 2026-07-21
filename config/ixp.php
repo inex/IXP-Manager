@@ -223,5 +223,10 @@ return [
         }),
     ],
 
+    'validation' => [
+        'nagios' => [
+            'last_updated_warn_after' => env("IXP_VALIDATION_NAGIOS_LAST_UPDATED_DURATION", "24 hours"),
+        ]
+    ]
 
 ];
