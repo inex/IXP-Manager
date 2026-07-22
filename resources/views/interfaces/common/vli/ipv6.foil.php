@@ -32,6 +32,10 @@
 
         <?= Former::number( 'ipv6maxbgpprefix' )
                 ->label( 'Max BGP Prefixes' )
+                ->disabled( !config( 'ixp_fe.vlaninterfaces.max_prefix_enabled', true ) )
+                ->title( !config( 'ixp_fe.vlaninterfaces.max_prefix_enabled', true )
+                    ? 'Per VLAN interface max. prefix disabled. Update via Edit ' . ucfirst(config( 'ixp_fe.lang.customer.one' )) . ' Details page.'
+                    : null )
                 ->blockHelp( 'The maximum IPv6 prefixes that any router configured via IXP Manager should accept for this endpoint. '
                         . 'See <a href="https://docs.ixpmanager.org/latest/usage/customers/#peering-details">the official documentation</a> for more details.' );
         ?>

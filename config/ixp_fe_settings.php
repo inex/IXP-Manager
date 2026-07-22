@@ -217,6 +217,21 @@ return [
                                         target="_blank">BGP detector</a> running.',
                 ],
 
+                'vlaninterfaces-max-prefix-enabled' => [
+                    'config_key' => 'ixp_fe.vlaninterfaces.max_prefix_enabled',
+                    'dotenv_key' => 'IXP_FE_VLANINTERFACES_MAX_PREFIX_ENABLED',
+                    'type'       => 'radio',
+                    'invert'     => false,
+                    'rules'      => 'boolean',
+                    'name'       => 'Per-VLAN Interface Maximum Prefixes',
+                    'docs_url'   => null,
+                    'help'       => 'Allow maximum prefixes to be set per VLAN interface.
+                                        If you only operate a single peering VLAN or infrastructure in one geographic location,
+                                        you may want to disable this and only use the global maximum prefix settings for each
+                                        member. Before disabling, run <code>php ./artisan update:max-prefixes-7.1.0</code>',
+                ],
+
+
                 'phpinfo'                   => [
                     'config_key' => 'ixp_fe.frontend.disabled.phpinfo',
                     'dotenv_key' => 'IXP_FE_FRONTEND_DISABLED_PHPINFO',
