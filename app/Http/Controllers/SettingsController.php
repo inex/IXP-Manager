@@ -84,7 +84,7 @@ class SettingsController extends Controller
     protected function index(): View
     {
         try {
-            $this->checkIfDotEnvIsCompatible();
+            $readOnly = !$this->checkIfDotEnvIsCompatible();
         } catch( Exception $e ) {
             
             AlertContainer::push( $e->getMessage(), Alert::DANGER );
@@ -93,10 +93,16 @@ class SettingsController extends Controller
                 'exception' => $e,
             ] );
         }
+
+        if( $readOnly ) {
+            AlertContainer::push( 'Server has no write permissions for .env file. Changes disabled.', Alert::WARNING );
+        }
         
         return view( 'settings.index' )->with( [
-            'settings' => $this->fe_settings,
-            'rules'    => [], //$this->gatherRules(),
+            'settings'     => $this->fe_settings,
+            'rules'        => [], //$this->gatherRules(),
+            'readOnly'     => $readOnly,
+            'lastModified' => date( 'Y-m-d H:i:s T', filemtime( base_path( '.env' ) ) ),
         ] );
     }
     
@@ -105,14 +111,10 @@ class SettingsController extends Controller
      * @throws DotEnvParserException
      * @throws Exception
      */
-    private function checkIfDotEnvIsCompatible()
+    private function checkIfDotEnvIsCompatible(): bool
     {
         if( !file_exists( base_path( '.env' ) ) ) {
             throw new Exception( "The .env file is missing. Please create it and try again." );
-        }
-        
-        if( !is_writable( base_path( '.env' ) ) ) {
-            throw new Exception( "The .env file cannot be written to. Please check the file permissions and try again." );
         }
         
         if( !( $env = file_get_contents( base_path( '.env' ) ) ) ) {
@@ -120,6 +122,8 @@ class SettingsController extends Controller
         }
         
         new DotEnvParser( $env )->parse();
+
+        return is_writable( base_path( '.env' ) );
     }
     
     /**
