@@ -67,8 +67,16 @@ class DotEnvParser
         return $this;
     }
 
-    public function settings(): array {
-        return $this->settings;
+    public function settings( bool $includeMetadata = false ): array
+    {
+        if( $includeMetadata ) {
+            return $this->settings;
+        }
+
+        return array_map( function( array $setting ): array {
+            unset( $setting['raw'] );
+            return $setting;
+        }, $this->settings );
     }
 
     /**
@@ -84,9 +92,8 @@ class DotEnvParser
 
         $lines = preg_split( '/\r\n|\r|\n/', $this->content() );
 
-        // The last empty element represents the file's final newline rather
-        // than a blank line. Preserve any additional trailing blank lines.
-        if( end( $lines ) === "" ) {
+        // remove trailing blank lines
+        while( end( $lines ) === "" ) {
             array_pop( $lines );
         }
 
@@ -98,7 +105,8 @@ class DotEnvParser
 
         foreach( $lines as $line ) {
 
-            $line = ltrim( $line );
+            $rawLine = $line;
+            $line = trim($line);
 
             if( mb_strlen( $line ) && mb_strpos( $line, '#' ) !== 0 ) {
 
@@ -146,12 +154,14 @@ class DotEnvParser
                         "key"     => null,
                         "value"   => null,
                         "comment" => "",
+                        "raw"     => $rawLine,
                     ];
                 } else {
                     $this->settings[] = [
                         "key"     => null,
                         "value"   => null,
-                        "comment" => mb_substr( $line, 1 ),
+                        "comment" => trim( mb_substr( $line, 1 ) ),
+                        "raw"     => $rawLine,
                     ];
                 }
             } else if( mb_strlen( $line ) === 0 ) {
@@ -217,7 +227,7 @@ class DotEnvParser
             if( $character === '#' ) {
                 return [
                     substr( $valueElement, 0, $i ),
-                    substr( $valueElement, $i + 1 ),
+                    trim( substr( $valueElement, $i + 1 ) ),
                 ];
             }
         }

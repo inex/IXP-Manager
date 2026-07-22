@@ -62,6 +62,11 @@ class DotEnvWriter
 
         foreach( $this->settings as $l ) {
 
+            if( array_key_exists( 'raw', $l ) ) {
+                $content .= $l['raw'] . "\n";
+                continue;
+            }
+
             $lineStarted = false;
 
             if( $l['key'] !== null ) {
@@ -83,14 +88,9 @@ class DotEnvWriter
             }
 
             if( $l['comment'] !== null ) {
-                if( !$lineStarted ) {
-                    $content .= '#' . $l['comment'];
-                } else {
-                    $content .= ' #'
-                        . ( !strlen( trim( $l['comment'] ) ) || trim( $l['comment'] )[0] === '#'
-                            || preg_match( '/^\s/', $l['comment'] ) ? '' : ' ' )
-                        . $l['comment'];
-                }
+                $content .= ( $lineStarted ? ' ' : '' ) . '#'
+                    . ( !strlen( trim( $l['comment'] ) ) || trim( $l['comment'] )[0] === '#' ? '' : ' ' )
+                    . $l['comment'];
             }
 
             $content .= "\n";
