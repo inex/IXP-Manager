@@ -151,9 +151,13 @@ IXP Manager Settings
 
                     <?=
                         Former::actions(
-                            Former::primary_submit( 'Save Changes' )->id('updateButton')->class( "mb-2 mb-sm-0" )
+                            Former::primary_submit( 'Save Changes' )->id('updateButton')->class( "mb-2 mb-sm-0" )->disabled( $t->readOnly )
                         )
                    ?>
+
+                    <div class="text-muted small mt-2">
+                        <code>.env</code> last modified: <?= $t->lastModified ?>
+                    </div>
 
                    <?= Former::close() ?>
 
