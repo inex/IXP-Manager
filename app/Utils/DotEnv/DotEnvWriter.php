@@ -83,9 +83,14 @@ class DotEnvWriter
             }
 
             if( $l['comment'] !== null ) {
-                $content .= ( $lineStarted ? ' ' : '' ) . '#'
-                    . ( !strlen( trim( $l['comment'] ) ) || trim( $l['comment'] )[0] === '#' ? '' : ' ' )
-                    . $l['comment'];
+                if( !$lineStarted ) {
+                    $content .= '#' . $l['comment'];
+                } else {
+                    $content .= ' #'
+                        . ( !strlen( trim( $l['comment'] ) ) || trim( $l['comment'] )[0] === '#'
+                            || preg_match( '/^\s/', $l['comment'] ) ? '' : ' ' )
+                        . $l['comment'];
+                }
             }
 
             $content .= "\n";

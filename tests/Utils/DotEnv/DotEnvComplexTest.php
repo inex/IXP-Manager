@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Tests\Utils\DotEnv;
 
 /*
- * Copyright (C) 2009 - 2025 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -52,6 +52,41 @@ final class DotEnvComplexTest extends TestCase
         $container = new DotEnvContainer( new DotEnvParser( file_get_contents( self::ENV_FILE ) )->parse()->settings() );
         
         $this->assertEquals( file_get_contents( self::ENV_FILE ), new DotEnvWriter( $container->settings() )->generateContent() );
+    }
+
+    /**
+     * @throws DotEnvParserException
+     */
+    public function testQuotedHashValueRoundTrip(): void
+    {
+        $env = 'DB_PASSWORD="&k3RUT@5PFPeE%A#qv^NUgsC7"' . "\n";
+        $container = new DotEnvContainer( new DotEnvParser( $env )->parse()->settings() );
+
+        $this->assertSame( $env, new DotEnvWriter( $container->settings() )->generateContent() );
+    }
+
+    /**
+     * @throws DotEnvParserException
+     */
+    public function testCommentWhitespaceRoundTrip(): void
+    {
+        $env = "# A comment with trailing whitespace \n"
+            . "#       An indented comment\n"
+            . "#   - An indented list item\n";
+        $container = new DotEnvContainer( new DotEnvParser( $env )->parse()->settings() );
+
+        $this->assertSame( $env, new DotEnvWriter( $container->settings() )->generateContent() );
+    }
+
+    /**
+     * @throws DotEnvParserException
+     */
+    public function testTrailingBlankLineRoundTrip(): void
+    {
+        $env = "TEST=true\n\n";
+        $container = new DotEnvContainer( new DotEnvParser( $env )->parse()->settings() );
+
+        $this->assertSame( $env, new DotEnvWriter( $container->settings() )->generateContent() );
     }
 
 

@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Tests\Utils\DotEnv;
 
 /*
- * Copyright (C) 2009 - 2025 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -158,7 +158,7 @@ final class DotEnvParserTest extends TestCase
                 [ 0 => [
                     "key"     => null,
                     "value"   => null,
-                    "comment" => "",
+                    "comment" => mb_substr( rtrim( $line, "\r\n" ), 1 ),
                 ] ],
                 $p->settings()
             );
@@ -172,15 +172,15 @@ final class DotEnvParserTest extends TestCase
     {
         foreach(
                 [
-                    "# comment \n" => "comment",
-                    "# comment comment \r\n" => "comment comment",
-                    "# this is at !! comment   \r" => "this is at !! comment",
-                    "# hey \$ho yolo\tthhe\n\r" => "hey \$ho yolo\tthhe",
-                    "#    thesis yo\r\n\r" => "thesis yo",
-                    "#  yes, sisko was the best star trek captain! \n" => "yes, sisko was the best star trek captain!",
-                    "#     no, it was't kirk. or picard. <====\r\n" => "no, it was't kirk. or picard. <====",
-                    "#yes the defiant WAS a cool ship     \r" => "yes the defiant WAS a cool ship",
-                    "#\tncc1701\t   \n\r" => "ncc1701",
+                    "# comment \n" => " comment ",
+                    "# comment comment \r\n" => " comment comment ",
+                    "# this is at !! comment   \r" => " this is at !! comment   ",
+                    "# hey \$ho yolo\tthhe\n\r" => " hey \$ho yolo\tthhe",
+                    "#    thesis yo\r\n\r" => "    thesis yo",
+                    "#  yes, sisko was the best star trek captain! \n" => "  yes, sisko was the best star trek captain! ",
+                    "#     no, it was't kirk. or picard. <====\r\n" => "     no, it was't kirk. or picard. <====",
+                    "#yes the defiant WAS a cool ship     \r" => "yes the defiant WAS a cool ship     ",
+                    "#\tncc1701\t   \n\r" => "\tncc1701\t   ",
                 ] as $line => $expected ) {
 
 
@@ -242,7 +242,7 @@ final class DotEnvParserTest extends TestCase
      */
     public function testBlankLines(): void
     {
-        // leading and trailing blank lines should be removed, but those in the middle should not
+        // leading blank lines should be removed; middle and trailing blank lines should be preserved
         $content = implode("\n", [
             '',
             '',
@@ -270,7 +270,7 @@ final class DotEnvParserTest extends TestCase
             "comment" => null,
         ];
 
-        $this->assertCount( 10, $p->settings() );
+        $this->assertCount( 11, $p->settings() );
         $this->assertNotEquals( $blankLine, $p->settings()[0] );
         $this->assertEquals( $blankLine, $p->settings()[1] );
         $this->assertEquals( $blankLine, $p->settings()[2] );
@@ -280,6 +280,8 @@ final class DotEnvParserTest extends TestCase
         $this->assertNotEquals( $blankLine, $p->settings()[6] );
         $this->assertEquals( $blankLine, $p->settings()[7] );
         $this->assertEquals( $blankLine, $p->settings()[8] );
+        $this->assertNotEquals( $blankLine, $p->settings()[9] );
+        $this->assertEquals( $blankLine, $p->settings()[10] );
     }
 
 
@@ -298,10 +300,12 @@ final class DotEnvParserTest extends TestCase
             [ "TEST= \t \t  \n", "TEST", '', null ],
             [ "TEST=qwerty\n", "TEST", "qwerty", null ],
             [ "TEST_VAR=\"there once was a \"\n", "TEST_VAR", '"there once was a "', null ],
-            [ "TEST_VAR=\"there once was a \"    # comment  \n", "TEST_VAR", '"there once was a "', "comment" ],
+            [ "TEST_VAR=\"there once was a \"    # comment  \n", "TEST_VAR", '"there once was a "', " comment  " ],
             [ "TEST=\"true false something else\"\n", "TEST", '"true false something else"', null ],
             [ "TEST_VAR=\"there once was a \"   ### comment\n", "TEST_VAR", '"there once was a "', "## comment" ],
             [ "APP_KEY=\"base64:01234567899876543210abcdefghijjihgfedcba123=\"", "APP_KEY", '"base64:01234567899876543210abcdefghijjihgfedcba123="', null ],
+            [ 'DB_PASSWORD="&k3RUT@5PFPeE%A#qv^NUgsC7"', "DB_PASSWORD", '"&k3RUT@5PFPeE%A#qv^NUgsC7"', null ],
+            [ 'DB_PASSWORD="&k3RUT@5PFPeE%A#qv^NUgsC7" # database password', "DB_PASSWORD", '"&k3RUT@5PFPeE%A#qv^NUgsC7"', " database password" ],
         ];
     }
 
