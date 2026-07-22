@@ -189,6 +189,11 @@
         let switchId  = dd_switch.val();
         let sptypes    = <?= json_encode( \IXP\Models\SwitchPort::$TYPES ) ?> ;
 
+        if( !switchId ) {
+            dd_switch_port.html( "<option value=\"\">Choose a Switch Port</option>" ).trigger( "change.select2" );
+            return;
+        }
+
         let currentSId          = false;
         let currentSpId         = false;
         let spOption            = false;
@@ -300,7 +305,7 @@
      * set data to the customer dropdown
      */
     function setCustomer() {
-        if( dd_switch.val() !== '') {
+        if( dd_switch.val() && dd_switch_port.val() ) {
             let switchPortId = dd_switch_port.val();
             let option = '';
             dd_customer.html( `<option value=''>Loading please wait</option>` ).trigger('change.select2');
@@ -326,14 +331,14 @@
      * reset the customer dropdown
      */
     function resetCustomer() {
-        let options = `<option value=''> Choose a <?= config( 'ixp_fe.lang.customer.one' ) ?></option>`;
+        let options = `<option value='' disabled selected> Choose a <?= config( 'ixp_fe.lang.customer.one' ) ?></option>`;
 
         <?php foreach ( $t->customers as $c ): ?>
             options += `<option value='<?= $c->id ?>'><?= $t->ee( $c->name ) ?></option>`;
         <?php endforeach; ?>
         dd_customer.html( options ).trigger('change.select2');
 
-        if( dd_switch.val() !== '' && dd_switch_port.val() === '' ){
+        if( dd_switch.val() && !dd_switch_port.val() ){
             setSwitchPort();
         }
     }
