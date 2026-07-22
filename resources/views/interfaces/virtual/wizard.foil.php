@@ -155,6 +155,19 @@ $this->layout( 'layouts/ixpv4' );
                             ->value(1)
                             ->blockHelp( '' );
                         ?>
+
+                        <?= Former::number( 'rate_limit' )
+                            ->label( 'Rate Limit <u>(Mbps)</u>' )
+                            ->blockHelp( 'Enter the provisioned speed if the port has been rate limited below its line rate. <strong>Enter in Mbps!</strong> Leave blank if port is not rate limited. Zero will be converted to null (blank - not rate limited).');
+                        ?>
+
+                        <?= Former::checkbox( 'autoneg' )
+                            ->label( '&nbsp;' )
+                            ->text( 'Auto-Negotiation Enabled' )
+                            ->value( 1 )
+                            ->inline()
+                            ->blockHelp( "Unless you are provisioning switches from IXP Manager, this is informational." );
+                        ?>
                     </div>
 
                     <div class="col-md-12 col-lg-4 mt-4 mt-md-4">
