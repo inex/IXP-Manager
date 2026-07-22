@@ -84,7 +84,8 @@ class SettingsController extends Controller
     protected function index(): View
     {
         try {
-            $readOnly = !$this->checkIfDotEnvIsCompatible();
+            $this->checkIfDotEnvIsCompatible();
+            $readOnly = !$this->isDotEnvWritable();
         } catch( Exception $e ) {
             
             AlertContainer::push( $e->getMessage(), Alert::DANGER );
@@ -111,7 +112,7 @@ class SettingsController extends Controller
      * @throws DotEnvParserException
      * @throws Exception
      */
-    private function checkIfDotEnvIsCompatible(): bool
+    private function checkIfDotEnvIsCompatible(): void
     {
         if( !file_exists( base_path( '.env' ) ) ) {
             throw new Exception( "The .env file is missing. Please create it and try again." );
@@ -122,7 +123,13 @@ class SettingsController extends Controller
         }
         
         new DotEnvParser( $env )->parse();
+    }
 
+    /**
+     * Check whether the .env settings can be changed through the UI.
+     */
+    private function isDotEnvWritable(): bool
+    {
         return is_writable( base_path( '.env' ) );
     }
     
@@ -141,7 +148,7 @@ class SettingsController extends Controller
         }
         
         
-        return new DotEnvContainer( new DotEnvParser( $env )->parse()->settings() );
+        return new DotEnvContainer( new DotEnvParser( $env )->parse()->settings( true ) );
     }
     
     /**

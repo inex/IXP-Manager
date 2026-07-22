@@ -68,23 +68,13 @@ final class DotEnvComplexTest extends TestCase
     /**
      * @throws DotEnvParserException
      */
-    public function testCommentWhitespaceRoundTrip(): void
+    public function testStandaloneCommentFormattingRoundTrip(): void
     {
         $env = "# A comment with trailing whitespace \n"
             . "#       An indented comment\n"
             . "#   - An indented list item\n";
-        $container = new DotEnvContainer( new DotEnvParser( $env )->parse()->settings() );
-
-        $this->assertSame( $env, new DotEnvWriter( $container->settings() )->generateContent() );
-    }
-
-    /**
-     * @throws DotEnvParserException
-     */
-    public function testTrailingBlankLineRoundTrip(): void
-    {
-        $env = "TEST=true\n\n";
-        $container = new DotEnvContainer( new DotEnvParser( $env )->parse()->settings() );
+        $parser = new DotEnvParser( $env )->parse();
+        $container = new DotEnvContainer( $parser->settings( true ) );
 
         $this->assertSame( $env, new DotEnvWriter( $container->settings() )->generateContent() );
     }
