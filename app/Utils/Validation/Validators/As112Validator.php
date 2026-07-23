@@ -38,61 +38,34 @@ use IXP\Models\Vlan;
 class As112Validator implements Validator
 {
 
+    #[\Override]
     public function getName(): string
     {
         return "AS112 validator";
     }
 
+    #[\Override]
     public function getDescription(): string
     {
         return "Check AS112 feature settings";
     }
 
+    #[\Override]
     public function getPriority(): int
     {
         return 50;
     }
 
+    #[\Override]
     public function run( ValidationBackend $backend ): void
     {
         if (! config ( 'ixp.as112.ui_active' ) ) {
             return;
         }
 
-        foreach ($this->findVlansAndProtocolsMissingAs112Router() as $vlan) {
-            $backend->warning("Missing AS112 IPv" . $vlan->protocol . " router on " . $vlan->name, docsLink: documentation_url('/features/as112/'));
+        if (Router::whereType(Router::TYPE_AS112)->count() === 0) {
+            $backend->error("AS112 enabled but no AS112 routers setup")
+                ->withDocsPath("features/as112/");
         }
-    }
-
-    /**
-     * Find any Vlans, on ipv4 or ipv6, which are not quarantine Vlan's, that don't have an AS112 router
-     * VLAN's aren't directly marked as quarantine so we look for routers which are marked quarantine.
-     * @return Collection
-     */
-    private function findVlansAndProtocolsMissingAs112Router(): Collection
-    {
-        return Vlan::select(["vlan.*", "protocol"])
-            ->crossJoinSub(function ($query) {
-                $query->select('protocol')
-                    ->from(\DB::raw('(SELECT 4 AS protocol UNION SELECT 6) as protocols'));
-            }, 'protocols')
-            // Exclude quarantine VLAN's, we don't care about them here.
-            ->whereNotExists(function ($query) {
-                $query->select(\DB::raw(1))
-                    ->from('routers')
-                    ->whereColumn('routers.vlan_id', 'vlan.id')
-                    ->whereColumn('routers.protocol', 'protocols.protocol')
-                    ->where('routers.quarantine', 1);
-            })
-            // Only return rows where the required AS112 active router is missing
-            ->whereNotExists(function ($query) {
-                $query->select(\DB::raw(1))
-                    ->from('routers')
-                    ->where('routers.type', Router::TYPE_AS112)
-                    ->whereColumn('routers.vlan_id', 'vlan.id')
-                    ->whereColumn('routers.protocol', 'protocols.protocol')
-                    ->where('routers.quarantine', 0);
-            })
-            ->get();
     }
 }

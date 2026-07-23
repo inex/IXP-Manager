@@ -39,7 +39,7 @@ System Validation
     <div id="software-table-list" class="row tw-p-4 m-1 tw-shadow-md tw-border-1 tw-border-grey-light tw-rounded-sm">
     </div>
 
-    <template id="software-table-2-row-template">
+    <template id="software-table-row-template">
         <!-- .software-name -->
         <!-- .software-version -->
         <div class="col-6 row">
@@ -92,6 +92,7 @@ System Validation
             </div>
 <!--            -->
             <div class="result-icon tw-ml-auto tw-flex tw-items-center tw-pr-4">
+                <a href="#" target="_blank" class="validation-call-to-action tw-hidden tw-ml-auto tw-flex tw-items-center tw-pr-4 tw-text-gray-500 hover:tw-text-gray-900">&nbsp</a>
                 <a href="#" target="_blank" class="validation-docs-link tw-hidden tw-ml-auto tw-flex tw-items-center tw-pr-4 tw-text-gray-500 hover:tw-text-gray-900">
                     <i class="fa fa-book"></i> &nbsp;
                 </a>
@@ -126,10 +127,12 @@ System Validation
         'DEBUG': 'tw-border-gray-300 tw-bg-gray-300',
     };
 
-    const $loadingSpinner = $('.loading-results-indicator');
-    const $container = $('#validation-container');
-    const $validationTemplate = $('#validation-template');
-    const $softwareTableBody = $('#software-table-list');
+    const loadingSpinner = $('.loading-results-indicator');
+    const container = $('#validation-container');
+    const validationTemplate = $('#validation-template');
+    const softwareTableBody = $('#software-table-list');
+    const noOutputTemplate = $('#no-output-template');
+    const resultTemplate = $('#result-template');
 
     $( document ).ready( function() {
         // Load validation results on page open
@@ -149,11 +152,11 @@ System Validation
                 method: 'GET',
                 dataType: 'json',
                 success: function(taskData) {
-                    $container.find('[data-toggle="popover"]').popover('dispose');
+                    container.find('[data-toggle="popover"]').popover('dispose');
 
                     // Clear container for fresh data
-                    $container.empty();
-                    $softwareTableBody.empty();
+                    container.empty();
+                    softwareTableBody.empty();
 
                     // Loop through each job
                     taskData['validations'].forEach(function(validationData) {
@@ -175,25 +178,25 @@ System Validation
 
                         validationData.software.forEach(function (software) {
                             let rowFragment = createSoftwareTableRow(software);
-                            $softwareTableBody.append(rowFragment);
+                            softwareTableBody.append(rowFragment);
                         });
 
-                        $container.append(validationFragment);
+                        container.append(validationFragment);
                     });
 
                     toggleInformation();
 
                     if (taskData.complete) {
                         clearTimeout(refreshTimeout);
-                        $loadingSpinner.remove();
+                        loadingSpinner.remove();
                     }
                 },
                 error: function(xhr, status, error) {
                     console.error("Failed to fetch jobs:", error);
-                    $container.html('<div class="alert alert-danger col-12">Failed to load jobs. Please try again.</div>');
+                    container.html('<div class="alert alert-danger col-12">Failed to load jobs. Please try again.</div>');
                 },
                 complete: function() {
-                    $container.find('[data-toggle="popover"]').popover({
+                    container.find('[data-toggle="popover"]').popover({
                         trigger: 'focus'
                     });
                 }
@@ -201,56 +204,64 @@ System Validation
         }
 
         function createValidationFragment(validationData) {
-            let $validationClone = $( $validationTemplate.prop('content') ).clone();
-            $validationClone
+            let validationClone = $( validationTemplate.prop('content') ).clone();
+            validationClone
                 .find('.validation-info-button')
                 .attr("title", validationData.name)
                 .attr("data-content", validationData.description);
 
-            $validationClone.find('.validation-title').text(validationData.name);
+            validationClone.find('.validation-title').text(validationData.name);
 
             if (validationData.is_failed) {
-                $validationClone.find(".validation-failure-button")
+                validationClone.find(".validation-failure-button")
                     .removeClass("tw-hidden")
                     .attr("title", "An exception occurred while running the validation")
                     .attr("data-content", "Uncaught " + validationData['failure']['exception'] + ' at ' + validationData['failure']['file'] + ':' + validationData['failure']['line'] + ": " + validationData['failure']['message']);
             }
             if (validationData.is_timedout) {
-                $validationClone.find(".validation-timeout-button").removeClass("tw-hidden");
+                validationClone.find(".validation-timeout-button").removeClass("tw-hidden");
             }
 
-            return $validationClone;
+            return validationClone;
         }
 
         function createNoOutputFragment() {
-            return $( $('#no-output-template').prop('content') ).clone();
+            return $( noOutputTemplate.prop('content') ).clone();
 
         }
 
         function createValidationResultFragment(resultData) {
-            let $resultClone = $( $('#result-template').prop('content') ).clone();
+            let resultClone = $( resultTemplate.prop('content') ).clone();
 
-            $resultClone.find('.validation-result').attr("data-result-type", resultData.type);
+            resultClone.find('.validation-result').attr("data-result-type", resultData.type);
 
-            $resultClone.find('.result-badge').attr("title", resultData.message);
-            $resultClone.find('.result-badge').addClass(resultTypeBadgeClass[resultData.type]);
+            resultClone.find('.result-badge')
+                .attr("title", resultData.message)
+                .addClass(resultTypeBadgeClass[resultData.type]);
 
-            $resultClone.find('.result-type').text(resultData.type.toUpperCase());
-            $resultClone.find('.validation-content').text(resultData.message);
-            $resultClone.attr('data-result-type', resultData.type);
+            resultClone.find('.result-type').text(resultData.type.toUpperCase());
+            resultClone.find('.validation-content').text(resultData.message);
+            resultClone.attr('data-result-type', resultData.type);
 
             if (resultData.docs_url != null) {
-                $resultClone.find('.validation-docs-link').attr('href', resultData.docs_url);
-                $resultClone.find(".validation-docs-link").removeClass("tw-hidden");
+                resultClone.find('.validation-docs-link')
+                    .attr('href', resultData.docs_url)
+                    .removeClass("tw-hidden");
+            }
+            if (resultData.call_to_action != null) {
+                resultClone.find('.validation-call-to-action')
+                    .attr('href', resultData.call_to_action.url)
+                    .text(resultData.call_to_action.text)
+                    .removeClass("tw-hidden");
             }
             // $resultClone.find('.validation-settings-link').attr('href', resultData.docs_url);
             // $resultClone.find(".validation-settings-link").removeClass("tw-hidden");
 
-            return $resultClone;
+            return resultClone;
         }
 
         function createSoftwareTableRow(software) {
-            let $rowClone = $(  $('#software-table-2-row-template').prop('content') ).clone();
+            let $rowClone = $(  $('#software-table-row-template').prop('content') ).clone();
             $rowClone.find('.software-name').text(software.name);
             $rowClone.find('.software-version').text(software.version);
             return $rowClone;

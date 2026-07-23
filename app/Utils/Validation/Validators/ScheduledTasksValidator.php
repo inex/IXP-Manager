@@ -39,29 +39,35 @@ use IXP\Models\Vlan;
 class ScheduledTasksValidator implements Validator
 {
 
+    #[\Override]
     public function getName(): string
     {
         return "Scheduler Task validator";
     }
 
+    #[\Override]
     public function getDescription(): string
     {
         return "Checks the IXP Manager task scheduler is running.";
     }
 
+    #[\Override]
     public function getPriority(): int
     {
         return 13;
     }
 
+    #[\Override]
     public function run( ValidationBackend $backend ): void
     {
         $schedulerLastRun = TaskLastRun::whereTaskKey( TaskLastRun::SCHEDULER_CRON_JOB )->first();
 
         if ( !$schedulerLastRun ) {
-            $backend->error( "No record of task scheduler running - your automated tasks are not running!", documentation_url( "features/cronjobs/" ) );
+            $backend->error( "No record of task scheduler running - your automated tasks are not running!")
+                ->withDocsPath( "features/cronjobs/" );
         } else if( $schedulerLastRun->last_run_at->diffInMinutes( Carbon::now() ) > 10 ) {
-            $backend->error( "Task scheduler hasn't run for 10 minutes - your automated tasks are not running!", documentation_url( "features/cronjobs/" ) );
+            $backend->error( "Task scheduler hasn't run for 10 minutes - your automated tasks are not running!")
+                ->withDocsPath( "features/cronjobs/" );
         } else {
             $backend->info( "Task scheduler is running" );
         }

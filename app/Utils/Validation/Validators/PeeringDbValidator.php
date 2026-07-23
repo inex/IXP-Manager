@@ -37,21 +37,25 @@ use IXP\Services\PeeringDb;
  */
 class PeeringDbValidator implements Validator
 {
+    #[\Override]
     public function getName(): string
     {
         return "Peering DB Setup Validator";
     }
 
+    #[\Override]
     public function getDescription(): string
     {
         return "Checks PeeringDB integration";
     }
 
+    #[\Override]
     public function getPriority(): int
     {
         return 48;
     }
 
+    #[\Override]
     public function run( ValidationBackend $backend ): void
     {
         $this->checkPeeringDbOauthIntegration($backend);
@@ -61,11 +65,13 @@ class PeeringDbValidator implements Validator
     private function checkPeeringDbOauthIntegration( ValidationBackend $backend ): void
     {
         if (!config('auth.peeringdb.enabled')) {
-            $backend->suggestion("Did you know that IXP Manager supports login with PeeringDb?", documentation_url('features/peeringdb-oauth/'));
+            $backend->suggestion("Did you know that IXP Manager supports login with PeeringDb?")
+                ->withDocsPath('features/peeringdb-oauth/');
         } else {
             $missingConfig = array_filter([ 'client_id', 'client_secret', 'redirect' ], fn( $field ) => config( "services.peeringdb." . $field ) === null );
             if (count($missingConfig) > 0) {
-                $backend->error( "PeeringDB OAUTH settings are not complete. Please check your service settings (" . implode(", ", $missingConfig) . ").", documentation_url('features/peeringdb-oauth/'));
+                $backend->error( "PeeringDB OAUTH settings are not complete. Please check your service settings (" . implode(", ", $missingConfig) . ").")
+                    ->withDocsPath('features/peeringdb-oauth/');
             }
         }
     }

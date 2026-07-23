@@ -37,7 +37,7 @@ class GrapherValidatorTest extends TestCase
         $validator = new GrapherValidator();
         $this->assertEquals("Grapher validator", $validator->getName());
         $this->assertEquals("Performs checks on grapher configuration.", $validator->getDescription());
-        $this->assertEquals(10, $validator->getPriority());
+        $this->assertEquals(44, $validator->getPriority());
     }
 
     public function testProviderUnknownClass()

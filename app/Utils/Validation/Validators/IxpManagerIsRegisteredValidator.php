@@ -27,6 +27,7 @@ namespace IXP\Utils\Validation\Validators;
 use Illuminate\Http\Client\ConnectionException;
 use IXP\Contracts\Validation\ValidationBackend;
 use IXP\Contracts\Validation\Validator;
+use IXP\Http\Controllers\Utils\InfrastructureRegistrationChecker;
 use IXP\Models\Infrastructure;
 
 
@@ -45,62 +46,55 @@ use IXP\Models\Infrastructure;
  */
 class IxpManagerIsRegisteredValidator implements Validator
 {
+    #[\Override]
     public function getName(): string
     {
         return "Check IXP's registered on IXP-Manager";
     }
 
+    #[\Override]
     public function getDescription(): string
     {
         return "Checks that eligible infrastructures are recorded on ixpmanager.org";
     }
 
+    #[\Override]
     public function getPriority(): int
     {
         return 30;
     }
 
+    #[\Override]
     public function run( ValidationBackend $backend ): void
     {
-        $infrastructures = Infrastructure::whereExcludeFromIxfExport(false)->get();
-        // If we have infrastructures, but none are included in the ixf-export, just end now:
-        if (Infrastructure::count() > 0 && $infrastructures->isEmpty()) {
-            $backend->info("All infrastructures are excluded from ixf-export");
-            return;
-        }
-
+        $checker = app(InfrastructureRegistrationChecker::class);
         try {
-            $ixpList = \Http::get('https://www.ixpmanager.org/js/ixp-manager-users.json')->json('ixp_list');
+            $result = $checker->check();
         } catch ( ConnectionException $e) {
             $backend->warning("Could not fetch registered networks from ixpmanager.org: " . $e->getMessage());
             return;
         }
 
-        if ($ixpList) {
-            $pdbIds        = array_column($ixpList, 'peeringdb_id');
-            $ixfIds        = array_column($ixpList, 'ixf_id');
-            $registerCount = 0;
+        // If we have infrastructures, but none are included in the ixf-export, just end now:
+        if (Infrastructure::count() > 0 && count($result->eligibleInfrastructures) === 0) {
+            $backend->info("All infrastructures are excluded from ixf-export");
+            return;
+        }
 
-            foreach ($infrastructures as $infra) {
-                // an infrastructure is registered if we have a peeringdb id or ixf id, and we can
-                // locate either in the IXP list obtained from ixpmanager.org
-                $registered =
-                    ($infra->peeringdb_ix_id != null && in_array($infra->peeringdb_ix_id, $pdbIds)) ||
-                    ($infra->ixf_ix_id != null && in_array($infra->ixf_ix_id, $ixfIds));
-
-                if ($registered) {
-                    $registerCount++;
-                } else if ($infra->peeringdb_ix_id != null || $infra->ixf_ix_id != null) {
-                    // if we are not registered, but we have a peeringdb or ixf_ix_id, request the user to register
-                    $backend->warning("Infrastructure " . $infra->name . " is not registered on ixpmanager.org");
-                } else {
-                    $backend->info("Infrastructure " . $infra->name . " has no PeeringDB ID or IXF-ID configured");
-                }
+        foreach ($result->eligibleInfrastructures as $infra) {
+            if ($infra->peeringdb_ix_id === null && $infra->ixf_ix_id === null) {
+                $backend->info("Infrastructure " . $infra->name . " has no PeeringDB ID or IXF-ID configured");
             }
+        }
 
-            if ($infrastructures->isNotEmpty() && $registerCount === count($infrastructures)) {
-                $backend->info("All eligible infrastructures are registered on ixpmanager.org");
-            }
+        if (count($result->toRegister) > 0) {
+            $ids = array_map(fn($i) => $i->id, $result->toRegister);
+            $backend->warning("Found infrastructures not registered on ixpmanager.org!")
+                ->withCallToAction("Register", route('ixp-registration@register', ['infrastructure' => $ids]));
+        }
+
+        if (count($result->eligibleInfrastructures) > 0 && count($result->alreadyRegistered) === count($result->eligibleInfrastructures)) {
+            $backend->info("All eligible infrastructures are registered on ixpmanager.org");
         }
     }
 }

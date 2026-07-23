@@ -46,6 +46,7 @@ class ValidationServiceProvider extends ServiceProvider
         });
     }
 
+    #[\Override]
     public function register(): void
     {
 

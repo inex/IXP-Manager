@@ -33,21 +33,25 @@ use IXP\Contracts\Validation\Validator;
  */
 class BasicValidator implements Validator
 {
+    #[\Override]
     public function getName(): string
     {
         return "Basic validations";
     }
 
+    #[\Override]
     public function getDescription(): string
     {
         return "Perform some basic system checks";
     }
 
+    #[\Override]
     public function getPriority(): int
     {
         return 0;
     }
 
+    #[\Override]
     public function run( ValidationBackend $backend ): void
     {
         $this->doPhpChecks( $backend );

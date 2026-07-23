@@ -32,6 +32,7 @@
   <php>
     <const name="APPLICATION_VERSION" value="999.9.9"/>
     <const name="APPLICATION_VERDATE" value="9999999999"/>
+    <const name="DOCUMENTATION_VERSION" value="999.9"/>
     <const name="APPLICATION_STARTTIME" value="0"/>
   </php>
   <source>

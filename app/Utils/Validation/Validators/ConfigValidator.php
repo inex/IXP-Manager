@@ -33,21 +33,25 @@ use Ramsey\Uuid\Uuid;
  */
 class ConfigValidator implements Validator
 {
+    #[\Override]
     public function getName(): string
     {
         return "Configuration validation";
     }
 
+    #[\Override]
     public function getDescription(): string
     {
         return "Perform checks of the IXP Manager configuration";
     }
 
+    #[\Override]
     public function getPriority(): int
     {
         return 20;
     }
 
+    #[\Override]
     public function run( ValidationBackend $backend ): void
     {
         $backend->info("Default cache driver is " . config('cache.default') );
@@ -65,26 +69,29 @@ class ConfigValidator implements Validator
         }
 
         if ( !config ( 'ixp.as112.ui_active' ) ) {
-            $backend->suggestion( "Did you know IXP-Manager can help you run an AS112 service?", docsLink: documentation_url("features/as112/"));
+            $backend->suggestion( "Did you know IXP-Manager can help you run an AS112 service?")
+                ->withDocsPath("features/as112/");
         } else {
             $backend->info("AS112 UI is enabled.");
         }
 
-        if ( !config ( 'ixp.as112.ui_active' ) ) {
-            $backend->suggestion( "Did you know IXP-Manager can help you run an AS112 service?", docsLink: documentation_url("features/as112/"));
-        } else {
-            $backend->info("AS112 UI is enabled.");
+        if ( config('ixp_fe.frontend.disabled.filtered-prefixes' ) ) {
+            $backend->suggestion( "Did you know IXP-Manager has a UI to find filtered prefixes for your " . config('ixp_fe.lang.customer.many') . "?" )
+                ->withDocsPath( "features/route-servers/#displaying-filtered-prefixes" );
+        } else if ( config('cache.default') === "array" ) {
+            $backend->error("A persistent cache is required to use the filtered prefixes feature - cannot use array." );
         }
-
 
         if ( config( 'ixp_fe.frontend.disabled.settings' ) ) {
-            $backend->suggestion( "Did you know there is a UI for editing the IXP Manager .env file?", docsLink: documentation_url("features/settings/"));
+            $backend->suggestion( "Did you know there is a UI for editing the IXP Manager .env file?" )
+                ->withDocsPath("features/settings/");
         } else {
             $backend->info( "Settings UI is enabled." );
         }
 
         if ( config('ixp_fe.frontend.disabled.lg' ) ) {
-            $backend->suggestion( "Did you know IXP Manager has a built in Looking Glass UI?", docsLink: documentation_url("features/looking-glass/"));
+            $backend->suggestion( "Did you know IXP Manager has a built in Looking Glass UI?")
+                ->withDocsPath("features/looking-glass/");
         } else {
             $backend->info( "Looking Glass UI is enabled." );
         }

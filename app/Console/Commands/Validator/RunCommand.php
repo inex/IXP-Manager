@@ -118,7 +118,7 @@ class RunCommand extends Command
         $this->line("Log level: " . $this->option('log-level'));
         $this->line("Validations summary: " . $this->buildResultsSummary());
 
-        if ( ( $failed = array_filter( $this->runners, fn( ValidationRunner $runner ) => $runner->isFailed() ) ) && !empty( $failed ) ) {
+        if ( ( $failed = array_filter( $this->runners, fn( ValidationRunner $runner ) => $runner->isFailed() ) ) ) {
             $this->line("");
             $this->line("<comment>The following validations encountered errors which prevented them from finishing:</comment>");
             foreach ($failed as $backend) {
@@ -130,7 +130,7 @@ class RunCommand extends Command
             }
         }
 
-        if ( ( $timedOut = array_filter($this->runners, fn( ValidationRunner $runner ) => $runner->isTimedOut() ) ) && !empty( $timedOut ) ) {
+        if ( ( $timedOut = array_filter($this->runners, fn( ValidationRunner $runner ) => $runner->isTimedOut() ) ) ) {
             $this->line("The following validations timed out before reporting their results");
             foreach ($timedOut as $backend) {
                 $this->line(" * {$backend->getValidator()->getName()}");

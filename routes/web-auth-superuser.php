@@ -22,6 +22,7 @@
  */
 
 use Illuminate\Support\Facades\Route;
+use IXP\Http\Controllers\IxpRegistrationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -388,6 +389,8 @@ Route::get( 'admin/rs-filters/list-customers', 'RsFilterController@listCustomers
 Route::get( 'admin/irrdb/summary', 'Irrdb\IrrdbController@summary' )->name( 'irrdb@summary' );
 
 
+Route::get(  'admin/ixp-registration',  [ IxpRegistrationController::class, 'register'       ] )->name( 'ixp-registration@register'        );
+Route::post( 'admin/ixp-registration',  [ IxpRegistrationController::class, 'registerSubmit' ] )->name( 'ixp-registration@register-submit' );
 
 
 
@@ -412,5 +415,4 @@ Route::group( [ 'prefix' => 'admin/utils', 'namespace' => 'Utils' ], function() 
 
     Route::get( 'ixf-compare', 'IxfCompareController@index' )->name('utils/ixf-compare');
     Route::post( 'do-ixf-compare', 'IxfCompareController@compare' )->name('utils/do-ixf-compare');
-
 });

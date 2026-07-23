@@ -32,21 +32,25 @@ use IXP\Contracts\Validation\Validator;
  */
 class IxpManagerRunningLatestVersionValidator implements Validator
 {
+    #[\Override]
     public function getName(): string
     {
         return "IXP Manager version check";
     }
 
+    #[\Override]
     public function getDescription(): string
     {
         return "Records which version of IXP Manager is installed, and notifies if an update is available.";
     }
 
+    #[\Override]
     public function getPriority(): int
     {
         return 5;
     }
 
+    #[\Override]
     public function run( ValidationBackend $backend ): void
     {
         $backend->software("IXP Manager", APPLICATION_VERSION);
@@ -62,8 +66,9 @@ class IxpManagerRunningLatestVersionValidator implements Validator
         // Github sorts results by their version string.
         $tags = $apiResponse->json();
         if ( version_compare( ltrim(APPLICATION_VERSION, "v"), ltrim( $tags[0]['name'], "v" ), '<' ) ) {
-            $backend->warning( "A newer version of IXP-Manager is available: " .
-                htmlentities( $tags[0]['name'], ENT_QUOTES, 'UTF-8' ) , documentation_url('install/upgrading/'));
+            $backend
+                ->warning( "A newer version of IXP-Manager is available: " . htmlentities( $tags[0]['name'], ENT_QUOTES, 'UTF-8' ) )
+                ->withDocsPath('install/upgrading/');
         } else if ( version_compare( ltrim(APPLICATION_VERSION, "v"), ltrim( $tags[0]['name'], "v" ), '=' ) ) {
             $backend->info( "Running latest version of IXP-Manager" );
         }

@@ -22,6 +22,8 @@
 
 namespace IXP\Contracts\Validation;
 
+use IXP\Utils\Validation\Result;
+
 /**
  * ValidationBackend is the interface used by Validators to report results.
  *
@@ -37,25 +39,25 @@ interface ValidationBackend
     /**
      * Report debug level information
      */
-    public function debug( string $message, ?string $docsLink = null, ?string $settingsPage = null): void;
+    public function debug( string $message ): Result;
 
     /**
      * Report a positive validation outcome
      */
-    public function info( string $message, ?string $docsLink = null, ?string $settingsPage = null): void;
+    public function info( string $message ): Result;
 
     /**
      * Report a suggestion to the user
      */
-    public function suggestion( string $message, ?string $docsLink = null, ?string $settingsPage = null): void;
+    public function suggestion( string $message ): Result;
 
     /**
      * Report an warning condition detected during validation
      */
-    public function warning(string $message, ?string $docsLink = null, ?string $settingsPage = null): void;
+    public function warning( string $message ): Result;
 
     /**
      * Report an erroneous condition detected during validation
      */
-    public function error(string $message, ?string $docsLink = null, ?string $settingsPage = null): void;
+    public function error( string $message ): Result;
 }

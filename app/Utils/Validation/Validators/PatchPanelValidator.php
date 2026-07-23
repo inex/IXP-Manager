@@ -34,25 +34,30 @@ use IXP\Models\PatchPanel;
 class PatchPanelValidator implements Validator
 {
 
+    #[\Override]
     public function getName(): string
     {
         return "Patch Panel validator";
     }
 
+    #[\Override]
     public function getDescription(): string
     {
         return "Checks patch panel configuration";
     }
 
+    #[\Override]
     public function getPriority(): int
     {
         return 70;
     }
 
+    #[\Override]
     public function run( ValidationBackend $backend ): void
     {
         if (PatchPanel::count() === 0) {
-            $backend->suggestion("Did you know IXP Manager can help you manage your patch panel?", documentation_url('features/patch-panels/'));
+            $backend->suggestion("Did you know IXP Manager can help you manage your patch panel?")
+                ->withDocsPath('features/patch-panels/');
         }
     }
 }

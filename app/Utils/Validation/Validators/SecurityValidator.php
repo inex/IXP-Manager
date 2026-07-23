@@ -34,25 +34,30 @@ use IXP\Contracts\Validation\Validator;
 class SecurityValidator implements Validator
 {
 
+    #[\Override]
     public function getName(): string
     {
         return "Security settings";
     }
 
+    #[\Override]
     public function getDescription(): string
     {
         return "Check security settings are properly configured.";
     }
 
+    #[\Override]
     public function getPriority(): int
     {
         return 10;
     }
 
+    #[\Override]
     public function run( ValidationBackend $backend ): void
     {
         if (config('ixp_api.unsecured_api_access')) {
-            $backend->error("Unsecured API Access is enabled - this is strongly discouraged, and support will be removed in a future release. Update any dependent software and disable this ASAP.", documentation_url( "install/security/" ) );
+            $backend->error("Unsecured API Access is enabled - this is strongly discouraged, and support will be removed in a future release. Update any dependent software and disable this ASAP.")
+            ->withDocsPath( "install/security/" );
         }
 
         if (config('ixp_api.allow_apikeys_get_parameter')) {

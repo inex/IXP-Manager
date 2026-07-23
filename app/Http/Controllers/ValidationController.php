@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use IXP\Contracts\Validation\ValidationRunner;
 use IXP\Utils\ConcurrentJobRunner;
+use IXP\Utils\Validation\CallToActionLink;
 use IXP\Utils\Validation\Result;
 use IXP\Utils\Validation\Software;
 use IXP\Utils\Validation\ValidationRunnerFactory;
@@ -206,8 +207,28 @@ class ValidationController
         /** @var ValidationRunner[] $prioritySortedBackends */
         foreach ($prioritySortedBackends as $backend) {
             // This loop processes complete (successful + failed), and timed out
-            $software = array_map( fn( Software $software ) => ['name' => $software->software, 'version' => $software->version ], $backend->getSoftware() );
-            $results = array_map(  fn( Result $result ) => ['message' => $result->message, 'type' => $result->type, 'docs_url' => $result->docsLink, 'settings_url' => $result->settingsUrl ], $backend->getResults() );
+            $softwareArray = [];
+            $resultsArray = [];
+
+            foreach ($backend->getSoftware() as $software) {
+                $softwareArray[] = [
+                    'name'    => $software->software,
+                    'version' => $software->version
+                ];
+            }
+
+            foreach ($backend->getResults() as $result) {
+                $resultsArray[] = [
+                    'message'        => $result->message,
+                    'type'           => $result->type,
+                    'docs_url'       => $result->docsUrl,
+                    'settings_url'   => $result->settingsUrl,
+                    'call_to_action' => $result->callToAction instanceof CallToActionLink ? [
+                            'url'   => $result->callToAction->url,
+                            'text'  => $result->callToAction->text,
+                        ] : null,
+                ];
+            }
 
             if ( ( $failureInfo = $backend->getFailureInfo() ) ) {
                 $failure = [
@@ -227,8 +248,8 @@ class ValidationController
                 'is_complete'  => $backend->isComplete(),
                 'is_failed'    => $backend->isFailed(),
                 'is_timedout'  => $backend->isTimedOut(),
-                'software'     => $software,
-                'results'      => $results,
+                'software'     => $softwareArray,
+                'results'      => $resultsArray,
                 'failure'      => $failure,
             ];
         }
