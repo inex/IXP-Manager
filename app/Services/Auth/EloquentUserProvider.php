@@ -115,7 +115,7 @@ class EloquentUserProvider implements IlluminateUserProvider
             'token'     => Str::random(60),
             'device'    => $browser->getPlatform() . " " . $browser->getPlatformVersion(true) . " / " . $browser->getName() . " " . $browser->getVersion() ,
             'ip'        => IpAddress::getIp(),
-            'expires'   => now()->addMinutes( config('auth.guards.web.expire', 60) ),
+            'expires'   => now()->addMinutes( (int) config('auth.guards.web.expire', 60) ),
         ]);
     }
 
