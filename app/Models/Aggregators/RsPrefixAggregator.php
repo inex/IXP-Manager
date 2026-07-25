@@ -166,7 +166,11 @@ class RsPrefixAggregator extends RsPrefix
         $summary = [];
         foreach( RsPrefix::$SUMMARY_TYPES_FNS as $type => $fn ) {
             foreach( [ 4, 6 ] as $protocol ) {
-                foreach( self::$fn( $protocol ) as $route ) {
+                if( !( $routes = self::$fn( $protocol ) ) ) {
+                    continue;
+                }
+
+                foreach( $routes as $route ) {
                     // initialise customer's summary array if necessary
                     if( !isset( $summary[ $route[ 'id' ] ] ) ) {
                         $summary[ $route['id'] ] = self::initialiseAggregateRouteSummariesArray();
