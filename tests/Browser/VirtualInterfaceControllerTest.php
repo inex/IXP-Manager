@@ -780,4 +780,173 @@ class VirtualInterfaceControllerTest extends DuskTestCase
                 ->assertSee( 'VLAN Interface deleted' );
 
     }
+
+    /**
+     * Test VLI add/edit when the max prefix override is disabled
+     *
+     * @return void
+     */
+    public function testDisabledMaxPrefixesPerVlan(): void
+    {
+        // Disable per-VLAN max prefixes override for the test.
+        // Removes UI elements on create and edit, unless the
+        // VLI being edited has the setting set, then it'll be shown
+        $this->overrideEnv( [ "IXP_FE_VLANINTERFACES_MAX_PREFIX_ENABLED" => 'false' ] );
+        sleep(1);
+
+        $this->browse( function ( Browser $browser ) {
+            $browser->resize( 1600, 1200 )
+                ->visit('/logout' )
+                ->visit('/login' )
+                ->type('username', 'travis' )
+                ->type('password', 'travisci' )
+                ->press('#login-btn' )
+                ->waitForLocation('/admin/dashboard' );
+
+            $browser->visit( route( 'virtual-interface@create-wizard-for-cust', 5 ) )
+                ->assertSee('Virtual Interface Settings' );
+
+            // Create a new Virtual interface Via wizard form - are the fields there?
+            $browser->select('vlanid',  '2' )
+                ->check( 'ipv4enabled' )
+                ->waitFor( "#ipv4-area" )
+                ->check( 'ipv6enabled' )
+                ->waitFor( "#ipv6-area" )
+                ->assertNotPresent( "#ipv6maxbgpprefix") //   <--
+                ->assertNotPresent( "#ipv4maxbgpprefix") //   <--
+                ->select( 'switch', '2' )
+                ->waitUntilMissing( "Choose a switch port" )
+                ->waitForText( "Choose a switch port" )
+                ->select( 'switchportid','28'    )
+                ->select( 'status',     '4'     )
+                ->select( 'speed',      '1000'  )
+                ->select( 'duplex',     'full'  )
+                ->check( 'rsclient'     )
+                ->check( 'irrdbfilter'  )
+                ->check( 'as112client'  )
+                ->select( 'ipv4address',   '10.2.0.22'         )
+                ->select( 'ipv6address',   '2001:db8:2::22'    )
+                ->type( 'ipv4hostname',    'v4.example.com'    )
+                ->type( 'ipv6hostname',    'v6.example.com'    )
+                ->type( 'ipv4bgpmd5secret', 'soopersecret'   )
+                ->type( 'ipv6bgpmd5secret', 'soopersecret'   )
+                ->check( 'ipv4canping'        )
+                ->check( 'ipv6canping'        )
+                ->check( 'ipv4monitorrcbgp'   )
+                ->check( 'ipv6monitorrcbgp'        )
+                ->press( 'Create' )
+                ->waitForText('Virtual interface created', 10000 );
+
+            $url = explode( '/', $browser->driver->getCurrentURL() );
+
+            /** @var $vi VirtualInterface */
+            $this->assertInstanceOf( VirtualInterface::class , $vi = VirtualInterface::find( array_pop( $url ) ) );
+            $firstVli = $vi->vlanInterfaces()->latest()->firstOrFail();
+            $this->assertNull($firstVli->ipv6maxbgpprefix);
+            $this->assertNull($firstVli->ipv4maxbgpprefix);
+
+            // Create a new vlan interface form - the fields are not on that form either
+            $browser->visit( route( 'virtual-interface@edit', $vi->id ) )
+                ->click( "#add-vli" )
+                ->waitForLocation( route( 'vlan-interface@create', $vi->id ) );
+
+            $browser->select('vlanid',  '2' )
+                ->check( "mcastenabled"     )
+                ->check( "busyhost"         )
+                ->check( "rsclient"         )
+                ->check( 'irrdbfilter'      )
+                ->check( 'rsmorespecifics'  )
+                ->check( 'ipv6enabled'     )
+                ->waitFor( "#ipv6-area"  )
+                ->check( 'ipv4enabled'     )
+                ->waitFor( "#ipv4-area")
+                ->select( 'ipv4address', "10.2.0.1"        )
+                ->select( 'ipv6address', '2001:db8:2::1'   )
+                ->type( 'ipv4hostname', 'v4.example.com'   )
+                ->type( 'ipv6hostname', 'v6.example.com'   )
+                ->type( 'ipv4bgpmd5secret', 'soopersecret' )
+                ->type( 'ipv6bgpmd5secret', 'soopersecret' )
+                ->check( 'ipv4canping' )
+                ->check( 'ipv6canping' )
+                ->check( 'ipv4monitorrcbgp' )
+                ->check( 'ipv6monitorrcbgp' )
+                ->assertNotPresent( "#ipv6maxbgpprefix") //  <--
+                ->assertNotPresent( "#ipv4maxbgpprefix") //  <--
+                ->press('Create')
+                ->waitForLocation( route( 'virtual-interface@edit', $vi->id ) )
+                ->assertSee('VLAN Interface created.');
+
+            $newVli = $vi->vlanInterfaces()->latest()->firstOrFail();
+            $this->assertNull($newVli->ipv6maxbgpprefix);
+            $this->assertNull($newVli->ipv4maxbgpprefix);
+
+            // Edit VLAN interface - neither field should be present as their values are null
+            $browser->click( "#edit-vli-" . $newVli->id )
+                ->waitForLocation( route( 'vlan-interface@edit-from-virtual-interface', [ 'vli' => $newVli->id,  'vi' => $vi->id ] ) )
+                ->assertSee( "Edit VLAN Interface" )
+                ->assertChecked('ipv4enabled')
+                ->assertChecked('ipv6enabled')
+                ->assertNotPresent( "#ipv6maxbgpprefix")     // <--
+                ->assertNotPresent( "#ipv4maxbgpprefix")     // <--
+                ->press('Save Changes')
+                ->waitForLocation( route( 'virtual-interface@edit', $vi->id ) )
+                ->assertSee('VLAN Interface updated');
+
+            $newVli->refresh();
+            $this->assertNull($newVli->ipv6maxbgpprefix);
+            $this->assertNull($newVli->ipv4maxbgpprefix);
+
+            $newVli->ipv4maxbgpprefix = 1024;
+            $newVli->ipv6maxbgpprefix = 2048;
+            $newVli->save();
+
+            // Edit VLAN interface - both settings have values so their fields should appear even though feature 'disabled'
+            $browser->click( "#edit-vli-" . $newVli->id )
+                ->waitForLocation( route( 'vlan-interface@edit-from-virtual-interface', [ 'vli' => $newVli->id,  'vi' => $vi->id ] ) )
+                ->assertSee( "Edit VLAN Interface" )
+                ->assertChecked('ipv4enabled')
+                ->assertChecked('ipv6enabled')
+                ->assertPresent( "#ipv6maxbgpprefix")      // <--
+                ->assertPresent( "#ipv4maxbgpprefix");     // <--
+
+            // values on the form match those in the database
+            $this->assertEquals(1024, $browser->element('input[name=ipv4maxbgpprefix]')->getAttribute('value'));
+            $this->assertEquals(2048, $browser->element('input[name=ipv6maxbgpprefix]')->getAttribute('value'));
+
+            $browser
+                ->type( 'ipv4maxbgpprefix', '100' )    // this changes the ipv4 max bgp prefix
+                ->type( 'ipv6maxbgpprefix', '' )       // this removes the ipv6 max bgp prefix setting
+                ->press('Save Changes')
+                ->waitForLocation( route( 'virtual-interface@edit', $vi->id ) )
+                ->assertSee('VLAN Interface updated');
+
+            // check database to make sure the form submission took effect
+            $newVli->refresh();
+            $this->assertEquals(100, $newVli->ipv4maxbgpprefix);
+            $this->assertNull($newVli->ipv6maxbgpprefix);
+
+            // Check the Edit Virtual Interface form - check the ipv6 field is gone as we just unset it
+            $browser->click( "#edit-vli-" . $newVli->id )
+                ->waitForLocation( route( 'vlan-interface@edit-from-virtual-interface', [ 'vli' => $newVli->id,  'vi' => $vi->id ] ) )
+                ->assertSee( "Edit VLAN Interface" )
+                ->assertPresent( "#ipv4maxbgpprefix")         // <--
+                ->assertNotPresent( "#ipv6maxbgpprefix");     // <--
+
+            // check form field matches the new value
+            $this->assertEquals(100, $browser->element('input[name=ipv4maxbgpprefix]')->getAttribute('value'));
+
+            // Delete Virtual interface
+            $browser->visit( route( 'virtual-interface@edit', $vi->id ) )
+                ->assertSee('Edit Virtual Interface');
+
+            $browser->press('#advanced-options')
+                ->waitForText('Delete Interface');
+
+            $browser->press( "#delete-vi-" . $vi->id )
+                ->waitForText( 'Do you really want to delete this Virtual Interface?' )
+                ->press( "Delete" )
+                ->waitForLocation( route( 'customer@overview', [ 'cust' => $vi->custid, 'tab' => 'ports' ] ) )
+                ->assertSee('Virtual interface deleted.' );
+        });
+    }
 }
