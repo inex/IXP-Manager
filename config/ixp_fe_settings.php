@@ -228,7 +228,7 @@ return [
                     'help'       => 'Allow maximum prefixes to be set per VLAN interface.
                                         If you only operate a single peering VLAN or infrastructure in one geographic location,
                                         you may want to disable this and only use the global maximum prefix settings for each
-                                        member. Before disabling, run <code>php ./artisan update:max-prefixes-7.1.0</code>',
+                                        member. Before disabling, run <code>php ./artisan customer:update-global-max-prefixes</code>',
                 ],
 
 
