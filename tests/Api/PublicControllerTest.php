@@ -30,7 +30,7 @@ class PublicControllerTest extends TestCase
         $this->user->custid = $this->customer->id;
         $this->user->save();
 
-        $this->c2u = $this->user->customerToUser()->create( [
+        $this->c2u = $this->user->customerToUser()->forceCreate( [
             'customer_id' => $this->customer->id ,
             'privs' => User::AUTH_CUSTUSER,
         ] );

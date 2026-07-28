@@ -68,20 +68,6 @@ use IXP\Traits\Observable;
 class CustomerToUser extends Model
 {
     use Observable;
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'customer_id',
-        'user_id',
-        'privs',
-        'extra_attributes',
-        'last_login_date',
-        'last_login_from',
-        'last_login_via',
-    ];
 
     /**
      * The attributes that should be cast.

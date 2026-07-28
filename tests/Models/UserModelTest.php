@@ -21,7 +21,7 @@ class UserModelTest extends TestCase
             'status' => Customer::STATUS_NORMAL,
             'type' => Customer::TYPE_FULL,
         ] );
-        $c2u1 = CustomerToUser::create( [
+        $c2u1 = CustomerToUser::forceCreate( [
             'user_id' => $user->id,
             'customer_id' => $customer1->id,
             'privs' => User::AUTH_CUSTADMIN,
@@ -33,7 +33,7 @@ class UserModelTest extends TestCase
             'status' => Customer::STATUS_NORMAL,
             'type' => Customer::TYPE_INTERNAL,
         ] );
-        $c2u2 = CustomerToUser::create( [
+        $c2u2 = CustomerToUser::forceCreate( [
             'user_id' => $user->id,
             'customer_id' => $customer2->id,
             'privs' => User::AUTH_SUPERUSER,

@@ -40,7 +40,7 @@ class UpdateIrrdbTest extends TestCase
         $this->user = User::create();
         $this->user->custid = $this->customer->id;
         $this->user->save();
-        $this->cust2User = CustomerToUser::create([
+        $this->cust2User = CustomerToUser::forceCreate([
             'user_id' => $this->user->id,
             'customer_id' => $this->customer->id,
             'privs' => User::AUTH_CUSTUSER,

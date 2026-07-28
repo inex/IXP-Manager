@@ -252,12 +252,12 @@ class UserAggregator extends User
                     continue;
                 }
 
-                $c2u = CustomerToUser::create([
-                    'customer_id'       => $cust->id,
-                    'user_id'           => $user->id,
-                    'privs'             => $priv,
-                    'extra_attributes'  => [ "created_by" => [ "type" => "PeeringDB"  ] ],
-                ]);
+                $c2u = new CustomerToUser();
+                $c2u->customer_id = $cust->id;
+                $c2u->user_id = $user->id;
+                $c2u->privs = $priv;
+                $c2u->extra_attributes = [ "created_by" => [ "type" => "PeeringDB"  ] ];
+                $c2u->save();
 
                 $result['added_to'][] = $c2u->customer;
                 Log::info( 'PeeringDB OAuth: user ' . $user->id . '/' . $user->username . ' linked with with ' . $cust->getFormattedName() );
