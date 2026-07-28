@@ -1,7 +1,4 @@
 <?php
-
-namespace IXP\Models;
-
 /*
  * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
@@ -22,6 +19,10 @@ namespace IXP\Models;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+
+declare(strict_types=1);
+
+namespace IXP\Models;
 
 use Illuminate\Database\Eloquent\{
     Builder,
@@ -62,18 +63,6 @@ class UserLoginHistory extends Model
      * @var string
      */
     protected $table = 'user_logins';
-
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'ip',
-        'at',
-        'customer_to_user_id',
-        'via',
-    ];
 
     /**
      * Get the customer to user
