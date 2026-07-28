@@ -25,8 +25,6 @@ namespace IXP\Console\Commands\Utils\Export\JsonSchema;
 use IXP\Console\Commands\Command as IXPCommand;
 
 use IXP\Utils\Export\JsonSchema;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\InputArgument;
 
 use GuzzleHttp\Client;
 
