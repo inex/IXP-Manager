@@ -75,18 +75,11 @@ class SwitchCustomerController extends Controller
             return redirect()->to( "/" );
         }
 
-        $c2u->update([
-            'last_login_date' => now(),
-            'last_login_from' => $this->getIp(),
-        ]);
+        $ip = $this->getIp();
+        $c2u->updateLastLoginInfo( $ip, 'SwitchCustomer' );
 
         if( config( "ixp_fe.login_history.enabled" ) ) {
-            UserLoginHistory::create( [
-                'ip'                    => $this->getIp(),
-                'at'                    => now(),
-                'customer_to_user_id'   => $c2u->id,
-                'via'                   => 'SwitchCustomer'
-            ] );
+            UserLoginHistory::recordLogin( $c2u, $ip, 'SwitchCustomer' );
         }
 
         $user->custid = $cust->id;
