@@ -312,12 +312,12 @@
              * set the address information to the billing address info
              */
             $( "#copy-address" ).click( () => {
-                $( "#address1" ).val(  ) !== ''   ? $( "#billingAddress1"   ).val( $( "#address1" ).val() ) : '';
-                $( "#address2" ).val(  ) !== ''   ? $( "#billingAddress2"   ).val( $( "#address2" ).val() ) : '';
-                $( "#address3" ).val(  ) !== ''   ? $( "#billingAddress3"   ).val( $( "#address3" ).val() ) : '';
-                $( "#townCity" ).val(  ) !== ''   ? $( "#billingTownCity"   ).val( $( "#townCity" ).val() ): '';
-                $( "#postcode" ).val(  ) !== ''   ? $( "#billingPostcode"   ).val( $( "#postcode" ).val() ): '';
-                $( "#country" ).val(  )  !== ''   ? $( "#billingCountry"    ).val( $( "#country"  ).val() ).trigger('change.select2') : '';
+                $( "#billingAddress1" ).val( $( "#address1" ).val() );
+                $( "#billingAddress2" ).val( $( "#address2" ).val() );
+                $( "#billingAddress3" ).val( $( "#address3" ).val() );
+                $( "#billingTownCity" ).val( $( "#townCity" ).val() );
+                $( "#billingPostcode" ).val( $( "#postcode" ).val() );
+                $( "#billingCountry" ).val( $( "#country" ).val() ).trigger('change.select2');
             } );
 
 
