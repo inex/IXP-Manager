@@ -84,4 +84,15 @@ class UserLoginHistory extends Model
     {
         return $this->belongsTo(CustomerToUser::class, 'customer_to_user_id');
     }
+
+    public static function recordLogin( CustomerToUser $c2u, string $ip, string $via ): self
+    {
+        $loginHistory = new self();
+        $loginHistory->customer_to_user_id = $c2u->id;
+        $loginHistory->ip = $ip;
+        $loginHistory->via = $via;
+        $loginHistory->at = now();
+        $loginHistory->save();
+        return $loginHistory;
+    }
 }

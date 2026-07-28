@@ -144,6 +144,14 @@ class CustomerToUser extends Model
         return $query->where('privs', User::AUTH_CUSTADMIN );
     }
 
+    public function updateLastLoginInfo( string $ip, string $via ): bool
+    {
+        $this->last_login_date = now();
+        $this->last_login_from = $ip;
+        $this->last_login_via = $via;
+        return $this->save();
+    }
+
     /**
      * String to describe the model being updated / deleted / created
      *
