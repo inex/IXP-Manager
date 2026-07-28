@@ -27,7 +27,6 @@ use Illuminate\Support\Facades\DB;
 use IXP\Console\Commands\Command as IXPCommand;
 
 use IXP\Models\{
-    ApiKey,
     Log,
     UserLoginHistory,
     UserRememberToken};

@@ -22,11 +22,9 @@ namespace IXP\Console\Commands\Grapher;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-use Illuminate\Support\Facades\DB;
-
 use IXP\Console\Commands\Command as IXPCommand;
 
-use IXP\Models\{ApiKey, Log, P2pDailyStats, UserLoginHistory, UserRememberToken};
+use IXP\Models\P2pDailyStats;
 
 /**
  * Prune p2p_daily_stats

@@ -24,8 +24,6 @@ namespace IXP\Console\Commands\Customer;
  */
 
 use IXP\Console\Commands\Command;
-use Illuminate\Database\Eloquent\Builder;
-use IXP\Models\Customer;
 
 /**
  * Artisan command to find customer by ASN or Name

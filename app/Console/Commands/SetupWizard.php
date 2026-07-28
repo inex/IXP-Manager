@@ -24,7 +24,6 @@ define('strict_types', 1);
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 use Illuminate\Support\Facades\DB;
-use Illuminate\Validation\Rules\Password;
 use Illuminate\Support\Carbon;
 
 
