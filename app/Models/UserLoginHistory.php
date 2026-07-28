@@ -68,12 +68,7 @@ class UserLoginHistory extends Model
      *
      * @var array
      */
-    protected $fillable = [
-        'ip',
-        'at',
-        'customer_to_user_id',
-        'via',
-    ];
+    protected $fillable = [];
 
     /**
      * Get the customer to user
