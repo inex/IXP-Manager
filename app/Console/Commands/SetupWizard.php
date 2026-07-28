@@ -201,11 +201,11 @@ class SetupWizard extends Command
             ] );
 
             $billingDetail = CompanyBillingDetail::create( [
-                'billingContatName' => $data['ixp-shortname'] . ' Billing Team',
-                'billingEmail'      => $data['ixp-billing-email'],
-                'billingTelephone'  => $data['ixp-billing-phone'],
-                'invoiceMethod'     => CompanyBillingDetail::INVOICE_METHOD_EMAIL,
-                'billingFrequency'  => CompanyBillingDetail::BILLING_FREQUENCY_NOBILLING,
+                'billingContactName' => $data['ixp-shortname'] . ' Billing Team',
+                'billingEmail'       => $data['ixp-billing-email'],
+                'billingTelephone'   => $data['ixp-billing-phone'],
+                'invoiceMethod'      => CompanyBillingDetail::INVOICE_METHOD_EMAIL,
+                'billingFrequency'   => CompanyBillingDetail::BILLING_FREQUENCY_NOBILLING,
                 'created_at'        => Carbon::now(),
                 'updated_at'        => Carbon::now(),
             ] );
