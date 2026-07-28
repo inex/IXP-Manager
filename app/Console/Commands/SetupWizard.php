@@ -250,6 +250,7 @@ class SetupWizard extends Command
             $c2u->customer_id = $cust->id;
             $c2u->user_id = $user->id;
             $c2u->privs = User::AUTH_SUPERUSER;
+            $c2u->extra_attributes = [ "created_by" => [ "type" => "artisan" , "user_id" => $user->id ] ];
             $c2u->save();
 
             DB::commit();
