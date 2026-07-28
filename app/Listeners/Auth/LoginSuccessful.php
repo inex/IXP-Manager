@@ -54,19 +54,12 @@ class LoginSuccessful
         Log::notice( 'Login successful for user "' . $user->username. '" from IP ' . ixp_get_client_ip() . '.' );
 
         if( !session()->exists( "switched_user_from" ) && ( $c2u = $user->currentCustomerToUser ) ) {
-            $c2u->update( [
-                'last_login_date'   => now(),
-                'last_login_from'   => ixp_get_client_ip(),
-                'last_login_via'    => Auth::viaRemember() ?  'RememberMe' : 'Login',
-            ] );
+            $ip = ixp_get_client_ip();
+            $via = Auth::viaRemember() ? 'RememberMe' : 'Login';
+            $c2u->updateLastLoginInfo( $ip, $via );
 
             if( config( "ixp_fe.login_history.enabled" ) ) {
-                UserLoginHistory::create( [
-                    'ip'                    => ixp_get_client_ip(),
-                    'at'                    => now(),
-                    'via'                   => Auth::viaRemember() ?  'RememberMe' : 'Login',
-                    'customer_to_user_id'   => $c2u->id,
-                ] );
+                UserLoginHistory::recordLogin( $c2u, $ip, $via );
             }
         }
     }
