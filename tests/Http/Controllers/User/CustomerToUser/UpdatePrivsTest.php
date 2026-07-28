@@ -65,7 +65,7 @@ class UpdatePrivsTest extends TestCase
     public function testChangeExternalFromCustAdminToCustUser()
     {
         // Associate with external Customer
-        $this->c2u = $this->user->customerToUser()->create( [
+        $this->c2u = $this->user->customerToUser()->forceCreate( [
             'customer_id' => $this->externalCustomer->id,
             'privs'       => User::AUTH_CUSTADMIN
         ] );
@@ -98,7 +98,7 @@ class UpdatePrivsTest extends TestCase
     public function testChangeExternalFromCustUserToCustAdmin()
     {
         // Associate with external Customer
-        $this->c2u = $this->user->customerToUser()->create( [
+        $this->c2u = $this->user->customerToUser()->forceCreate( [
             'customer_id' => $this->externalCustomer->id,
             'privs'       => User::AUTH_CUSTUSER,
         ] );
@@ -131,7 +131,7 @@ class UpdatePrivsTest extends TestCase
     public function testExternalCustomerCannotHaveSuperUser()
     {
         // Associate with external Customer
-        $this->c2u = $this->user->customerToUser()->create( [
+        $this->c2u = $this->user->customerToUser()->forceCreate( [
             'customer_id' => $this->externalCustomer->id ,
             'privs' => User::AUTH_CUSTUSER,
         ] );
@@ -160,7 +160,7 @@ class UpdatePrivsTest extends TestCase
     public function testInternalPromoteToSuperUser()
     {
         // Associate with the internal Customer
-        $this->c2uInternal = $this->user->customerToUser()->create( [
+        $this->c2uInternal = $this->user->customerToUser()->forceCreate( [
             'customer_id' => $this->internalCustomer->id ,
             'privs' => User::AUTH_CUSTUSER,
         ] );
@@ -193,7 +193,7 @@ class UpdatePrivsTest extends TestCase
     public function testInternalRemoveSuperUser(): void
     {
         // Associate with the internal Customer
-        $this->c2uInternal = $this->user->customerToUser()->create( [
+        $this->c2uInternal = $this->user->customerToUser()->forceCreate( [
             'customer_id' => $this->internalCustomer->id ,
             'privs' => User::AUTH_SUPERUSER,
         ] );
@@ -229,7 +229,7 @@ class UpdatePrivsTest extends TestCase
     public function testCannotRemoveOnlySuperUser()
     {
         // Associate with the internal Customer
-        $this->c2uInternal = $this->user->customerToUser()->create( [
+        $this->c2uInternal = $this->user->customerToUser()->forceCreate( [
             'customer_id' => $this->internalCustomer->id ,
             'privs' => User::AUTH_SUPERUSER,
         ] );
@@ -263,7 +263,7 @@ class UpdatePrivsTest extends TestCase
         $this->secondaryUser->disabled = false;
         $this->secondaryUser->save();
 
-        $this->secondaryC2u = $this->secondaryUser->customerToUser()->create([
+        $this->secondaryC2u = $this->secondaryUser->customerToUser()->forceCreate([
             'customer_id' => $this->internalCustomer->id,
             'privs'       => User::AUTH_SUPERUSER,
         ] );
@@ -289,7 +289,7 @@ class UpdatePrivsTest extends TestCase
     public function testInvalidPrivsRejected()
     {
         // Associate with external Customer
-        $this->c2u = $this->user->customerToUser()->create( [
+        $this->c2u = $this->user->customerToUser()->forceCreate( [
             'customer_id' => $this->externalCustomer->id,
             'privs'       => User::AUTH_CUSTUSER,
         ] );

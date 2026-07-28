@@ -245,11 +245,12 @@ class SetupWizard extends Command
             $user->email = $data['admin-email'];
             $user->save();
 
-            CustomerToUser::create( [
-                'customer_id' => $cust->id,
-                'user_id'     => $user->id,
-                'privs'       => User::AUTH_SUPERUSER,
-            ] );
+
+            $c2u = new CustomerToUser();
+            $c2u->customer_id = $cust->id;
+            $c2u->user_id = $user->id;
+            $c2u->privs = User::AUTH_SUPERUSER;
+            $c2u->save();
 
             DB::commit();
 

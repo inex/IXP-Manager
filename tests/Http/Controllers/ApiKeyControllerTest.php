@@ -43,7 +43,7 @@ class ApiKeyControllerTest extends TestCase
         $user1->username = "API Test User";
         $user1->custid = $customer->id;
         $user1->save();
-        $user1->customerToUser()->create( [
+        $user1->customerToUser()->forceCreate( [
             'customer_id' => $customer->id,
             'privs'       => User::AUTH_CUSTADMIN
         ] );
@@ -52,7 +52,7 @@ class ApiKeyControllerTest extends TestCase
         $user2->username = "API Test User 2";
         $user2->custid = $customer->id;
         $user2->save();
-        $user2->customerToUser()->create( [
+        $user2->customerToUser()->forceCreate( [
             'customer_id' => $customer->id,
             'privs'       => User::AUTH_CUSTADMIN
         ] );
