@@ -1,9 +1,6 @@
 <?php
-
-namespace Tests;
-
 /*
- * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,6 +20,10 @@ namespace Tests;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+declare(strict_types=1);
+
+namespace Tests;
+
 use Laravel\Dusk\TestCase as BaseTestCase;
 
 use Facebook\WebDriver\Chrome\ChromeOptions;
@@ -30,7 +31,6 @@ use Facebook\WebDriver\Chrome\ChromeOptions;
 use Facebook\WebDriver\Remote\{
     DesiredCapabilities,
     RemoteWebDriver,
-
 };
 use PHPUnit\Framework\Attributes\BeforeClass;
 
@@ -51,7 +51,6 @@ abstract class DuskTestCase extends BaseTestCase
     /**
      * Prepare for Dusk test execution.
      *
-     * @beforeClass
      * @return void
      */
     #[BeforeClass]
@@ -67,6 +66,7 @@ abstract class DuskTestCase extends BaseTestCase
      *
      * @return RemoteWebDriver
      */
+    #[\Override]
     protected function driver(): RemoteWebDriver
     {
         $options = (new ChromeOptions)->addArguments([
@@ -81,101 +81,5 @@ abstract class DuskTestCase extends BaseTestCase
                 ChromeOptions::CAPABILITY, $options
             )
         );
-    }
-
-    /**
-     * Overrides any .env files for dusk tests
-     *
-     * @param array $variables
-     */
-    protected function overrideEnv( array $variables = []): void
-    {
-        $path = '.env';
-
-        if (file_exists($path)) {
-
-            // The environment variables to prepend
-            $prepend = '';
-
-            // Convert all new parameters to expected format
-            foreach ($variables as $key => $value) {
-                $prepend .= PHP_EOL . $key . '="' . $value . '"' ;
-            }
-
-            // Grab original .env file contents
-            $original = file_get_contents($path);
-
-            // Write all to .env file for dusk test
-            file_put_contents($path, $original . $prepend);
-        }
-    }
-
-    /**
-     * Replace any .env file attribute for dusk tests
-     * If there are no attribute find, add it at the end of file
-     *
-     * @param string $fromAttribute
-     * @param string $toAttribute
-     */
-    protected function replaceEnvAttr( string $fromAttribute, string $toAttribute): void
-    {
-        $path = '.env';
-
-        if (file_exists($path)) {
-
-            // Grab original .env file contents
-            $original = explode("\n", file_get_contents( $path ) );
-            $output = '';
-            $replaced = false;
-            $exist = false;
-            // Iterate through the attributes
-            foreach ( $original as $value ) {
-                if ( $value == $toAttribute ) {
-                    $exist = true;
-                }
-                if ( $value != $fromAttribute ) {
-                    // write in the rest of the values
-                    $output .= $value . PHP_EOL;
-                } else {
-                    // Replace the Attribute
-                    $output .= $toAttribute . PHP_EOL;
-                    $replaced = true;
-                }
-            }
-
-            //if not replaced, and doesn't exist the attribute, add it
-            if ( !$replaced && !$exist ) {
-                $output .= $toAttribute . PHP_EOL;
-            }
-
-            // Write all to .env file for dusk test
-            file_put_contents($path, $output );
-        }
-    }
-
-    /**
-     * Delete a value in .env files for dusk tests
-     *
-     * @param string $attribute
-     */
-    protected function deleteEnvValue( string $attribute): void
-    {
-        $path = '.env';
-
-        if ( file_exists( $path ) ) {
-
-            // Grab original .env file contents
-            $original = explode("\n", file_get_contents( $path ) );
-            $output = '';
-            // Iterate through the attributes
-            foreach ( $original as $value ) {
-                if ( $value != $attribute ) {
-                    $output .= $value . PHP_EOL;
-                }
-            }
-
-            // Write all to .env file for dusk test
-            file_put_contents($path, $output );
-        }
     }
 }
