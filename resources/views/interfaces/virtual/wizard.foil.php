@@ -165,6 +165,7 @@ $this->layout( 'layouts/ixpv4' );
                             ->label( '&nbsp;' )
                             ->text( 'Auto-Negotiation Enabled' )
                             ->value( 1 )
+                            ->check()
                             ->inline()
                             ->blockHelp( "Unless you are provisioning switches from IXP Manager, this is informational." );
                         ?>
