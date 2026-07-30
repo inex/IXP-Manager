@@ -30,37 +30,56 @@ use Tests\TestCase;
 class IrrdbConfigControllerTest extends TestCase
 {
 
-    public function testStore()
+    public function testStoreSourceRequired()
     {
-        $this->actingAs($this->getSuperUser());
+        $this->actingAs( $this->getSuperUser() );
 
         // Only required field is missing
         $response = $this
-            ->withHeader('X-Requested-With', 'XMLHttpRequest')
-            ->withHeader('Accept', '*/*')
-            ->post(route("irrdb-config-api@create", []))
-            ->assertStatus(422);
-        $this->assertEquals("The source field is required.", $response->json('message'));
-        $this->assertEquals("The source field is required.", $response->json('errors.source.0'));
+            ->withHeader( 'X-Requested-With', 'XMLHttpRequest' )
+            ->withHeader( 'Accept', '*/*' )
+            ->post( route( "irrdb-config-api@create", [] ) )
+            ->assertStatus( 422 );
+        $this->assertEquals( "The source field is required.", $response->json( 'message' ) );
+        $this->assertEquals( "The source field is required.", $response->json( 'errors.source.0' ) );
 
         // Provide only required field, succeeds
         $response = $this
             ->withHeader('X-Requested-With', 'XMLHttpRequest')
             ->withHeader('Accept', '*/*')
             ->post(route("irrdb-config-api@create", [
-                "source" => "testsource"
+                "source" => "TESTSOURCE"
             ]))
             ->assertStatus(200);
         $this->assertArrayHasKey("id", $response->json());
 
         $config = IrrdbConfig::findOrFail( $response->json( "id" ) );
-        $this->assertEquals("testsource",     $config->source);
+        $this->assertEquals("TESTSOURCE",     $config->source);
         $this->assertEquals("whois.radb.net", $config->host);
         $this->assertNull($config->notes);
 
         $config->delete();
 
-        // Can also set host and notes
+        // Can also set host and notes, and accepts - and numbers in source
+        $response = $this
+            ->withHeader('X-Requested-With', 'XMLHttpRequest')
+            ->withHeader('Accept', '*/*')
+            ->post(route("irrdb-config-api@create", [
+                "source" => "TESTSOURCE-222",
+                "host"   => "whois.whatis.net",
+                "notes"  => "got my notes",
+            ]))
+            ->assertStatus(200);
+        $this->assertArrayHasKey("id", $response->json());
+
+        $config = IrrdbConfig::findOrFail( $response->json( "id" ) );
+        $this->assertEquals("TESTSOURCE-222",       $config->source);
+        $this->assertEquals("whois.whatis.net", $config->host);
+        $this->assertEquals("got my notes",     $config->notes);
+
+        $config->delete();
+
+        // source must be capitalized
         $response = $this
             ->withHeader('X-Requested-With', 'XMLHttpRequest')
             ->withHeader('Accept', '*/*')
@@ -69,14 +88,8 @@ class IrrdbConfigControllerTest extends TestCase
                 "host"   => "whois.whatis.net",
                 "notes"  => "got my notes",
             ]))
-            ->assertStatus(200);
-        $this->assertArrayHasKey("id", $response->json());
-
-        $config = IrrdbConfig::findOrFail( $response->json( "id" ) );
-        $this->assertEquals("testsource",       $config->source);
-        $this->assertEquals("whois.whatis.net", $config->host);
-        $this->assertEquals("got my notes",     $config->notes);
-
-        $config->delete();
+            ->assertStatus(422);
+        $this->assertEquals( "The source must only contain uppercase letters and numbers and the - character.", $response->json( 'message' ) );
+        $this->assertEquals( "The source must only contain uppercase letters and numbers and the - character.", $response->json( 'errors.source.0' ) );
     }
 }
