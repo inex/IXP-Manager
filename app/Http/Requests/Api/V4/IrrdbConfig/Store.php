@@ -57,8 +57,16 @@ final class Store extends FormRequest
     {
         return [
             'host' => 'nullable|string|max:255',
-            'source' => 'required|string|max:255',
+            'source' => 'required|string|max:255|regex:/[A-Z0-9-]+/',
             'notes' => 'nullable|string',
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+
+            'source.regex' => 'The source must only contain uppercase letters and numbers and the - character.',
         ];
     }
 }
