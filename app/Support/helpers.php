@@ -29,6 +29,8 @@
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 
+use IXP\Exceptions\GeneralException;
+
 if( !function_exists( 'resolve_dns_a' ) )
 {
     /**
@@ -257,16 +259,41 @@ if( !function_exists( 'documentation_url' ) ) {
     /**
      * Generate a link to the IXP Manager documentation.
      *
-     * This takes a URI fragment, and builds the complete URL using the base url from configuration.
+     * This takes a path, and builds the complete URL using the base url from configuration.
      *
-     * @param string $uri
+     * @param string $path
      * @return string
      */
-    function documentation_url( string $uri): string
+    function documentation_url( string $path ): string
     {
-        if ($uri && $uri[0] != '/') {
-            $uri = '/' . $uri;
+        if ($path && $path[0] != '/') {
+            $path = '/' . $path;
         }
-        return config('ixp_fe.documentation.base_url') . $uri;
+        return config( 'ixp_fe.documentation.base_url' ) . $path;
+    }
+}
+
+if( !function_exists( 'settings_ui_url' ) ) {
+    /**
+     * Generate a link to the settings management page
+     *
+     * A panel can be provided, sending user to the relevant group of settings.
+     * An optional field may also be provided, taking the user directly to the relevant field.
+     *
+     * @param string $panel
+     * @param ?string $field
+     * @return string
+     *
+     * @throws GeneralException
+     */
+    function settings_ui_url( string $panel, ?string $field ): string
+    {
+        if( !config()->has( 'ixp_fe_settings.panels.' . $panel ) ) {
+            throw new GeneralException( "Panel [$panel] not defined" );
+        } else if( $field && !config()->has( 'ixp_fe_settings.panels.' . $panel . '.fields.' . $field )) {
+            throw new GeneralException( "Field [$field] not defined on panel [$panel]" );
+        }
+
+        return route( 'settings@index', [ 'tab' => $panel ] ) . ( $field ? "#" . $field : '' );
     }
 }
