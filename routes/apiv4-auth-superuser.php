@@ -146,3 +146,10 @@ Route::group( [ 'namespace' => 'Customer\Note', 'prefix' => 'customer-note' ], f
 //    Route::get(  'measurement/{atlasid}/info',   'RipeAtlasController@getAtlasMeasurementDetail' )->name( 'ripe-atlas@measurement-info' );
 //    Route::get(  'probe/{atlasid}/info',         'RipeAtlasController@getAtlasProbeDetail'       )->name( 'ripe-atlas@probe-info'       );
 //});
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// IRRDB Config
+//
+Route::group( [ 'prefix' => '' ], function() {
+    Route::post(    'store',      'IrrdbConfigController@store'             )->name( 'irrdb-config-api@create');
+});
