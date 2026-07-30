@@ -299,7 +299,7 @@ Route::get( 'admin/search', 'SearchController@do' )->name( 'search' );
 /// .ENV Configurator
 ///
 Route::group( [ 'prefix' => 'admin/settings' ], function() {
-    Route::get( '', 'SettingsController@index' )->name( 'settings@index' );
+    Route::get(  '{tab?}', 'SettingsController@index'  )->name( 'settings@index'  );
     Route::post( 'update', 'SettingsController@update' )->name( 'settings@update' );
 });
 

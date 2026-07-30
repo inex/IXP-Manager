@@ -81,7 +81,7 @@ class SettingsController extends Controller
     /**
      * Display the form to edit an object
      */
-    protected function index(): View
+    protected function index(?string $tab = null): View
     {
         try {
             $this->checkIfDotEnvIsCompatible();
@@ -100,6 +100,7 @@ class SettingsController extends Controller
         }
         
         return view( 'settings.index' )->with( [
+            'tab'          => $tab ?? false, // hack to work around foils isset support..
             'settings'     => $this->fe_settings,
             'rules'        => [], //$this->gatherRules(),
             'readOnly'     => $readOnly,

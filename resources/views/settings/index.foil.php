@@ -56,11 +56,13 @@ IXP Manager Settings
                 <ul class="tabNavMenu" id="envFormTabs">
 
                     <?php
-                        $first = true;
+                        $firstTab = array_keys( $t->settings["panels"] )[0];
                         foreach( $t->settings["panels"] as $panel => $content ): ?>
 
                         <li>
-                            <button class="tabButton <?php if( $first ) { echo 'active'; $first = false; } ?>"
+                            <button class="tabButton <?php
+                            echo $panel === ($t->tab ?: $firstTab) ? 'active' : ''
+                             ?>"
                                 id="<?= $panel ?>-tab" data-target="#<?= $panel ?>-content" type="button"
                             ><?= $content["title"] ?></button>
                         </li>
@@ -71,10 +73,11 @@ IXP Manager Settings
 
                 <div class="tabContent" id="envFormTabContents">
 
-                    <?php $first = true;
+                    <?php
+                        $firstTab = array_keys( $t->settings["panels"] )[0];
                         foreach( $t->settings["panels"] as $panel => $content ) { ?>
 
-                        <div class="tabPanel <?php if( $first ) { echo 'active'; $first = false; } ?>" id="<?= $panel ?>-content" role="tabpanel" aria-labelledby="<?= $panel ?>-content">
+                        <div class="tabPanel <?php echo $panel === ($t->tab ?: $firstTab) ? 'active' : '' ?>" id="<?= $panel ?>-content" role="tabpanel" aria-labelledby="<?= $panel ?>-content">
 
                             <?php if( isset( $content["description"] ) && $content["description"] !== "" ): ?>
 
