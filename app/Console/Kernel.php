@@ -124,6 +124,9 @@ class Kernel extends ConsoleKernel
     protected function commands(): void
     {
         $this->load(__DIR__.'/Commands');
+        if (getenv("QA_COMMANDS")) {
+            $this->load(__DIR__.'/QaCommands');
+        }
 
         require base_path('routes/console.php');
     }
