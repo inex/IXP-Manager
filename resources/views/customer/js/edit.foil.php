@@ -116,10 +116,27 @@
 
                                 if (irrdbSelectOption.length > 0) {
                                     dd_irrdb.val( irrdbSelectOption.val() ).select2().trigger('change.select2');
+                                    input_peeringmacro.val( asSet );
+                                } else {
+                                    $.ajax( "<?= route("irrdb-config-api@create") ?>", {
+                                        type: "POST",
+                                        data: {
+                                            "source": irr,
+                                            "host": "whois.radb.net",
+                                            "notes": "Created during customer import from PeeringDB",
+                                        },
+                                    } )
+                                        .done( function( response ) {
+                                            dd_irrdb.append( $( '<option>', {
+                                                value: response.id,
+                                                text: irr,
+                                                selected: 'selected',
+                                            } ) );
+                                            input_peeringmacro.val( asSet );
+                                        });
                                 }
-                                input_peeringmacro.val( asSet );
                             } else {
-                                input_peeringmacro.val(     response.net.irr_as_set ).addClass( 'is-valid' );
+                                input_peeringmacro.val( response.net.irr_as_set ).addClass( 'is-valid' );
                             }
                         }
 
