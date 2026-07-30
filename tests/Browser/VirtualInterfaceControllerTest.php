@@ -3,7 +3,7 @@
 namespace Tests\Browser;
 
 /*
- * Copyright (C) 2009 - 2025 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -949,4 +949,179 @@ class VirtualInterfaceControllerTest extends DuskTestCase
                 ->assertSee('Virtual interface deleted.' );
         });
     }
+
+    public function testViRateLimitAndAutoneg()
+    {
+        $this->browse( function ( Browser $browser ) {
+            $browser->maximize()
+                ->visit('/logout' )
+                ->visit('/login' )
+                ->type('username', 'travis' )
+                ->type('password', 'travisci' )
+                ->press('#login-btn' )
+                ->waitForLocation('/admin/dashboard' );
+
+            // Create a new Virtual interface Via wizard form
+            // Test default case when autoneg / rate_limit not changed?
+            $browser->visit( route( 'virtual-interface@create-wizard-for-cust', 5 ) )
+                ->assertSee('Virtual Interface Settings' )
+                ->select('vlanid',  '2' )
+                ->check( 'ipv4enabled' )
+                ->waitFor( "#ipv4-area" )
+                ->check( 'ipv6enabled' )
+                ->waitFor( "#ipv6-area" )
+                ->select( 'switch', '2' )
+                ->waitUntilMissing( "Choose a switch port" )
+                ->waitForText( "Choose a switch port" )
+                ->select( 'switchportid','28'    )
+                ->select( 'status',     '4'     )
+                ->select( 'speed',      '1000'  )
+                ->select( 'duplex',     'full'  )
+                ->check( 'rsclient'     )
+                ->check( 'irrdbfilter'  )
+                ->check( 'as112client'  )
+                ->select( 'ipv4address',   '10.2.0.22'         )
+                ->select( 'ipv6address',   '2001:db8:2::22'    )
+                ->type( 'ipv4hostname',    'v4.example.com'    )
+                ->type( 'ipv6hostname',    'v6.example.com'    )
+                ->type( 'ipv4bgpmd5secret', 'soopersecret'   )
+                ->type( 'ipv6bgpmd5secret', 'soopersecret'   )
+                ->type( 'ipv4maxbgpprefix', '200'   )
+                ->type( 'ipv6maxbgpprefix', '100'   )
+                ->check( 'ipv4canping'        )
+                ->check( 'ipv6canping'        )
+                ->check( 'ipv4monitorrcbgp'   )
+                ->check( 'ipv6monitorrcbgp'        )
+                ->press( 'Create' )
+                ->waitForText('Virtual interface created', 10000 );
+
+            $url = explode( '/', $browser->driver->getCurrentURL() );
+
+            /** @var $vi VirtualInterface */
+            $this->assertInstanceOf( VirtualInterface::class , $vi = VirtualInterface::find( array_pop($url) ) );
+
+            $this->assertEquals(1, $vi->physicalInterfaces()->count());
+            $pi = $vi->physicalInterfaces()->firstOrFail();
+            $this->assertNull($pi->rate_limit);
+            $this->assertTrue($pi->autoneg);
+
+            $browser
+                ->press('#advanced-options')
+                ->press( "#delete-vi-" . $vi->id )
+                ->waitForText( 'Do you really want to delete this Virtual Interface?' )
+                ->press( "Delete" )
+                ->waitForLocation( route( 'customer@overview', [ 'cust' => $vi->custid, 'tab' => 'ports' ] ) )
+                ->assertSee('Virtual interface deleted.' );
+
+            // Create a new Virtual interface Via wizard form
+            // Test case when autoneg / rate_limit are definitely both set
+            $browser->visit( route( 'virtual-interface@create-wizard-for-cust', 5 ) )
+                ->assertSee('Virtual Interface Settings' )
+                ->select('vlanid',  '2' )
+                ->check( 'ipv4enabled' )
+                ->waitFor( "#ipv4-area" )
+                ->check( 'ipv6enabled' )
+                ->waitFor( "#ipv6-area" )
+                ->select( 'switch', '2' )
+                ->waitUntilMissing( "Choose a switch port" )
+                ->waitForText( "Choose a switch port" )
+                ->select( 'switchportid','28'    )
+                ->select( 'status',     '4'     )
+                ->select( 'speed',      '1000'  )
+                ->select( 'duplex',     'full'  )
+                ->type( 'rate_limit', '1000' )
+                ->check( 'autoneg'      )
+                ->check( 'rsclient'     )
+                ->check( 'irrdbfilter'  )
+                ->check( 'as112client'  )
+                ->select( 'ipv4address',   '10.2.0.22'         )
+                ->select( 'ipv6address',   '2001:db8:2::22'    )
+                ->type( 'ipv4hostname',    'v4.example.com'    )
+                ->type( 'ipv6hostname',    'v6.example.com'    )
+                ->type( 'ipv4bgpmd5secret', 'soopersecret'   )
+                ->type( 'ipv6bgpmd5secret', 'soopersecret'   )
+                ->type( 'ipv4maxbgpprefix', '200'   )
+                ->type( 'ipv6maxbgpprefix', '100'   )
+                ->check( 'ipv4canping'        )
+                ->check( 'ipv6canping'        )
+                ->check( 'ipv4monitorrcbgp'   )
+                ->check( 'ipv6monitorrcbgp'        )
+                ->press( 'Create' )
+                ->waitForText('Virtual interface created', 10000 );
+
+            $url = explode( '/', $browser->driver->getCurrentURL() );
+
+            /** @var $vi VirtualInterface */
+            $this->assertInstanceOf( VirtualInterface::class , $vi = VirtualInterface::find( array_pop( $url ) ) );
+
+            $this->assertEquals(1, $vi->physicalInterfaces()->count());
+            $pi = $vi->physicalInterfaces()->firstOrFail();
+            $this->assertEquals("1000", $pi->rate_limit);
+            $this->assertTrue($pi->autoneg);
+
+            $browser
+                ->press('#advanced-options')
+                ->press( "#delete-vi-" . $vi->id )
+                ->waitForText( 'Do you really want to delete this Virtual Interface?' )
+                ->press( "Delete" )
+                ->waitForLocation( route( 'customer@overview', [ 'cust' => $vi->custid, 'tab' => 'ports' ] ) )
+                ->assertSee('Virtual interface deleted.' );
+
+
+            // Create a new Virtual interface Via wizard form
+            // Test case unsetting autoneg
+            $browser->visit( route( 'virtual-interface@create-wizard-for-cust', 5 ) )
+                ->assertSee('Virtual Interface Settings' )
+                ->select('vlanid',  '2' )
+                ->check( 'ipv4enabled' )
+                ->waitFor( "#ipv4-area" )
+                ->check( 'ipv6enabled' )
+                ->waitFor( "#ipv6-area" )
+                ->select( 'switch', '2' )
+                ->waitUntilMissing( "Choose a switch port" )
+                ->waitForText( "Choose a switch port" )
+                ->select( 'switchportid','28'    )
+                ->select( 'status',     '4'     )
+                ->select( 'speed',      '1000'  )
+                ->select( 'duplex',     'full'  )
+                ->clear( 'rate_limit' )
+                ->uncheck( 'autoneg'    )
+                ->check( 'rsclient'     )
+                ->check( 'irrdbfilter'  )
+                ->check( 'as112client'  )
+                ->select( 'ipv4address',   '10.2.0.22'         )
+                ->select( 'ipv6address',   '2001:db8:2::22'    )
+                ->type( 'ipv4hostname',    'v4.example.com'    )
+                ->type( 'ipv6hostname',    'v6.example.com'    )
+                ->type( 'ipv4bgpmd5secret', 'soopersecret'   )
+                ->type( 'ipv6bgpmd5secret', 'soopersecret'   )
+                ->type( 'ipv4maxbgpprefix', '200'   )
+                ->type( 'ipv6maxbgpprefix', '100'   )
+                ->check( 'ipv4canping'        )
+                ->check( 'ipv6canping'        )
+                ->check( 'ipv4monitorrcbgp'   )
+                ->check( 'ipv6monitorrcbgp'        )
+                ->press( 'Create' )
+                ->waitForText('Virtual interface created', 10000 );
+
+            $url = explode( '/', $browser->driver->getCurrentURL() );
+
+            /** @var $vi VirtualInterface */
+            $this->assertInstanceOf( VirtualInterface::class , $vi = VirtualInterface::find( array_pop( $url ) ) );
+
+            $this->assertEquals(1, $vi->physicalInterfaces()->count());
+            $pi = $vi->physicalInterfaces()->firstOrFail();
+            $this->assertNull($pi->rate_limit);
+            $this->assertFalse($pi->autoneg);
+
+            $browser
+                ->press('#advanced-options')
+                ->press( "#delete-vi-" . $vi->id )
+                ->waitForText( 'Do you really want to delete this Virtual Interface?' )
+                ->press( "Delete" )
+                ->waitForLocation( route( 'customer@overview', [ 'cust' => $vi->custid, 'tab' => 'ports' ] ) )
+                ->assertSee('Virtual interface deleted.' );
+        });
+    }
+
 }
