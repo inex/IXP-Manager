@@ -106,7 +106,7 @@ class DotEnvParser
                 if( preg_match( '/^(\s*=)|([\w_]+\s+=)|([\w_]+=\s+[\w_"\']+).*/', $line ) ) {
                     throw new DotEnvParserException( "Cannot parse .env line: " . $line );
 
-                } else if( preg_match( '/^[\w_]+=["\']?.*\${[\w_]+}.*[#]?.*$/', $line ) ) {
+                } else if( preg_match( '/^\s*[\w_]+=\s*[^#]*\$(\{[^}]+\}|[\w_]+)/', $line ) ) {
                     throw new DotEnvParserException( "Cannot parse .env line as nested variables are not supported: " . $line );
 
                 } else if( mb_strlen( $line ) && mb_strpos( $line, '#' ) !== 0 && mb_strpos( $line, '=' ) > 1 ) {
