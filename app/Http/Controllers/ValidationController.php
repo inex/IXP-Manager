@@ -219,14 +219,15 @@ class ValidationController
 
             foreach ($backend->getResults() as $result) {
                 $resultsArray[] = [
-                    'message'        => $result->message,
-                    'type'           => $result->type,
-                    'docs_url'       => $result->docsUrl,
-                    'settings_url'   => $result->settingsUrl,
-                    'call_to_action' => $result->callToAction instanceof CallToActionLink ? [
-                            'url'   => $result->callToAction->url,
-                            'text'  => $result->callToAction->text,
-                        ] : null,
+                    'message'          => $result->message,
+                    'type'             => $result->type,
+                    'additional_info'  => $result->additionalInfo,
+                    'docs_url'         => $result->docsUrl,
+                    'settings_url'     => $result->settingsUrl,
+                    'call_to_action'   => $result->callToAction instanceof CallToActionLink ? [
+                                                'url'   => $result->callToAction->url,
+                                                'text'  => $result->callToAction->text,
+                                            ] : null,
                 ];
             }
 

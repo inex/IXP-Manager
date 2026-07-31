@@ -32,6 +32,7 @@ class Result
     private(set) ?string           $docsUrl        = null;
     private(set) ?string           $settingsUrl    = null;
     private(set) ?CallToActionLink $callToAction   = null;
+    private(set) ?string           $additionalInfo = null;
 
     public function __construct(
         readonly private(set) string     $message,
@@ -63,6 +64,12 @@ class Result
     public function withCallToAction(string $linkText, string $url): Result
     {
         $this->callToAction = new CallToActionLink($linkText, $url);
+        return $this;
+    }
+
+    public function withAdditionalInfo(string $additionalInfo): Result
+    {
+        $this->additionalInfo = $additionalInfo;
         return $this;
     }
 

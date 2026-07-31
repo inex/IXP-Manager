@@ -25,10 +25,11 @@ declare(strict_types=1);
 namespace IXP\Utils\Validation\Validators;
 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use IXP\Contracts\Validation\ValidationBackend;
 use IXP\Contracts\Validation\Validator;
+use IXP\Models\Customer;
 use IXP\Models\Router;
-use IXP\Models\Vlan;
 
 /**
  * @author Thomas Kerin <thomas@islandbridgenetworks.ie>
@@ -104,6 +105,16 @@ class RouterValidator implements Validator
                     $backend->error("Router " . $router->handle . " has not updated for over 24 hours! Is this out of date?");
                 }
             }
+        }
+
+        $rsClientCustomersWithoutIrrdbFilter = Customer::currentActive(true, true)->whereHas('vlanInterfaces', function (Builder $query) {
+            $query->where('rsclient', 1)
+                ->where('irrdbfilter', 0);
+        })->limit(5)->get()->all();
+
+        if (count($rsClientCustomersWithoutIrrdbFilter) > 0) {
+            $backend->error("Found customer VLAN's who are route server clients without IRRDB filtering enabled!")
+                ->withAdditionalInfo("They are " . implode(", ", array_map(fn ($c) => $c->shortname ?? $c->name, $rsClientCustomersWithoutIrrdbFilter)) . " (max 5 results)");
         }
 
         if (count($needsLookingGlass) > 0) {

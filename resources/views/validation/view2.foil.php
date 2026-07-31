@@ -85,12 +85,14 @@ System Validation
             <div class="result-badge badgeDot tw-rounded-full tw-border-2 tw-w-5 tw-h-5 tw-mr-1" title=""></div>
             <div class="result-type tw-min-w-16 tw-ml-1"></div>
             <div class="validation-content-container tw-relative tw-w-[calc(100%-6.5rem)]  tw-border tw-border-transparent tw-text-[0.9rem] tw-transition-[height] tw-duration-250">
-                <span class="validation-content"></span>
-                <div class="validation-extra-content tw-hidden tw-relative tw-font-size-xs">
-<!--                    --><?php //= $r->narrative ? $t->ee( $r->narrative ) : ( $r->narrativeHtml ?: '' ) ?><!--</div>-->
+                <div>
+                    <span class="validation-content"></span>
+                    <i class="tw-hidden fa fa-caret-down expandable-caret"></i> &nbsp;
                 </div>
+
+                <div class="validation-extra-content tw-hidden tw-relative tw-font-size-xs"></div>
             </div>
-<!--            -->
+
             <div class="result-icon tw-ml-auto tw-flex tw-items-center tw-pr-4">
                 <a href="#" target="_blank" class="validation-call-to-action tw-hidden tw-ml-auto tw-flex tw-items-center tw-pr-4 tw-text-gray-500 hover:tw-text-gray-900">&nbsp</a>
                 <a href="#" target="_blank" class="validation-docs-link tw-hidden tw-ml-auto tw-flex tw-items-center tw-pr-4 tw-text-gray-500 hover:tw-text-gray-900">
@@ -128,7 +130,7 @@ System Validation
     };
 
     const loadingSpinner = $('.loading-results-indicator');
-    const container = $('#validation-container');
+    const validationContainer = $('#validation-container');
     const validationTemplate = $('#validation-template');
     const softwareTableBody = $('#software-table-list');
     const noOutputTemplate = $('#no-output-template');
@@ -152,10 +154,10 @@ System Validation
                 method: 'GET',
                 dataType: 'json',
                 success: function(taskData) {
-                    container.find('[data-toggle="popover"]').popover('dispose');
+                    validationContainer.find('[data-toggle="popover"]').popover('dispose');
 
                     // Clear container for fresh data
-                    container.empty();
+                    validationContainer.empty();
                     softwareTableBody.empty();
 
                     // Loop through each job
@@ -181,7 +183,7 @@ System Validation
                             softwareTableBody.append(rowFragment);
                         });
 
-                        container.append(validationFragment);
+                        validationContainer.append(validationFragment);
                     });
 
                     toggleInformation();
@@ -193,10 +195,10 @@ System Validation
                 },
                 error: function(xhr, status, error) {
                     console.error("Failed to fetch jobs:", error);
-                    container.html('<div class="alert alert-danger col-12">Failed to load jobs. Please try again.</div>');
+                    validationContainer.html('<div class="alert alert-danger col-12">Failed to load jobs. Please try again.</div>');
                 },
                 complete: function() {
-                    container.find('[data-toggle="popover"]').popover({
+                    validationContainer.find('[data-toggle="popover"]').popover({
                         trigger: 'focus'
                     });
                 }
@@ -243,6 +245,13 @@ System Validation
             resultClone.find('.validation-content').text(resultData.message);
             resultClone.attr('data-result-type', resultData.type);
 
+            if (resultData.additional_info != null) {
+                resultClone.find('.validation-extra-content')
+                    .text(resultData.additional_info);
+                resultClone.find('i.expandable-caret')
+                    .removeClass("tw-hidden");
+            }
+
             if (resultData.docs_url != null) {
                 resultClone.find('.validation-docs-link')
                     .attr('href', resultData.docs_url)
@@ -271,6 +280,16 @@ System Validation
         }
     });
 
+    validationContainer.on('click', ".validation-content-container", function() {
+        if ( $(this).find(".validation-extra-content").text() ) {
+            $(this).find("i.expandable-caret").toggleClass("tw-rotate-180");
+        }
+    });
+
+    validationContainer.on('click','.validation-result', function() {
+        $(this).find('.validation-extra-content').toggleClass('tw-hidden');
+    });
+
     /**
      * Enable/disable badges
      */
@@ -294,9 +313,5 @@ System Validation
             });
         });
     }
-
-    $(document).on('click','.validation-result', function() {
-        $(this).find('.validation-extra-content').toggleClass('tw-hidden');
-    });
 </script>
 <?php $this->append() ?>
