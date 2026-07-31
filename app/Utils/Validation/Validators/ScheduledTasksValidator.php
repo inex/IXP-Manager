@@ -68,8 +68,6 @@ class ScheduledTasksValidator implements Validator
         } else if( $schedulerLastRun->last_run_at->diffInMinutes( Carbon::now() ) > 10 ) {
             $backend->error( "Task scheduler hasn't run for 10 minutes - your automated tasks are not running!")
                 ->withDocsPath( "features/cronjobs/" );
-        } else {
-            $backend->info( "Task scheduler is running" );
         }
     }
 }
