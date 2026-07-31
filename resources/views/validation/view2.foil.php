@@ -96,9 +96,9 @@ System Validation
                 <a href="#" target="_blank" class="validation-docs-link tw-hidden tw-ml-auto tw-flex tw-items-center tw-pr-4 tw-text-gray-500 hover:tw-text-gray-900">
                     <i class="fa fa-book"></i> &nbsp;
                 </a>
-<!--                <a href="#" target="_blank" class="validation-settings-link tw-hidden tw-ml-auto tw-flex tw-items-center tw-pr-4 tw-text-gray-500 hover:tw-text-gray-900">-->
-<!--                    <i class="fa fa-gear"></i> &nbsp;-->
-<!--                </a>-->
+                <a href="#" target="_blank" class="validation-settings-link tw-hidden tw-ml-auto tw-flex tw-items-center tw-pr-4 tw-text-gray-500 hover:tw-text-gray-900">
+                    <i class="fa fa-gear"></i> &nbsp;
+                </a>
             </div>
         </div>
     </template>
@@ -254,8 +254,11 @@ System Validation
                     .text(resultData.call_to_action.text)
                     .removeClass("tw-hidden");
             }
-            // $resultClone.find('.validation-settings-link').attr('href', resultData.docs_url);
-            // $resultClone.find(".validation-settings-link").removeClass("tw-hidden");
+            if (resultData.settings_url != null) {
+                resultClone.find('.validation-settings-link')
+                    .attr('href', resultData.settings_url)
+                    .removeClass("tw-hidden");
+            }
 
             return resultClone;
         }

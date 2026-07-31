@@ -49,6 +49,11 @@ class Result
         return $this;
     }
 
+    public function withSettingsLink(string $panel, ?string $field = null): Result
+    {
+        return $this->withSettingsUrl(settings_ui_url($panel, $field));
+    }
+
     public function withSettingsUrl(string $settingsUrl): Result
     {
         $this->settingsUrl = $settingsUrl;

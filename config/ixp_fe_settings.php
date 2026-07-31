@@ -581,7 +581,7 @@ return [
                     'help'       => 'IXP Manager v7.1.0 introduced an admin/ prepend on APIs for securing them. For v7.1.0 only, unsecured access will be enabled by default to allow administrators migrate their API clients.',
                 ],
 
-                'api_get_via_get'      => [
+                'api_key_via_get'      => [
                     'config_key' => 'ixp_api.allow_apikeys_get_parameter',
                     'dotenv_key' => 'IXP_ALLOW_DEPRECATED_APIKEYS_VIA_GET',
                     'type'       => 'radio',

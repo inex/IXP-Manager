@@ -34,6 +34,8 @@ class InfrastructureRegistrationCheckResult
 {
     /**
      * Any infrastructures which are not excluded from IX-F export are eligible for registration.
+     * If an infrastructure doesn't have peeringdb_ix_id and ixf_ix_id it'll be here, but won't
+     * be sorted into alreadyRegistered or toRegister.
      * @var Infrastructure[]
      */
     public array $eligibleInfrastructures;
@@ -45,7 +47,8 @@ class InfrastructureRegistrationCheckResult
     public array $alreadyRegistered = [];
 
     /**
-     * These infrastructures should be registered.
+     * These infrastructures should be registered (unregistered but have a peeringdb_ix_id or
+     * ixf_ix_id)
      * @var Infrastructure[]
      */
     public array $toRegister = [];

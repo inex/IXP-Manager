@@ -77,13 +77,16 @@ class IxpManagerIsRegisteredValidator implements Validator
 
         // If we have infrastructures, but none are included in the ixf-export, just end now:
         if (Infrastructure::count() > 0 && count($result->eligibleInfrastructures) === 0) {
-            $backend->info("All infrastructures are excluded from ixf-export");
+            // todo: unfair to make this a warning?
+            $backend->info("All infrastructures are excluded from ixf-export")
+                ->withDocsPath("features/ixf-export/");
             return;
         }
 
         foreach ($result->eligibleInfrastructures as $infra) {
             if ($infra->peeringdb_ix_id === null && $infra->ixf_ix_id === null) {
-                $backend->info("Infrastructure " . $infra->name . " has no PeeringDB ID or IXF-ID configured");
+                $backend->info("Infrastructure " . $infra->name . " has no PeeringDB ID or IXF-ID configured")
+                    ->withDocsPath("features/ixf-export/");
             }
         }
 
@@ -93,6 +96,7 @@ class IxpManagerIsRegisteredValidator implements Validator
                 ->withCallToAction("Register", route('ixp-registration@register', ['infrastructure' => $ids]));
         }
 
+        // todo: is this unnecessary noise?
         if (count($result->eligibleInfrastructures) > 0 && count($result->alreadyRegistered) === count($result->eligibleInfrastructures)) {
             $backend->info("All eligible infrastructures are registered on ixpmanager.org");
         }

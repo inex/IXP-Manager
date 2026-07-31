@@ -59,34 +59,30 @@ class RouterValidator implements Validator
     {
         if (Router::where('type', Router::TYPE_ROUTE_SERVER)->count() === 0) {
             $backend->suggestion("Did you know that IXP Manager can generate configuration for route servers?")
-                ->withDocsPath('features/rpki/');
+                ->withDocsPath('features/route-servers/');
         } else {
-            // Make a list of routers which do not have RPKI enabled.
-            $routeServersNoRpki = [];
-            foreach (Vlan::all() as $vlan) {
-                $rsNoRpki = Router::where('vlan_id', $vlan->id)
-                    ->where('type', Router::TYPE_ROUTE_SERVER)
-                    ->whereIn('protocol', [4, 6])
-                    ->where('rpki', 0)
-                    ->get();
-                $routeServersNoRpki = array_merge($routeServersNoRpki, $rsNoRpki->all());
-            }
+            $routeServersNoRpki = Router::where('type', Router::TYPE_ROUTE_SERVER)
+                ->where('rpki', 0)
+                ->exists();
 
-            if (!is_string(config('ixp.rpki.rtr1.host')) && !is_string(config('ixp.rpki.rtr1.host'))) {
+            if (!config('ixp.rpki.rtr1.host') && !config('ixp.rpki.rtr1.host')) {
                 // No RPKI servers configured - suggest they setup the feature
                 $backend->suggestion("Did you know IXP-Manager supports RPKI for route server configuration?")
-                    ->withDocsPath('features/rpki/');
-            } else if (!is_string(config('ixp.rpki.rtr1.host')) || !is_string(config('ixp.rpki.rtr2.host'))) {
+                    ->withDocsPath('features/rpki/')
+                    ->withSettingsLink("route_servers", "rs_rpki_rtr1_host");
+
+            } else if (!config('ixp.rpki.rtr1.host') || !config('ixp.rpki.rtr2.host')) {
                 // Only missing one RPKI server.. suggest a second.
                 $backend->suggestion("A second RPKI instance is recommended for redundancy.")
-                    ->withDocsPath('features/rpki/');
+                    ->withDocsPath('features/rpki/')
+                    ->withSettingsLink("route_servers", "rs_rpki_rtr1_host");
             }
 
-            if ( (is_string( config('ixp.rpki.rtr1.host') ) || is_string( config('ixp.rpki.rtr2.host') ) ) && count($routeServersNoRpki) > 0) {
+            if ( ( config('ixp.rpki.rtr1.host') || config('ixp.rpki.rtr2.host') ) && $routeServersNoRpki) {
                 // Have an RPKI server, but there are route servers without RPKI:
-                $backend->warning("Found Route Servers without RPKI enabled: " . implode(", ",
-                        array_map(fn($router) => $router->handle, $routeServersNoRpki)))
-                    ->withDocsPath('features/rpki/');
+                $backend->warning("RPKI enabled but found Route Servers without RPKI enabled")
+                    ->withDocsPath('features/rpki/')
+                ;
             }
         }
 
@@ -109,7 +105,9 @@ class RouterValidator implements Validator
                 }
             }
         }
+
         if (count($needsLookingGlass) > 0) {
+            // todo: check this: routers or route servers?
             $backend->warning("We recommend configuring Looking Glass on all routers - some found without: " . implode(", ", $needsLookingGlass))
                 ->withDocsPath('features/looking-glass/');
         }

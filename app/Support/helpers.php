@@ -286,7 +286,7 @@ if( !function_exists( 'settings_ui_url' ) ) {
      *
      * @throws GeneralException
      */
-    function settings_ui_url( string $panel, ?string $field ): string
+    function settings_ui_url( string $panel, ?string $field = null ): string
     {
         if( !config()->has( 'ixp_fe_settings.panels.' . $panel ) ) {
             throw new GeneralException( "Panel [$panel] not defined" );

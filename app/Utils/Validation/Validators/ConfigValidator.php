@@ -70,14 +70,17 @@ class ConfigValidator implements Validator
 
         if ( !config ( 'ixp.as112.ui_active' ) ) {
             $backend->suggestion( "Did you know IXP-Manager can help you run an AS112 service?")
-                ->withDocsPath("features/as112/");
+                ->withDocsPath("features/as112/")
+                ->withSettingsLink("frontend_controllers", "as112");
         } else {
             $backend->info("AS112 UI is enabled.");
         }
 
         if ( config('ixp_fe.frontend.disabled.filtered-prefixes' ) ) {
             $backend->suggestion( "Did you know IXP-Manager has a UI to find filtered prefixes for your " . config('ixp_fe.lang.customer.many') . "?" )
-                ->withDocsPath( "features/route-servers/#displaying-filtered-prefixes" );
+                ->withDocsPath( "features/route-servers/#displaying-filtered-prefixes" )
+                ->withSettingsLink("frontend_controllers", "filtered-prefixes");
+            ;
         } else if ( config('cache.default') === "array" ) {
             $backend->error("A persistent cache is required to use the filtered prefixes feature - cannot use array." );
         }
@@ -91,7 +94,8 @@ class ConfigValidator implements Validator
 
         if ( config('ixp_fe.frontend.disabled.lg' ) ) {
             $backend->suggestion( "Did you know IXP Manager has a built in Looking Glass UI?")
-                ->withDocsPath("features/looking-glass/");
+                ->withDocsPath("features/looking-glass/")
+                ->withSettingsLink("frontend_controllers", "lg");
         } else {
             $backend->info( "Looking Glass UI is enabled." );
         }

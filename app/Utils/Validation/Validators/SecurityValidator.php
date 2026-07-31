@@ -57,11 +57,16 @@ class SecurityValidator implements Validator
     {
         if (config('ixp_api.unsecured_api_access')) {
             $backend->error("Unsecured API Access is enabled - this is strongly discouraged, and support will be removed in a future release. Update any dependent software and disable this ASAP.")
-            ->withDocsPath( "install/security/" );
+                ->withDocsPath( "install/security/" )
+                ->withSettingsLink("auth", "unsecured_api_access")
+            ;
         }
 
         if (config('ixp_api.allow_apikeys_get_parameter')) {
-            $backend->error("Passing API Keys as a GET parameter is enabled - this is strongly discouraged, and support for this will be removed in a future release. Update any dependent software and disable this ASAP.");
+            $backend->error("Passing API Keys as a GET parameter is enabled - this is strongly discouraged, and support for this will be removed in a future release. Update any dependent software and disable this ASAP.")
+                ->withDocsPath( "install/security/" )
+                ->withSettingsLink("auth", "api_key_via_get")
+            ;
         }
 
         try {
