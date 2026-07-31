@@ -25,6 +25,7 @@
 
         let buttons = {
             cancel: {
+                id: "btn-delete-user-cancel",
                 label: 'Close',
                 className: 'btn-secondary',
                 callback: function () {
@@ -36,6 +37,7 @@
 
         if ( superUser && !$(this).hasClass( "btn-delete-user"  ) && !$(this).hasClass( "btn-delete-c2u"  ) ){
             buttons.seeC2U = {
+                id: "btn-delete-user-see-links",
                 label: `See <?= config( 'ixp_fe.lang.customer.one' )  ?> links`,
                 display: 'none',
                 className: 'btn-warning',
@@ -46,6 +48,7 @@
         }
 
         buttons.submit = {
+            id: "btn-delete-user-submit",
             label: 'Delete',
             className: 'btn-danger',
             callback: function () {

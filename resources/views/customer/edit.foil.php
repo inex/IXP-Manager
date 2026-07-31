@@ -65,7 +65,7 @@ $this->layout( 'layouts/ixpv4' );
 
                 <?= Former::text( 'name' )
                     ->label( 'Name' )
-                    ->placeholder( "Acme Intermet Access" )
+                    ->placeholder( "Acme Internet Access" )
                     ->blockHelp( "The customer's name as you/they typically want it to appear in IXP Manager. It is not necessarily "
                         . "their full legal entity name (that goes elsewhere). The <em>abbreviated name</em> is a shorter version "
                         . "of the name that is used in space constrained areas such as graph labels." );

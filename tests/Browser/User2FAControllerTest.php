@@ -29,6 +29,7 @@ use Laravel\Dusk\Browser;
 use PragmaRX\Google2FALaravel\Google2FA;
 
 use Tests\DuskTestCase;
+use Tests\Trait\ModifiesEnv;
 
 /**
  * Test User2FA Controller
@@ -42,29 +43,27 @@ use Tests\DuskTestCase;
  */
 class User2FAControllerTest extends DuskTestCase
 {
+    use ModifiesEnv;
 
-
+    #[\Override]
     public function setUp(): void
     {
         parent::setUp();
 
-        $this->replaceEnvAttr( '2FA_ENFORCE_FOR_USERS="1"','2FA_ENFORCE_FOR_USERS="4"' );
-        $this->replaceEnvAttr( '2FA_ENABLED=false','2FA_ENABLED=true' );
+        $this->replaceEnvAttr( '2FA_ENFORCE_FOR_USERS="1"', '2FA_ENFORCE_FOR_USERS="4"' );
+        $this->replaceEnvAttr( '2FA_ENABLED=false', '2FA_ENABLED=true' );
         // changing the environment causes the server to restart
         // Environment modified. Restarting server...
-        sleep(2);
+        $this->awaitArtisanEnvReload();
 
     }
+
+    #[\Override]
     public function tearDown(): void
     {
         if( $u2fa = User2FA::whereUserId( 1 )->first() ) {
             $u2fa->delete();
         }
-
-        $this->replaceEnvAttr( '2FA_ENABLED=true','2FA_ENABLED=false' );
-        // changing the environment causes the server to restart
-        // Environment modified. Restarting server...
-        sleep(2);
 
         parent::tearDown();
     }

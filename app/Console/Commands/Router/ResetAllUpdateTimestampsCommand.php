@@ -4,7 +4,6 @@ namespace IXP\Console\Commands\Router;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
-use IXP\Models\Router;
 
 class ResetAllUpdateTimestampsCommand extends Command
 {

@@ -1,7 +1,4 @@
 <?php
-
-namespace Tests\Browser;
-
 /*
  * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
@@ -22,6 +19,10 @@ namespace Tests\Browser;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+declare(strict_types=1);
+
+namespace Tests\Browser;
+
 use IXP\Models\{
     PhysicalInterface,
     VirtualInterface,
@@ -31,6 +32,7 @@ use IXP\Models\{
 use Laravel\Dusk\Browser;
 
 use Tests\DuskTestCase;
+use Tests\Trait\ModifiesEnv;
 
 /**
  * Test Virtual interface Controller
@@ -44,6 +46,8 @@ use Tests\DuskTestCase;
  */
 class VirtualInterfaceControllerTest extends DuskTestCase
 {
+    use ModifiesEnv;
+
     /**
      * Test the whole Interfaces functionalities (virtuel, physical, vlan)
      *
@@ -792,7 +796,7 @@ class VirtualInterfaceControllerTest extends DuskTestCase
         // Removes UI elements on create and edit, unless the
         // VLI being edited has the setting set, then it'll be shown
         $this->overrideEnv( [ "IXP_FE_VLANINTERFACES_MAX_PREFIX_ENABLED" => 'false' ] );
-        sleep(1);
+        $this->awaitArtisanEnvReload();
 
         $this->browse( function ( Browser $browser ) {
             $browser->resize( 1600, 1200 )

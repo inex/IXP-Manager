@@ -25,7 +25,6 @@ namespace IXP\Console\Commands\Grapher;
 use IXP\Services\Grapher as Grapher;
 
 use IXP\Console\Commands\Command as IXPCommand;
-use IXP\Console\Commands\Command;
 
 /**
  *
