@@ -38,4 +38,6 @@ jobs:
       run: vendor/bin/phpunit --testsuite 'Docstore Test Suite,IXP Manager Test Suite'
     - name: Static code analysis
       run: vendor/bin/psalm --use-baseline psalm-baseline.xml
+    - name: Settings UI QA tests
+      run: QA_COMMANDS=1 ./artisan qa:check-settings-ui-config
 

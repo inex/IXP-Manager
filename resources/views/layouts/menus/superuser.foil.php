@@ -205,7 +205,7 @@
 
             <li class="nav-item">
                 <?php if( session()->exists( "switched_user_from" ) ): ?>
-                    <a class="nav-link" href="<?= route( 'switch-user@switchBack' ) ?>">
+                    <a id="nav-item-switch-user-back" class="nav-link" href="<?= route( 'switch-user@switchBack' ) ?>">
                         Switch Back
                     </a>
                 <?php endif; ?>

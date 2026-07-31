@@ -140,7 +140,7 @@
                                                 Login history
                                             </a>
                                             <?php if( $u['c2uid'] ): ?>
-                                                <a id="d2f-option-login-as-<?= $u[ 'id' ] ?>" class="dropdown-item <?= $u[ 'disabled' ] || $authId  === $u['id'] ? "disabled" : "" ?>" href="<?= route( "switch-user@switch", [ "c2u" => $u['c2uid'] ] ) ?>">
+                                                <a id="d2f-option-login-as-<?= $u[ 'id' ] ?>" class="dropdown-item <?= $u[ 'disabled' ] || $authId  === $u['id'] || session()->exists('switched_user_from') ? "disabled" : "" ?>" href="<?= route( "switch-user@switch", [ "c2u" => $u['c2uid'] ] ) ?>">
                                                     Login as
                                                 </a>
                                             <?php endif; ?>

@@ -24,7 +24,6 @@ define('strict_types', 1);
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 use Illuminate\Support\Facades\DB;
-use Illuminate\Validation\Rules\Password;
 use Illuminate\Support\Carbon;
 
 
@@ -196,8 +195,6 @@ class SetupWizard extends Command
                 'name'       => $data['ixp-name'],
                 'shortname'  => $data['ixp-shortname'],
                 'isPrimary'  => 1,
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
             ] );
 
             $billingDetail = CompanyBillingDetail::create( [
@@ -206,14 +203,10 @@ class SetupWizard extends Command
                 'billingTelephone'   => $data['ixp-billing-phone'],
                 'invoiceMethod'      => CompanyBillingDetail::INVOICE_METHOD_EMAIL,
                 'billingFrequency'   => CompanyBillingDetail::BILLING_FREQUENCY_NOBILLING,
-                'created_at'        => Carbon::now(),
-                'updated_at'        => Carbon::now(),
             ] );
 
             $registrationDetail = CompanyRegisteredDetail::create( [
                 'registeredName' => $data['ixp-legalname'],
-                'created_at'     => Carbon::now(),
-                'updated_at'     => Carbon::now(),
             ] );
 
             $cust = Customer::create( [
@@ -238,15 +231,11 @@ class SetupWizard extends Command
                 'company_billing_details_id'   => $billingDetail->id,
                 'abbreviatedName'              => $data['ixp-shortname'],
                 'isReseller'                   => false,
-                'created_at'                   => Carbon::now(),
-                'updated_at'                   => Carbon::now(),
             ] );
 
             $cust->contacts()->create( [
                 'name'       => $data['admin-name'],
                 'email'      => $data['admin-email'],
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
             ] );
 
             $user = new User;
@@ -254,16 +243,12 @@ class SetupWizard extends Command
             $user->username = $data['admin-username'];
             $user->password = password_hash( $data['admin-password'], PASSWORD_BCRYPT, [ 'cost' => config( 'hashing.bcrypt.rounds' ) ] );
             $user->email = $data['admin-email'];
-            $user->created_at = Carbon::now();
-            $user->updated_at = Carbon::now();
             $user->save();
 
             CustomerToUser::create( [
                 'customer_id' => $cust->id,
                 'user_id'     => $user->id,
                 'privs'       => User::AUTH_SUPERUSER,
-                'created_at'  => Carbon::now(),
-                'updated_at'  => Carbon::now(),
             ] );
 
             DB::commit();

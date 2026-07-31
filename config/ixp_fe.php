@@ -282,6 +282,7 @@ return [
     */
     'vlaninterfaces' => [
         'hostname_required'  => env( 'IXP_FE_VLANINTERFACES_HOSTNAME_REQUIRED', true ),
+        'max_prefix_enabled' => env( 'IXP_FE_VLANINTERFACES_MAX_PREFIX_ENABLED', true ),
     ],
 
     /*

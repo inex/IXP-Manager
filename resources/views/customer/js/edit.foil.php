@@ -19,6 +19,7 @@
 
     const dd_type                   = $( '#type' );
     const dd_peering_policy         = $( '#peeringpolicy' );
+    const dd_irrdb                  = $( '#irrdb' );
 
     const cb_isResold               = $( '#isResold' );
     const div_reseller_area         = $( '#reseller-area' );
@@ -103,7 +104,41 @@
                         input_datejoin.val(         getCurrentDate() ).addClass( 'is-valid' );
                         input_corp_www.val(         response.net.website ).addClass( 'is-valid' );
                         input_autsys.val(           response.net.asn ).addClass( 'is-valid' );
-                        input_peeringmacro.val(     response.net.irr_as_set ).addClass( 'is-valid' );
+
+                        if ( typeof response.net.irr_as_set == "string" && response.net.irr_as_set.length > 0 ) {
+                            // https://docs.peeringdb.com/blog/data_quality_for_networks/
+                            if (response.net.irr_as_set.includes("::")) {
+                                const [irr, asSet] = response.net.irr_as_set.split('::');
+
+                                let irrdbSelectOption = dd_irrdb.find('option:not(:selected)').filter(function () {
+                                    return $(this).text() === irr;
+                                });
+
+                                if (irrdbSelectOption.length > 0) {
+                                    dd_irrdb.val( irrdbSelectOption.val() ).select2().trigger('change.select2');
+                                    input_peeringmacro.val( asSet );
+                                } else {
+                                    $.ajax( "<?= route("irrdb-config-api@create") ?>", {
+                                        type: "POST",
+                                        data: {
+                                            "source": irr,
+                                            "host": "whois.radb.net",
+                                            "notes": "Created during customer import from PeeringDB",
+                                        },
+                                    } )
+                                        .done( function( response ) {
+                                            dd_irrdb.append( $( '<option>', {
+                                                value: response.id,
+                                                text: irr,
+                                                selected: 'selected',
+                                            } ) );
+                                            input_peeringmacro.val( asSet );
+                                        });
+                                }
+                            } else {
+                                input_peeringmacro.val( response.net.irr_as_set ).addClass( 'is-valid' );
+                            }
+                        }
 
                         if( typeof response.net.info_prefixes4 !== "undefined" ) {
                             input_maxprefixes.val( Math.ceil( response.net.info_prefixes4 ) ).addClass( 'is-valid' );

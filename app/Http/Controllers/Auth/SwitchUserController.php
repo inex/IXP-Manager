@@ -71,6 +71,11 @@ class SwitchUserController extends Controller
             return redirect()->to( "/" );
         }
 
+        if( session()->exists( "switched_user_from" ) ) {
+            AlertContainer::push( "You are already logged in as another user. If you want to login as someone else, switch back first.", Alert::DANGER );
+            return redirect()->to( "/" );
+        }
+
         $user = $c2u->user;
 
         if( $user->disabled ){

@@ -3,7 +3,7 @@
 namespace Tests\Browser;
 
 /*
- * Copyright (C) 2009 - 2025 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -26,6 +26,7 @@ namespace Tests\Browser;
 use Laravel\Dusk\Browser;
 
 use Tests\DuskTestCase;
+use Tests\Trait\ModifiesEnv;
 use Throwable;
 
 /**
@@ -39,7 +40,8 @@ use Throwable;
  */
 class SettingsControllerTest extends DuskTestCase
 {
-    
+    use ModifiesEnv;
+
     /**
      * The expected .env file contents before we go messing with it
      * @var string|null
@@ -47,33 +49,16 @@ class SettingsControllerTest extends DuskTestCase
     private ?string $test_env = null;
 
     /**
-     * The user's existing .env file that we want to preserve
-     * @var string|null
-     */
-    private ?string $user_env = null;
-
-
-    /**
      * @throws
      */
+    #[\Override]
     public function setUp(): void
     {
-        $this->user_env = file_get_contents( __DIR__ . '/../../.env' );
         $this->test_env = file_get_contents( __DIR__ . '/../../.env.ci' );
+        $this->overwriteEnvFile($this->test_env);
+        $this->awaitArtisanEnvReload();
 
-        file_put_contents( __DIR__ . '/../../.env', $this->test_env );
-        usleep( 1_000_000 );
         parent::setUp();
-    }
-
-    /**
-     * @throws
-     */
-    public function tearDown(): void
-    {
-        file_put_contents( __DIR__ . '/../../.env', $this->user_env );
-        usleep( 1_000_000 );
-        parent::tearDown();
     }
     
     /**
