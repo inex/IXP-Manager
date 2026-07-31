@@ -202,7 +202,7 @@ final class DotEnvParserTest extends TestCase
     public static function unparsableValuesProvider(): array
     {
         return [
-            [ "=jkkjk"], [ "  =jkkfewfew" ], [ "THT_JKHK= hjkhke" ], [ "TEST =kdjfdf" ],
+            [ "=jkkjk"], [ "  =jkkfewfew" ], [ "THT_JKHK= hjkhke" ], [ "TEST =kdjfdf" ], [ "SOME#VAR=1" ], [ "TEST= kdjfdf" ],
             [ "TEST=\${OTHER_VAR}"], [ "TEST=\"there was \${SOME_OTHER_VAR} also\""], [ "TEST_VAR='\${OTHER_VAR}'"], [ "TEST=\"aa\${OTHER_VAR}aa\" # comment" ],
             [ "kjjdf k e\n" ], [ "=kjjdf\n" ]
         ];
