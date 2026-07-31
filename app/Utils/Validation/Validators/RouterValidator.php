@@ -113,7 +113,8 @@ class RouterValidator implements Validator
         })->limit(5)->get()->all();
 
         if (count($rsClientCustomersWithoutIrrdbFilter) > 0) {
-            $backend->error("Found customer VLAN's who are route server clients without IRRDB filtering enabled!")
+            $backend->error("Found customer VLAN's that are route server clients without IRRDB filtering enabled!")
+                ->withDocsPath("usage/interfaces/#general-vlan-settings")
                 ->withAdditionalInfo("They are " . implode(", ", array_map(fn ($c) => $c->shortname ?? $c->name, $rsClientCustomersWithoutIrrdbFilter)) . " (max 5 results)");
         }
 
