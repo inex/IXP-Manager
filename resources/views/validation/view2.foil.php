@@ -264,10 +264,10 @@ System Validation
         }
 
         function createSoftwareTableRow(software) {
-            let $rowClone = $(  $('#software-table-row-template').prop('content') ).clone();
-            $rowClone.find('.software-name').text(software.name);
-            $rowClone.find('.software-version').text(software.version);
-            return $rowClone;
+            let rowClone = $(  $('#software-table-row-template').prop('content') ).clone();
+            rowClone.find('.software-name').text(software.name);
+            rowClone.find('.software-version').text(software.version);
+            return rowClone;
         }
     });
 
