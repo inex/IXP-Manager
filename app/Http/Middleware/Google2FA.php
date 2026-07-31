@@ -64,8 +64,12 @@ class Google2FA
             return $next( $r );
         }
 
+        // If we've completed 2FA on peeringDB, or if it's an excluded route,
+        // or we are using the Switch User feature (in which case we'll have
+        // done 2FA already), don't do 2FA enforcement or 2FA challenge
         if( session( 'ixpm_external_2fa_completed', false )
-                || in_array( $r->route()->getName(), $this->excludes, true )
+            || in_array( $r->route()->getName(), $this->excludes, true )
+            || session()->exists( "switched_user_from" )
         ) {
             return $next( $r );
         }

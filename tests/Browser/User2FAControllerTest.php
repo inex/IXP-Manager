@@ -69,7 +69,7 @@ class User2FAControllerTest extends DuskTestCase
     }
 
     /**
-     * A Dusk test example.
+     * Test workflows involving the User2FAController
      *
      * @return void
      *
