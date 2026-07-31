@@ -213,7 +213,8 @@ final class DotEnvParserTest extends TestCase
     {
         return [
             [ "=jkkjk"], [ "  =jkkfewfew" ], [ "THT_JKHK= hjkhke" ], [ "TEST =kdjfdf" ], [ "SOME#VAR=1" ], [ "TEST= kdjfdf" ],
-            [ "TEST=\${OTHER_VAR}"], [ "TEST=\"there was \${SOME_OTHER_VAR} also\""], [ "TEST_VAR='\${OTHER_VAR}'"], [ "TEST=\"aa\${OTHER_VAR}aa\" # comment" ],
+            [ "TEST=\${OTHER_VAR}"], [ "TEST=\"there was \${SOME_OTHER_VAR} also\""], [ "TEST_VAR='\${OTHER_VAR}'"], [ "TEST=\"aa\${OTHER_VAR}aa\" # comment" ], [ "TEST=\$VAR" ], [ "TEST=\"\$VAR\"" ],
+            [ "FOO=\${BAR:-localhost}" ], [ "FOO=\${!PREFIX}" ],
             [ "kjjdf k e\n" ], [ "=kjjdf\n" ]
         ];
     }
