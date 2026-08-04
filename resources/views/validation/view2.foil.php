@@ -33,10 +33,10 @@ System Validation
 
     <?= $t->alerts() ?>
 
-    <div id="validation-container" class="row">
+    <div id="software-table-list" class="row tw-p-4 m-1 tw-shadow-md tw-border-1 tw-border-grey-light tw-rounded-sm">
     </div>
 
-    <div id="software-table-list" class="row tw-p-4 m-1 tw-shadow-md tw-border-1 tw-border-grey-light tw-rounded-sm">
+    <div id="validation-container" class="row">
     </div>
 
     <template id="software-table-row-template">
