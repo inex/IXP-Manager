@@ -271,7 +271,8 @@ function doMinimumPhpVersionCheck( string $minVersion, string $recommendedPrefix
 function doComposerCheck(): array
 {
     $results = [];
-    if ( !file_exists( "vendor/autoload.php" ) ) {
+
+    if ( !file_exists( dirname(__FILE__) . "/vendor/autoload.php" ) ) {
         $results[] = new CheckResult( ResultStatus::ERROR, ['composer install has not been run'] );
     }
 
@@ -281,12 +282,13 @@ function doComposerCheck(): array
 function doEnvFileChecks(): array
 {
     $results = [];
-    if ( !file_exists(".env") ) {
+    $envfile = dirname(__FILE__) . "/.env";
+    if ( !file_exists($envfile)) {
         $results[] = new CheckResult( ResultStatus::ERROR, [ '.env file does not exist' ] );
         return $results;
     }
 
-    if ( ( $parseEnv = loadEnv(".env", $errorMessage ) ) === false ) {
+    if ( ( $parseEnv = loadEnv($envfile, $errorMessage ) ) === false ) {
         $results[] = new CheckResult( ResultStatus::ERROR, [ $errorMessage ] );
         return $results;
     }
@@ -307,7 +309,7 @@ function doMySqlCheck(string $minVersion, string $recommendedPrefix, ?string $ma
     }
 
     // Load env file to perform configuration checks
-    if ( ( $env = loadEnv( '.env', $errorMessage ) ) === false ) {
+    if ( ( $env = loadEnv( dirname(__FILE__) . "/.env", $errorMessage ) ) === false ) {
         return new CheckResult( ResultStatus::ERROR, [ $errorMessage ] );
     }
 
