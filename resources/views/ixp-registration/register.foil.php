@@ -23,6 +23,23 @@ Register on IXP Manager Community
 <?php $this->append() ?>
 
 <?php $this->section('content') ?>
+
+    <div class="alert alert-info" role="alert">
+        <div class="d-flex align-items-center">
+            <div class="text-center">
+                <i class="fa fa-info fa-2x"></i>
+            </div>
+            <div class="col-sm-12">
+
+                <p>It really helps the core IXP Manager team at INEX to know that the community is growing. Every new user builds our momentum to keep developing and supporting the platform.</p>
+
+                <p>We maintain <a target="_blank" href="https://www.ixpmanager.org/community/world-map">a community map</a> and <a target="_blank" href="https://www.ixpmanager.org/community/stats">statistics</a> that are updated nightly.</p>
+
+                <p>To join our community and get on the map, please complete the following form:</p>
+            </div>
+        </div>
+    </div>
+
     <div class="row">
         <div class="col-lg-12">
             <?= Former::open()
