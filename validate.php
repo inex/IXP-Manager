@@ -123,7 +123,10 @@ function printIssueAssistanceInfo(): void {
     if ($exitCode === 0) {
         $environmentInfoPackages = implode("\n", $output);
     } else {
-        $environmentInfoPackages = "COULDN'T CALL PACKAGE MANAGER - please provide the list of PHP packages installed on your system.";
+        $environmentInfoPackages = "PHP extensions:\n";
+        foreach (get_loaded_extensions(false) as $ext) {
+            $environmentInfoPackages .= " - " . $ext . "\n";
+        }
     }
     unset($output, $exitCode);
 
