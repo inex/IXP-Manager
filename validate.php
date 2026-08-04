@@ -4,6 +4,27 @@
 declare(strict_types=1);
 
 
+/*
+ * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * All Rights Reserved.
+ *
+ * This file is part of IXP Manager.
+ *
+ * IXP Manager is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation, version v2.0 of the License.
+ *
+ * IXP Manager is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License v2.0
+ * along with IXP Manager.  If not, see:
+ *
+ * http://www.gnu.org/licenses/gpl-2.0.html
+ */
+
 /**
  * This function prints a pre-populated GitHub Issue Template.
  */
@@ -96,24 +117,15 @@ function printIssueAssistanceInfo(): void {
     }
 
     echo "
-##### ISSUE TYPE
+##### ISSUE SUMMARY
 
-Bug Report
+*Explain your issue here*
 
 ##### OS
-<!---
-Mention the OS you are running IXP Manager on (including Linux variant if relevant)
--->
 
 " . $osInfo . "
 
 ##### VERSION
-
-<!--- Paste verbatim the output between quotes below. NB: run this command
-from IXP Manager's root directory (e.g. /srv/ixpmanager)
-
-cat version.php | grep APPLICATION
--->
 
 ```
 $versionInfo
@@ -121,35 +133,21 @@ $versionInfo
 
 ##### ENVIRONMENT
 
-<!--- Paste verbatim the output from the following commands between quotes below
-php -v
-dpkg -l | grep php   (or equivalent for your OS - list of php packages installed)
--->
-
 ```
 " .
-            $environmentInfoPhp.
-            $environmentInfoPackages.
+            $environmentInfoPhp .
+            $environmentInfoPackages .
 "
 
 ```
 
-<!--- You can also use gist.github.com links for larger files -->
-
 ##### CONFIGURATION
 
-<!--- Paste the output of the following between quotes below:
-(run from IXP Manager's root directory (e.g. /srv/ixpmanager)
-NB: sanity check the output to make sure you are happy you are not leaking any security information!
-
-cat .env | egrep -v '(^#|^\s*$|^DB_|^APP_KEY|^HELPDESK|^IDENTITY|^MAIL_|^IXP_API_RIR_PASSWORD|^IXP_API_PEERING_DB_)'
--->
 
 ```
 " . $envInfo . "
 ```
 
-<!--- You can also use gist.github.com links for larger files -->
 ";
 }
 

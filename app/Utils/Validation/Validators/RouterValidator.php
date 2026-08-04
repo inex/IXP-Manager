@@ -40,7 +40,7 @@ class RouterValidator implements Validator
     #[\Override]
     public function getName(): string
     {
-        return "Router validator";
+        return "RPKI for Router Configuration";
     }
 
     #[\Override]
