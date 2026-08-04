@@ -28,7 +28,7 @@
 define( 'APPLICATION_VERSION', '7.3.1' );
 define( 'APPLICATION_VERDATE', '2026060800' );
 define( 'DOCUMENTATION_VERSION', '7.3' );
-define('APPLICATION_MANIFEST', [
+define( 'APPLICATION_MANIFEST', [
     'php_version' => [
         'min' => '8.4.0',
         'recommended' => '8.4.',
@@ -40,6 +40,6 @@ define('APPLICATION_MANIFEST', [
         'max' => null,
     ],
     'laravel_required_extensions' => [
-        'ctype', 'curl', 'dom', 'fileinfo', 'filter', 'hash', 'mbstring', 'openssl', 'pcre', 'pdo', 'session', 'tokenizer', 'xml'
+        'filter', 'hash', 'mbstring', 'openssl', 'pcre', 'pdo', 'pdo_mysql', 'session', 'tokenizer', 'xml',
     ],
 ]);

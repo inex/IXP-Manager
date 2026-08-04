@@ -389,7 +389,7 @@ function doLaravelRequiredExtensionChecks(array $requiredByLaravel): array
     }
 
     if ( count( $missingExtensions ) > 0 ) {
-        $results[] = new CheckResult( ResultStatus::WARNING, [ 'Missing required PHP extensions: ' . implode(', ', $missingExtensions) ] );
+        $results[] = new CheckResult( ResultStatus::ERROR, [ 'Missing required PHP extensions: ' . implode(', ', $missingExtensions) ] );
     }
 
     return $results;
@@ -501,8 +501,6 @@ class BasicValidation
 
 enum ResultStatus
 {
-    case OK;
-    case INFO;
     case WARNING;
     case ERROR;
 }
