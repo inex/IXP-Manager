@@ -335,7 +335,8 @@ function doMySqlCheck(string $minVersion, string $recommendedPrefix, ?string $ma
     }
 
     // Generate the DSN from our configuration
-    $dsn = "mysql:" . implode( ";", [ "host={$env['DB_HOST']}", "dbname={$env['DB_DATABASE']}" ] + (array_key_exists( 'port', $env ) ? [ "port={$env['port']}" ] : [] ) );
+    $dsn = "mysql:host={$env['DB_HOST']};dbname={$env['DB_DATABASE']}"
+            . (array_key_exists( 'DB_PORT', $env ) ? ";port={$env['DB_PORT']}" : "");
 
     // Attempt to connect using credentials from Env File
     try {
