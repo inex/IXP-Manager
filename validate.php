@@ -255,12 +255,6 @@ function doMinimumPhpVersionCheck( string $minVersion, string $recommendedPrefix
         $results[] = new CheckResult( ResultStatus::WARNING, [ "Not running a recommended PHP version - running " . $version ] );
     }
 
-//    if (ini_get("allow_url_fopen") == 1) {
-//        $results[] = new CheckResult( ResultStatus::OK, [ "allow_url_fopen is enabled" ] );
-//    } else {
-//        $results[] = new CheckResult( ResultStatus::WARNING, [ "allow_url_fopen is disabled, this may impact some features" ] );
-//    }
-
     if ( !extension_loaded('pdo_mysql') ) {
         $results[] = new CheckResult( ResultStatus::ERROR, [ 'PDO MySQL extension is not installed' ] );
     }
