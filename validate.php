@@ -78,6 +78,27 @@ function printIssueAssistanceInfo(): void {
         }
     }
 
+    try {
+        $env = loadEnv( dirname( __FILE__ ) . "/.env", $errorMsg);
+
+        // Generate the DSN from our configuration
+        $dsn = "mysql:host={$env['DB_HOST']};dbname={$env['DB_DATABASE']}"
+                . (array_key_exists( 'DB_PORT', $env ) ? ";port={$env['DB_PORT']}" : "");
+
+        $pdo = new \PDO( $dsn, $env['DB_USERNAME'], $env['DB_PASSWORD'], [
+                \PDO::ATTR_ERRMODE            => \PDO::ERRMODE_EXCEPTION,
+                \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
+                \PDO::ATTR_EMULATE_PREPARES   => false,
+        ] );
+        $mysqlVersion = $pdo->query( "SELECT VERSION() as version" )->fetchColumn();
+        $schemaVersion = $pdo->query( "SELECT migration FROM migrations ORDER BY id DESC LIMIT 1" )->fetchColumn();
+
+        $versionInfo .= "MySQL server version: " . $mysqlVersion . "\n";
+        $versionInfo .= "Schema version: " . $schemaVersion . "\n";
+    } catch (\Throwable $t) {
+        // guess we can't provide SQL info
+    }
+
     // PHP Environment
     $environmentInfoPhp = false;
     exec("php -v", $output, $exitCode);
