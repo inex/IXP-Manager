@@ -415,24 +415,24 @@ function doIxpManagerReleaseCheck(string $localVersion): array
         ] );
 
         if ( ( $tagsJson = file_get_contents( 'https://api.github.com/repos/inex/IXP-Manager/tags', false, $context ) ) === false ) {
-            $results[] = new CheckResult( ResultStatus::ERROR, [ "Failed to fetch IXP-Manager release information (file_get_contents)" ] );
+            $results[] = new CheckResult( ResultStatus::WARNING, [ "Failed to fetch IXP-Manager release information (file_get_contents)" ] );
             return $results;
         }
 
         // Extract HTTP response code
         $regexReturnCode = preg_match( '/([0-9])\d+/', $http_response_header[0],$matches );
         if ( $regexReturnCode === false ) {
-            $results[] = new CheckResult(ResultStatus::ERROR, [ "Invalid regex for HTTP response code" ] );
+            $results[] = new CheckResult(ResultStatus::WARNING, [ "Failed to fetch IXP-Manager release information. Invalid regex for HTTP response code" ] );
             return $results;
         } else if ( $regexReturnCode === 0 ) {
-            $results[] = new CheckResult(ResultStatus::ERROR, [ "Did not find a status in HTTP response" ] );
+            $results[] = new CheckResult(ResultStatus::WARNING, [ "Failed to fetch IXP-Manager release information. Did not find a status in HTTP response" ] );
             return $results;
         }
 
         // Ensure HTTP response was OK
         $responsecode = intval( $matches[0] );
         if ( $responsecode !== 200 ) {
-            $results[] = new CheckResult( ResultStatus::ERROR, [ "Received non-OK response code when fetching IXP-Manager release information (file_get_contents): $responsecode" ] );
+            $results[] = new CheckResult( ResultStatus::WARNING, [ "Received non-OK response code when fetching IXP-Manager release information (file_get_contents): $responsecode" ] );
             return $results;
         }
 
@@ -444,20 +444,20 @@ function doIxpManagerReleaseCheck(string $localVersion): array
         curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
 
         if ( ( $tagsJson = curl_exec($ch) ) === false ) {
-            $results[] = new CheckResult(ResultStatus::ERROR, [ "Failed to fetch IXP-Manager release information (curl): " . curl_error($ch) ]);
+            $results[] = new CheckResult(ResultStatus::WARNING, [ "Failed to fetch IXP-Manager release information (curl): " . curl_error($ch) ]);
             return $results;
         }
 
         // Ensure HTTP response was OK
         $info = curl_getinfo( $ch );
         if ( $info['http_code'] !== 200 ) {
-            $results[] = new CheckResult( ResultStatus::ERROR, [ "Received non-OK response code when fetching IXP-Manager release information (curl): " . $info['http_code'] ] );
+            $results[] = new CheckResult( ResultStatus::WARNING, [ "Received non-OK response code when fetching IXP-Manager release information (curl): " . $info['http_code'] ] );
             return $results;
         }
 
         // we have $tagsJson and the response was OK
     } else {
-        $results[] = new CheckResult( ResultStatus::ERROR, [ "there was no usable method to fetch IXP-Manager release information" ] );
+        $results[] = new CheckResult( ResultStatus::WARNING, [ "There was no usable method to fetch IXP-Manager release information" ] );
         return $results;
     }
 
