@@ -539,6 +539,7 @@ $softwareVersionResults = [];
 $checkResults = [];
 
 $haveErrors = false;
+$haveWarnings = false;
 foreach ( $tasks as $task ) {
     $task->run();
     foreach ( $task->results as $taskResult ) {
@@ -546,27 +547,32 @@ foreach ( $tasks as $task ) {
             $softwareVersionResults[$taskResult->software] = $taskResult->version;
         } else {
             $checkResults[$task->name][] = $taskResult;
+            $haveErrors = $haveErrors || $taskResult->status === ResultStatus::ERROR;
+            $haveWarnings = $haveWarnings || $taskResult->status === ResultStatus::WARNING;
         }
     }
-    $haveErrors = $haveErrors || $task->hasErrors();
 }
 
-echo "Software Versions:\n";
+$basicReport = "Software Versions:\n";
 foreach ( $softwareVersionResults as $software => $result ) {
-    echo "$software: " . $result . "\n";
+    $basicReport .= "$software: " . $result . "\n";
 }
 
-echo "\n";
-echo "warnings:\n";
+$basicReport .= "\n";
+$basicReport .= "warnings:\n";
 foreach ( $checkResults as $taskName => $taskResults ) {
     if (count($taskResults) === 0) {
         continue;
     }
-    echo "task: " . $taskName . "\n";
+    $basicReport .= "task: " . $taskName . "\n";
     foreach ( $taskResults as $result ) {
-        echo " * " . $result->status->name . ": " . implode("\n * ", $result->messages) . "\n";
+        $basicReport .= " * " . $result->status->name . ": " . implode("\n * ", $result->messages) . "\n";
     }
-    echo "\n";
+    $basicReport .= "\n";
+}
+
+if ( $haveErrors || $haveWarnings ) {
+    echo $basicReport;
 }
 
 if ( $haveErrors ) {
@@ -574,8 +580,7 @@ if ( $haveErrors ) {
     exit(1);
 }
 
-
 echo "No errors detected during basic validations\n";
 
-echo shell_exec(__DIR__ . "/artisan validator:run --simple-output");
+echo shell_exec(__DIR__ . "/artisan validator:run");
 
