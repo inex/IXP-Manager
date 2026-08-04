@@ -72,9 +72,20 @@ class IxpRegistrationController
             $infrastructures = $result->toRegister;
         }
 
+        $infrastructurePopulateFields = [];
+
+        foreach ($infrastructures as $infrastructure) {
+            $infrastructurePopulateFields[$infrastructure->id] = [
+                'fullname'  => $infrastructure->name,
+                'shortname' => $infrastructure->shortname,
+                'country'   => $infrastructure->country,
+            ];
+        }
+
         Former::populate([
             'website'             => request()->old( 'website', config('identity.corporate_url') ),
             'ixpmurl'             => request()->old( 'ixpmurl', config('identity.url') ),
+            'infrastructure'      => $infrastructurePopulateFields,
         ]);
 
         return view('ixp-registration.register', [
