@@ -146,11 +146,8 @@ System Validation
         }, 1000);
 
         function loadJobs() {
-            // Show loading spinner?
-            // $container.html('<div class="text-center col-12 py-5"><div class="spinner-border text-primary"></div></div>');
-
             $.ajax({
-                url: '<?= route("validation@api-results", ['id' => $t->jobId]); ?>',
+                url: '<?= route("validation-api@get-results", ['id' => $t->jobId]); ?>',
                 method: 'GET',
                 dataType: 'json',
                 success: function(taskData) {

@@ -41,8 +41,19 @@ class ValidationServiceProvider extends ServiceProvider
 
             Route::get(  'admin/validation/start',        'ValidationController@startForm'   )->name( 'validation@start'        );
             Route::post( 'admin/validation/start',        'ValidationController@startSubmit' )->name( 'validation@start-submit' );
-            Route::get(  'admin/validation/result/{id}',  'ValidationController@apiResults'  )->name( 'validation@api-results'  );
             Route::get(  'admin/validation/view/{id}',    'ValidationController@view'        )->name( 'validation@view'         );
+        });
+
+        Route::group([
+            'middleware'   => [
+                'web',
+                'api/v4',
+                'assert.privilege:' . User::AUTH_SUPERUSER,
+            ],
+            'namespace' => 'IXP\Http\Controllers\Api\V4' ,
+            'prefix'       => 'admin/api/v4',
+        ], function () {
+            Route::get(  'validation/result/{id}',  'ValidationController@apiResults'  )->name( 'validation-api@get-results'  );
         });
     }
 
