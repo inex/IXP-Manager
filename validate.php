@@ -160,13 +160,10 @@ $versionInfo
 ```
 " .
             $environmentInfoPhp .
-            $environmentInfoPackages .
-"
-
+            $environmentInfoPackages . "
 ```
 
 ##### CONFIGURATION
-
 
 ```
 " . $envInfo . "
