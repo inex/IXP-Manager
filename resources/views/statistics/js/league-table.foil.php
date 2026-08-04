@@ -27,7 +27,8 @@
         return s.join(dec);
     }
 
-    //Define a custom format function for scale and type
+    // Define a custom format function for scale and type
+    // This function is used with 'average' and 'max' metric types which are transfer _rates_
     let myScale = function( data, type, full ) {
 
         if( type === 'sort' || type === 'type' ) {
@@ -38,9 +39,8 @@
 
         switch( category ) {
             case 'bytes':
+                // Note: this table doesn't seem to support displaying data in bytes?
                 strFormat = [ "Bytes", "KBytes", "MBytes", "GBytes", "TBytes" ];
-                // According to http://oss.oetiker.ch/mrtg/doc/mrtg-logfile.en.html, data is stored in bytes
-                // data = data / 8.0;
                 break;
             case 'errs':
             case 'discs':
@@ -48,8 +48,6 @@
                 strFormat = [ "pps", "Kpps", "Mpps", "Gpps", "Tpps" ];
                 break;
             default:
-                // According to http://oss.oetiker.ch/mrtg/doc/mrtg-logfile.en.html, data is stored in bytes
-                data = data * 8.0;
                 strFormat = [ "bps", "Kbps", "Mbps", "Gbps", "Tbps" ];
                 break;
         }
@@ -68,6 +66,7 @@
         return retString;
     };
 
+    // myScaleTotal is used with 'total' metric types which are a quantity, not a rate
     let myScaleTotal = function( data, type, full ) {
 
         if( type === 'sort' || type === 'type' ) {
@@ -83,9 +82,10 @@
                 strFormat = [ "p", "Kp", "Mp", "Gp", "Tp" ];
                 break;
             default:
+                // Data in traffic daily table is stored as bits. To convert to total in bytes,
+                // divide by 8.
                 strFormat = [ "B", "KB", "MB", "GB", "TB" ];
-                // According to http://oss.oetiker.ch/mrtg/doc/mrtg-logfile.en.html, data is stored in bytes
-                // oData /= 8;
+                data /= 8;
                 break;
         }
 
