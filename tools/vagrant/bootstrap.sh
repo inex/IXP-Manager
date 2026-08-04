@@ -68,7 +68,7 @@ echo "Installing mysql, apache, php, etc..."
 DEBIAN_FRONTEND=noninteractive apt-get install -y apache2 php8.4 php8.4-intl php8.4-mysql php8.4-rrd php8.4-cgi php8.4-cli \
     php8.4-snmp php8.4-curl  php8.4-memcached libapache2-mod-php8.4 mysql-server            \
     mysql-client memcached snmp php8.4-mbstring php8.4-xml php8.4-gd bgpq3 bgpq4 unzip git  \
-    joe php8.4-bcmath bgpq3 php8.4-memcache unzip php8.4-zip git php8.4-yaml phpmyadmin     \
+    joe php8.4-bcmath php8.4-memcache unzip php8.4-zip git php8.4-yaml phpmyadmin     \
     php8.4-ds libconfig-general-perl libnetaddr-ip-perl mrtg  libconfig-general-perl        \
     php8.4-mcrypt libnetaddr-ip-perl rrdtool librrds-perl curl bash-completion &>/dev/null
 
