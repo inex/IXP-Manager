@@ -130,6 +130,10 @@ class CustomerToUser extends Model
         return $query->where('privs', User::AUTH_CUSTADMIN );
     }
 
+    /**
+     * Called during a login or a switch customer operation to reflect the last time
+     * the customer account was accessed, and how
+     */
     public function updateLastLoginInfo( string $ip, string $via ): bool
     {
         $this->last_login_date = now();
