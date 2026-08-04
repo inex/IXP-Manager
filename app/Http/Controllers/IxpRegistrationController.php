@@ -130,9 +130,13 @@ class IxpRegistrationController
                     'status' => $response->status(),
                     'body' => $response->body(),
                 ]);
-                Container::push("An HTTP error " . $response->status() . " occurred while registering your infrastructures. Application logs may have more information.", Alert::WARNING);
+                Container::push("Failed to register infrastructures via API. <a target='_blank' href='".config("ixp_api.ixp-manager-dotorg.base_url") . "/community/users/submit'>please register manually instead</a>", Alert::WARNING);
             } else {
-                Container::push("A server HTTP error " . $response->status() . " occurred while processing your request.", Alert::WARNING);
+                \Log::warning("Unexpected error while registering IXP manager.", [
+                    'status' => $response->status(),
+                    'body' => $response->body(),
+                ]);
+                Container::push("Failed to register infrastructures via API. <a target='_blank' href='".config("ixp_api.ixp-manager-dotorg.base_url") . "/community/users/submit'>please register manually instead</a>", Alert::WARNING);
             }
         } catch (ConnectionException $e) {
             Container::push("Failed to connect to " . config('ixp_api.ixp-manager-dotorg.base_url') . " - please try again later", Alert::WARNING);
