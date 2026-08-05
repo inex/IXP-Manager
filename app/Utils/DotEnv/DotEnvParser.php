@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace IXP\Utils\DotEnv;
 
 /*
- * Copyright (C) 2009 - 2025 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * IXP Manager is free software: you can redistribute it and/or modify it
@@ -67,8 +67,16 @@ class DotEnvParser
         return $this;
     }
 
-    public function settings(): array {
-        return $this->settings;
+    public function settings( bool $includeMetadata = false ): array
+    {
+        if( $includeMetadata ) {
+            return $this->settings;
+        }
+
+        return array_map( function( array $setting ): array {
+            unset( $setting['raw'] );
+            return $setting;
+        }, $this->settings );
     }
 
     /**
@@ -97,6 +105,7 @@ class DotEnvParser
 
         foreach( $lines as $line ) {
 
+            $rawLine = $line;
             $line = trim($line);
 
             if( mb_strlen( $line ) && mb_strpos( $line, '#' ) !== 0 ) {
@@ -125,27 +134,8 @@ class DotEnvParser
                         throw new DotEnvParserException( "Invalid key name: " . $key );
                     }
 
-                    // is there a comment at the end of the line?
-                    $values = explode( '#', $valueElement );
-
-                    $value = $this->parseValue( array_shift( $values ) );
-
-                    $comment = '';
-                    if( count( $values ) === 0 ) {
-                        $comment = null;
-                    } else if( count( $values ) === 1 ) {
-                        $comment = trim( $values[ 0 ] );
-                    } else {
-                        // multiple hashes in the comment element
-                        while( ( $a = array_shift( $values ) ) !== null ) {
-                            if( $a === '' ) {
-                                $comment .= '#';
-                            } else {
-                                $comment .= $a;
-                            }
-                        }
-                        $comment = trim( $comment );
-                    }
+                    [ $valueElement, $comment ] = $this->splitValueAndComment( $valueElement );
+                    $value = $this->parseValue( $valueElement );
 
                     $this->settings[] = [
                         "key"     => trim( $key ),
@@ -164,12 +154,14 @@ class DotEnvParser
                         "key"     => null,
                         "value"   => null,
                         "comment" => "",
+                        "raw"     => $rawLine,
                     ];
                 } else {
                     $this->settings[] = [
                         "key"     => null,
                         "value"   => null,
                         "comment" => trim( mb_substr( $line, 1 ) ),
+                        "raw"     => $rawLine,
                     ];
                 }
             } else if( mb_strlen( $line ) === 0 ) {
@@ -194,6 +186,53 @@ class DotEnvParser
         }
 
         return $this;
+    }
+
+    /**
+     * Split a value from its inline comment without treating hashes inside
+     * quoted values as comment delimiters.
+     *
+     * @return array{0: string, 1: string|null}
+     */
+    private function splitValueAndComment( string $valueElement ): array
+    {
+        $quote = null;
+        $escaped = false;
+
+        for( $i = 0, $length = strlen( $valueElement ); $i < $length; $i++ ) {
+            $character = $valueElement[ $i ];
+
+            if( $escaped ) {
+                $escaped = false;
+                continue;
+            }
+
+            if( $character === '\\' && $quote === '"' ) {
+                $escaped = true;
+                continue;
+            }
+
+            if( $quote !== null ) {
+                if( $character === $quote ) {
+                    $quote = null;
+                }
+                continue;
+            }
+
+            if( $character === '"' || $character === "'" ) {
+                $quote = $character;
+                continue;
+            }
+
+            if( $character === '#' ) {
+                return [
+                    substr( $valueElement, 0, $i ),
+                    trim( substr( $valueElement, $i + 1 ) ),
+                ];
+            }
+        }
+
+        return [ $valueElement, null ];
     }
 
     /**

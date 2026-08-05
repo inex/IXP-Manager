@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Tests\Utils\DotEnv;
 
 /*
- * Copyright (C) 2009 - 2025 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -323,6 +323,32 @@ final class DotEnvParserTest extends TestCase
             ] ],
             $p->settings()
         );
+    }
+
+    /**
+     * @throws DotEnvParserException
+     */
+    public function testQuotedHashIsPartOfValue(): void
+    {
+        $p = $this->makeParser()
+            ->setContent( 'DB_PASSWORD="&k3RUT@5PFPeE%A#qv^NUgsC7"' )
+            ->parse();
+
+        $this->assertSame( '"&k3RUT@5PFPeE%A#qv^NUgsC7"', $p->settings()[0]['value'] );
+        $this->assertNull( $p->settings()[0]['comment'] );
+    }
+
+    /**
+     * @throws DotEnvParserException
+     */
+    public function testQuotedHashValueWithInlineComment(): void
+    {
+        $p = $this->makeParser()
+            ->setContent( 'DB_PASSWORD="&k3RUT@5PFPeE%A#qv^NUgsC7" # database password' )
+            ->parse();
+
+        $this->assertSame( '"&k3RUT@5PFPeE%A#qv^NUgsC7"', $p->settings()[0]['value'] );
+        $this->assertSame( 'database password', $p->settings()[0]['comment'] );
     }
 
 

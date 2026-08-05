@@ -62,6 +62,11 @@ class DotEnvWriter
 
         foreach( $this->settings as $l ) {
 
+            if( array_key_exists( 'raw', $l ) ) {
+                $content .= $l['raw'] . "\n";
+                continue;
+            }
+
             $lineStarted = false;
 
             if( $l['key'] !== null ) {

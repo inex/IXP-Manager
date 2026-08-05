@@ -5,7 +5,7 @@ declare( strict_types = 1 );
 namespace IXP\Http\Controllers;
 
 /*
- * Copyright (C) 2009 - 2025 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -85,6 +85,7 @@ class SettingsController extends Controller
     {
         try {
             $this->checkIfDotEnvIsCompatible();
+            $readOnly = !$this->isDotEnvWritable();
         } catch( Exception $e ) {
             
             AlertContainer::push( $e->getMessage(), Alert::DANGER );
@@ -93,10 +94,16 @@ class SettingsController extends Controller
                 'exception' => $e,
             ] );
         }
+
+        if( $readOnly ) {
+            AlertContainer::push( 'Server has no write permissions for .env file. Changes disabled.', Alert::WARNING );
+        }
         
         return view( 'settings.index' )->with( [
-            'settings' => $this->fe_settings,
-            'rules'    => [], //$this->gatherRules(),
+            'settings'     => $this->fe_settings,
+            'rules'        => [], //$this->gatherRules(),
+            'readOnly'     => $readOnly,
+            'lastModified' => date( 'Y-m-d H:i:s T', filemtime( base_path( '.env' ) ) ),
         ] );
     }
     
@@ -105,14 +112,10 @@ class SettingsController extends Controller
      * @throws DotEnvParserException
      * @throws Exception
      */
-    private function checkIfDotEnvIsCompatible()
+    private function checkIfDotEnvIsCompatible(): void
     {
         if( !file_exists( base_path( '.env' ) ) ) {
             throw new Exception( "The .env file is missing. Please create it and try again." );
-        }
-        
-        if( !is_writable( base_path( '.env' ) ) ) {
-            throw new Exception( "The .env file is can not be written to. Please check the file permissions and try again." );
         }
         
         if( !( $env = file_get_contents( base_path( '.env' ) ) ) ) {
@@ -120,6 +123,14 @@ class SettingsController extends Controller
         }
         
         new DotEnvParser( $env )->parse();
+    }
+
+    /**
+     * Check whether the .env settings can be changed through the UI.
+     */
+    private function isDotEnvWritable(): bool
+    {
+        return is_writable( base_path( '.env' ) );
     }
     
     /**
@@ -137,7 +148,7 @@ class SettingsController extends Controller
         }
         
         
-        return new DotEnvContainer( new DotEnvParser( $env )->parse()->settings() );
+        return new DotEnvContainer( new DotEnvParser( $env )->parse()->settings( true ) );
     }
     
     /**
@@ -150,7 +161,7 @@ class SettingsController extends Controller
         }
         
         if( !is_writable( base_path( '.env' ) ) ) {
-            throw new Exception( "The .env file is can not be written to. Please check the file permissions and try again." );
+            throw new Exception( "The .env file cannot be written to. Please check the file permissions and try again." );
         }
         
         if( !( file_put_contents( base_path( '.env' ), $dotEnv ) ) ) {
@@ -181,7 +192,19 @@ class SettingsController extends Controller
                         $validated[ $fname ] = $validated[ $fname ] === "1" ? "0" : "1";
                     }
                     
-                    if( !isset( $validated[ $fname ] ) || $validated[ $fname ] == $orig ) {
+                    if( !isset( $validated[ $fname ] ) ) {
+                        continue;
+                    }
+
+                    if( ( $fconfig[ 'rules' ] ?? null ) === 'boolean' ) {
+                        $value = filter_var( $validated[ $fname ], FILTER_VALIDATE_BOOLEAN );
+
+                        if( $value === (bool)$orig ) {
+                            continue;
+                        }
+
+                        $validated[ $fname ] = $value ? 'true' : 'false';
+                    } else if( $validated[ $fname ] == $orig ) {
                         continue;
                     }
 
