@@ -22,6 +22,8 @@
 
 use Illuminate\Support\Facades\Route;
 
+use IXP\Http\Middleware\Provisioning\ShortCircuitKnownReference;
+
 /*
 |--------------------------------------------------------------------------
 | Provisioning API Routes
@@ -58,3 +60,7 @@ Route::group( [ 'prefix' => 'member' ], function() {
 } );
 
 Route::delete( 'connection/{vi}', 'ConnectionController@destroy' )->name( 'api-v4-provisioning@connection-destroy' );
+
+Route::post( 'onboarding', 'OnboardingController@store' )
+    ->middleware( ShortCircuitKnownReference::class )
+    ->name( 'api-v4-provisioning@onboarding' );
