@@ -158,7 +158,7 @@ class ConnectionController extends Common
                 $vi->save();
 
                 return $vi;
-            } );
+            } , attempts: 3 );
         } catch( IpAllocationException $e ) {
             return response()->json( [ 'message' => $e->getMessage() ], 422 );
         }
@@ -262,6 +262,13 @@ class ConnectionController extends Common
 
         if( $sp->physicalInterface ) {
             return "Switch port {$sp->name} is already assigned to another connection.";
+        }
+
+        // A switch taken out of service between listing free ports and ordering: the
+        // connection would be created but appear in neither the switch configuration nor the
+        // grapher, with nothing raising an alarm.
+        if( !$sp->switcher || !$sp->switcher->active ) {
+            return "Switch port {$sp->name} is on a switch which is not active.";
         }
 
         if( !in_array( (int)$sp->type, [ SwitchPort::TYPE_UNSET, SwitchPort::TYPE_PEERING ], true ) ) {
