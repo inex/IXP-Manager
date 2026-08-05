@@ -32,11 +32,8 @@ use IXP\Utils\Validation\Result;
 use IXP\Utils\Validation\ResultType;
 use IXP\Utils\Validation\Software;
 use IXP\Utils\Validation\ValidationRunnerFactory;
-use Ramsey\Uuid\Uuid;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Helper\TableSeparator;
-use Symfony\Component\Console\Output\ConsoleSectionOutput;
-use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Artisan command to run system validator routines
@@ -69,7 +66,7 @@ class RunCommand extends Command
     private array $logResultTypes;
 
     /**
-     * @var Backend[]
+     * @var ValidationRunner[]
      */
     private array $runners;
 
@@ -118,22 +115,22 @@ class RunCommand extends Command
         $this->line("Log level: " . $this->option('log-level'));
         $this->line("Validations summary: " . $this->buildResultsSummary());
 
-        if ( ( $failed = array_filter( $this->runners, fn( ValidationRunner $runner ) => $runner->isFailed() ) ) ) {
+        if ( ( $failedRunners = array_filter( $this->runners, fn( ValidationRunner $runner ) => $runner->isFailed() ) ) ) {
             $this->line("");
             $this->line("<comment>The following validations encountered errors which prevented them from finishing:</comment>");
-            foreach ($failed as $backend) {
-                $failure = $backend->getFailureInfo();
+            foreach ($failedRunners as $failedRunner) {
+                $failure = $failedRunner->getFailureInfo();
                 $exceptionMessage = sprintf( " - '%s' encountered %s at %s:%d:\n%s",
-                    $backend->getValidator()->getName(), $failure->class, $failure->file, $failure->line , $failure->message);
+                    $failedRunner->getValidator()->getName(), $failure->class, $failure->file, $failure->line , $failure->message);
                 $this->line($exceptionMessage);
                 $this->line("");
             }
         }
 
-        if ( ( $timedOut = array_filter($this->runners, fn( ValidationRunner $runner ) => $runner->isTimedOut() ) ) ) {
+        if ( ( $timedOutRunners = array_filter($this->runners, fn( ValidationRunner $runner ) => $runner->isTimedOut() ) ) ) {
             $this->line("The following validations timed out before reporting their results");
-            foreach ($timedOut as $backend) {
-                $this->line(" * {$backend->getValidator()->getName()}");
+            foreach ($timedOutRunners as $timedOutRunner) {
+                $this->line(" * {$timedOutRunner->getValidator()->getName()}");
             }
         }
 
@@ -191,7 +188,7 @@ class RunCommand extends Command
 
         // Build list of software
         $softwareList = collect($runners)
-            ->flatMap( fn( ValidationRunner $backend ) => $backend->getSoftware() )
+            ->flatMap( fn( ValidationRunner $runner ) => $runner->getSoftware() )
             ->map(     fn( Software $software) => [ $software->software, $software->version ] )
             ->all();
 
@@ -233,7 +230,7 @@ class RunCommand extends Command
                 $rows[] = [null, null, "<comment>This validator failed to complete due to an error</comment>"];
             }
 
-            // Append a separator if it's not the last backend in the list
+            // Append a separator if it's not the last runner in the list
             if ($index < count($runners) - 1) {
                 $rows[] = [new TableSeparator(['colspan' => 3])];
             }
