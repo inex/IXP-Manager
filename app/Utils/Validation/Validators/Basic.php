@@ -24,6 +24,7 @@ declare(strict_types=1);
 
 namespace IXP\Utils\Validation\Validators;
 
+use Composer\InstalledVersions;
 use Illuminate\Database\QueryException;
 use IXP\Contracts\Validation\ValidationBackend;
 use IXP\Contracts\Validation\Validator;
@@ -103,6 +104,21 @@ class Basic implements Validator
             $backend->error( "composer install has not been run" );
         } else {
             $backend->info( "composer has been run" );
+        }
+
+        $composerPackageData = InstalledVersions::getAllRawData();
+
+        $foundDevRequirement = false;
+        foreach ( $composerPackageData[0]['versions'] as $installedPackage ) {
+            if ($installedPackage['dev_requirement']) {
+                $foundDevRequirement = true;
+                break;
+            }
+        }
+
+        if ($foundDevRequirement) {
+            $backend->error("URGENT: Found composer packages installed due to `dev_requirement`. This is a security risk on a production system. Please see install/upgrade instructions for instructions on installing libraries from composer.")
+                ->withDocsPath("install/upgrading/");
         }
     }
 
