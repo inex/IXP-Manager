@@ -2,7 +2,7 @@
 
 namespace Tests\Utils\Validation;
 
-use IXP\Utils\Validation\FailureInfo;
+use IXP\Utils\Validation\Dto\FailureInfo;
 use Tests\TestCase;
 
 class FailureInfoTest extends TestCase

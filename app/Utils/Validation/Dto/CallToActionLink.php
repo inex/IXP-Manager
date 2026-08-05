@@ -19,25 +19,28 @@
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+
 declare(strict_types=1);
 
-namespace IXP\Utils\Validation;
+namespace IXP\Utils\Validation\Dto;
 
 /**
- * This class contains a text string to be included under a validator result
+ * A generic container for a 'call to action' link displayed prominently beside
+ * the validation message
  */
-readonly class AdditionalInfoTextElement implements AdditionalInfoElement
+readonly class CallToActionLink implements \JsonSerializable
 {
     public function __construct(
-        private(set) string $text,
-    ) {}
+        private(set) string     $text,
+        private(set) string     $url,
+    ){}
 
     #[\Override]
     public function jsonSerialize(): array
     {
         return [
-            'type' => AdditionalInfoElementType::Text->value,
             'text' => $this->text,
+            'url' => $this->url,
         ];
     }
 }

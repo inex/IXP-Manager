@@ -27,6 +27,11 @@ namespace IXP\Utils\Validation;
 use IXP\Contracts\Validation\ValidationBackend;
 use IXP\Contracts\Validation\ValidationRunner;
 use IXP\Contracts\Validation\Validator;
+use IXP\Utils\Validation\Dto\FailureInfo;
+use IXP\Utils\Validation\Dto\Result;
+use IXP\Utils\Validation\Dto\Software;
+use IXP\Utils\Validation\Dto\ValidationReport;
+use IXP\Utils\Validation\Enums\ResultType;
 
 /**
  * Backend.

@@ -22,7 +22,7 @@
 
 declare(strict_types=1);
 
-namespace IXP\Utils\Validation;
+namespace IXP\Utils\Validation\Dto;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use IXP\Contracts\Validation\ValidationRunner;

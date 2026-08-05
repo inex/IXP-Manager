@@ -27,7 +27,7 @@ namespace IXP\Http\Controllers\Api\V4;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Cache;
-use IXP\Utils\Validation\JobState;
+use IXP\Utils\Validation\Dto\JobState;
 
 class ValidationController
 {

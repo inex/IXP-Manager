@@ -22,7 +22,7 @@
 
 namespace IXP\Contracts\Validation;
 
-use IXP\Utils\Validation\Result;
+use IXP\Utils\Validation\Dto\Result;
 
 /**
  * ValidationBackend is the interface used by Validators to report results.

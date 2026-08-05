@@ -5,8 +5,8 @@ namespace Tests\Utils\Validation;
 use IXP\Contracts\Validation\ValidationBackend;
 use IXP\Contracts\Validation\Validator;
 use IXP\Utils\Validation\Backend;
-use IXP\Utils\Validation\FailureInfo;
-use IXP\Utils\Validation\ResultType;
+use IXP\Utils\Validation\Dto\FailureInfo;
+use IXP\Utils\Validation\Enums\ResultType;
 use Mockery;
 use Tests\TestCase;
 

@@ -26,7 +26,7 @@ namespace Tests\Utils\Validation\Validators;
 
 use IXP\Contracts\Validation\ValidationRunner;
 use IXP\Utils\Validation\Backend;
-use IXP\Utils\Validation\ResultType;
+use IXP\Utils\Validation\Enums\ResultType;
 use IXP\Utils\Validation\Validators\GrapherValidator;
 use Tests\TestCase;
 

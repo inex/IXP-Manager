@@ -19,29 +19,13 @@
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-
 declare(strict_types=1);
 
-namespace IXP\Utils\Validation;
-
-use JsonSerializable;
+namespace IXP\Utils\Validation\Dto\AdditionalInfo;
 
 /**
- * Simple DTO containing a software and it's version
- */
-readonly class Software implements JsonSerializable
+ * Interface which additional info classes must implement
+ * for array type safety and to enforce JsonSerializable requirement */
+interface Element extends \JsonSerializable
 {
-    public function __construct(
-        private(set) string $software,
-        private(set) string $version
-    ) { }
-
-    #[\Override]
-    public function jsonSerialize(): array
-    {
-        return [
-            'name'    => $this->software,
-            'version' => $this->version,
-        ];
-    }
 }

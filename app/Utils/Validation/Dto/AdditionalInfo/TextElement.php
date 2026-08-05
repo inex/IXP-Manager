@@ -21,13 +21,25 @@
  */
 declare(strict_types=1);
 
-namespace IXP\Utils\Validation;
+namespace IXP\Utils\Validation\Dto\AdditionalInfo;
+
+use IXP\Utils\Validation\Enums\AdditionalInfoElementType;
 
 /**
- * Enumeration of additional info types
+ * This class contains a text string to be included under a validator result
  */
-enum AdditionalInfoElementType: string
+readonly class TextElement implements Element
 {
-    case Text = 'text';
-    case Url = 'url';
+    public function __construct(
+        private(set) string $text,
+    ) {}
+
+    #[\Override]
+    public function jsonSerialize(): array
+    {
+        return [
+            'type' => AdditionalInfoElementType::Text->value,
+            'text' => $this->text,
+        ];
+    }
 }

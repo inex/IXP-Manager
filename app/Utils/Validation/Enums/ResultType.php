@@ -22,25 +22,18 @@
 
 declare(strict_types=1);
 
-namespace IXP\Utils\Validation;
+namespace IXP\Utils\Validation\Enums;
 
 /**
- * A generic container for a 'call to action' link displayed prominently beside
- * the validation message
+ * Define possible statuses of validation results
+ *
+ * @author Thomas Kerin <thomas@islandbridgenetworks.ie>
  */
-readonly class CallToActionLink implements \JsonSerializable
+enum ResultType: string
 {
-    public function __construct(
-        private(set) string     $text,
-        private(set) string     $url,
-    ){}
-
-    #[\Override]
-    public function jsonSerialize(): array
-    {
-        return [
-            'text' => $this->text,
-            'url' => $this->url,
-        ];
-    }
+    case Debug = 'DEBUG';
+    case Info = 'INFO';
+    case Suggestion = 'SUGGEST';
+    case Warning = 'WARNING';
+    case Error = 'ERROR';
 }

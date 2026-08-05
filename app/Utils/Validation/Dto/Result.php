@@ -22,8 +22,12 @@
 
 declare(strict_types=1);
 
-namespace IXP\Utils\Validation;
+namespace IXP\Utils\Validation\Dto;
 
+use IXP\Utils\Validation\Dto\AdditionalInfo\Element;
+use IXP\Utils\Validation\Dto\AdditionalInfo\TextElement;
+use IXP\Utils\Validation\Dto\AdditionalInfo\UrlElement;
+use IXP\Utils\Validation\Enums\ResultType;
 use JsonSerializable;
 
 /**
@@ -35,7 +39,7 @@ class Result implements JsonSerializable
     private(set) ?string           $settingsUrl    = null;
     private(set) ?CallToActionLink $callToAction   = null;
 
-    /** @var AdditionalInfoElement[] */
+    /** @var Element[] */
     private(set) array             $additionalInfo = [];
 
     public function __construct(
@@ -92,7 +96,7 @@ class Result implements JsonSerializable
      */
     public function addAdditionalInfoText(string $text): Result
     {
-        return $this->addAdditionalInfo(new AdditionalInfoTextElement($text));
+        return $this->addAdditionalInfo(new TextElement($text));
     }
 
     /**
@@ -100,13 +104,13 @@ class Result implements JsonSerializable
      */
     public function addAdditionalInfoUrl(string $url, string $text): Result
     {
-        return $this->addAdditionalInfo(new AdditionalInfoUrlElement($url, $text));
+        return $this->addAdditionalInfo(new UrlElement($url, $text));
     }
 
     /**
      * Add an AdditionalInfoElement to the result
      */
-    public function addAdditionalInfo(AdditionalInfoElement $element): Result
+    public function addAdditionalInfo(Element $element): Result
     {
         $this->additionalInfo[] = $element;
         return $this;

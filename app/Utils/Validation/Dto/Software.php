@@ -19,27 +19,29 @@
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+
 declare(strict_types=1);
 
-namespace IXP\Utils\Validation;
+namespace IXP\Utils\Validation\Dto;
+
+use JsonSerializable;
 
 /**
- * This class contains a URL to be included as additional information under a validator result
+ * Simple DTO containing a software and it's version
  */
-readonly class AdditionalInfoUrlElement implements AdditionalInfoElement
+readonly class Software implements JsonSerializable
 {
     public function __construct(
-        private(set) string $url,
-        private(set) string $text,
-    ) {}
+        private(set) string $software,
+        private(set) string $version
+    ) { }
 
     #[\Override]
     public function jsonSerialize(): array
     {
         return [
-            'type'   => AdditionalInfoElementType::Url->value,
-            'url'    => $this->url,
-            'text'   => $this->text,
+            'name'    => $this->software,
+            'version' => $this->version,
         ];
     }
 }

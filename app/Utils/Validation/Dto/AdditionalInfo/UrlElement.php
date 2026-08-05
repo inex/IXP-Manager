@@ -19,19 +19,29 @@
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+declare(strict_types=1);
 
-namespace IXP\Utils\Validation;
+namespace IXP\Utils\Validation\Dto\AdditionalInfo;
+
+use IXP\Utils\Validation\Enums\AdditionalInfoElementType;
 
 /**
- * Define possible statuses of validation results
- *
- * @author Thomas Kerin <thomas@islandbridgenetworks.ie>
+ * This class contains a URL to be included as additional information under a validator result
  */
-enum ResultType: string
+readonly class UrlElement implements Element
 {
-    case Debug = 'DEBUG';
-    case Info = 'INFO';
-    case Suggestion = 'SUGGEST';
-    case Warning = 'WARNING';
-    case Error = 'ERROR';
+    public function __construct(
+        private(set) string $url,
+        private(set) string $text,
+    ) {}
+
+    #[\Override]
+    public function jsonSerialize(): array
+    {
+        return [
+            'type'   => AdditionalInfoElementType::Url->value,
+            'url'    => $this->url,
+            'text'   => $this->text,
+        ];
+    }
 }

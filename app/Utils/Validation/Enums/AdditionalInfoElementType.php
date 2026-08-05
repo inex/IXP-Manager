@@ -19,13 +19,16 @@
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+
 declare(strict_types=1);
 
-namespace IXP\Utils\Validation;
+namespace IXP\Utils\Validation\Enums;
 
 /**
- * Interface which additional info classes must implement
- * for array type safety and to enforce JsonSerializable requirement */
-interface AdditionalInfoElement extends \JsonSerializable
+ * Enumeration of additional info types
+ */
+enum AdditionalInfoElementType: string
 {
+    case Text = 'text';
+    case Url = 'url';
 }
