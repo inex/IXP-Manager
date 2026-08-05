@@ -83,6 +83,12 @@ class StoreUser extends Store
     #[\Override]
     protected function prepareForValidation(): void
     {
+        // The inherited username rule reads `$this->id` to exempt the record being edited from
+        // the uniqueness check. This endpoint only creates, so an `id` in the body could only
+        // serve to exempt someone else's username - and the request would then fail on the
+        // database constraint with a 500 rather than a 422:
+        $this->request->remove( 'id' );
+
         if( ( $cust = $this->route( 'cust' ) ) instanceof Customer ) {
             $this->merge( [ 'custid' => $cust->id ] );
         }

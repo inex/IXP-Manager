@@ -66,6 +66,20 @@ use IXP\Support\Provisioning\IpAllocator;
 class ConnectionController extends Common
 {
     /**
+     * Relations connectionAsArray() reads.
+     *
+     * Eager loaded so that listing a member's connections is a fixed number of queries rather
+     * than one per interface per relation.
+     *
+     * @var array<int,string>
+     */
+    private const array RESPONSE_RELATIONS = [
+        'physicalInterfaces.switchPort.switcher',
+        'vlanInterfaces.ipv4address',
+        'vlanInterfaces.ipv6address',
+    ];
+
+    /**
      * Create a connection for a member.
      *
      * Everything happens in one transaction, including the address allocation: the row lock
@@ -94,7 +108,7 @@ class ConnectionController extends Common
 
         // Reject a switch port which is taken, is not a member port, or sits on another
         // switch, before anything is written:
-        if( $error = $this->rejectUnusableSwitchPort( $r ) ) {
+        if( $error = self::switchPortRejection( $r->input( 'switch' ), $r->input( 'switchportid' ) ) ) {
             return response()->json( [ 'message' => $error ], 422 );
         }
 
@@ -154,7 +168,7 @@ class ConnectionController extends Common
         Log::notice( "Provisioning API: created connection {$vi->id} for {$cust->name} as "
             . Auth::user()->username );
 
-        return response()->json( [ 'connection' => $this->connectionAsArray( $vi->fresh() ) ], 201 );
+        return response()->json( [ 'connection' => $this->connectionAsArray( $vi->fresh( self::RESPONSE_RELATIONS ) ) ], 201 );
     }
 
     /**
@@ -166,9 +180,11 @@ class ConnectionController extends Common
      */
     public function index( Customer $cust ): JsonResponse
     {
-        $connections = $cust->virtualInterfaces->map(
-            fn( VirtualInterface $vi ) => $this->connectionAsArray( $vi )
-        )->values()->all();
+        $connections = $cust->virtualInterfaces()
+            ->with( self::RESPONSE_RELATIONS )
+            ->get()
+            ->map( fn( VirtualInterface $vi ) => $this->connectionAsArray( $vi ) )
+            ->values()->all();
 
         return response()->json( [ 'connections' => $connections ] );
     }
@@ -224,19 +240,23 @@ class ConnectionController extends Common
     /**
      * Reject a switch port which cannot be given to a member.
      *
-     * @param  StoreConnection  $r
+     * Static and parameter-driven so the onboarding endpoint applies the identical gate. When
+     * the two drifted apart, onboarding accepted a port belonging to a different switch.
+     *
+     * @param  mixed  $switchId
+     * @param  mixed  $switchPortId
      *
      * @return string|null  an error message, or null when the port is usable
      */
-    private function rejectUnusableSwitchPort( StoreConnection $r ): ?string
+    public static function switchPortRejection( mixed $switchId, mixed $switchPortId ): ?string
     {
-        $sp = SwitchPort::find( $r->input( 'switchportid' ) );
+        $sp = SwitchPort::find( $switchPortId );
 
         if( !$sp ) {
             return 'The switch port does not exist.';
         }
 
-        if( (int)$sp->switchid !== (int)$r->input( 'switch' ) ) {
+        if( (int)$sp->switchid !== (int)$switchId ) {
             return "Switch port {$sp->name} does not belong to the switch given.";
         }
 

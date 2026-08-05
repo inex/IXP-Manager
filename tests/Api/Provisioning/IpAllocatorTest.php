@@ -83,16 +83,44 @@ class IpAllocatorTest extends TestCase
     {
         $vlan = $this->vlanWithAddresses();
 
-        DB::transaction( function() use ( $vlan ) {
-            $ip = $this->allocator()->nextFree( $vlan );
+        // Comparing against the single lowest address proves little: in most pools the lowest
+        // is the same either way. The difference between numeric and lexical ordering only
+        // shows up across a digit boundary - lexically ".10" sorts before ".9" - so compare a
+        // whole run of addresses against a numerically sorted expectation.
+        $expected = IPv4Address::where( 'vlanid', $vlan->id )
+            ->whereDoesntHave( 'vlanInterface' )
+            ->get()
+            ->sort( fn( IPv4Address $a, IPv4Address $b ) =>
+                ( ip2long( $a->address ) <=> ip2long( $b->address ) ) )
+            ->pluck( 'address' )
+            ->take( 15 )
+            ->values()
+            ->all();
 
-            $lowest = IPv4Address::where( 'vlanid', $vlan->id )
-                ->whereDoesntHave( 'vlanInterface' )
-                ->get()
-                ->sortBy( fn( IPv4Address $a ) => sprintf( '%u', ip2long( $a->address ) ) )
-                ->first();
+        $lexical = IPv4Address::where( 'vlanid', $vlan->id )
+            ->whereDoesntHave( 'vlanInterface' )
+            ->orderBy( 'address' )
+            ->limit( 15 )
+            ->pluck( 'address' )
+            ->all();
 
-            $this->assertSame( $lowest->address, $ip->address );
+        $this->assertNotSame(
+            $lexical,
+            $expected,
+            'this pool cannot distinguish numeric from lexical ordering - the test proves nothing'
+        );
+
+        $actual = IPv4Address::where( 'vlanid', $vlan->id )
+            ->whereDoesntHave( 'vlanInterface' )
+            ->orderByRaw( 'INET_ATON(address) ASC' )
+            ->limit( 15 )
+            ->pluck( 'address' )
+            ->all();
+
+        $this->assertSame( $expected, $actual, 'addresses are not ordered numerically' );
+
+        DB::transaction( function() use ( $vlan, $expected ) {
+            $this->assertSame( $expected[ 0 ], $this->allocator()->nextFree( $vlan )->address );
         } );
     }
 

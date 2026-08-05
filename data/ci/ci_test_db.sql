@@ -1610,7 +1610,7 @@ CREATE TABLE `migrations` (
 
 LOCK TABLES `migrations` WRITE;
 /*!40000 ALTER TABLE `migrations` DISABLE KEYS */;
-INSERT INTO `migrations` VALUES (1,'2014_10_12_100000_create_password_resets_table',1),(2,'2018_08_08_100000_create_telescope_entries_table',1),(3,'2019_03_25_211956_create_failed_jobs_table',1),(4,'2020_02_06_204556_create_docstore_directories',2),(5,'2020_02_06_204608_create_docstore_files',2),(6,'2020_02_06_204911_create_docstore_logs',2),(7,'2020_03_09_110945_create_docstore_customer_directories',3),(8,'2020_03_09_111505_create_docstore_customer_files',3),(9,'2020_07_21_094354_create_route_server_filters',4),(12,'2020_09_03_153723_add_timestamps',5),(13,'2020_09_18_095136_delete_ixp_table',6),(14,'2020_11_16_102415_database_fixes',7),(15,'2021_03_12_150418_create_log_table',8),(16,'2021_04_14_125742_user_pref',9),(17,'2021_04_14_101948_update_timestamps',10),(18,'2021_05_18_085721_add_note_infrastructure',11),(19,'2021_05_18_114206_update_pp_prefix_size',12),(20,'2020_06_01_143931_database_schema_at_end_v5',13),(21,'2021_03_30_124916_create_atlas_probes',13),(22,'2021_03_30_125238_create_atlas_runs',13),(23,'2021_03_30_125422_create_atlas_measurements',13),(24,'2021_03_30_125723_create_atlas_results',13),(25,'2021_06_11_141137_update_db_doctrine2eloquent',13),(26,'2021_07_20_134716_fix_last_updated_and_timestamps',13),(27,'2021_09_16_195333_add_rate_limit_col_to_physint',13),(28,'2021_09_17_144421_modernise_irrdb_conf_table',13),(29,'2021_09_21_100354_create_route_server_filters_prod',14),(30,'2021_09_21_162700_rs_pairing',15),(31,'2022_02_12_183121_add_colo_pp_type_patch_panel',15),(32,'2023_09_26_191150_add_registration_details',15),(33,'2024_03_18_191322_add_export_to_ixf_vlan',15),(34,'2024_08_10_125003_create_irrdb_update_logs',16),(35,'2024_09_05_111855_create_p2p_daily_stats_table',17),(36,'2024_05_29_102028_reset-views',18),(37,'2025_09_01_102636_add_ipv6_max_prefixes',19),(38,'2025_11_11_085835_add_exclude_from_ixf_export_to_infrastructure',20),(39,'2026_02_16_205211_remove_legacy_columns_from_contacts',21),(40,'2026_04_20_161912_remove_user_privs',22),(42,'2026_04_27_110644_create_asn_table',23),(46,'2026_06_11_102639_create_app_passwords_table',24),(47,'2026_06_11_112737_create_app_passwords_last_logins_table',24),(48,'2026_06_25_133900_set_api_keys_expires_not_nullable',24);
+INSERT INTO `migrations` VALUES (1,'2014_10_12_100000_create_password_resets_table',1),(2,'2018_08_08_100000_create_telescope_entries_table',1),(3,'2019_03_25_211956_create_failed_jobs_table',1),(4,'2020_02_06_204556_create_docstore_directories',2),(5,'2020_02_06_204608_create_docstore_files',2),(6,'2020_02_06_204911_create_docstore_logs',2),(7,'2020_03_09_110945_create_docstore_customer_directories',3),(8,'2020_03_09_111505_create_docstore_customer_files',3),(9,'2020_07_21_094354_create_route_server_filters',4),(12,'2020_09_03_153723_add_timestamps',5),(13,'2020_09_18_095136_delete_ixp_table',6),(14,'2020_11_16_102415_database_fixes',7),(15,'2021_03_12_150418_create_log_table',8),(16,'2021_04_14_125742_user_pref',9),(17,'2021_04_14_101948_update_timestamps',10),(18,'2021_05_18_085721_add_note_infrastructure',11),(19,'2021_05_18_114206_update_pp_prefix_size',12),(20,'2020_06_01_143931_database_schema_at_end_v5',13),(21,'2021_03_30_124916_create_atlas_probes',13),(22,'2021_03_30_125238_create_atlas_runs',13),(23,'2021_03_30_125422_create_atlas_measurements',13),(24,'2021_03_30_125723_create_atlas_results',13),(25,'2021_06_11_141137_update_db_doctrine2eloquent',13),(26,'2021_07_20_134716_fix_last_updated_and_timestamps',13),(27,'2021_09_16_195333_add_rate_limit_col_to_physint',13),(28,'2021_09_17_144421_modernise_irrdb_conf_table',13),(29,'2021_09_21_100354_create_route_server_filters_prod',14),(30,'2021_09_21_162700_rs_pairing',15),(31,'2022_02_12_183121_add_colo_pp_type_patch_panel',15),(32,'2023_09_26_191150_add_registration_details',15),(33,'2024_03_18_191322_add_export_to_ixf_vlan',15),(34,'2024_08_10_125003_create_irrdb_update_logs',16),(35,'2024_09_05_111855_create_p2p_daily_stats_table',17),(36,'2024_05_29_102028_reset-views',18),(37,'2025_09_01_102636_add_ipv6_max_prefixes',19),(38,'2025_11_11_085835_add_exclude_from_ixf_export_to_infrastructure',20),(39,'2026_02_16_205211_remove_legacy_columns_from_contacts',21),(40,'2026_04_20_161912_remove_user_privs',22),(42,'2026_04_27_110644_create_asn_table',23),(46,'2026_06_11_102639_create_app_passwords_table',24),(47,'2026_06_11_112737_create_app_passwords_last_logins_table',24),(48,'2026_06_25_133900_set_api_keys_expires_not_nullable',24),(49,'2026_08_05_120000_create_provisioning_references_table',25);
 /*!40000 ALTER TABLE `migrations` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2081,6 +2081,36 @@ LOCK TABLES `physicalinterface` WRITE;
 /*!40000 ALTER TABLE `physicalinterface` DISABLE KEYS */;
 INSERT INTO `physicalinterface` VALUES (1,3,NULL,1,1,1000,'full',NULL,'',1,NULL,NULL),(2,4,NULL,1,1,1000,'full',NULL,'',1,NULL,NULL),(3,25,NULL,2,1,1000,'full',NULL,NULL,1,NULL,NULL),(4,8,NULL,3,1,100,'full',NULL,NULL,1,NULL,NULL),(5,6,NULL,4,1,10,'full',NULL,NULL,1,NULL,NULL),(6,30,NULL,5,1,10,'full',NULL,NULL,1,NULL,NULL),(7,9,NULL,6,1,1000,'full',NULL,NULL,1,NULL,NULL),(8,32,NULL,7,1,10000,'full',NULL,NULL,1,NULL,NULL),(9,18,NULL,8,1,1000,'full',NULL,NULL,1,NULL,NULL),(10,42,NULL,9,1,1000,'full',NULL,NULL,1,NULL,NULL),(11,19,NULL,8,1,1000,'full',NULL,NULL,1,NULL,NULL),(12,43,NULL,9,1,1000,'full',NULL,NULL,1,NULL,NULL),(13,27,NULL,10,4,1000,'full',NULL,NULL,1,NULL,NULL),(14,1,NULL,11,1,1000,'full',NULL,NULL,1,'2025-08-30 10:54:46','2025-08-30 10:54:46');
 /*!40000 ALTER TABLE `physicalinterface` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `provisioning_references`
+--
+
+DROP TABLE IF EXISTS `provisioning_references`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `provisioning_references` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `reference` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `model_type` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `model_id` int unsigned NOT NULL,
+  `created_by` int unsigned DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `provisioning_references_unique` (`reference`,`model_type`),
+  KEY `provisioning_references_model` (`model_type`,`model_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `provisioning_references`
+--
+
+LOCK TABLES `provisioning_references` WRITE;
+/*!40000 ALTER TABLE `provisioning_references` DISABLE KEYS */;
+/*!40000 ALTER TABLE `provisioning_references` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --

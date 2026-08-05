@@ -26,6 +26,8 @@ use Auth;
 
 use Illuminate\Foundation\Http\FormRequest;
 
+use IXP\Models\Customer;
+use IXP\Models\PhysicalInterface;
 use IXP\Models\User;
 
 /**
@@ -136,14 +138,33 @@ class StoreOnboarding extends FormRequest
 
         $connection = (array)$this->input( 'connection' );
 
-        $connection[ 'status' ] ??= \IXP\Models\PhysicalInterface::STATUS_CONNECTED;
+        $connection[ 'status' ] ??= PhysicalInterface::STATUS_CONNECTED;
         $connection[ 'duplex' ] ??= 'full';
 
         $this->merge( [ 'connection' => $connection ] );
     }
 
     /**
-     * Validate address syntax in the connection section, mirroring StoreConnection.
+     * Apply the checks the dedicated endpoints perform outside their rule sets.
+     *
+     * Copying rules() out of the sub-requests is not enough. Laravel invokes withValidator()
+     * on the request it is actually validating, and that is this one - so the sub-requests'
+     * own hooks never run, and every check which lives in a hook rather than a rule silently
+     * does not apply here.
+     *
+     * That is not cosmetic. Two of those checks are the only thing standing between a caller
+     * and a privilege escalation:
+     *
+     *   - User\Store::withValidator() refuses AUTH_SUPERUSER unless the target customer is an
+     *     internal one. Without it, an order could create a full IXP Manager administrator
+     *     attached to an arbitrary member - and the welcome email would hand over the
+     *     password-reset link.
+     *   - Customer\Store::checkReseller() refuses a resold customer with no reseller named.
+     *     Without it the flag is silently dropped and the member is created un-resold.
+     *
+     * The checks are restated here rather than delegated, because the upstream hooks read
+     * state which does not exist yet at this point: User\Store looks up Customer::find($custid)
+     * for a customer this very request is about to create, and would dereference null.
      *
      * @param  \Illuminate\Contracts\Validation\Validator  $validator
      *
@@ -152,25 +173,79 @@ class StoreOnboarding extends FormRequest
     public function withValidator( $validator ): void
     {
         $validator->after( function( $validator ) {
-            if( !$this->has( 'connection' ) ) {
-                return;
-            }
-
-            foreach( [ 'ipv4' => FILTER_FLAG_IPV4, 'ipv6' => FILTER_FLAG_IPV6 ] as $proto => $flag ) {
-                $field = $proto . 'address';
-                $value = $this->input( "connection.{$field}" );
-
-                if( $value === null || $value === '' || strtolower( trim( (string)$value ) ) === 'auto' ) {
-                    continue;
-                }
-
-                if( filter_var( $value, FILTER_VALIDATE_IP, $flag ) === false ) {
-                    $validator->errors()->add(
-                        "connection.{$field}",
-                        "The {$field} must be a valid {$proto} address or \"auto\"."
-                    );
-                }
-            }
+            $this->checkSuperuserPrivilege( $validator );
+            $this->checkReseller( $validator );
+            $this->checkConnectionAddresses( $validator );
         } );
+    }
+
+    /**
+     * Superuser privileges may only be granted on an internal customer.
+     *
+     * Mirrors IXP\Http\Requests\User\Store::withValidator(), evaluated against the customer
+     * this request is creating rather than one already in the database.
+     *
+     * @param  \Illuminate\Contracts\Validation\Validator  $validator
+     *
+     * @return void
+     */
+    private function checkSuperuserPrivilege( $validator ): void
+    {
+        if( !$this->has( 'user' ) ) {
+            return;
+        }
+
+        if( (int)$this->input( 'user.privs' ) !== User::AUTH_SUPERUSER ) {
+            return;
+        }
+
+        if( (int)$this->input( 'member.type' ) !== Customer::TYPE_INTERNAL ) {
+            $validator->errors()->add(
+                'user.privs',
+                'You are not allowed to set this user as a super user: the member being created is not an internal customer.'
+            );
+        }
+    }
+
+    /**
+     * A resold member must name its reseller.
+     *
+     * Mirrors the relevant branch of IXP\Http\Requests\Customer\Store::checkReseller(). The
+     * remaining branches concern moving an existing customer between resellers, which cannot
+     * apply to one being created.
+     *
+     * @param  \Illuminate\Contracts\Validation\Validator  $validator
+     *
+     * @return void
+     */
+    private function checkReseller( $validator ): void
+    {
+        if( !$this->boolean( 'member.isResold' ) ) {
+            return;
+        }
+
+        $reseller = $this->input( 'member.reseller' );
+
+        if( !$reseller || !Customer::find( $reseller ) ) {
+            $validator->errors()->add( 'member.reseller', 'Please choose a reseller.' );
+        }
+    }
+
+    /**
+     * Address syntax in the connection section, using the same check as StoreConnection.
+     *
+     * @param  \Illuminate\Contracts\Validation\Validator  $validator
+     *
+     * @return void
+     */
+    private function checkConnectionAddresses( $validator ): void
+    {
+        if( !$this->has( 'connection' ) ) {
+            return;
+        }
+
+        foreach( StoreConnection::addressSyntaxErrors( (array)$this->input( 'connection', [] ) ) as $field => $message ) {
+            $validator->errors()->add( "connection.{$field}", $message );
+        }
     }
 }
