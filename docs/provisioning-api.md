@@ -12,6 +12,22 @@ which creates a member, a user or a port. Those live only in the web controllers
 > carries the `web` middleware, and `VerifyCsrfToken` excepts only `login`. This API sits in its
 > own route group without `web`, authenticated by API key alone.
 
+## Off by default
+
+These endpoints do not exist until an operator asks for them:
+
+```dotenv
+IXP_API_PROVISIONING_ENABLED=true
+```
+
+Without it the routes are never registered and every path answers `404`. They are the only
+endpoints in IXP Manager which let an external caller create business objects, so an upgrade
+must not be able to expose an installation to something it did not choose.
+
+Further keys under `ixp_api.provisioning`: `require_api_key` (default true), `allowed_ips`
+(comma-separated addresses and CIDR ranges, empty means unrestricted) and `rate_limit`
+(default 60 a minute, zero disables).
+
 ## Authentication
 
 Every endpoint requires a **superuser** API key, passed in the header:
@@ -33,9 +49,13 @@ Two operational points:
 ## Conventions
 
 - Base path: `/admin/api/v4/provisioning`
-- Anything which creates or changes state uses `POST`, `PUT` or `DELETE` — never `GET`.
-- Responses are JSON. Validation failures are `422` with `message` and `errors`, the latter
-  keyed by field.
+- Anything which creates or changes state uses `POST` or `DELETE` — never `GET`. There is
+  no `PUT` yet: the API creates, reads and deletes, but does not change.
+- Responses are JSON, with one exception worth knowing: `401` and `403` raised by the
+  upstream authentication middleware are plain text (`Unauthorized.`, `API key expired`,
+  `Insufficient permissions`), not JSON. Only the guards added here answer with `{message}`.
+  A client must not assume a JSON body on an authentication failure.
+- Validation failures are `422` with `message` and `errors`, the latter keyed by field.
 - `201` for something created, `200` for a read or a no-op, `404` for an unknown id, `409` for
   a conflict which is not a validation problem.
 
@@ -204,9 +224,14 @@ reach `Customer::create()` unvalidated. The web rules are left alone; the API va
 names the schema actually uses.
 
 For connections, `ipv4address` / `ipv6address` are replaced rather than added to, since they
-must also accept `"auto"`. `rate_limit` and `autoneg` are added: both are columns of
-`PhysicalInterface` and both are exported to the switch configuration generator, but the v7.3.1
-wizard request does not list them.
+must also accept `"auto"`. Only the address *type* is relaxed - the wizard's conditional
+requirement stays, so an enabled address family still demands an address. The delta adds the
+fields the wizard has no form control for: `name`, `description`, `mtu`, `lag_framing`,
+`fastlacp` and `busyhost`.
+
+(`rate_limit` and `autoneg` were in that delta until this branch was rebased from v7.3.1 onto
+`main`, where upstream had added them to the wizard request itself. RulesParityTest failed on
+exactly that, which is what it is for.)
 
 ## Concurrency
 
@@ -225,3 +250,13 @@ transaction.
 - **No suspend or offboard endpoints yet.** Suspension needs somewhere to record the state each
   field held before it was changed, so that restoring is exact; there is no such place in the
   schema today.
+
+## Machine-readable specification
+
+`docs/provisioning-api.openapi.yaml` — OpenAPI 3.1, hand written, no generator package and no
+build step. 11 paths, 22 schemas, every field derived from the controllers and the merged
+validation rules rather than from this prose.
+
+Worth knowing when reading it: a taken switch port at `/onboarding` answers `422`, not `409`.
+`409` arises only from a reused reference whose member has since been deleted, from a raced
+resource, and from the core-bundle guard on `DELETE /connection/{vi}`.
