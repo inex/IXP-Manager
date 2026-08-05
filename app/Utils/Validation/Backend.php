@@ -37,7 +37,7 @@ use IXP\Contracts\Validation\Validator;
  */
 class Backend implements ValidationBackend, ValidationRunner
 {
-    public function __construct( private(set) string $validatorClass ) { }
+    public function __construct( private(set) readonly string $validatorClass ) { }
 
     /**
      * @var Software[]
@@ -140,49 +140,65 @@ class Backend implements ValidationBackend, ValidationRunner
     }
 
     #[\Override]
-    public function software( string $name, string $version): void
+    public function software( string $name, string $version ): void
     {
         $this->software[] = new Software($name, $version);
     }
 
     #[\Override]
-    public function debug( string $message): Result
+    public function debug( string $message ): Result
     {
-        return $this->createResult($message, ResultType::Debug);
+        return $this->addResult($message, ResultType::Debug);
     }
 
     #[\Override]
-    public function info( string $message): Result
+    public function info( string $message ): Result
     {
-        return $this->createResult($message, ResultType::Info);
+        return $this->addResult($message, ResultType::Info);
     }
 
     #[\Override]
-    public function suggestion( string $message): Result
+    public function suggestion( string $message ): Result
     {
-        return $this->createResult($message, ResultType::Suggestion);
+        return $this->addResult($message, ResultType::Suggestion);
     }
 
     #[\Override]
-    public function warning( string $message): Result
+    public function warning( string $message ): Result
     {
-        return $this->createResult($message, ResultType::Warning);
+        return $this->addResult($message, ResultType::Warning);
     }
 
     #[\Override]
-    public function error( string $message): Result
+    public function error( string $message ): Result
     {
-        return $this->createResult($message, ResultType::Error);
+        return $this->addResult($message, ResultType::Error);
     }
 
     /**
      * Create a new result from message and type, and add it to the list.
      * Return the object so further customisations may be made.
      */
-    private function createResult(string $message, ResultType $type): Result
+    private function addResult( string $message, ResultType $type ): Result
     {
         $result = new Result($message, $type);
         $this->results[] = $result;
         return $result;
+    }
+
+    #[\Override]
+    public function toReport(): ValidationReport
+    {
+        return new ValidationReport(
+            $this->getValidator()->getName(),
+            $this->getValidator()->getDescription(),
+            $this->getValidator()->getPriority(),
+            $this->isComplete(),
+            $this->isFailed(),
+            $this->isTimedOut(),
+            $this->software,
+            $this->results,
+            $this->failureInfo,
+        );
     }
 }

@@ -242,9 +242,24 @@ System Validation
             resultClone.find('.validation-content').text(resultData.message);
             resultClone.attr('data-result-type', resultData.type);
 
-            if (resultData.additional_info != null) {
-                resultClone.find('.validation-extra-content')
-                    .text(resultData.additional_info);
+            if (resultData.additional_info.length > 0) {
+                let extraContent = resultClone.find('.validation-extra-content');
+                resultData.additional_info.forEach(function (item) {
+                    if (item.type === "text") {
+                        extraContent.append($("<span>").text(item.text)).append("<br/>")
+                    } else if (item.type === "url") {
+                        const link = $("<a>")
+                            .attr("href", item.url)
+                            .text(item.text)
+                            .attr("target", "_blank")
+                            .attr("rel", "noopener noreferrer");
+
+                        extraContent.append($("<span>").append(link)).append("<br/>");
+                    } else {
+                        console.warn("Unhandled additional info type (" + item.type + ")");
+                    }
+                });
+
                 resultClone.find('i.expandable-caret')
                     .removeClass("tw-hidden");
             }

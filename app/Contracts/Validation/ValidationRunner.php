@@ -25,6 +25,7 @@ namespace IXP\Contracts\Validation;
 use IXP\Utils\Validation\FailureInfo;
 use IXP\Utils\Validation\Result;
 use IXP\Utils\Validation\Software;
+use IXP\Utils\Validation\ValidationReport;
 
 /**
  * ValidationRunner is the interface for creating the underlying validator, performing
@@ -88,5 +89,10 @@ interface ValidationRunner
      * @return Result[]
      */
     public function getResults(): array;
+
+    /**
+     * Produce a ValidationReport object based on the current state
+     */
+    public function toReport(): ValidationReport;
 
 }

@@ -27,85 +27,19 @@ namespace IXP\Http\Controllers\Api\V4;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Cache;
-use IXP\Contracts\Validation\ValidationRunner;
-use IXP\Utils\Validation\CallToActionLink;
+use IXP\Utils\Validation\JobState;
 
 class ValidationController
 {
-
-    private function getJobKey( string $jobId ): string
-    {
-        return "validation:job:$jobId";
-    }
-
+    /**
+     * Load JobState from cache using it's ID and return the result as JSON
+     */
     public function apiResults(string $id): JsonResponse
     {
-        if ( !( $job = Cache::store('file')->get( $this->getJobKey( $id ) ) ) ) {
+        if ( !( $jobState = Cache::store('file')->get( JobState::getCacheKey( $id ) ) ) ) {
             return response()->json( [], 404 );
         }
-        $complete = array_all( $job['backends'] , fn(ValidationRunner $backend) => $backend->isComplete() || $backend->isTimedOut() );
 
-        $prioritySortedBackends = collect($job['backends'])
-            ->sortBy(fn(ValidationRunner $backend) => $backend->getValidator()->getPriority())
-            ->all();
-        $validations = [];
-
-        /** @var ValidationRunner[] $prioritySortedBackends */
-        foreach ($prioritySortedBackends as $backend) {
-            // This loop processes complete (successful + failed), and timed out
-            $softwareArray = [];
-            $resultsArray = [];
-
-            foreach ($backend->getSoftware() as $software) {
-                $softwareArray[] = [
-                    'name'    => $software->software,
-                    'version' => $software->version
-                ];
-            }
-
-            foreach ($backend->getResults() as $result) {
-                $resultsArray[] = [
-                    'message'          => $result->message,
-                    'type'             => $result->type,
-                    'additional_info'  => $result->additionalInfo,
-                    'docs_url'         => $result->docsUrl,
-                    'settings_url'     => $result->settingsUrl,
-                    'call_to_action'   => $result->callToAction instanceof CallToActionLink ? [
-                        'url'   => $result->callToAction->url,
-                        'text'  => $result->callToAction->text,
-                    ] : null,
-                ];
-            }
-
-            if ( ( $failureInfo = $backend->getFailureInfo() ) ) {
-                $failure = [
-                    'exception' => $failureInfo->class,
-                    'message'   => $failureInfo->message,
-                    'file'      => $failureInfo->file,
-                    'line'      => $failureInfo->line,
-                ];
-            } else {
-                $failure = null;
-            }
-
-            $validations[] = [
-                'name'         => $backend->getValidator()->getName(),
-                'description'  => $backend->getValidator()->getDescription(),
-                'priority'     => $backend->getValidator()->getPriority(),
-                'is_complete'  => $backend->isComplete(),
-                'is_failed'    => $backend->isFailed(),
-                'is_timedout'  => $backend->isTimedOut(),
-                'software'     => $softwareArray,
-                'results'      => $resultsArray,
-                'failure'      => $failure,
-            ];
-        }
-
-        return response()->json( [
-            'started'     => $job['started'],
-            'finished'    => $job['finished'],
-            'complete'    => $complete,
-            'validations' => $validations,
-        ] );
+        return response()->json( $jobState );
     }
 }

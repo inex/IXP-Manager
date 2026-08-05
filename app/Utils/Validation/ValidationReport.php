@@ -24,23 +24,41 @@ declare(strict_types=1);
 
 namespace IXP\Utils\Validation;
 
+use JsonSerializable;
+
 /**
- * A generic container for a 'call to action' link displayed prominently beside
- * the validation message
+ * This class is used to provide a JSON serialization format for the
+ * state of a Backend/ValidationRunner.
  */
-readonly class CallToActionLink implements \JsonSerializable
+readonly class ValidationReport implements JsonSerializable
 {
     public function __construct(
-        private(set) string     $text,
-        private(set) string     $url,
-    ){}
+        public string $name,
+        public string $description,
+        public int $priority,
+        public bool $isComplete,
+        public bool $isFailed,
+        public bool $isTimedOut,
+        /** @var Software[] */
+        public array $software,
+        /** @var Result[] */
+        public array $results,
+        public ?FailureInfo $failure = null,
+    ) {}
 
     #[\Override]
     public function jsonSerialize(): array
     {
         return [
-            'text' => $this->text,
-            'url' => $this->url,
+            'name'        => $this->name,
+            'description' => $this->description,
+            'priority'    => $this->priority,
+            'is_complete' => $this->isComplete,
+            'is_failed'   => $this->isFailed,
+            'is_timedout' => $this->isTimedOut,
+            'software'    => $this->software,
+            'results'     => $this->results,
+            'failure'     => $this->failure,
         ];
     }
 }

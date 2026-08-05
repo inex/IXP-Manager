@@ -30,7 +30,7 @@ namespace IXP\Utils\Validation;
  * and cannot be serialized. We use this object to pass back key information about what happened instead.
  * @author Thomas Kerin <thomas@islandbridgenetworks.ie>
  */
-readonly class FailureInfo
+readonly class FailureInfo implements \JsonSerializable
 {
     public function __construct(
         private(set) string $class,
@@ -39,8 +39,22 @@ readonly class FailureInfo
         private(set) int $line,
     ) {}
 
+    /**
+     * Create an instance of FailureInfo from a \Throwable
+     */
     public static function fromThrowable(\Throwable $e): static
     {
         return new static( get_class($e), $e->getMessage(), $e->getFile(), $e->getLine() );
+    }
+
+    #[\Override]
+    public function jsonSerialize(): array
+    {
+        return [
+            'exception' => $this->class,
+            'message'   => $this->message,
+            'file'      => $this->file,
+            'line'      => $this->line,
+        ];
     }
 }

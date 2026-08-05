@@ -19,28 +19,27 @@
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-
 declare(strict_types=1);
 
 namespace IXP\Utils\Validation;
 
 /**
- * A generic container for a 'call to action' link displayed prominently beside
- * the validation message
+ * This class contains a URL to be included as additional information under a validator result
  */
-readonly class CallToActionLink implements \JsonSerializable
+readonly class AdditionalInfoUrlElement implements AdditionalInfoElement
 {
     public function __construct(
-        private(set) string     $text,
-        private(set) string     $url,
-    ){}
+        private(set) string $url,
+        private(set) string $text,
+    ) {}
 
     #[\Override]
     public function jsonSerialize(): array
     {
         return [
-            'text' => $this->text,
-            'url' => $this->url,
+            'type'   => AdditionalInfoElementType::Url->value,
+            'url'    => $this->url,
+            'text'   => $this->text,
         ];
     }
 }
