@@ -65,6 +65,10 @@ class OnboardingTest extends TestCase
 
     private function purge(): void
     {
+        // password reset rows are created by the welcome email and are keyed by address,
+        // not by any id this test holds - without this they accumulate on every run:
+        DB::table( 'password_resets' )->where( 'email', 'like', self::PREFIX . '%' )->delete();
+
         DB::table( 'provisioning_references' )->where( 'reference', 'like', self::PREFIX . '%' )->delete();
 
         $custIds = DB::table( 'cust' )->where( 'shortname', 'like', self::PREFIX . '%' )->pluck( 'id' );
@@ -303,5 +307,137 @@ class OnboardingTest extends TestCase
         $this->withHeader( 'X-IXP-Manager-API-Key', self::API_KEY_CUSTADMIN )
             ->post( '/admin/api/v4/provisioning/onboarding', [] )
             ->assertStatus( 403 );
+    }
+
+    /**
+     * Onboarding must not grant IXP Manager superuser rights that the dedicated endpoint
+     * refuses.
+     *
+     * Regression test. Collecting rules() from the sub-requests does not carry their
+     * withValidator() hooks across, and User\Store's hook is the only thing preventing
+     * AUTH_SUPERUSER on a non-internal customer. Without it an order could create a full
+     * administrator on an arbitrary member company - and the welcome email would deliver the
+     * password-reset link to whoever ordered it.
+     */
+    public function testOnboardingRefusesSuperuserPrivilegesOnANormalMember(): void
+    {
+        $order = $this->order( 'g', [ 'user' => [ 'privs' => User::AUTH_SUPERUSER ] ] );
+        unset( $order[ 'connection' ] );
+
+        $this->key()->post( '/admin/api/v4/provisioning/onboarding', $order )
+            ->assertStatus( 422 )
+            ->assertJsonValidationErrors( [ 'user.privs' ] );
+
+        $this->assertNull( Customer::where( 'shortname', self::PREFIX . 'g' )->first() );
+        $this->assertNull( User::where( 'username', self::PREFIX . 'guser' )->first() );
+    }
+
+    /**
+     * The same guard as the dedicated endpoint applies: superuser is acceptable on an internal
+     * customer. Asserting this keeps the guard from being over-tightened into "never".
+     */
+    public function testOnboardingAllowsSuperuserOnAnInternalMember(): void
+    {
+        $order = $this->order( 'h', [
+            'member' => [ 'type' => Customer::TYPE_INTERNAL ],
+            'user'   => [ 'privs' => User::AUTH_SUPERUSER ],
+        ] );
+        unset( $order[ 'connection' ] );
+
+        $this->key()->post( '/admin/api/v4/provisioning/onboarding', $order )->assertStatus( 201 );
+
+        $this->assertNotNull( User::where( 'username', self::PREFIX . 'huser' )->first() );
+    }
+
+    /**
+     * A resold member with no reseller named must be refused, as at the dedicated endpoint -
+     * rather than being silently created without the reseller link.
+     */
+    public function testOnboardingRefusesResoldMemberWithoutReseller(): void
+    {
+        $order = $this->order( 'i', [ 'member' => [ 'isResold' => true ] ] );
+        unset( $order[ 'user' ], $order[ 'connection' ] );
+
+        $this->key()->post( '/admin/api/v4/provisioning/onboarding', $order )
+            ->assertStatus( 422 )
+            ->assertJsonValidationErrors( [ 'member.reseller' ] );
+
+        $this->assertNull( Customer::where( 'shortname', self::PREFIX . 'i' )->first() );
+    }
+
+    /**
+     * Unvalidated fields must not reach the models.
+     *
+     * Regression test: the onboarding path used the raw request array, so any fillable column
+     * without a rule - lastupdatedby, channelgroup, notes - was writable by the caller.
+     */
+    public function testOnboardingIgnoresUnvalidatedFields(): void
+    {
+        $order = $this->order( 'j', [
+            'member'     => [ 'lastupdatedby' => 99999 ],
+            'connection' => [ 'channelgroup' => 777, 'notes' => 'injected' ],
+        ] );
+        unset( $order[ 'user' ] );
+
+        $this->key()->post( '/admin/api/v4/provisioning/onboarding', $order )->assertStatus( 201 );
+
+        $cust = Customer::where( 'shortname', self::PREFIX . 'j' )->first();
+        $this->assertNotNull( $cust );
+        $this->assertNotSame( 99999, (int)$cust->lastupdatedby, 'an unvalidated field reached the customer' );
+
+        $vi = VirtualInterface::where( 'custid', $cust->id )->first();
+        $this->assertNotSame( 777, (int)$vi->channelgroup, 'an unvalidated field reached the virtual interface' );
+    }
+
+    /**
+     * A connection with an enabled address family but no address must be refused.
+     *
+     * Regression test for the same defect as in ConnectionTest: such a row breaks the whole
+     * route server configuration for the VLAN.
+     */
+    public function testOnboardingRefusesEnabledFamilyWithoutAddress(): void
+    {
+        $order = $this->order( 'k' );
+        unset( $order[ 'user' ], $order[ 'connection' ][ 'ipv4address' ] );
+
+        $this->key()->post( '/admin/api/v4/provisioning/onboarding', $order )
+            ->assertStatus( 422 )
+            ->assertJsonValidationErrors( [ 'connection.ipv4address' ] );
+
+        $this->assertNull( Customer::where( 'shortname', self::PREFIX . 'k' )->first() );
+    }
+
+    /**
+     * A switch port belonging to a different switch must be refused here too - the dedicated
+     * endpoint checks it, so onboarding must not be the softer way in.
+     */
+    public function testOnboardingRejectsMismatchedSwitchAndPort(): void
+    {
+        $sp    = $this->freePort();
+        $other = DB::table( 'switch' )->where( 'id', '!=', $sp->switchid )->value( 'id' );
+
+        if( !$other ) {
+            $this->markTestSkipped( 'the CI dataset has only one switch' );
+        }
+
+        $order = $this->order( 'l', [ 'connection' => [ 'switch' => $other ] ] );
+        unset( $order[ 'user' ] );
+
+        $this->key()->post( '/admin/api/v4/provisioning/onboarding', $order )->assertStatus( 422 );
+
+        $this->assertNull( Customer::where( 'shortname', self::PREFIX . 'l' )->first() );
+    }
+
+    /**
+     * An array where a string belongs must be a 422, not a 500 from a string cast.
+     */
+    public function testOnboardingArrayAddressIsRejectedCleanly(): void
+    {
+        $order = $this->order( 'm', [ 'connection' => [ 'ipv4address' => [ 'not', 'a', 'string' ] ] ] );
+        unset( $order[ 'user' ] );
+
+        $this->key()->post( '/admin/api/v4/provisioning/onboarding', $order )
+            ->assertStatus( 422 )
+            ->assertJsonValidationErrors( [ 'connection.ipv4address' ] );
     }
 }

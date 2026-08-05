@@ -32,7 +32,7 @@ use IXP\Http\Middleware\Provisioning\ShortCircuitKnownReference;
 | ** EXTERNAL ROUTES **
 |
 | Stateless endpoints for authenticated superusers via API key, intended to be called
-| from an external ordering / billing system. No cookie, no CSRF, no AJAX.
+| from an external ordering / billing system. No CSRF token required, no AJAX.
 |
 | Registered by IXP\Providers\ProvisioningRouteServiceProvider under the prefix
 | `admin/api/v4/provisioning`.

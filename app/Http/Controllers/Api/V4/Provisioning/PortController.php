@@ -99,7 +99,10 @@ class PortController extends Controller
             );
 
             foreach( $free as $port ) {
-                if( count( $ports ) >= $limit ) {
+                // collect one beyond the limit, purely to tell "exactly full" from "there is
+                // more" - reporting truncated=true on a complete result would send a caller
+                // looking for pages which do not exist:
+                if( count( $ports ) > $limit ) {
                     break 2;
                 }
 
@@ -114,10 +117,13 @@ class PortController extends Controller
             }
         }
 
+        $truncated = count( $ports ) > $limit;
+        $ports     = array_slice( $ports, 0, $limit );
+
         return response()->json( [
             'ports'     => $ports,
             'count'     => count( $ports ),
-            'truncated' => count( $ports ) >= $limit,
+            'truncated' => $truncated,
         ] );
     }
 

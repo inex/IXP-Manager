@@ -28,6 +28,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Validation\ValidationException;
 
 use IXP\Events\User\UserCreated as UserCreatedEvent;
@@ -89,7 +90,7 @@ class OnboardingController extends Common
     {
         $reference = $r->input( 'reference' );
 
-        if( $reference && ( $existing = $this->existingFor( $reference ) ) ) {
+        if( $reference && ( $existing = ProvisioningReference::customerFor( $reference ) ) ) {
             return response()->json( [
                 'created'   => false,
                 'reference' => $reference,
@@ -103,6 +104,24 @@ class OnboardingController extends Common
             return response()->json( [ 'message' => $e->getMessage() ], 422 );
         } catch( ValidationException $e ) {
             return response()->json( [ 'message' => $e->getMessage(), 'errors' => $e->errors() ], 422 );
+        } catch( UniqueConstraintViolationException $e ) {
+            // Two retries of the same order arriving together: both got past the middleware
+            // before either committed, and the loser hits the unique index on the reference.
+            // By now the winner has committed, so the answer is the same one it received.
+            if( $reference && ( $existing = ProvisioningReference::customerFor( $reference ) ) ) {
+                return response()->json( [
+                    'created'   => false,
+                    'reference' => $reference,
+                    'member'    => [ 'id' => $existing->id, 'shortname' => $existing->shortname ],
+                ] );
+            }
+
+            // A reference whose customer no longer exists - deleted after the fact. Saying so
+            // is more use than a 500 with a SQL message in it.
+            return response()->json( [
+                'message' => 'This reference has been used before and the member it created no longer exists. '
+                    . 'Use a new reference.',
+            ], 409 );
         }
 
         Cache::forget( 'admin_home_customers' );
@@ -137,9 +156,14 @@ class OnboardingController extends Common
      */
     private function provision( StoreOnboarding $r, ?string $reference ): array
     {
-        $cust = $this->createCustomer( $r );
-        $user = $r->has( 'user' ) ? $this->createUser( $r, $cust ) : null;
-        $vi   = $r->has( 'connection' ) ? $this->createConnection( $r, $cust ) : null;
+        // Only ever the validated payload: $r->all() would carry through anything the caller
+        // chose to send, and Customer, VirtualInterface and PhysicalInterface all have fillable
+        // columns with no rule attached - lastupdatedby, channelgroup, notes among them.
+        $validated = $r->validated();
+
+        $cust = $this->createCustomer( $validated[ 'member' ] );
+        $user = isset( $validated[ 'user' ] ) ? $this->createUser( $validated[ 'user' ], $cust ) : null;
+        $vi   = isset( $validated[ 'connection' ] ) ? $this->createConnection( $validated[ 'connection' ], $cust ) : null;
 
         if( $reference ) {
             ProvisioningReference::create( [
@@ -154,14 +178,12 @@ class OnboardingController extends Common
     }
 
     /**
-     * @param  StoreOnboarding  $r
+     * @param  array  $member  the validated member section
      *
      * @return Customer
      */
-    private function createCustomer( StoreOnboarding $r ): Customer
+    private function createCustomer( array $member ): Customer
     {
-        $member = $r->input( 'member' );
-
         $bdetail = CompanyBillingDetail::create( [ 'purchaseOrderRequired' => 0 ] );
         $rdetail = CompanyRegisteredDetail::create( [ 'registeredName' => $member[ 'name' ] ] );
 
@@ -174,15 +196,13 @@ class OnboardingController extends Common
     }
 
     /**
-     * @param  StoreOnboarding  $r
-     * @param  Customer         $cust
+     * @param  array     $input  the validated user section
+     * @param  Customer  $cust
      *
      * @return User
      */
-    private function createUser( StoreOnboarding $r, Customer $cust ): User
+    private function createUser( array $input, Customer $cust ): User
     {
-        $input = $r->input( 'user' );
-
         $user = new User;
         $user->creator          = Auth::user()->username;
         $user->password         = Hash::make( Str::random( 16 ) );
@@ -206,27 +226,24 @@ class OnboardingController extends Common
     }
 
     /**
-     * @param  StoreOnboarding  $r
-     * @param  Customer         $cust
+     * @param  array     $input  the validated connection section
+     * @param  Customer  $cust
      *
      * @return VirtualInterface
      *
      * @throws IpAllocationException
      */
-    private function createConnection( StoreOnboarding $r, Customer $cust ): VirtualInterface
+    private function createConnection( array $input, Customer $cust ): VirtualInterface
     {
-        $input = $r->input( 'connection' );
-        $vlan  = Vlan::findOrFail( $input[ 'vlanid' ] );
+        $vlan = Vlan::findOrFail( $input[ 'vlanid' ] );
 
-        $sp = SwitchPort::find( $input[ 'switchportid' ] );
-
-        if( !$sp || $sp->physicalInterface ) {
-            throw new IpAllocationException( 'The switch port is unknown or already in use.' );
+        // Same gate as ConnectionController, so both entry points accept exactly the same
+        // ports - including the check that the port belongs to the switch named:
+        if( $error = ConnectionController::switchPortRejection( $input[ 'switch' ] ?? null, $input[ 'switchportid' ] ?? null ) ) {
+            throw new IpAllocationException( $error );
         }
 
-        if( !in_array( (int)$sp->type, [ SwitchPort::TYPE_UNSET, SwitchPort::TYPE_PEERING ], true ) ) {
-            throw new IpAllocationException( "Switch port {$sp->name} is not a member port." );
-        }
+        $sp = SwitchPort::findOrFail( $input[ 'switchportid' ] );
 
         $vi = VirtualInterface::create( array_merge( $input, [ 'custid' => $cust->id ] ) );
 
@@ -269,17 +286,5 @@ class OnboardingController extends Common
         $vi->save();
 
         return $vi;
-    }
-
-    /**
-     * The customer a previous call with this reference produced, if any.
-     *
-     * @param  string  $reference
-     *
-     * @return Customer|null
-     */
-    private function existingFor( string $reference ): ?Customer
-    {
-        return ProvisioningReference::customerFor( $reference );
     }
 }

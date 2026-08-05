@@ -296,6 +296,123 @@ class ConnectionTest extends TestCase
             ->assertJsonValidationErrors( [ 'ipv4address' ] );
     }
 
+    /**
+     * An enabled address family with no address must be refused.
+     *
+     * Regression test. Such a row (ipv4enabled=1, ipv4addressid=NULL) survives into the route
+     * server neighbour list and renders as `neighbor  as 65551;` - a parse error which
+     * invalidates the generated configuration for the whole VLAN, not merely that peer.
+     */
+    public function testEnabledFamilyWithoutAddressIsRejected(): void
+    {
+        $cust = $this->createMember( self::PREFIX . 'i' );
+        $vlan = $this->vlanWithFreeAddresses();
+        $sp   = $this->freeSwitchPort();
+
+        $payload = $this->payload( $vlan, $sp );
+        unset( $payload[ 'ipv4address' ] );
+
+        $this->key()->post( "/admin/api/v4/provisioning/member/{$cust->id}/connection", $payload )
+            ->assertStatus( 422 )
+            ->assertJsonValidationErrors( [ 'ipv4address' ] );
+
+        $this->assertNull( VirtualInterface::where( 'custid', $cust->id )->first() );
+    }
+
+    /**
+     * An IPv6-only connection must work: a member need not take both families.
+     */
+    public function testIpv6OnlyConnection(): void
+    {
+        $cust = $this->createMember( self::PREFIX . 'j' );
+        $vlan = $this->vlanWithFreeAddresses();
+        $sp   = $this->freeSwitchPort();
+
+        if( !\IXP\Models\IPv6Address::where( 'vlanid', $vlan->id )->whereDoesntHave( 'vlanInterface' )->exists() ) {
+            $this->markTestSkipped( 'the CI dataset has no free IPv6 address in this VLAN' );
+        }
+
+        $this->key()->post( "/admin/api/v4/provisioning/member/{$cust->id}/connection", [
+            'vlanid'        => $vlan->id,
+            'switch'        => $sp->switchid,
+            'switchportid'  => $sp->id,
+            'speed'         => 10000,
+            'ipv4enabled'   => false,
+            'ipv6enabled'   => true,
+            'ipv6address'   => 'auto',
+            'ipv6hostname'  => 'conntest6.example.com',
+            'rsclient'      => true,
+        ] )->assertStatus( 201 );
+
+        $vli = VirtualInterface::where( 'custid', $cust->id )->first()->vlanInterfaces()->first();
+
+        $this->assertNotNull( $vli->ipv6address, 'no IPv6 address was allocated' );
+        $this->assertNull( $vli->ipv4address, 'an IPv4 address was allocated although the family was disabled' );
+    }
+
+    /**
+     * Dual stack: both families allocated in one request.
+     */
+    public function testDualStackConnection(): void
+    {
+        $cust = $this->createMember( self::PREFIX . 'k' );
+        $vlan = $this->vlanWithFreeAddresses();
+        $sp   = $this->freeSwitchPort();
+
+        if( !\IXP\Models\IPv6Address::where( 'vlanid', $vlan->id )->whereDoesntHave( 'vlanInterface' )->exists() ) {
+            $this->markTestSkipped( 'the CI dataset has no free IPv6 address in this VLAN' );
+        }
+
+        $this->key()->post(
+            "/admin/api/v4/provisioning/member/{$cust->id}/connection",
+            $this->payload( $vlan, $sp, [
+                'ipv6enabled'  => true,
+                'ipv6address'  => 'auto',
+                'ipv6hostname' => 'conntest-ds.example.com',
+            ] )
+        )->assertStatus( 201 );
+
+        $vli = VirtualInterface::where( 'custid', $cust->id )->first()->vlanInterfaces()->first();
+
+        $this->assertNotNull( $vli->ipv4address );
+        $this->assertNotNull( $vli->ipv6address );
+        $this->assertSame( $vlan->id, (int)$vli->ipv4address->vlanid );
+        $this->assertSame( $vlan->id, (int)$vli->ipv6address->vlanid );
+    }
+
+    /**
+     * rate_limit, autoneg and the LAG fields must actually reach the database - they are in
+     * the delta precisely because the v7.3.1 wizard request omits them.
+     */
+    public function testRateLimitAndLagFieldsArePersisted(): void
+    {
+        $cust = $this->createMember( self::PREFIX . 'l' );
+        $vlan = $this->vlanWithFreeAddresses();
+        $sp   = $this->freeSwitchPort();
+
+        $this->key()->post(
+            "/admin/api/v4/provisioning/member/{$cust->id}/connection",
+            $this->payload( $vlan, $sp, [
+                'rate_limit'  => 1000,
+                'autoneg'     => false,
+                'lag_framing' => true,
+                'fastlacp'    => true,
+                'mtu'         => 9000,
+            ] )
+        )->assertStatus( 201 );
+
+        $vi = VirtualInterface::where( 'custid', $cust->id )->first();
+        $pi = PhysicalInterface::where( 'virtualinterfaceid', $vi->id )->first();
+
+        $this->assertSame( 1000, (int)$pi->rate_limit );
+        $this->assertSame( 0, (int)$pi->autoneg );
+        $this->assertTrue( (bool)$vi->lag_framing );
+        $this->assertSame( 9000, (int)$vi->mtu );
+
+        // setBundleDetails() must have assigned a channel group for a LAG port:
+        $this->assertNotNull( $vi->channelgroup, 'no channel group was assigned to a LAG interface' );
+    }
+
     public function testListAndDeleteConnection(): void
     {
         $cust = $this->createMember( self::PREFIX . 'g' );
@@ -311,7 +428,10 @@ class ConnectionTest extends TestCase
             ->assertStatus( 200 )
             ->assertJsonCount( 1, 'connections' );
 
-        $vi = VirtualInterface::where( 'custid', $cust->id )->first();
+        $vi    = VirtualInterface::where( 'custid', $cust->id )->first();
+        $ipId  = $vi->vlanInterfaces()->first()->ipv4addressid;
+
+        $this->assertNotNull( $ipId, 'the connection was created without an address' );
 
         $this->key()->delete( "/admin/api/v4/provisioning/connection/{$vi->id}" )
             ->assertStatus( 200 )
@@ -319,12 +439,37 @@ class ConnectionTest extends TestCase
 
         $this->assertNull( VirtualInterface::find( $vi->id ) );
         $this->assertSame( 0, PhysicalInterface::where( 'virtualinterfaceid', $vi->id )->count() );
+        $this->assertSame( 0, DB::table( 'vlaninterface' )->where( 'virtualinterfaceid', $vi->id )->count() );
 
-        // the address must return to the pool:
-        $this->assertSame(
-            0,
-            DB::table( 'vlaninterface' )->where( 'virtualinterfaceid', $vi->id )->count()
-        );
+        // The address itself must survive and become free again - it belongs to the VLAN's
+        // pool, not to the member, so deleting it would shrink the pool with every offboarding:
+        $ip = IPv4Address::find( $ipId );
+
+        $this->assertNotNull( $ip, 'the address record was deleted along with the connection' );
+        $this->assertNull( $ip->fresh()->vlanInterface, 'the address did not return to the pool' );
+    }
+
+    /**
+     * Deleting twice must not blow up: an ordering system retrying an offboarding is the
+     * normal case, and the inherited deletePi() is not itself idempotent.
+     */
+    public function testDeletingAConnectionTwice(): void
+    {
+        $cust = $this->createMember( self::PREFIX . 'm' );
+        $vlan = $this->vlanWithFreeAddresses();
+        $sp   = $this->freeSwitchPort();
+
+        $this->key()->post(
+            "/admin/api/v4/provisioning/member/{$cust->id}/connection",
+            $this->payload( $vlan, $sp )
+        )->assertStatus( 201 );
+
+        $vi = VirtualInterface::where( 'custid', $cust->id )->first();
+
+        $this->key()->delete( "/admin/api/v4/provisioning/connection/{$vi->id}" )->assertStatus( 200 );
+
+        // the second attempt addresses something which no longer exists:
+        $this->key()->delete( "/admin/api/v4/provisioning/connection/{$vi->id}" )->assertStatus( 404 );
     }
 
     /**

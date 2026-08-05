@@ -77,14 +77,68 @@ class StoreConnection extends StoreVirtualInterfaceWizard
      * Kept separate from delta() so RulesParityTest can tell "we added something upstream does
      * not have" from "we deliberately overrode upstream", and check the second is intentional.
      *
+     * Only the address *type* is relaxed here, never the requirement. The wizard rule is
+     * `ipv4|required` when the family is enabled; "auto" is not an IP, so the `ipv4` part has
+     * to go, but the conditional `required` must stay. Dropping it lets a caller create a
+     * VLAN interface with ipv4enabled=1 and no address, and that row goes on to render as
+     * `neighbor  as 65551;` in the route server configuration - a parse error which invalidates
+     * the generated config for the whole VLAN, not merely that peer.
+     *
      * @return array<string,mixed>
      */
-    public static function overrides(): array
+    public function overrides(): array
     {
         return [
-            'ipv4address' => 'nullable|string|max:255',
-            'ipv6address' => 'nullable|string|max:255',
+            'ipv4address' => ( $this->boolean( 'ipv4enabled' ) ? 'required' : 'nullable' ) . '|string|max:255',
+            'ipv6address' => ( $this->boolean( 'ipv6enabled' ) ? 'required' : 'nullable' ) . '|string|max:255',
         ];
+    }
+
+    /**
+     * The fields overrides() replaces, without evaluating the rules.
+     *
+     * Lets callers and tests reason about which upstream rules are shadowed without needing a
+     * populated request instance.
+     *
+     * @return array<int,string>
+     */
+    public static function overriddenFields(): array
+    {
+        return [ 'ipv4address', 'ipv6address' ];
+    }
+
+    /**
+     * Check the address fields of a connection payload for syntax.
+     *
+     * Static and payload-driven so that the onboarding endpoint, whose connection lives in a
+     * nested key, applies exactly the same check rather than a second copy of it.
+     *
+     * Non-string values are skipped: an array where a string belongs is already caught by the
+     * inherited `string` rule, and casting one here would be a fatal error, turning a 422 into
+     * a 500.
+     *
+     * @param  array  $payload
+     *
+     * @return array<string,string>  field => message, empty when everything is acceptable
+     */
+    public static function addressSyntaxErrors( array $payload ): array
+    {
+        $errors = [];
+
+        foreach( [ 'ipv4' => FILTER_FLAG_IPV4, 'ipv6' => FILTER_FLAG_IPV6 ] as $proto => $flag ) {
+            $field = $proto . 'address';
+            $value = $payload[ $field ] ?? null;
+
+            if( !is_string( $value ) || $value === '' || strtolower( trim( $value ) ) === 'auto' ) {
+                continue;
+            }
+
+            if( filter_var( $value, FILTER_VALIDATE_IP, $flag ) === false ) {
+                $errors[ $field ] = "The {$field} must be a valid {$proto} address or \"auto\".";
+            }
+        }
+
+        return $errors;
     }
 
     /**
@@ -99,7 +153,7 @@ class StoreConnection extends StoreVirtualInterfaceWizard
     #[\Override]
     public function rules(): array
     {
-        return array_merge( parent::rules(), self::delta(), self::overrides() );
+        return array_merge( parent::rules(), self::delta(), $this->overrides() );
     }
 
     /**
@@ -145,17 +199,8 @@ class StoreConnection extends StoreVirtualInterfaceWizard
     public function withValidator( $validator ): void
     {
         $validator->after( function( $validator ) {
-            foreach( [ 'ipv4' => FILTER_FLAG_IPV4, 'ipv6' => FILTER_FLAG_IPV6 ] as $proto => $flag ) {
-                $field = $proto . 'address';
-                $value = $this->input( $field );
-
-                if( $value === null || $value === '' || strtolower( trim( (string)$value ) ) === 'auto' ) {
-                    continue;
-                }
-
-                if( filter_var( $value, FILTER_VALIDATE_IP, $flag ) === false ) {
-                    $validator->errors()->add( $field, "The {$field} must be a valid {$proto} address or \"auto\"." );
-                }
+            foreach( self::addressSyntaxErrors( $this->all() ) as $field => $message ) {
+                $validator->errors()->add( $field, $message );
             }
         } );
     }

@@ -38,11 +38,20 @@ use IXP\Models\User;
  * These deliberately mirror RouteServiceProvider::mapApiExternalAuthSuperuserRoutes()
  * rather than mapApiAuthSuperuserRoutes():
  *
- *   - No `web` middleware, therefore no session cookie and no CSRF token. The latter is
- *     precisely why the existing POST endpoints under `admin/api/v4` cannot be called from
- *     outside a browser at all: VerifyCsrfToken excepts `login` and nothing else.
- *   - Authentication is by API key alone (`api/v4` => apibase + apiauth) and restricted to
- *     superusers via `assert.privilege`.
+ *   - No `web` middleware, so no CSRF token is required. That is precisely why the existing
+ *     POST endpoints under `admin/api/v4` cannot be called from outside a browser at all:
+ *     VerifyCsrfToken excepts `login` and nothing else.
+ *   - Authentication is by API key (`api/v4` => apibase + apiauth), restricted to superusers
+ *     via `assert.privilege`.
+ *
+ * One caveat worth stating rather than glossing over: `apibase` starts a session, and
+ * ApiAuthenticate only looks for an API key when `Auth::check()` is false. A browser already
+ * logged in as a superuser therefore reaches these endpoints on its session cookie, without a
+ * key - and, because `web` is absent, without a CSRF token either. That is inherited from the
+ * upstream external route group rather than introduced here, and it matches how those existing
+ * endpoints behave. It does mean these routes must not be treated as key-only: anything which
+ * would be unacceptable for an authenticated superuser's browser to trigger does not belong
+ * here.
  *
  * The `unsecured_api_access` fallback of the upstream provider is deliberately NOT
  * reproduced: these endpoints write, so they must never be reachable without a key.

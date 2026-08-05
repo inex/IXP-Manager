@@ -93,6 +93,10 @@ class MemberContractTest extends TestCase
      */
     private function purgeLeftovers(): void
     {
+        // password reset rows are created by the welcome email and are keyed by address,
+        // not by any id this test holds - without this they accumulate on every run:
+        DB::table( 'password_resets' )->where( 'email', 'like', self::PREFIX . '%' )->delete();
+
         $custs = DB::table( 'cust' )
             ->where( 'shortname', 'like', self::PREFIX . '%' )
             ->get( [ 'id', 'company_registered_detail_id', 'company_billing_details_id' ] );
@@ -295,10 +299,40 @@ class MemberContractTest extends TestCase
         $user = User::where( 'username', 'provtestroute' )->first();
         $this->assertNotNull( $user );
 
-        if( $c2u = CustomerToUser::where( 'user_id', $user->id )->first() ) {
-        }
-
         $this->assertSame( $cust->id, $user->custid, 'the body overrode the customer from the route' );
+
+        $c2u = CustomerToUser::where( 'user_id', $user->id )->first();
+
+        $this->assertNotNull( $c2u, 'the customer-to-user link was not created' );
+        $this->assertSame( $cust->id, (int)$c2u->customer_id, 'the body overrode the customer on the c2u link' );
+    }
+
+    /**
+     * An `id` in the body must not be able to steer the username uniqueness rule.
+     *
+     * The inherited rule exempts `$this->id` from the unique check so an edit can keep its own
+     * username. This endpoint only creates, so an id here could only exempt somebody else's -
+     * turning a 422 into a database-level failure.
+     */
+    public function testUserCreationIgnoresIdInBody(): void
+    {
+        $this->withHeader( 'X-IXP-Manager-API-Key', self::API_KEY_SUPERUSER )
+            ->post( '/admin/api/v4/provisioning/member', $this->customerPayload( 'provtestuid' ) )
+            ->assertStatus( 201 );
+
+        $cust     = $this->fetchCustomer( 'provtestuid' );
+        $existing = User::firstOrFail();
+
+        $this->withHeader( 'X-IXP-Manager-API-Key', self::API_KEY_SUPERUSER )
+            ->post( "/admin/api/v4/provisioning/member/{$cust->id}/user", [
+                'name'      => 'Duplicate Attempt',
+                'username'  => $existing->username,
+                'email'     => 'provtestuid@example.com',
+                'privs'     => User::AUTH_CUSTUSER,
+                'id'        => $existing->id,
+            ] )
+            ->assertStatus( 422 )
+            ->assertJsonValidationErrors( [ 'username' ] );
     }
 
     /**

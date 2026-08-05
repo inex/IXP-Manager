@@ -122,17 +122,43 @@ class RulesParityTest extends TestCase
         $web = WebStoreWizard::create( '/', 'POST', [] );
         $api = StoreConnection::create( '/', 'POST', [] );
 
-        $inherited = array_diff_key(
-            $api->rules(),
-            StoreConnection::delta(),
-            StoreConnection::overrides()
-        );
+        $overridden = array_flip( StoreConnection::overriddenFields() );
+
+        $inherited = array_diff_key( $api->rules(), StoreConnection::delta(), $overridden );
 
         $this->assertEquals(
-            array_diff_key( $web->rules(), StoreConnection::overrides() ),
+            array_diff_key( $web->rules(), $overridden ),
             $inherited,
             'Connection validation rules have diverged from the virtual interface wizard.'
         );
+    }
+
+    /**
+     * An overridden address rule must keep the wizard's conditional requirement.
+     *
+     * Regression test. The override initially replaced the whole rule with a flat `nullable`,
+     * which let a caller create a VLAN interface with ipv4enabled=1 and no address. Such a row
+     * renders as `neighbor  as 65551;` in the route server config - a parse error which
+     * invalidates the generated configuration for the entire VLAN, not just that peer.
+     */
+    public function testEnabledAddressFamilyStillRequiresAnAddress(): void
+    {
+        foreach( [ 'ipv4', 'ipv6' ] as $proto ) {
+            $enabled  = StoreConnection::create( '/', 'POST', [ "{$proto}enabled" => true ] );
+            $disabled = StoreConnection::create( '/', 'POST', [ "{$proto}enabled" => false ] );
+
+            $this->assertStringContainsString(
+                'required',
+                $enabled->rules()[ "{$proto}address" ],
+                "{$proto}address must be required when {$proto}enabled is set"
+            );
+
+            $this->assertStringContainsString(
+                'nullable',
+                $disabled->rules()[ "{$proto}address" ],
+                "{$proto}address must be optional when {$proto}enabled is not set"
+            );
+        }
     }
 
     /**
@@ -158,7 +184,7 @@ class RulesParityTest extends TestCase
     {
         $web = WebStoreWizard::create( '/', 'POST', [] );
 
-        foreach( array_keys( StoreConnection::overrides() ) as $field ) {
+        foreach( StoreConnection::overriddenFields() as $field ) {
             $this->assertArrayHasKey(
                 $field,
                 $web->rules(),
