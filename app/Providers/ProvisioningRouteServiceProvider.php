@@ -26,6 +26,8 @@ use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvi
 use Illuminate\Support\Facades\Route;
 
 use IXP\Http\Middleware\Provisioning\ForceJsonResponse;
+use IXP\Http\Middleware\Provisioning\RequireApiKey;
+use IXP\Http\Middleware\Provisioning\RestrictSourceAddress;
 use IXP\Models\User;
 
 /**
@@ -44,14 +46,23 @@ use IXP\Models\User;
  *   - Authentication is by API key (`api/v4` => apibase + apiauth), restricted to superusers
  *     via `assert.privilege`.
  *
- * One caveat worth stating rather than glossing over: `apibase` starts a session, and
- * ApiAuthenticate only looks for an API key when `Auth::check()` is false. A browser already
- * logged in as a superuser therefore reaches these endpoints on its session cookie, without a
- * key - and, because `web` is absent, without a CSRF token either. That is inherited from the
- * upstream external route group rather than introduced here, and it matches how those existing
- * endpoints behave. It does mean these routes must not be treated as key-only: anything which
- * would be unacceptable for an authenticated superuser's browser to trigger does not belong
- * here.
+ * Four things guard them, all configurable under `ixp_api.provisioning`:
+ *
+ *   1. **Off by default.** Without `IXP_API_PROVISIONING_ENABLED=true` the routes are never
+ *      registered. An installation which has not asked for these endpoints does not have
+ *      them - an upgrade cannot quietly expose an IXP to something it did not choose.
+ *   2. **An API key is required.** `apibase` starts a session and ApiAuthenticate only looks
+ *      for a key when `Auth::check()` is false, so without RequireApiKey a browser already
+ *      logged in as a superuser would reach these endpoints on its cookie - and, `web` being
+ *      absent, without a CSRF token. Tolerable for the read-only export endpoints this group
+ *      is modelled on; not for endpoints which create members.
+ *   3. **Source addresses can be restricted**, both globally and per key. The latter honours
+ *      `api_keys.allowed_ips`, a column which exists and is exposed in the UI but which
+ *      nothing in IXP Manager has ever read.
+ *   4. **Rate limited** per key, defaulting to 60 requests a minute.
+ *
+ * None of that replaces restricting `/admin` at the web server, which is what the prefix
+ * introduced in v7.1.0 is for. It is a second lock on the same door.
  *
  * The `unsecured_api_access` fallback of the upstream provider is deliberately NOT
  * reproduced: these endpoints write, so they must never be reachable without a key.
@@ -88,16 +99,45 @@ class ProvisioningRouteServiceProvider extends ServiceProvider
      */
     public function map(): void
     {
+        // Off unless the operator has switched it on. An installation which has not asked for
+        // these endpoints does not have them - the routes are never registered, so there is
+        // nothing to reach and nothing to secure.
+        if( !config( 'ixp_api.provisioning.enabled', false ) ) {
+            return;
+        }
+
         Route::group( [
-            'middleware' => [
-                ForceJsonResponse::class,
-                'api/v4',
-                'assert.privilege:' . User::AUTH_SUPERUSER,
-            ],
+            'middleware' => $this->middleware(),
             'namespace'  => $this->apiNamespace,
             'prefix'     => 'admin/api/v4/provisioning',
         ], function() {
             require base_path( 'routes/apiv4-provisioning.php' );
         } );
+    }
+
+    /**
+     * The middleware stack, in the order it has to run.
+     *
+     * RequireApiKey comes before `api/v4` so that a browser session is rejected before
+     * ApiAuthenticate has a chance to accept it. RestrictSourceAddress comes after, because
+     * it needs the resolved key to read that key's own allow-list.
+     *
+     * @return array<int,string>
+     */
+    private function middleware(): array
+    {
+        $stack = [
+            ForceJsonResponse::class,
+            RequireApiKey::class,
+            'api/v4',
+            'assert.privilege:' . User::AUTH_SUPERUSER,
+            RestrictSourceAddress::class,
+        ];
+
+        if( ( $limit = config( "ixp_api.provisioning.rate_limit", 60 ) ) > 0 ) {
+            $stack[] = "throttle:{$limit},1";
+        }
+
+        return $stack;
     }
 }

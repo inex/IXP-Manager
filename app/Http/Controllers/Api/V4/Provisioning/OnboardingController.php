@@ -99,15 +99,18 @@ class OnboardingController extends Common
         }
 
         try {
-            $result = DB::transaction( fn() => $this->provision( $r, $reference ) );
+            $result = DB::transaction( fn() => $this->provision( $r, $reference ) , attempts: 3 );
         } catch( IpAllocationException $e ) {
             return response()->json( [ 'message' => $e->getMessage() ], 422 );
         } catch( ValidationException $e ) {
             return response()->json( [ 'message' => $e->getMessage(), 'errors' => $e->errors() ], 422 );
         } catch( UniqueConstraintViolationException $e ) {
-            // Two retries of the same order arriving together: both got past the middleware
-            // before either committed, and the loser hits the unique index on the reference.
-            // By now the winner has committed, so the answer is the same one it received.
+            // Which unique index was hit matters. The reference index means a retry of the
+            // same order raced itself; anything else - most likely switchportid, which is
+            // unique on physicalinterface - means a different order took the resource first.
+            //
+            // Telling the second case "use a new reference" would be actively harmful: the
+            // caller would burn an order number and retry onto the same occupied port.
             if( $reference && ( $existing = ProvisioningReference::customerFor( $reference ) ) ) {
                 return response()->json( [
                     'created'   => false,
@@ -116,11 +119,18 @@ class OnboardingController extends Common
                 ] );
             }
 
-            // A reference whose customer no longer exists - deleted after the fact. Saying so
-            // is more use than a 500 with a SQL message in it.
+            if( $reference && str_contains( $e->getMessage(), 'provisioning_references' ) ) {
+                // The reference is taken but its customer is gone - deleted after the fact.
+                return response()->json( [
+                    'message' => 'This reference has been used before and the member it created no longer '
+                        . 'exists. Use a new reference.',
+                ], 409 );
+            }
+
             return response()->json( [
-                'message' => 'This reference has been used before and the member it created no longer exists. '
-                    . 'Use a new reference.',
+                'message' => 'Another request took one of the resources for this order while it was being '
+                    . 'processed - most likely the switch port. Nothing was created. Choose a different '
+                    . 'port and retry with the same reference.',
             ], 409 );
         }
 
