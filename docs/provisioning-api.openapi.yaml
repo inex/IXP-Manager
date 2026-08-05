@@ -1,0 +1,2316 @@
+openapi: 3.1.0
+
+info:
+  title: IXP Manager Provisioning API
+  version: 1.0.0
+  summary: Machine-to-machine endpoints for creating members, portal users and connections.
+  description: |
+    A stateless, machine-to-machine API for creating members, portal users and connections in
+    IXP Manager from an external system such as an ordering or billing platform.
+
+    It exists because API v4 is otherwise a read and export surface: it publishes switch
+    configuration, route server configuration, Nagios targets and DNS data, but has no endpoint
+    which creates a member, a user or a port. Those live only in the web controllers, whose
+    route group carries the `web` middleware — and `VerifyCsrfToken` excepts only `login`, so
+    those POST endpoints cannot be called from outside a browser at all. This API sits in its
+    own route group without `web`, authenticated by API key alone.
+
+    ## The API is OFF by default
+
+    The routes are registered by `IXP\Providers\ProvisioningRouteServiceProvider`, which returns
+    immediately unless `ixp_api.provisioning.enabled` is true:
+
+    ```
+    IXP_API_PROVISIONING_ENABLED=true
+    ```
+
+    Until that is set the routes are never registered at all — every path in this document
+    responds `404`, and there is nothing to secure. An upgrade cannot quietly expose an IXP to
+    endpoints it did not ask for.
+
+    ## Middleware chain
+
+    In the order it runs (`ProvisioningRouteServiceProvider::middleware()`):
+
+    1. `ForceJsonResponse` — sets `Accept: application/json` on the request, so that framework
+       errors render as JSON and a `ValidationException` becomes a `422` rather than a `302`.
+       Callers do not have to send the header themselves.
+    2. `RequireApiKey` — refuses a request with no `X-IXP-Manager-API-Key` header with `401`,
+       even when a superuser browser session is present. Disableable with
+       `IXP_API_PROVISIONING_REQUIRE_KEY=false`, which is not recommended.
+    3. `api/v4` (`apibase` + `apiauth`) — resolves the key and logs its owner in via
+       `Auth::onceUsingId()`.
+    4. `assert.privilege:3` — the key's user must be a superuser (`AUTH_SUPERUSER`), else `403`.
+    5. `RestrictSourceAddress` — `403` when the source address is covered by neither
+       `ixp_api.provisioning.allowed_ips` nor, if set, the `allowed_ips` column of the API key
+       presented. An empty list at a layer means "no restriction at this layer", not "deny".
+    6. `throttle:{rate_limit},1` — added only when `ixp_api.provisioning.rate_limit` is greater
+       than zero. Default 60 requests per minute; `0` disables throttling entirely.
+
+    ## Configuration
+
+    | env | default | meaning |
+    | --- | --- | --- |
+    | `IXP_API_PROVISIONING_ENABLED` | `false` | master switch; nothing is registered when false |
+    | `IXP_API_PROVISIONING_REQUIRE_KEY` | `true` | refuse ambient browser credentials |
+    | `IXP_API_PROVISIONING_ALLOWED_IPS` | `""` | comma-separated addresses / CIDR, IPv4 and IPv6 |
+    | `IXP_API_PROVISIONING_RATE_LIMIT` | `60` | requests per minute; `0` disables |
+
+    ## Conventions
+
+    - Base path `/admin/api/v4/provisioning`. Anything which creates, changes or removes state
+      uses `POST` or `DELETE` — never `GET`.
+    - `201` for something created, `200` for a read, a delete or an idempotent no-op, `404` for
+      an unknown id, `409` for a conflict which is not a validation problem, `422` for
+      validation and for resource conflicts detected before anything was written.
+    - Validation failures carry `message` and an `errors` object keyed by field. Errors raised
+      by the controllers themselves (an address outside the pool, an unusable switch port) are
+      also `422` but carry `message` only.
+    - Responses are explicit field lists built by the controllers' `*AsArray()` methods, not
+      `Model::toArray()`. A column added to the schema does not appear here on its own.
+
+    ## Special behaviours
+
+    - **`"auto"` addresses.** `ipv4address` / `ipv6address` accept the literal string `auto`,
+      which allocates the numerically next free address of that family from the VLAN's pool
+      under a row lock inside the request's transaction. The web wizard has no equivalent: an
+      operator picks from a list rendered in the browser, an unattended caller has no list.
+    - **Explicit addresses must already be in the pool.** `IpAllocator::claim()` is consulted
+      before `setIp()`, which would otherwise create the address record on the fly — for an
+      unattended caller that turns a typo into a stray address record nothing will clean up.
+    - **`reference` makes onboarding retries safe.** Passing the caller's own order identifier
+      makes `POST /onboarding` idempotent: the first call returns `201` with `created: true`,
+      any repeat of the same reference returns `200` with `created: false` and the member the
+      first call produced. Without a reference a retry creates a second member.
+    - **No address reservation endpoint.** An address held by nothing but a promise leaks when
+      the caller then fails. Allocation happens inside the connection transaction, where it
+      either sticks or is rolled back with everything else.
+
+  license:
+    name: GNU General Public License v2.0 only
+    identifier: GPL-2.0-only
+
+  contact:
+    name: KleyReX
+    url: https://www.kleyrex.net/
+
+externalDocs:
+  description: Prose documentation for this API (docs/provisioning-api.md)
+  url: https://github.com/inex/IXP-Manager/blob/master/docs/provisioning-api.md
+
+servers:
+  - url: https://{host}/admin/api/v4/provisioning
+    description: An IXP Manager installation with the provisioning API switched on.
+    variables:
+      host:
+        default: manager.example.net
+        description: |
+          Hostname of the IXP Manager installation, for example `manager.kleyrex.net`.
+
+security:
+  - ApiKeyAuth: []
+
+tags:
+  - name: Discovery
+    description: |
+      Read-only lookups an ordering system needs before it can place an order: does the key
+      work, which switches and infrastructures exist, which ports are free, which addresses
+      are free.
+  - name: Members
+    description: Creating and reading members (customers) and their portal users.
+  - name: Connections
+    description: Creating, listing and removing a member's connection to the exchange.
+  - name: Onboarding
+    description: A member, an optional user and an optional connection in one transaction.
+
+paths:
+
+  /ping:
+    get:
+      tags: [ Discovery ]
+      operationId: ping
+      summary: Confirm the API is reachable and the key is accepted
+      description: |
+        A health and connectivity check. It exists so that an operator can verify the whole
+        authentication chain — API key, superuser privilege, source address allow-list and JSON
+        content negotiation — without creating anything.
+
+        The user is resolved from the API key by the `apiauth` middleware, which logs the key's
+        owner in via `Auth::onceUsingId()`; the username returned is that user's.
+      responses:
+        '200':
+          description: The key was accepted.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pong'
+              example:
+                pong: true
+                user: provisioning
+                version: 7.3.1
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+
+  /switch:
+    get:
+      tags: [ Discovery ]
+      operationId: listSwitches
+      summary: List the active switches
+      description: |
+        Every switch with `active = true`, ordered by name, so that a caller can resolve a
+        switch name to the id `switch` expects when creating a connection rather than guessing.
+
+        Inactive switches are omitted: a port on one would produce a connection which appears
+        in neither the switch configuration nor the grapher.
+      responses:
+        '200':
+          description: The active switches.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [ switches ]
+                properties:
+                  switches:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Switch'
+              example:
+                switches:
+                  - id: 5
+                    name: vc501
+                    infrastructure: 1
+                    hostname: vc501.kleyrex.net
+                  - id: 13
+                    name: vc513
+                    infrastructure: 1
+                    hostname: vc513.kleyrex.net
+                  - id: 14
+                    name: vc514
+                    infrastructure: 1
+                    hostname: vc514.kleyrex.net
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+
+  /infrastructure:
+    get:
+      tags: [ Discovery ]
+      operationId: listInfrastructures
+      summary: List the infrastructures and their VLANs
+      description: |
+        All infrastructures — active or not — ordered by name, each with the VLANs attached to
+        it. A caller needs the VLAN `id` (not the 802.1Q tag `number`) for the `vlanid` field
+        of a connection; at KleyReX the peering VLAN carries tag 900 and has id 1.
+      responses:
+        '200':
+          description: The infrastructures and their VLANs.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [ infrastructures ]
+                properties:
+                  infrastructures:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Infrastructure'
+              example:
+                infrastructures:
+                  - id: 1
+                    name: KleyReX
+                    shortname: kleyrex
+                    isPrimary: true
+                    vlans:
+                      - id: 1
+                        name: Peering LAN
+                        number: 900
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+
+  /port/free:
+    get:
+      tags: [ Discovery ]
+      operationId: listFreePorts
+      summary: List switch ports which can be given to a member
+      description: |
+        Walks every **active** switch and returns the ports with no `PhysicalInterface`
+        attached whose type is either *unset* (`0`) or *peering* (`1`).
+
+        Core, management, monitor, other, fanout and reseller ports are deliberately excluded:
+        handing one of those to an ordering system would let it reassign the fabric.
+
+        The web UI answers this question one switch at a time because an operator has already
+        picked the switch from a dropdown. An ordering system has not — it knows the
+        infrastructure and the speed it sold, and needs to be told where that fits.
+
+        `truncated` distinguishes "there are more" from "exactly full": the controller collects
+        one port beyond `limit` before deciding, so a complete result never reports
+        `truncated: true`.
+      parameters:
+        - name: infrastructure
+          in: query
+          required: false
+          description: Restrict to one infrastructure id. Must exist in `infrastructure.id`.
+          schema:
+            type: integer
+            minimum: 1
+          example: 1
+        - name: switch
+          in: query
+          required: false
+          description: Restrict to one switch id. Must exist in `switch.id`.
+          schema:
+            type: integer
+            minimum: 1
+          example: 13
+        - name: limit
+          in: query
+          required: false
+          description: Cap the number of ports returned.
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 1000
+            default: 100
+          example: 50
+      responses:
+        '200':
+          description: The free ports.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [ ports, count, truncated ]
+                properties:
+                  ports:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Port'
+                  count:
+                    type: integer
+                    description: Number of ports in `ports` — never more than `limit`.
+                  truncated:
+                    type: boolean
+                    description: True when more free ports exist than `limit` allowed to be returned.
+              example:
+                ports:
+                  - switchport: 412
+                    name: xe-0/0/9
+                    type: 0
+                    switch: 13
+                    switch_name: vc513
+                    infrastructure: 1
+                  - switchport: 413
+                    name: xe-0/0/10
+                    type: 1
+                    switch: 13
+                    switch_name: vc513
+                    infrastructure: 1
+                count: 2
+                truncated: false
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '422':
+          description: |
+            A query parameter failed validation — a non-integer, a `limit` outside 1..1000, or
+            an `infrastructure` / `switch` id which does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+              example:
+                message: The selected switch is invalid.
+                errors:
+                  switch:
+                    - The selected switch is invalid.
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+
+  /vlan/{vlan}/address:
+    get:
+      tags: [ Discovery ]
+      operationId: listVlanAddresses
+      summary: List a VLAN's address pool, marking each address free or in use
+      description: |
+        Lists the addresses which exist in the VLAN's pool, ordered numerically
+        (`INET_ATON` / `INET6_ATON`, so `.10` does not sort before `.9`), each flagged with
+        whether a VLAN interface points at it.
+
+        Addresses are created ahead of time by the `ipv4:generate` / `ipv6:generate` commands.
+        This endpoint never creates one, and there is deliberately no endpoint which reserves
+        one — a caller which simply wants the next free address asks for `"auto"` when creating
+        the connection.
+
+        `total` counts the whole matching set; `truncated` says whether `limit` cut it short.
+      parameters:
+        - $ref: '#/components/parameters/VlanId'
+        - name: protocol
+          in: query
+          required: false
+          description: |
+            Restrict to one address family. Omitted, both `ipv4` and `ipv6` are returned.
+          schema:
+            type: integer
+            enum: [ 4, 6 ]
+          example: 4
+        - name: free
+          in: query
+          required: false
+          description: When true, list only addresses no VLAN interface points at.
+          schema:
+            type: boolean
+            default: false
+          example: true
+        - name: limit
+          in: query
+          required: false
+          description: Cap the number of addresses returned **per protocol**.
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 2000
+            default: 200
+          example: 5
+      responses:
+        '200':
+          description: |
+            The VLAN and its addresses. `ipv4` is absent when `protocol=6` was requested and
+            `ipv6` is absent when `protocol=4` was.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VlanAddressListing'
+              example:
+                vlan:
+                  id: 1
+                  name: Peering LAN
+                  number: 900
+                ipv4:
+                  addresses:
+                    - id: 341
+                      address: 193.189.82.101
+                      free: true
+                    - id: 342
+                      address: 193.189.82.102
+                      free: false
+                  total: 2
+                  truncated: false
+                ipv6:
+                  addresses:
+                    - id: 902
+                      address: '2001:7f8:33::a101:2586:1'
+                      free: true
+                  total: 1
+                  truncated: false
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          description: A query parameter failed validation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+              example:
+                message: The selected protocol is invalid.
+                errors:
+                  protocol:
+                    - The selected protocol is invalid.
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+
+  /member:
+    post:
+      tags: [ Members ]
+      operationId: createMember
+      summary: Create a member
+      description: |
+        Mirrors `CustomerController@store`, including the `CompanyBillingDetail` and
+        `CompanyRegisteredDetail` records it creates alongside the customer — but wraps all
+        three inserts in a transaction, which the web path does not, so a failure here cannot
+        leave orphaned detail rows behind.
+
+        Validation uses `IXP\Http\Requests\Api\V4\Provisioning\StoreCustomer`, which extends the
+        web form request `IXP\Http\Requests\Customer\Store` and adds a declared delta.
+        `RulesParityTest` subtracts that delta and asserts the remainder is identical to
+        upstream, so a rule changed upstream applies here automatically rather than drifting.
+
+        Two notes on the payload:
+
+        - **`type: 2` (Associate) validates far less.** `Customer\Store::rules()` returns only
+          the common fields for an associate member; the AS number, prefix limits, peering and
+          NOC fields are then not validated at all.
+        - **`dateleft` and `md5support` are accepted but do nothing.** The upstream rules use
+          those names, while the columns are `dateleave` and `MD5Support`. Both spellings pass
+          validation; only the correctly-cased ones are fillable and reach the database. The
+          web rules are left alone — that is upstream's call — and the delta adds rules for the
+          names the schema actually uses.
+
+        `isResold` is not a column. It selects whether the `reseller` value is written or
+        `null` is written instead.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MemberInput'
+            examples:
+              full:
+                summary: A full member at KleyReX
+                value:
+                  name: Example Networks GmbH
+                  shortname: examplenet
+                  abbreviatedName: EXAMPLE
+                  type: 1
+                  status: 1
+                  datejoin: '2026-08-01'
+                  autsys: 12586
+                  maxprefixes: 500
+                  maxprefixesv6: 500
+                  peeringemail: peering@example.net
+                  peeringmacro: AS-EXAMPLE
+                  peeringmacrov6: AS-EXAMPLE
+                  peeringpolicy: open
+                  irrdb: 1
+                  MD5Support: 'NO'
+                  nocemail: noc@example.net
+                  nocphone: '+49 69 1234567'
+                  nochours: 24x7
+                  nocwww: https://www.example.net/noc
+                  corpwww: https://www.example.net/
+                  activepeeringmatrix: true
+              associate:
+                summary: An associate member — only the common fields are validated
+                value:
+                  name: Example Association e.V.
+                  shortname: exampleassoc
+                  abbreviatedName: EXAMPLEA
+                  type: 2
+                  status: 1
+                  datejoin: '2026-08-01'
+              resold:
+                summary: A member resold by another member
+                value:
+                  name: Example Reseller Customer GmbH
+                  shortname: examplersld
+                  abbreviatedName: EXRSLD
+                  type: 1
+                  status: 1
+                  datejoin: '2026-08-01'
+                  autsys: 65551
+                  isResold: true
+                  reseller: 42
+      responses:
+        '201':
+          description: The member was created.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [ member ]
+                properties:
+                  member:
+                    $ref: '#/components/schemas/Member'
+              example:
+                member:
+                  id: 97
+                  name: Example Networks GmbH
+                  shortname: examplenet
+                  abbreviatedName: EXAMPLE
+                  type: 1
+                  status: 1
+                  autsys: 12586
+                  maxprefixes: 500
+                  maxprefixesv6: 500
+                  peeringemail: peering@example.net
+                  peeringmacro: AS-EXAMPLE
+                  peeringmacrov6: AS-EXAMPLE
+                  peeringpolicy: open
+                  irrdb: 1
+                  datejoin: '2026-08-01'
+                  dateleave: null
+                  reseller: null
+                  isReseller: false
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '422':
+          description: |
+            The payload failed validation — most commonly a `shortname` which is already taken
+            (`unique:cust,shortname`), a missing required field, or a resold member with no
+            reseller named.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+              examples:
+                duplicateShortname:
+                  summary: shortname already in use
+                  value:
+                    message: The shortname has already been taken.
+                    errors:
+                      shortname:
+                        - The shortname has already been taken.
+                resoldWithoutReseller:
+                  summary: isResold set with no reseller
+                  value:
+                    message: Please choose a reseller
+                    errors:
+                      reseller:
+                        - Please choose a reseller
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+
+  /member/{cust}:
+    parameters:
+      - $ref: '#/components/parameters/CustomerId'
+    get:
+      tags: [ Members ]
+      operationId: showMember
+      summary: Read a member
+      description: |
+        Returns the same representation `POST /member` produces. The field list is deliberate
+        rather than the model's `toArray()`: the response shape is a contract with the caller
+        and should not change because a column was added.
+
+        `datejoin` and `dateleave` are normalised to `Y-m-d`. `Customer` declares them in
+        `$dates`, which Laravel no longer honours, so they arrive as raw strings; the controller
+        accepts either form so this keeps working if upstream moves them to `$casts`.
+      responses:
+        '200':
+          description: The member.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [ member ]
+                properties:
+                  member:
+                    $ref: '#/components/schemas/Member'
+              example:
+                member:
+                  id: 97
+                  name: Example Networks GmbH
+                  shortname: examplenet
+                  abbreviatedName: EXAMPLE
+                  type: 1
+                  status: 1
+                  autsys: 12586
+                  maxprefixes: 500
+                  maxprefixesv6: 500
+                  peeringemail: peering@example.net
+                  peeringmacro: AS-EXAMPLE
+                  peeringmacrov6: null
+                  peeringpolicy: open
+                  irrdb: 1
+                  datejoin: '2026-08-01'
+                  dateleave: null
+                  reseller: null
+                  isReseller: false
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+
+  /member/{cust}/user:
+    parameters:
+      - $ref: '#/components/parameters/CustomerId'
+    post:
+      tags: [ Members ]
+      operationId: createMemberUser
+      summary: Create a portal user for a member
+      description: |
+        Mirrors `UserController@store`, in one transaction, and then fires `UserCreated`.
+
+        **The password is random and is never returned.** The account is activated by the
+        welcome email, which carries a password reset token — firing the event is therefore not
+        optional, since without it the user has no way in. The event is fired only after the
+        transaction has committed, so a later failure cannot leave a welcome email sent for a
+        user which was rolled back.
+
+        The customer comes from the route: `StoreUser::prepareForValidation()` overwrites any
+        `custid` in the body with the route's customer, and removes any `id` from the body —
+        an `id` would only serve to exempt somebody else's username from the uniqueness check,
+        turning a `422` into a database-constraint `500`.
+
+        The API takes **`enabled`** (default `true`); the web form's inverted `disabled` field
+        is not reproduced. Superuser privileges (`privs: 3`) are refused unless the member is an
+        internal customer (`type: 3`), which the inherited `User\Store::withValidator()` enforces.
+
+        `username` and `email` are lowercased before being stored.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserInput'
+            example:
+              name: Erika Mustermann
+              username: examplenet-noc
+              email: noc@example.net
+              authorisedMobile: '+491701234567'
+              privs: 2
+              enabled: true
+      responses:
+        '201':
+          description: |
+            The user was created and the welcome email dispatched.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [ user ]
+                properties:
+                  user:
+                    $ref: '#/components/schemas/User'
+              example:
+                user:
+                  id: 314
+                  name: Erika Mustermann
+                  username: examplenet-noc
+                  email: noc@example.net
+                  custid: 97
+                  privs: 2
+                  enabled: true
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          description: The payload failed validation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+              examples:
+                duplicateUsername:
+                  summary: username already in use
+                  value:
+                    message: The username has already been taken.
+                    errors:
+                      username:
+                        - The username has already been taken.
+                superuserOnNonInternal:
+                  summary: superuser privileges asked for on a non-internal member
+                  value:
+                    message: You are not allowed to set this User as a Super User for Example Networks GmbH
+                    errors:
+                      privs:
+                        - You are not allowed to set this User as a Super User for Example Networks GmbH
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+
+  /member/{cust}/connection:
+    parameters:
+      - $ref: '#/components/parameters/CustomerId'
+    get:
+      tags: [ Connections ]
+      operationId: listMemberConnections
+      summary: List a member's connections
+      description: |
+        Every virtual interface belonging to the member, with its physical interfaces and VLAN
+        interfaces. Relations are eager loaded, so this is a fixed number of queries rather than
+        one per interface per relation.
+
+        An empty array is returned for a member with no connections — not a `404`.
+      responses:
+        '200':
+          description: The member's connections.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [ connections ]
+                properties:
+                  connections:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Connection'
+              example:
+                connections:
+                  - id: 501
+                    custid: 97
+                    name: null
+                    trunk: false
+                    lag_framing: false
+                    channelgroup: null
+                    physical_interfaces:
+                      - id: 733
+                        status: 1
+                        speed: 10000
+                        duplex: full
+                        rate_limit: null
+                        autoneg: true
+                        switchport: 412
+                        switchport_name: xe-0/0/9
+                        switch: 13
+                        switch_name: vc513
+                    vlan_interfaces:
+                      - id: 688
+                        vlan: 1
+                        ipv4enabled: true
+                        ipv4address: 193.189.82.101
+                        ipv4hostname: examplenet.kleyrex.net
+                        ipv6enabled: true
+                        ipv6address: '2001:7f8:33::a101:2586:1'
+                        ipv6hostname: examplenet.kleyrex.net
+                        rsclient: true
+                        irrdbfilter: true
+                        as112client: false
+                        maxbgpprefix:
+                          ipv4: 500
+                          ipv6: 500
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+    post:
+      tags: [ Connections ]
+      operationId: createMemberConnection
+      summary: Create a connection for a member
+      description: |
+        Creates the virtual interface, the physical interface on a switch port, the VLAN
+        interface and its addresses — the equivalent of the web UI's "add a port" wizard, minus
+        the redirects and flash messages a machine caller cannot use.
+
+        **Everything happens in one transaction, including the address allocation**: the row
+        lock `IpAllocator` takes is only meaningful until commit, so two orders provisioned at
+        the same moment cannot be handed the same address. The transaction is attempted up to
+        three times on deadlock.
+
+        Differences from the web wizard, all deliberate:
+
+        - `ipv4address` / `ipv6address` may be the literal `"auto"`.
+        - An explicit address must **already exist** in the VLAN's pool and be unassigned.
+          `setIp()` would happily create one on the fly; `IpAllocator::claim()` is consulted
+          first and rejects anything not in the pool.
+        - LAG bookkeeping (`setBundleDetails()`, and hence `assignChannelGroup()`) is applied.
+          The wizard omits it, which is harmless there because its form cannot request LAG
+          framing.
+        - `status` defaults to *connected* (`1`) and `duplex` to `full`, so a caller does not
+          have to restate what is true of every member port.
+
+        The switch port is checked **before anything is written**. It is rejected with `422`
+        when it does not exist, belongs to a different switch than `switch` names, already has a
+        physical interface, sits on an inactive switch, or is not of type *unset* or *peering*.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConnectionInput'
+            examples:
+              autoDualStack:
+                summary: Dual stack with automatic addressing on KleyReX VLAN 900
+                value:
+                  vlanid: 1
+                  switch: 13
+                  switchportid: 412
+                  speed: 10000
+                  ipv4enabled: true
+                  ipv4address: auto
+                  ipv4hostname: examplenet.kleyrex.net
+                  ipv6enabled: true
+                  ipv6address: auto
+                  ipv6hostname: examplenet.kleyrex.net
+                  rsclient: true
+                  irrdbfilter: true
+                  ipv4maxbgpprefix: 500
+                  ipv6maxbgpprefix: 500
+              explicitAddresses:
+                summary: Explicit addresses, rate limited, with a LAG-framed interface
+                value:
+                  vlanid: 1
+                  switch: 14
+                  switchportid: 501
+                  speed: 10000
+                  rate_limit: 1000
+                  status: 1
+                  duplex: full
+                  autoneg: true
+                  name: ae0
+                  description: Example Networks GmbH primary
+                  mtu: 9000
+                  lag_framing: true
+                  fastlacp: false
+                  ipv4enabled: true
+                  ipv4address: 193.189.82.101
+                  ipv4hostname: examplenet.kleyrex.net
+                  ipv6enabled: true
+                  ipv6address: '2001:7f8:33::a101:2586:1'
+                  ipv6hostname: examplenet.kleyrex.net
+                  rsclient: true
+                  irrdbfilter: true
+                  as112client: false
+              ipv6Only:
+                summary: IPv6 only — the v4 family stays disabled and unaddressed
+                value:
+                  vlanid: 1
+                  switch: 13
+                  switchportid: 413
+                  speed: 1000
+                  ipv4enabled: false
+                  ipv6enabled: true
+                  ipv6address: auto
+                  ipv6hostname: examplenet-v6.kleyrex.net
+                  rsclient: true
+      responses:
+        '201':
+          description: The connection was created.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [ connection ]
+                properties:
+                  connection:
+                    $ref: '#/components/schemas/Connection'
+              example:
+                connection:
+                  id: 501
+                  custid: 97
+                  name: null
+                  trunk: false
+                  lag_framing: false
+                  channelgroup: null
+                  physical_interfaces:
+                    - id: 733
+                      status: 1
+                      speed: 10000
+                      duplex: full
+                      rate_limit: null
+                      autoneg: true
+                      switchport: 412
+                      switchport_name: xe-0/0/9
+                      switch: 13
+                      switch_name: vc513
+                  vlan_interfaces:
+                    - id: 688
+                      vlan: 1
+                      ipv4enabled: true
+                      ipv4address: 193.189.82.101
+                      ipv4hostname: examplenet.kleyrex.net
+                      ipv6enabled: true
+                      ipv6address: '2001:7f8:33::a101:2586:1'
+                      ipv6hostname: examplenet.kleyrex.net
+                      rsclient: true
+                      irrdbfilter: true
+                      as112client: false
+                      maxbgpprefix:
+                        ipv4: 500
+                        ipv6: 500
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          description: |
+            Either the payload failed validation (`message` **and** `errors`), or the switch
+            port or an address could not be used (`message` only — these are raised by the
+            controller and by `IpAllocator`, not by the validator). Nothing was written in
+            either case.
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ValidationError'
+                  - $ref: '#/components/schemas/Error'
+              examples:
+                enabledFamilyWithoutAddress:
+                  summary: ipv4enabled with no address — validation
+                  value:
+                    message: The ipv4address field is required.
+                    errors:
+                      ipv4address:
+                        - The ipv4address field is required.
+                malformedAddress:
+                  summary: neither an address nor "auto" — validation
+                  value:
+                    message: The ipv4address must be a valid ipv4 address or "auto".
+                    errors:
+                      ipv4address:
+                        - The ipv4address must be a valid ipv4 address or "auto".
+                portTaken:
+                  summary: switch port already assigned
+                  value:
+                    message: Switch port xe-0/0/9 is already assigned to another connection.
+                portOnOtherSwitch:
+                  summary: switch port does not belong to the switch named
+                  value:
+                    message: Switch port xe-0/0/9 does not belong to the switch given.
+                portNotMemberPort:
+                  summary: switch port is infrastructure, not a member port
+                  value:
+                    message: Switch port xe-0/0/9 is not a member port (type 3).
+                switchInactive:
+                  summary: switch taken out of service between listing and ordering
+                  value:
+                    message: Switch port xe-0/0/9 is on a switch which is not active.
+                addressNotInPool:
+                  summary: explicit address which is not in this VLAN's pool
+                  value:
+                    message: IPv4 address 193.189.82.101 is not in the address pool of VLAN Peering LAN (id 1).
+                addressTaken:
+                  summary: explicit address already on another VLAN interface
+                  value:
+                    message: IPv4 address 193.189.82.101 is already assigned to another VLAN interface.
+                poolExhausted:
+                  summary: '"auto" with nothing left to allocate'
+                  value:
+                    message: No free IPv6 address left in VLAN Peering LAN (id 1).
+                raced:
+                  summary: an address was taken between the check and the write
+                  value:
+                    message: An address became unavailable while the connection was being created. Please retry.
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+
+  /connection/{vi}:
+    parameters:
+      - $ref: '#/components/parameters/VirtualInterfaceId'
+    delete:
+      tags: [ Connections ]
+      operationId: deleteConnection
+      summary: Remove a connection
+      description: |
+        Deletes the virtual interface, its physical interfaces, its VLAN interfaces and their
+        layer 2 addresses and MAC addresses, in one transaction. Freed IP addresses return to
+        the VLAN's pool; the address records themselves are not deleted.
+
+        Teardown uses the inherited `deletePi()`, which handles the fanout and reseller cases.
+        That method is not idempotent — it dereferences `$pi->switchPort` after having set
+        `switchportid` to null — so a physical interface which is already detached is deleted
+        directly rather than passed to it.
+
+        Note the endpoint takes a **virtual interface id**, not a customer id, and is not itself
+        idempotent: deleting the same connection twice gives `200` and then `404`, because route
+        model binding no longer finds it.
+      responses:
+        '200':
+          description: The connection was deleted.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [ deleted ]
+                properties:
+                  deleted:
+                    type: boolean
+                    const: true
+              example:
+                deleted: true
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          description: |
+            The virtual interface belongs to a core bundle. Nothing was deleted — remove the
+            core bundle first.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: This connection belongs to a core bundle. Delete the core bundle first.
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+
+  /onboarding:
+    post:
+      tags: [ Onboarding ]
+      operationId: onboard
+      summary: Create a member, an optional user and an optional connection in one transaction
+      description: |
+        The three dedicated endpoints can be called in sequence, but that sequence is not
+        atomic: a caller whose second request fails is left with a half-provisioned member and
+        no clean way back. Here either the whole order lands or none of it does.
+
+        It does not orchestrate anything beyond the database. Rolling configuration out to
+        switches, regenerating route server configuration and updating reverse DNS remain the
+        caller's business; this endpoint only makes the IXP Manager side of an order indivisible.
+
+        ## Sections
+
+        The three sections are **nested rather than flattened**, because `name` means something
+        different for a member, a user and a virtual interface. Each section is validated with
+        exactly the rules of its own endpoint, re-keyed under its prefix — so a rule added
+        upstream reaches this endpoint too without anybody remembering to copy it. Validation
+        errors are therefore keyed `member.shortname`, `user.privs`, `connection.ipv4address`
+        and so on.
+
+        `member` is required. `user` and `connection` are optional. `custid` is dropped from the
+        user and connection rule sets: it comes from the member this very request is creating.
+
+        Two checks which live in `withValidator()` hooks rather than rules are restated here,
+        evaluated against the member being created rather than one already in the database —
+        without them an order could create a full IXP Manager administrator attached to an
+        arbitrary member, and the welcome email would hand over the password-reset link:
+
+        - superuser privileges (`user.privs: 3`) require `member.type: 3` (internal);
+        - `member.isResold` requires an existing `member.reseller`.
+
+        ## Idempotency
+
+        `reference` is the caller's own order identifier and makes retries safe:
+
+        - First call with a new reference: `201`, `created: true`, plus the ids created.
+        - Any later call with the same reference: **`200`**, `created: false`, and the member
+          the first call produced. `user` and `connection` are not present on this response —
+          only the reference and the member are recorded.
+
+        The check runs twice. `ShortCircuitKnownReference` middleware answers before validation
+        even runs, because by the time a caller retries, the `shortname` it asks for exists and
+        validation would otherwise reject the retry with "that name is taken" — technically true
+        and useless in practice. The controller keeps its own check for the window between two
+        simultaneous retries, where both pass the middleware before either commits.
+
+        **Without a reference, a retry creates a second member.**
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OnboardingInput'
+            examples:
+              fullOrder:
+                summary: Member, user and connection in one order
+                value:
+                  reference: ORD-2026-04711
+                  member:
+                    name: Example Networks GmbH
+                    shortname: examplenet
+                    abbreviatedName: EXAMPLE
+                    type: 1
+                    status: 1
+                    datejoin: '2026-08-01'
+                    autsys: 12586
+                    maxprefixes: 500
+                    maxprefixesv6: 500
+                    peeringemail: peering@example.net
+                    peeringmacro: AS-EXAMPLE
+                    peeringpolicy: open
+                    nocemail: noc@example.net
+                  user:
+                    name: Erika Mustermann
+                    username: examplenet-noc
+                    email: noc@example.net
+                    privs: 2
+                    enabled: true
+                  connection:
+                    vlanid: 1
+                    switch: 13
+                    switchportid: 412
+                    speed: 10000
+                    ipv4enabled: true
+                    ipv4address: auto
+                    ipv4hostname: examplenet.kleyrex.net
+                    ipv6enabled: true
+                    ipv6address: '2001:7f8:33::a101:2586:1'
+                    ipv6hostname: examplenet.kleyrex.net
+                    rsclient: true
+                    irrdbfilter: true
+              memberOnly:
+                summary: Member only, no reference — a retry would create a second member
+                value:
+                  member:
+                    name: Example Association e.V.
+                    shortname: exampleassoc
+                    abbreviatedName: EXAMPLEA
+                    type: 2
+                    status: 1
+                    datejoin: '2026-08-01'
+      responses:
+        '200':
+          description: |
+            This reference has been seen before. Nothing was created; the member the original
+            call produced is returned. `user` and `connection` are not part of this response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OnboardingReplay'
+              example:
+                created: false
+                reference: ORD-2026-04711
+                member:
+                  id: 97
+                  shortname: examplenet
+        '201':
+          description: |
+            The order landed in full. `user` and `connection` are `null` when those sections
+            were not supplied. The welcome email is dispatched after the commit, never inside it.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OnboardingResult'
+              examples:
+                full:
+                  summary: Member, user and connection created
+                  value:
+                    created: true
+                    reference: ORD-2026-04711
+                    member:
+                      id: 97
+                      shortname: examplenet
+                    user:
+                      id: 314
+                      username: examplenet-noc
+                    connection:
+                      id: 501
+                memberOnly:
+                  summary: Member only, no reference
+                  value:
+                    created: true
+                    reference: null
+                    member:
+                      id: 98
+                      shortname: exampleassoc
+                    user: null
+                    connection: null
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          description: |
+            A unique index was violated and the reference could not be resolved to an existing
+            member. **Nothing was created** — the whole transaction was rolled back.
+
+            Which index was hit matters, and the two cases need opposite responses. Telling a
+            caller whose switch port was taken to "use a new reference" would be actively
+            harmful: it would burn an order number and retry onto the same occupied port.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                referenceReused:
+                  summary: the reference is taken but its member was deleted afterwards
+                  value:
+                    message: >-
+                      This reference has been used before and the member it created no longer
+                      exists. Use a new reference.
+                resourceRaced:
+                  summary: another order took the switch port first — retry with the same reference
+                  value:
+                    message: >-
+                      Another request took one of the resources for this order while it was
+                      being processed - most likely the switch port. Nothing was created. Choose
+                      a different port and retry with the same reference.
+        '422':
+          description: |
+            Validation failed, or the connection section could not be provisioned. **The whole
+            order was rolled back** — a connection failure leaves no member behind.
+
+            Validation errors are keyed by section (`member.shortname`, `user.privs`,
+            `connection.ipv4address`). Errors raised by `IpAllocator` or by the switch port gate
+            carry `message` only.
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ValidationError'
+                  - $ref: '#/components/schemas/Error'
+              examples:
+                nestedValidation:
+                  summary: the member section failed validation
+                  value:
+                    message: The member.shortname field is required.
+                    errors:
+                      member.shortname:
+                        - The member.shortname field is required.
+                missingMember:
+                  summary: no member section at all
+                  value:
+                    message: The member field is required.
+                    errors:
+                      member:
+                        - The member field is required.
+                superuserOnNonInternal:
+                  summary: superuser privileges on a member which is not internal
+                  value:
+                    message: >-
+                      You are not allowed to set this user as a super user: the member being
+                      created is not an internal customer.
+                    errors:
+                      user.privs:
+                        - >-
+                          You are not allowed to set this user as a super user: the member being
+                          created is not an internal customer.
+                resoldWithoutReseller:
+                  summary: isResold with no reseller named
+                  value:
+                    message: Please choose a reseller.
+                    errors:
+                      member.reseller:
+                        - Please choose a reseller.
+                portTaken:
+                  summary: the switch port could not be used — order rolled back
+                  value:
+                    message: Switch port xe-0/0/9 is already assigned to another connection.
+                poolExhausted:
+                  summary: '"auto" with nothing left to allocate — order rolled back'
+                  value:
+                    message: No free IPv4 address left in VLAN Peering LAN (id 1).
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+
+components:
+
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-IXP-Manager-API-Key
+      description: |
+        A **superuser** API key, 56 characters, in the form
+        `ixpm_{identifier}_{secret}{checksum}` — for example
+        `ixpm_ident1234567_sec876543210...`.
+
+        The key's owner must have `AUTH_SUPERUSER` (privilege `3`); anything less is `403`.
+        A browser session is not accepted in place of a key: `RequireApiKey` rejects a request
+        without the header before `ApiAuthenticate` ever sees the session.
+
+        **Keys expire after at most 12 months** (`ixp_fe.api_keys.max_expires_duration`), so an
+        unattended service fails with `401 API key expired` exactly once a year unless the key
+        is rotated.
+
+        The `allowed_ips` column of the key **is** enforced on these endpoints by
+        `RestrictSourceAddress` — this is the only place in IXP Manager that reads it. A source
+        address outside it, or outside the global `ixp_api.provisioning.allowed_ips` list, gets
+        `403`.
+
+  parameters:
+
+    CustomerId:
+      name: cust
+      in: path
+      required: true
+      description: |
+        The member's `cust.id`. Resolved by route model binding, so an unknown id is `404`.
+      schema:
+        type: integer
+        minimum: 1
+      example: 97
+
+    VirtualInterfaceId:
+      name: vi
+      in: path
+      required: true
+      description: |
+        The connection's `virtualinterface.id` — **not** a customer id. Resolved by route model
+        binding, so an unknown id is `404`.
+      schema:
+        type: integer
+        minimum: 1
+      example: 501
+
+    VlanId:
+      name: vlan
+      in: path
+      required: true
+      description: |
+        The VLAN's `vlan.id` — the database id, not the 802.1Q tag. At KleyReX the peering VLAN
+        carries tag 900 and has id 1. Resolved by route model binding, so an unknown id is `404`.
+      schema:
+        type: integer
+        minimum: 1
+      example: 1
+
+  responses:
+
+    Unauthorized:
+      description: |
+        Authentication failed. Two shapes are possible:
+
+        - **JSON**, from `RequireApiKey`, when the `X-IXP-Manager-API-Key` header is absent.
+        - **Plain text**, from `ApiAuthenticate` / `ApiKeyAggregator::authenticate()`, for a key
+          which is malformed (`Malformed API key structure`), fails its checksum
+          (`Invalid API key checksum`), does not match a stored key (`Invalid credentials`),
+          has expired (`API key expired`), whose user is disabled (`User is disabled`), or whose
+          customer is disabled.
+
+        Note that an **expired key** is the failure mode an unattended service will actually
+        meet: keys are capped at 12 months.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: >-
+              These endpoints require an API key in the X-IXP-Manager-API-Key header. A browser
+              session is not accepted here.
+        text/html:
+          schema:
+            type: string
+            examples:
+              - API key expired
+              - Invalid credentials
+              - Malformed API key structure
+              - Unauthorized.
+
+    Forbidden:
+      description: |
+        The request authenticated but is not permitted. Two shapes:
+
+        - **Plain text `Insufficient permissions`**, from `assert.privilege:3`, when the key's
+          user is not a superuser.
+        - **JSON**, from `RestrictSourceAddress`, when the source address is covered by neither
+          the global allow-list nor the allow-list of the key presented.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: This source address is not permitted to use the provisioning API.
+        text/html:
+          schema:
+            type: string
+            examples:
+              - Insufficient permissions
+
+    NotFound:
+      description: |
+        No such record. Raised by route model binding for an unknown `cust`, `vi` or `vlan` id —
+        and also what every path in this document returns when the provisioning API has not been
+        enabled, since the routes are then never registered.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: >-
+              No query results for model [IXP\Models\Customer] 99999
+
+    TooManyRequests:
+      description: |
+        The per-key rate limit was exceeded. Defaults to 60 requests a minute
+        (`ixp_api.provisioning.rate_limit`); setting it to `0` removes the throttle middleware
+        from the stack entirely.
+      headers:
+        Retry-After:
+          description: Seconds until the limit resets.
+          schema:
+            type: integer
+          example: 42
+        X-RateLimit-Limit:
+          description: Requests permitted per minute.
+          schema:
+            type: integer
+          example: 60
+        X-RateLimit-Remaining:
+          description: Requests left in the current window.
+          schema:
+            type: integer
+          example: 0
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Too Many Attempts.
+
+  schemas:
+
+    Error:
+      type: object
+      title: Error
+      description: |
+        The shape of every error the provisioning code itself produces: a single human-readable
+        `message` and nothing else. Errors raised by the Laravel validator add `errors` — see
+        `ValidationError`.
+      required: [ message ]
+      properties:
+        message:
+          type: string
+          description: A human-readable explanation. Not a stable identifier — do not match on it.
+      examples:
+        - message: This connection belongs to a core bundle. Delete the core bundle first.
+
+    ValidationError:
+      type: object
+      title: ValidationError
+      description: |
+        A Laravel validation failure. `errors` is keyed by field name, each value an array of
+        messages for that field. For the onboarding endpoint the keys are section-qualified —
+        `member.shortname`, `user.privs`, `connection.ipv4address`.
+      required: [ message, errors ]
+      properties:
+        message:
+          type: string
+          description: The first validation message, repeated for convenience.
+        errors:
+          type: object
+          description: Field name to the list of messages for that field.
+          additionalProperties:
+            type: array
+            items:
+              type: string
+      examples:
+        - message: The shortname has already been taken.
+          errors:
+            shortname:
+              - The shortname has already been taken.
+
+    Pong:
+      type: object
+      title: Pong
+      required: [ pong, user, version ]
+      properties:
+        pong:
+          type: boolean
+          const: true
+        user:
+          type: string
+          description: Username of the API key's owner, as resolved by `apiauth`.
+        version:
+          type: string
+          description: The `APPLICATION_VERSION` constant of this IXP Manager installation.
+
+    Switch:
+      type: object
+      title: Switch
+      description: An active switch. Built by `PortController::switches()`.
+      required: [ id, name, infrastructure, hostname ]
+      properties:
+        id:
+          type: integer
+          description: '`switch.id` — the value the `switch` field of a connection expects.'
+        name:
+          type: string
+          description: Short name, for example `vc513`.
+        infrastructure:
+          type: [ integer, 'null' ]
+          description: '`infrastructure.id` this switch belongs to.'
+        hostname:
+          type: [ string, 'null' ]
+      examples:
+        - id: 13
+          name: vc513
+          infrastructure: 1
+          hostname: vc513.kleyrex.net
+
+    Vlan:
+      type: object
+      title: Vlan
+      description: A VLAN as reported by the infrastructure and address listings.
+      required: [ id, name, number ]
+      properties:
+        id:
+          type: integer
+          description: '`vlan.id` — the value the `vlanid` field of a connection expects.'
+        name:
+          type: [ string, 'null' ]
+        number:
+          type: [ integer, 'null' ]
+          description: The 802.1Q tag. At KleyReX, 900 for the peering LAN.
+      examples:
+        - id: 1
+          name: Peering LAN
+          number: 900
+
+    Infrastructure:
+      type: object
+      title: Infrastructure
+      description: An infrastructure and the VLANs attached to it.
+      required: [ id, name, shortname, isPrimary, vlans ]
+      properties:
+        id:
+          type: integer
+        name:
+          type: [ string, 'null' ]
+        shortname:
+          type: [ string, 'null' ]
+        isPrimary:
+          type: boolean
+        vlans:
+          type: array
+          items:
+            $ref: '#/components/schemas/Vlan'
+
+    Port:
+      type: object
+      title: Port
+      description: |
+        A switch port which is free to be assigned to a member: no physical interface attached,
+        type *unset* or *peering*, on an active switch.
+      required: [ switchport, name, type, switch, switch_name, infrastructure ]
+      properties:
+        switchport:
+          type: integer
+          description: '`switchport.id` — the value the `switchportid` field of a connection expects.'
+        name:
+          type: [ string, 'null' ]
+          description: Port name as configured on the switch, for example `xe-0/0/9`.
+        type:
+          type: integer
+          description: |
+            `0` = unset, `1` = peering. No other type is ever returned by this endpoint;
+            `2` monitor, `3` core, `4` other, `5` management, `6` fanout and `7` reseller are
+            infrastructure and are filtered out.
+          enum: [ 0, 1 ]
+        switch:
+          type: integer
+          description: '`switch.id` — pass this as `switch` when creating the connection.'
+        switch_name:
+          type: [ string, 'null' ]
+        infrastructure:
+          type: [ integer, 'null' ]
+      examples:
+        - switchport: 412
+          name: xe-0/0/9
+          type: 0
+          switch: 13
+          switch_name: vc513
+          infrastructure: 1
+
+    Address:
+      type: object
+      title: Address
+      description: |
+        One address from a VLAN's pool. Pools are created ahead of time; this API never mints an
+        address, it only claims an existing, unclaimed one.
+      required: [ id, address, free ]
+      properties:
+        id:
+          type: integer
+          description: '`ipv4address.id` or `ipv6address.id`.'
+        address:
+          type: string
+          description: The address exactly as stored.
+        free:
+          type: boolean
+          description: True when no VLAN interface points at this address.
+      examples:
+        - id: 341
+          address: 193.189.82.101
+          free: true
+        - id: 902
+          address: '2001:7f8:33::a101:2586:1'
+          free: false
+
+    AddressList:
+      type: object
+      title: AddressList
+      description: The addresses of one protocol family within a VLAN.
+      required: [ addresses, total, truncated ]
+      properties:
+        addresses:
+          type: array
+          description: Ordered numerically, not lexically, so `.10` does not precede `.9`.
+          items:
+            $ref: '#/components/schemas/Address'
+        total:
+          type: integer
+          description: Size of the whole matching set, before `limit` was applied.
+        truncated:
+          type: boolean
+          description: True when `limit` cut the list short.
+
+    VlanAddressListing:
+      type: object
+      title: VlanAddressListing
+      description: |
+        The response of `GET /vlan/{vlan}/address`. `ipv4` is omitted when `protocol=6` was
+        asked for, `ipv6` when `protocol=4` was.
+      required: [ vlan ]
+      properties:
+        vlan:
+          $ref: '#/components/schemas/Vlan'
+        ipv4:
+          $ref: '#/components/schemas/AddressList'
+        ipv6:
+          $ref: '#/components/schemas/AddressList'
+
+    Member:
+      type: object
+      title: Member
+      description: |
+        A member as this API reports it — the explicit field list of
+        `MemberController::memberAsArray()`, not the model's `toArray()`. Fields of the `cust`
+        table which are accepted on input but not echoed back (`corpwww`, the NOC fields,
+        `activepeeringmatrix`, `MD5Support`) are deliberately absent here.
+      required:
+        - id
+        - name
+        - shortname
+        - abbreviatedName
+        - type
+        - status
+        - autsys
+        - maxprefixes
+        - maxprefixesv6
+        - peeringemail
+        - peeringmacro
+        - peeringmacrov6
+        - peeringpolicy
+        - irrdb
+        - datejoin
+        - dateleave
+        - reseller
+        - isReseller
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        shortname:
+          type: string
+        abbreviatedName:
+          type: [ string, 'null' ]
+        type:
+          type: integer
+          description: '`1` Full, `2` Associate, `3` Internal, `4` Pro-bono.'
+          enum: [ 1, 2, 3, 4 ]
+        status:
+          type: integer
+          description: '`1` Normal, `2` Not Connected, `3` Suspended.'
+          enum: [ 1, 2, 3 ]
+        autsys:
+          type: [ integer, 'null' ]
+        maxprefixes:
+          type: [ integer, 'null' ]
+        maxprefixesv6:
+          type: [ integer, 'null' ]
+        peeringemail:
+          type: [ string, 'null' ]
+        peeringmacro:
+          type: [ string, 'null' ]
+        peeringmacrov6:
+          type: [ string, 'null' ]
+        peeringpolicy:
+          type: [ string, 'null' ]
+          enum: [ open, selective, mandatory, closed, null ]
+        irrdb:
+          type: [ integer, 'null' ]
+          description: '`irrdbconfig.id`.'
+        datejoin:
+          type: [ string, 'null' ]
+          format: date
+          description: Normalised to `Y-m-d`.
+        dateleave:
+          type: [ string, 'null' ]
+          format: date
+          description: Normalised to `Y-m-d`. Note the column is `dateleave`, not `dateleft`.
+        reseller:
+          type: [ integer, 'null' ]
+          description: '`cust.id` of the reseller, or null when the member is not resold.'
+        isReseller:
+          type: boolean
+
+    User:
+      type: object
+      title: User
+      description: |
+        A portal user as this API reports it — `MemberController::userAsArray()`. The password
+        is random and is deliberately never returned; the account is activated through the
+        welcome email's password-reset link.
+      required: [ id, name, username, email, custid, privs, enabled ]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        username:
+          type: string
+          description: Lowercased on write.
+        email:
+          type: string
+          format: email
+          description: Lowercased on write.
+        custid:
+          type: integer
+          description: The member the user was created under — taken from the route, not the body.
+        privs:
+          type: integer
+          description: '`1` CUSTUSER, `2` CUSTADMIN, `3` SUPERUSER.'
+          enum: [ 1, 2, 3 ]
+        enabled:
+          type: boolean
+          description: The inverse of the `disabled` column.
+
+    ConnectionPhysicalInterface:
+      type: object
+      title: ConnectionPhysicalInterface
+      description: One physical interface of a connection, with its switch port resolved.
+      required:
+        - id
+        - status
+        - speed
+        - duplex
+        - rate_limit
+        - autoneg
+        - switchport
+        - switchport_name
+        - switch
+        - switch_name
+      properties:
+        id:
+          type: integer
+        status:
+          type: [ integer, 'null' ]
+          description: '`1` Connected, `2` Disabled, `3` Not Connected, `4` Awaiting X-Connect, `5` Quarantine.'
+        speed:
+          type: [ integer, 'null' ]
+          description: Mbit/s — one of 10, 100, 1000, 10000, 25000, 40000, 100000, 400000.
+        duplex:
+          type: [ string, 'null' ]
+          enum: [ full, half, null ]
+        rate_limit:
+          type: [ integer, 'null' ]
+          description: Mbit/s, or null for unlimited.
+        autoneg:
+          type: boolean
+        switchport:
+          type: [ integer, 'null' ]
+          description: '`switchport.id`, or null once the interface has been detached.'
+        switchport_name:
+          type: [ string, 'null' ]
+        switch:
+          type: [ integer, 'null' ]
+        switch_name:
+          type: [ string, 'null' ]
+
+    ConnectionVlanInterface:
+      type: object
+      title: ConnectionVlanInterface
+      description: |
+        One VLAN interface of a connection. Addresses are reported as strings resolved from the
+        pool; `null` means the family carries no address.
+      required:
+        - id
+        - vlan
+        - ipv4enabled
+        - ipv4address
+        - ipv4hostname
+        - ipv6enabled
+        - ipv6address
+        - ipv6hostname
+        - rsclient
+        - irrdbfilter
+        - as112client
+        - maxbgpprefix
+      properties:
+        id:
+          type: integer
+        vlan:
+          type: integer
+          description: '`vlan.id`.'
+        ipv4enabled:
+          type: boolean
+        ipv4address:
+          type: [ string, 'null' ]
+        ipv4hostname:
+          type: [ string, 'null' ]
+        ipv6enabled:
+          type: boolean
+        ipv6address:
+          type: [ string, 'null' ]
+        ipv6hostname:
+          type: [ string, 'null' ]
+        rsclient:
+          type: boolean
+        irrdbfilter:
+          type: boolean
+        as112client:
+          type: boolean
+        maxbgpprefix:
+          type: object
+          description: |
+            Per-family prefix limits for the route server sessions. Both may be null, in which
+            case the customer-level `maxprefixes` / `maxprefixesv6` apply.
+          required: [ ipv4, ipv6 ]
+          properties:
+            ipv4:
+              type: [ integer, 'null' ]
+            ipv6:
+              type: [ integer, 'null' ]
+
+    Connection:
+      type: object
+      title: Connection
+      description: |
+        A member's connection — the virtual interface and everything hanging off it, as built by
+        `ConnectionController::connectionAsArray()`.
+
+        Note the fields the VLAN interface deliberately does **not** report even though they can
+        be set: `mcastenabled`, `rsmorespecifics`, `busyhost`, the BGP MD5 secrets, `canping`
+        and `monitorrcbgp`.
+      required:
+        - id
+        - custid
+        - name
+        - trunk
+        - lag_framing
+        - channelgroup
+        - physical_interfaces
+        - vlan_interfaces
+      properties:
+        id:
+          type: integer
+          description: '`virtualinterface.id` — the id `DELETE /connection/{vi}` takes.'
+        custid:
+          type: integer
+        name:
+          type: [ string, 'null' ]
+        trunk:
+          type: boolean
+        lag_framing:
+          type: boolean
+        channelgroup:
+          type: [ integer, 'null' ]
+          description: Assigned by `setBundleDetails()` when the interface is LAG framed.
+        physical_interfaces:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConnectionPhysicalInterface'
+        vlan_interfaces:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConnectionVlanInterface'
+
+    MemberInput:
+      type: object
+      title: MemberInput
+      description: |
+        The body of `POST /member`, and the `member` section of `POST /onboarding`.
+
+        Validated by `StoreCustomer`, which is `IXP\Http\Requests\Customer\Store` plus a delta
+        of `dateleave`, `MD5Support`, `isReseller`, `isResold` and `activepeeringmatrix`.
+
+        **When `type` is `2` (Associate) only the common fields below are validated at all** —
+        `autsys` through `reseller` have no rules in that case and are passed straight to
+        `Customer::create()`, where only fillable columns survive.
+
+        Unknown fields are dropped: the controller passes `$r->validated()`, never `$r->all()`.
+      required: [ name, type, shortname, datejoin, status, abbreviatedName ]
+      properties:
+        name:
+          type: string
+          maxLength: 255
+          description: |
+            Also written verbatim to the `CompanyRegisteredDetail.registeredName` created
+            alongside the member.
+        type:
+          type: integer
+          enum: [ 1, 2, 3, 4 ]
+          description: '`1` Full, `2` Associate, `3` Internal, `4` Pro-bono.'
+        shortname:
+          type: string
+          maxLength: 30
+          pattern: '[a-z0-9]+'
+          description: Must be unique across `cust.shortname`; a clash is `422`.
+        status:
+          type: integer
+          enum: [ 1, 2, 3 ]
+          description: '`1` Normal, `2` Not Connected, `3` Suspended.'
+        abbreviatedName:
+          type: string
+          maxLength: 30
+        datejoin:
+          type: string
+          format: date
+          description: Any string Laravel's `date` rule accepts; `Y-m-d` is the sane choice.
+        dateleave:
+          type: [ string, 'null' ]
+          format: date
+          description: |
+            The column the schema actually has. Validated by the API delta and persisted.
+        dateleft:
+          type: [ string, 'null' ]
+          format: date
+          description: |
+            **Accepted but ignored.** The upstream web rules use this spelling, which matches no
+            column and is not fillable. Use `dateleave`. Documented only so a caller which has
+            been sending it knows it has never had an effect.
+          deprecated: true
+        corpwww:
+          type: [ string, 'null' ]
+          format: uri
+          maxLength: 255
+        MD5Support:
+          type: [ string, 'null' ]
+          enum: [ UNKNOWN, 'YES', MANDATORY, PREFERRED, 'NO', null ]
+          description: The correctly-cased column name. Validated by the API delta and persisted.
+        md5support:
+          type: [ string, 'null' ]
+          enum: [ UNKNOWN, 'YES', MANDATORY, PREFERRED, 'NO', null ]
+          description: |
+            **Accepted but ignored** — the upstream spelling, which is not a fillable column.
+            Use `MD5Support`.
+          deprecated: true
+        autsys:
+          type: integer
+          minimum: 1
+          description: 'AS number. Not validated when `type` is `2`.'
+        maxprefixes:
+          type: [ integer, 'null' ]
+          minimum: 0
+        maxprefixesv6:
+          type: [ integer, 'null' ]
+          minimum: 0
+        peeringemail:
+          type: string
+          format: email
+        peeringmacro:
+          type: [ string, 'null' ]
+          maxLength: 255
+          pattern: '^(AS-[A-Z0-9]+(?:-[A-Z0-9]+)*|AS[1-9]\d*(?::AS-[A-Z0-9]+(?:-[A-Z0-9]+)*)?)$'
+          description: 'Case-insensitive, for example `AS-EXAMPLE` or `AS12586:AS-CUSTOMERS`.'
+        peeringmacrov6:
+          type: [ string, 'null' ]
+          maxLength: 255
+          pattern: '^(AS-[A-Z0-9]+(?:-[A-Z0-9]+)*|AS[1-9]\d*(?::AS-[A-Z0-9]+(?:-[A-Z0-9]+)*)?)$'
+        peeringpolicy:
+          type: string
+          enum: [ open, selective, mandatory, closed ]
+        irrdb:
+          type: [ integer, 'null' ]
+          description: '`irrdbconfig.id`. Must exist.'
+        nocphone:
+          type: [ string, 'null' ]
+          maxLength: 255
+        noc24hphone:
+          type: [ string, 'null' ]
+          maxLength: 255
+        nocemail:
+          type: string
+          format: email
+          maxLength: 255
+        nochours:
+          type: [ string, 'null' ]
+          enum: [ 24x7, 8x5, 8x7, 12x5, 12x7, null ]
+        nocwww:
+          type: [ string, 'null' ]
+          format: uri
+          maxLength: 255
+        reseller:
+          type: [ integer, 'null' ]
+          description: '`cust.id` of the reseller. Must exist. Only written when `isResold` is true.'
+        isResold:
+          type: boolean
+          description: |
+            Not a column. When true, `reseller` is written to the member and must name an
+            existing customer, else `422`. When false or absent, `reseller` is forced to null.
+        isReseller:
+          type: boolean
+          description: Whether this member is itself a reseller.
+        activepeeringmatrix:
+          type: boolean
+
+    UserInput:
+      type: object
+      title: UserInput
+      description: |
+        The body of `POST /member/{cust}/user`, and the `user` section of `POST /onboarding`.
+
+        Validated by `StoreUser`, which is `IXP\Http\Requests\User\Store` plus `enabled`.
+
+        `custid` is **not** part of the payload: at the dedicated endpoint
+        `prepareForValidation()` overwrites it from the route, and at the onboarding endpoint
+        the rule is removed entirely because the member is created by the same request. An `id`
+        in the body is stripped before validation.
+      required: [ name, username, email, privs ]
+      properties:
+        name:
+          type: string
+          maxLength: 255
+        username:
+          type: string
+          minLength: 3
+          maxLength: 255
+          pattern: '^[a-z0-9\-_\.]{3,255}$'
+          description: Must be unique across `user.username`. Lowercased on write.
+        email:
+          type: string
+          format: email
+          maxLength: 255
+          description: Lowercased on write. The welcome email goes here.
+        authorisedMobile:
+          type: [ string, 'null' ]
+          maxLength: 50
+        privs:
+          type: integer
+          enum: [ 1, 2, 3 ]
+          description: |
+            `1` CUSTUSER, `2` CUSTADMIN, `3` SUPERUSER. **`3` is only accepted when the member is
+            an internal customer** (`type: 3`); anywhere else it is `422`. That check is the only
+            thing standing between an order and a full IXP Manager administrator whose
+            password-reset link is mailed out automatically.
+        enabled:
+          type: boolean
+          default: true
+          description: |
+            Written to the `disabled` column inverted. Defaults to enabled, which is the only
+            sensible default when the very next thing that happens is a welcome email. The web
+            form's `disabled` field is deliberately not reproduced.
+
+    ConnectionInput:
+      type: object
+      title: ConnectionInput
+      description: |
+        The body of `POST /member/{cust}/connection`, and the `connection` section of
+        `POST /onboarding`.
+
+        Validated by `StoreConnection`, which is `IXP\Http\Requests\StoreVirtualInterfaceWizard`
+        plus a delta of `name`, `description`, `mtu`, `lag_framing`, `fastlacp` and `busyhost` —
+        all fillable columns an unattended caller has no other way to set — and with
+        `ipv4address` / `ipv6address` replaced so that they also accept `"auto"`.
+
+        Only the address *type* is relaxed, never the requirement: a family which is enabled
+        must still carry an address. Dropping that would create a VLAN interface with
+        `ipv4enabled=1` and no address, which renders as `neighbor  as 65551;` in the route
+        server configuration — a parse error invalidating the generated config for the whole
+        VLAN, not merely that peer.
+
+        `custid` is not part of the payload; it comes from the route (or, at onboarding, from
+        the member being created). `status` defaults to `1` (connected) and `duplex` to `full`.
+      required: [ vlanid, switch, switchportid, speed ]
+      properties:
+        vlanid:
+          type: integer
+          description: '`vlan.id`. Must exist. At KleyReX the peering LAN (tag 900) is id 1.'
+        switch:
+          type: integer
+          description: |
+            `switch.id`. Must exist, must be active, and the switch port named below must belong
+            to it — a mismatch is `422`.
+        switchportid:
+          type: integer
+          description: |
+            `switchport.id`. Must exist, must have no physical interface attached, and must be
+            of type *unset* or *peering*. Set to *peering* once the connection is created.
+        speed:
+          type: integer
+          enum: [ 10, 100, 1000, 10000, 25000, 40000, 100000, 400000 ]
+          description: Mbit/s.
+        status:
+          type: integer
+          enum: [ 1, 2, 3, 4, 5 ]
+          default: 1
+          description: |
+            `1` Connected, `2` Disabled, `3` Not Connected, `4` Awaiting X-Connect,
+            `5` Quarantine. Defaulted to `1` before validation when absent.
+        duplex:
+          type: string
+          enum: [ full, half ]
+          default: full
+          description: Defaulted to `full` before validation when absent.
+        rate_limit:
+          type: [ integer, 'null' ]
+          minimum: 0
+          description: Mbit/s. Null or absent means unlimited.
+        autoneg:
+          type: boolean
+        name:
+          type: [ string, 'null' ]
+          maxLength: 255
+          description: Virtual interface name, for example `ae0`. Not offered by the web wizard.
+        description:
+          type: [ string, 'null' ]
+          maxLength: 255
+        mtu:
+          type: [ integer, 'null' ]
+          minimum: 0
+        trunk:
+          type: boolean
+        lag_framing:
+          type: boolean
+          description: |
+            LAG bookkeeping is applied here but not by the web wizard, whose form cannot request
+            it; `setBundleDetails()` assigns the channel group.
+        fastlacp:
+          type: boolean
+        busyhost:
+          type: boolean
+        mcastenabled:
+          type: boolean
+        rsclient:
+          type: boolean
+          description: |
+            Route server client. Enabling this together with `irrdbfilter` while the member has
+            no IRRDB source set makes the route servers block every prefix — the controller logs
+            a warning but does not refuse.
+        irrdbfilter:
+          type: boolean
+        rsmorespecifics:
+          type: boolean
+        as112client:
+          type: boolean
+        ipv4enabled:
+          type: boolean
+        ipv4address:
+          type: [ string, 'null' ]
+          maxLength: 255
+          description: |
+            An IPv4 address, or the literal `"auto"` (case-insensitive, whitespace trimmed).
+
+            **Required when `ipv4enabled` is true**, nullable otherwise. An explicit address must
+            already exist in this VLAN's pool and be unassigned — unlike the web path, no address
+            record is created on the fly.
+          examples: [ auto, 193.189.82.101 ]
+        ipv4hostname:
+          type: [ string, 'null' ]
+          maxLength: 255
+          description: |
+            Validated with `IdnValidate`. **Required when `ipv4enabled` is true and
+            `ixp_fe.vlaninterfaces.hostname_required` is set** — which it is by default.
+        ipv4bgpmd5secret:
+          type: [ string, 'null' ]
+          maxLength: 255
+        ipv4maxbgpprefix:
+          type: [ integer, 'null' ]
+        ipv4canping:
+          type: boolean
+        ipv4monitorrcbgp:
+          type: boolean
+        ipv6enabled:
+          type: boolean
+        ipv6address:
+          type: [ string, 'null' ]
+          maxLength: 255
+          description: |
+            An IPv6 address, or the literal `"auto"`. **Required when `ipv6enabled` is true**,
+            nullable otherwise. Same pool rules as `ipv4address`; an address written in a
+            different but equivalent form (`2001:7f8:33::a101:2586:1` vs
+            `2001:07f8:0033::a101:2586:0001`) is matched against both the given and the
+            canonical form.
+          examples: [ auto, '2001:7f8:33::a101:2586:1' ]
+        ipv6hostname:
+          type: [ string, 'null' ]
+          maxLength: 255
+          description: |
+            Validated with `IdnValidate`. **Required when `ipv6enabled` is true and
+            `ixp_fe.vlaninterfaces.hostname_required` is set** — which it is by default.
+        ipv6bgpmd5secret:
+          type: [ string, 'null' ]
+          maxLength: 255
+        ipv6maxbgpprefix:
+          type: [ integer, 'null' ]
+        ipv6canping:
+          type: boolean
+        ipv6monitorrcbgp:
+          type: boolean
+
+    OnboardingInput:
+      type: object
+      title: OnboardingInput
+      description: |
+        A composite order. Sections are nested rather than flattened so that field names cannot
+        collide — `name` means something different for a member, a user and a virtual interface.
+      required: [ member ]
+      properties:
+        reference:
+          type: [ string, 'null' ]
+          maxLength: 191
+          description: |
+            The caller's own order identifier. Supplying it makes the request idempotent: a
+            repeat returns `200` with the original member instead of creating a second one.
+            Omitting it means a retry after a timeout creates a duplicate member.
+          examples: [ ORD-2026-04711 ]
+        member:
+          $ref: '#/components/schemas/MemberInput'
+        user:
+          oneOf:
+            - $ref: '#/components/schemas/UserInput'
+            - type: 'null'
+          description: Optional. Omit the key entirely to create no user.
+        connection:
+          oneOf:
+            - $ref: '#/components/schemas/ConnectionInput'
+            - type: 'null'
+          description: Optional. Omit the key entirely to create no connection.
+
+    OnboardingMemberRef:
+      type: object
+      title: OnboardingMemberRef
+      description: |
+        The onboarding responses report only the id and shortname of what they created — not the
+        full `Member` object. Read `GET /member/{cust}` for the rest.
+      required: [ id, shortname ]
+      properties:
+        id:
+          type: integer
+        shortname:
+          type: string
+
+    OnboardingResult:
+      type: object
+      title: OnboardingResult
+      description: The `201` response — the whole order landed.
+      required: [ created, reference, member, user, connection ]
+      properties:
+        created:
+          type: boolean
+          const: true
+        reference:
+          type: [ string, 'null' ]
+          description: Echoed back, or null when none was supplied.
+        member:
+          $ref: '#/components/schemas/OnboardingMemberRef'
+        user:
+          type: [ object, 'null' ]
+          description: Null when no `user` section was supplied.
+          required: [ id, username ]
+          properties:
+            id:
+              type: integer
+            username:
+              type: string
+        connection:
+          type: [ object, 'null' ]
+          description: Null when no `connection` section was supplied.
+          required: [ id ]
+          properties:
+            id:
+              type: integer
+              description: '`virtualinterface.id`.'
+
+    OnboardingReplay:
+      type: object
+      title: OnboardingReplay
+      description: |
+        The `200` response — this reference was seen before and nothing was created. Note that
+        `user` and `connection` are **absent**, not null: only the reference-to-member link is
+        recorded, so a replay cannot report what else the original call produced.
+      required: [ created, reference, member ]
+      properties:
+        created:
+          type: boolean
+          const: false
+        reference:
+          type: string
+        member:
+          $ref: '#/components/schemas/OnboardingMemberRef'
