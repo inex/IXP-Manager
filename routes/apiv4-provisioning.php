@@ -41,3 +41,9 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get( 'ping', 'PingController@ping' )->name( 'api-v4-provisioning@ping' );
+
+Route::group( [ 'prefix' => 'member' ], function() {
+    Route::post( '',                'MemberController@storeCustomer' )->name( 'api-v4-provisioning@member-store'      );
+    Route::get(  '{cust}',          'MemberController@showCustomer'  )->name( 'api-v4-provisioning@member-show'       );
+    Route::post( '{cust}/user',     'MemberController@storeUser'     )->name( 'api-v4-provisioning@member-user-store' );
+} );
