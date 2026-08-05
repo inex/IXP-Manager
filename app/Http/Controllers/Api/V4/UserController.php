@@ -49,6 +49,10 @@ class UserController extends Controller
     /**
      * API call to get users as JSON
      *
+     * Names the columns rather than emitting the whole row. $hidden on the model already
+     * keeps the password hash out of the serialisation; selecting explicitly means a column
+     * added later - and any sensitivity it carries - does not appear here by accident.
+     *
      * @param int|null $priv Optionally limit to users of given privilege
      *
      * @return JsonResponse
@@ -56,7 +60,14 @@ class UserController extends Controller
     public function json( ?int $priv = null ): JsonResponse
     {
         return response()->json(
-            User::byPrivs( $priv )->get()->toArray()
+            User::byPrivs( $priv )
+                ->select( [
+                    'user.id', 'user.custid', 'user.username', 'user.email', 'user.name',
+                    'user.authorisedMobile', 'user.uid', 'user.disabled', 'user.peeringdb_id',
+                    'user.created_at', 'user.updated_at',
+                ] )
+                ->get()
+                ->toArray()
         );
     }
 

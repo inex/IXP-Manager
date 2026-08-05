@@ -178,4 +178,68 @@ return [
     | See: https://docs.ixpmanager.org/latest/features/api/
     */
     'allow_apikeys_get_parameter' => env( 'IXP_ALLOW_DEPRECATED_APIKEYS_VIA_GET', true ),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Provisioning API
+    |--------------------------------------------------------------------------
+    |
+    | Endpoints under admin/api/v4/provisioning which create and change members,
+    | users and connections from an external system such as an ordering platform.
+    |
+    | These are the only endpoints in IXP Manager which let an external caller
+    | create business objects, so they are OFF by default. An installation which
+    | does not switch them on does not have them: the routes are never registered.
+    |
+    | See: docs/provisioning-api.md
+    |
+    */
+
+    'provisioning' => [
+
+        /*
+        | Master switch. Off by default - turning it on is a deliberate decision by
+        | the operator, not something an upgrade does to them.
+        */
+        'enabled' => env( 'IXP_API_PROVISIONING_ENABLED', false ),
+
+        /*
+        | Require a real API key.
+        |
+        | The `api/v4` middleware group starts a session, and ApiAuthenticate only
+        | looks for a key when Auth::check() is false. Without this, a browser
+        | already logged in as a superuser reaches these endpoints on its session
+        | cookie - and, because the group deliberately omits `web`, without a CSRF
+        | token either.
+        |
+        | For endpoints which create members that is not acceptable, so the default
+        | is to refuse ambient browser credentials and insist on a key.
+        */
+        'require_api_key' => env( 'IXP_API_PROVISIONING_REQUIRE_KEY', true ),
+
+        /*
+        | Restrict by source address.
+        |
+        | Two independent layers, both optional:
+        |
+        |   - this list applies to every provisioning request
+        |   - api_keys.allowed_ips applies per key (a column which has existed for
+        |     years but was never enforced anywhere; these endpoints honour it)
+        |
+        | Comma-separated addresses or CIDR ranges, IPv4 and IPv6:
+        |   IXP_API_PROVISIONING_ALLOWED_IPS="192.0.2.10,198.51.100.0/24,2001:db8::/48"
+        |
+        | Empty means no restriction at this layer. Note that a restriction here is
+        | not a substitute for one at the web server, which is where the /admin
+        | prefix introduced in v7.1.0 is meant to be enforced - it is a second lock
+        | on the same door, useful when the application is reachable through a proxy
+        | whose ACL you do not control.
+        */
+        'allowed_ips' => env( 'IXP_API_PROVISIONING_ALLOWED_IPS', '' ),
+
+        /*
+        | Requests per minute per API key. Zero disables throttling.
+        */
+        'rate_limit' => (int) env( 'IXP_API_PROVISIONING_RATE_LIMIT', 60 ),
+    ],
 ];

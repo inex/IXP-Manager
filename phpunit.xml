@@ -30,6 +30,9 @@
     </testsuite>
   </testsuites>
   <php>
+    <!-- the provisioning API is off by default; the suite tests it, so it is on here -->
+    <env name="IXP_API_PROVISIONING_ENABLED" value="true"/>
+    <env name="IXP_API_PROVISIONING_RATE_LIMIT" value="0"/>
     <const name="APPLICATION_VERSION" value="999.9.9"/>
     <const name="APPLICATION_VERDATE" value="9999999999"/>
     <const name="APPLICATION_STARTTIME" value="0"/>
