@@ -70,15 +70,15 @@ class Basic implements Validator
         $backend->software('PHP', $phpVersion);
 
         if ( version_compare( $phpVersion, $manifest['php_version']['min'], '>=' ) && ($manifest['php_version']['max'] === null || version_compare( $phpVersion, $manifest['php_version']['max'], '<=')) ) {
-            $backend->info( "Running a supported PHP version. " .
+            $backend->info( "Running a supported PHP version (" . $phpVersion . "). " .
                 (str_starts_with( $phpVersion,  $manifest['php_version']['recommended'])
                     ? "Version is a recommended version" : "") );
         } else {
             if ( version_compare( $phpVersion, $manifest['php_version']['min'], '<' ) ) {
-                $backend->error( "PHP version " . $manifest['php_version']['min'] . " or higher required" );
+                $backend->error( "PHP version " . $manifest['php_version']['min'] . " or higher required (" . $phpVersion . " found)" );
             }
             if ($manifest['php_version']['max'] !== null && version_compare( $phpVersion, $manifest['php_version']['max'], '>' ) ) {
-                $backend->error("PHP version exceeds max supported version " . $manifest['php_version']['max']);
+                $backend->error("PHP version exceeds max supported version " . $manifest['php_version']['max'] . " (" . $phpVersion . " found)" );
             }
         }
         if ( !str_starts_with( $phpVersion, $manifest['php_version']['recommended'] ) ) {
@@ -169,16 +169,16 @@ class Basic implements Validator
         $recommendedPrefix = APPLICATION_MANIFEST['mysql_version']['recommended'];
         if ( version_compare( $minVersion, $version, '<=' ) &&
             ($maxVersion === null || version_compare( $version, $maxVersion, '<=' ) ) ) {
-            $backend->info( "Running a supported MySQL version. " . (str_starts_with( $version, $recommendedPrefix ) ? "Version is a recommended version" : "" ) );
+            $backend->info( "Running a supported MySQL version (" . $version . "). " . (str_starts_with( $version, $recommendedPrefix ) ? "Version is a recommended version" : "" ) );
         } else {
             if ( version_compare( $version, $minVersion, '<' ) ) {
-                $backend->error( "MySQL version " . $minVersion . " or higher required" );
+                $backend->error( "MySQL version " . $minVersion . " or higher required (" . $version . " found)" );
             }
             if ( !str_starts_with( $version, $recommendedPrefix ) ) {
-                $backend->warning( "Not running a recommended MySQL version." );
+                $backend->warning( "Not running a recommended MySQL version. (" . $version . " found)" );
             }
             if ($maxVersion !== null && version_compare( phpversion(), $maxVersion, '>' ) ) {
-                $backend->error( "MySQL version exceeds max supported version " . $maxVersion );
+                $backend->error( "MySQL version exceeds max supported version " . $maxVersion . " (" . $version . " found)" );
             }
         }
 
