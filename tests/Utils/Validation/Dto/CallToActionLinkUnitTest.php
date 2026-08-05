@@ -22,26 +22,22 @@
 
 declare(strict_types=1);
 
-namespace IXP\Utils\Validation\Dto;
+namespace Tests\Utils\Validation\Dto;
 
-use JsonSerializable;
+use IXP\Utils\Validation\Dto\CallToActionLink;
+use PHPUnit\Framework\TestCase;
 
-/**
- * Simple DTO containing a software and it's version
- */
-readonly class Software implements JsonSerializable
+class CallToActionLinkUnitTest extends TestCase
 {
-    public function __construct(
-        private(set) string $name,
-        private(set) string $version
-    ) { }
-
-    #[\Override]
-    public function jsonSerialize(): array
+    public function testDto()
     {
-        return [
-            'name'    => $this->name,
-            'version' => $this->version,
-        ];
+        $link = new CallToActionLink("my url", "https://ixp.local/path");
+        $this->assertInstanceOf(\JsonSerializable::class, $link);
+        $this->assertEquals("my url", $link->text);
+        $this->assertEquals("https://ixp.local/path", $link->url);
+        $this->assertArrayHasKey("text", $link->jsonSerialize());
+        $this->assertArrayHasKey("url", $link->jsonSerialize());
+        $this->assertArrayIsEqualToArrayOnlyConsideringListOfKeys(["text" => "my url", "url" => "https://ixp.local/path"], $link->jsonSerialize(), ["text", "url"]);
+
     }
 }

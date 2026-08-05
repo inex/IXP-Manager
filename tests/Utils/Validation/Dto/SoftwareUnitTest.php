@@ -22,26 +22,22 @@
 
 declare(strict_types=1);
 
-namespace IXP\Utils\Validation\Dto;
+namespace Tests\Utils\Validation\Dto;
 
-use JsonSerializable;
+use IXP\Utils\Validation\Dto\FailureInfo;
+use IXP\Utils\Validation\Dto\Software;
+use PHPUnit\Framework\TestCase;
 
-/**
- * Simple DTO containing a software and it's version
- */
-readonly class Software implements JsonSerializable
+class SoftwareUnitTest extends TestCase
 {
-    public function __construct(
-        private(set) string $name,
-        private(set) string $version
-    ) { }
-
-    #[\Override]
-    public function jsonSerialize(): array
+    public function testDto()
     {
-        return [
-            'name'    => $this->name,
-            'version' => $this->version,
-        ];
+        $info = new Software("PHP", "v8.4.0");
+        $this->assertInstanceOf(\JsonSerializable::class, $info);
+        $this->assertEquals("PHP", $info->name);
+        $this->assertEquals("v8.4.0", $info->version);
+
+        $this->assertArrayIsEqualToArrayOnlyConsideringListOfKeys(["name" => "PHP", "version" => "v8.4.0"], $info->jsonSerialize(), ["name", "version"]);
+
     }
 }

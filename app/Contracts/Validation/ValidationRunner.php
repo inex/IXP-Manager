@@ -46,8 +46,9 @@ interface ValidationRunner
     public function run(): static;
 
     /**
-     * Return whether the Validator has finished running without a timeout.
-     * It may have failed, or completed normally.
+     * Return whether the Validator has finished either by returning
+     * successfully, or, due to an unexpected error. This method does not
+     * return true if the test timed out!
      */
     public function isComplete(): bool;
 

@@ -31,7 +31,7 @@ use IXP\Utils\Validation\Enums\AdditionalInfoElementType;
 readonly class TextElement implements Element
 {
     public function __construct(
-        private(set) string $text,
+        public string $text,
     ) {}
 
     #[\Override]

@@ -22,26 +22,20 @@
 
 declare(strict_types=1);
 
-namespace IXP\Utils\Validation\Dto;
+namespace Tests\Utils\Validation\Dto\AdditionalInfo;
 
-use JsonSerializable;
+use IXP\Utils\Validation\Dto\AdditionalInfo\TextElement;
+use PHPUnit\Framework\TestCase;
 
-/**
- * Simple DTO containing a software and it's version
- */
-readonly class Software implements JsonSerializable
+class TextElementUnitTest extends TestCase
 {
-    public function __construct(
-        private(set) string $name,
-        private(set) string $version
-    ) { }
-
-    #[\Override]
-    public function jsonSerialize(): array
+    public function testDto()
     {
-        return [
-            'name'    => $this->name,
-            'version' => $this->version,
-        ];
+        $element = new TextElement("sometext");
+        $this->assertInstanceOf(\JsonSerializable::class, $element);
+        $this->assertEquals("sometext", $element->text);
+        $this->assertArrayHasKey("text", $element->jsonSerialize());
+        $this->assertArrayHasKey("type", $element->jsonSerialize());
+        $this->assertArrayIsEqualToArrayOnlyConsideringListOfKeys(["text" => "sometext", "type" => "text"], $element->jsonSerialize(), ["text", "type"]);
     }
 }

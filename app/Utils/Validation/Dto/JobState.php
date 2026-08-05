@@ -35,13 +35,14 @@ use IXP\Contracts\Validation\ValidationRunner;
  */
 class JobState implements \JsonSerializable
 {
+    private(set) ?int $finishedAt = null;
+    private(set) int|float $progress = 0;
+
     public function __construct(
         public readonly string $jobId,
         public readonly int    $startedAt,
-        public ?int            $finishedAt = null,
-        public int|float       $progress = 0,
         /** @var ValidationRunner[] */
-        public array           $runners = [],
+        private(set) array           $runners = [],
     ) {}
 
     /**
@@ -94,7 +95,7 @@ class JobState implements \JsonSerializable
     /**
      * Used to record that an unhandled exception has caused a ValidationRunner to fail
      */
-    public function recordValidatorFailure( int|string $taskKey, \Throwable $t ): void
+    public function markTestFailed( int|string $taskKey, \Throwable $t ): void
     {
         Log::warning( "Validation task produced an unhandled exception", [
             'job_id' => $this->jobId,

@@ -120,7 +120,7 @@ class RunCommand extends Command
             foreach ($failedRunners as $failedRunner) {
                 $failure = $failedRunner->getFailureInfo();
                 $exceptionMessage = sprintf( " - '%s' encountered %s at %s:%d:\n%s",
-                    $failedRunner->getValidator()->getName(), $failure->class, $failure->file, $failure->line , $failure->message);
+                    $failedRunner->getValidator()->getName(), $failure->exception, $failure->file, $failure->line , $failure->message);
                 $this->line($exceptionMessage);
                 $this->line("");
             }
@@ -188,7 +188,7 @@ class RunCommand extends Command
         // Build list of software
         $softwareList = collect($runners)
             ->flatMap( fn( ValidationRunner $runner ) => $runner->getSoftware() )
-            ->map(     fn( Software $software) => [ $software->software, $software->version ] )
+            ->map(     fn( Software $software) => [ $software->name, $software->version ] )
             ->all();
 
         if (count($softwareList)) {

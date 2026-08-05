@@ -99,7 +99,7 @@ class ValidationController
                 $jobState->markTaskTimedOut( $taskKey );
                 $this->persistJobState( $jobState );
             }, function ( int|string $taskKey, \Throwable $throwable) use ( $jobState ) {
-                $jobState->recordValidatorFailure( $taskKey, $throwable );
+                $jobState->markTestFailed( $taskKey, $throwable );
                 $this->persistJobState( $jobState );
             } );
         } finally {

@@ -33,10 +33,10 @@ namespace IXP\Utils\Validation\Dto;
 readonly class FailureInfo implements \JsonSerializable
 {
     public function __construct(
-        private(set) string $class,
+        private(set) string $exception,
         private(set) string $message,
         private(set) string $file,
-        private(set) int $line,
+        private(set) int    $line,
     ) {}
 
     /**
@@ -51,7 +51,7 @@ readonly class FailureInfo implements \JsonSerializable
     public function jsonSerialize(): array
     {
         return [
-            'exception' => $this->class,
+            'exception' => $this->exception,
             'message'   => $this->message,
             'file'      => $this->file,
             'line'      => $this->line,

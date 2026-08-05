@@ -29,7 +29,7 @@ use Illuminate\Database\Eloquent\Builder;
 use IXP\Contracts\Validation\ValidationBackend;
 use IXP\Contracts\Validation\Validator;
 use IXP\Models\Customer;
-use IXP\Models\Router;
+use IXP\Models\Router as RouterModel;
 use IXP\Models\VlanInterface;
 
 /**
@@ -59,11 +59,11 @@ class Router implements Validator
     #[\Override]
     public function run( ValidationBackend $backend ): void
     {
-        if (Router::where('type', Router::TYPE_ROUTE_SERVER)->count() === 0) {
+        if (RouterModel::where('type', RouterModel::TYPE_ROUTE_SERVER)->count() === 0) {
             $backend->suggestion("Did you know that IXP Manager can generate configuration for route servers?")
                 ->withDocsPath('features/route-servers/');
         } else {
-            $routeServersNoRpki = Router::where('type', Router::TYPE_ROUTE_SERVER)
+            $routeServersNoRpki = RouterModel::where('type', RouterModel::TYPE_ROUTE_SERVER)
                 ->where('rpki', 0)
                 ->exists();
 
@@ -89,7 +89,7 @@ class Router implements Validator
         }
 
         $needsLookingGlass = [];
-        foreach (Router::all() as $router) {
+        foreach (RouterModel::all() as $router) {
             // exclude quarantine?
             if (!$router->quarantine) {
                 if ($router->api_type === null || $router->api_type == 0) {

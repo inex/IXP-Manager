@@ -22,26 +22,24 @@
 
 declare(strict_types=1);
 
-namespace IXP\Utils\Validation\Dto;
+namespace Tests\Utils\Validation;
 
-use JsonSerializable;
+use IXP\Contracts\Validation\Validator;
+use IXP\Utils\Validation\Backend;
+use IXP\Utils\Validation\ValidationRunnerFactory;
+use Tests\TestCase;
 
-/**
- * Simple DTO containing a software and it's version
- */
-readonly class Software implements JsonSerializable
+class ValidationRunnerFactoryTest extends TestCase
 {
-    public function __construct(
-        private(set) string $name,
-        private(set) string $version
-    ) { }
-
-    #[\Override]
-    public function jsonSerialize(): array
+    public function testLoadsBackends()
     {
-        return [
-            'name'    => $this->name,
-            'version' => $this->version,
-        ];
+        $factory = new ValidationRunnerFactory();
+        $seenBefore = [];
+        foreach ($factory->getRunners() as $runner) {
+            $this->assertInstanceOf(Backend::class, $runner);
+            $this->assertNotContains($runner->getValidator()->getName(), $seenBefore);
+            $seenBefore[] = $runner;
+        }
+
     }
 }
