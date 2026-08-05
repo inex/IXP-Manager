@@ -39,10 +39,9 @@ use IXP\Models\PhysicalInterface;
  *     wizard requires an explicit address because a human picks it from a list rendered in the
  *     browser; unattended provisioning has no such list. The address rule is therefore
  *     replaced by one which also permits "auto", and IpAllocator resolves it.
- *   - `rate_limit` and `autoneg` are accepted. Both are columns of PhysicalInterface and both
- *     are exported to the switch configuration generator, but v7.3.1's wizard request does not
- *     list them (upstream `main` has since added them). Without them a rate-limited port
- *     cannot be provisioned through the API at all.
+ *   - Fields the wizard has no form control for are accepted: the LAG settings, the MTU and
+ *     the interface name and description. All are fillable columns which an unattended caller
+ *     has no other way to set.
  *
  * @author     KleyReX
  * @category   IXP
@@ -60,8 +59,6 @@ class StoreConnection extends StoreVirtualInterfaceWizard
     public static function delta(): array
     {
         return [
-            'rate_limit'    => 'nullable|integer|min:0',
-            'autoneg'       => 'boolean',
             'name'          => 'nullable|string|max:255',
             'description'   => 'nullable|string|max:255',
             'mtu'           => 'nullable|integer|min:0',
