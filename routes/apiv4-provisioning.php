@@ -42,8 +42,19 @@ use Illuminate\Support\Facades\Route;
 
 Route::get( 'ping', 'PingController@ping' )->name( 'api-v4-provisioning@ping' );
 
+Route::get( 'switch',           'PortController@switches'        )->name( 'api-v4-provisioning@switches'        );
+Route::get( 'infrastructure',   'PortController@infrastructures' )->name( 'api-v4-provisioning@infrastructures' );
+Route::get( 'port/free',        'PortController@free'            )->name( 'api-v4-provisioning@port-free'      );
+
+Route::get( 'vlan/{vlan}/address', 'IpController@addresses' )->name( 'api-v4-provisioning@vlan-addresses' );
+
 Route::group( [ 'prefix' => 'member' ], function() {
     Route::post( '',                'MemberController@storeCustomer' )->name( 'api-v4-provisioning@member-store'      );
     Route::get(  '{cust}',          'MemberController@showCustomer'  )->name( 'api-v4-provisioning@member-show'       );
     Route::post( '{cust}/user',     'MemberController@storeUser'     )->name( 'api-v4-provisioning@member-user-store' );
+
+    Route::post( '{cust}/connection', 'ConnectionController@store' )->name( 'api-v4-provisioning@connection-store' );
+    Route::get(  '{cust}/connection', 'ConnectionController@index' )->name( 'api-v4-provisioning@connection-index' );
 } );
+
+Route::delete( 'connection/{vi}', 'ConnectionController@destroy' )->name( 'api-v4-provisioning@connection-destroy' );

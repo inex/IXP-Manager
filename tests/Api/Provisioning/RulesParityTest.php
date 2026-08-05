@@ -24,7 +24,9 @@ namespace Tests\Api\Provisioning;
 
 use IXP\Http\Requests\Api\V4\Provisioning\StoreCustomer;
 use IXP\Http\Requests\Api\V4\Provisioning\StoreUser;
+use IXP\Http\Requests\Api\V4\Provisioning\StoreConnection;
 use IXP\Http\Requests\Customer\Store as WebStoreCustomer;
+use IXP\Http\Requests\StoreVirtualInterfaceWizard as WebStoreWizard;
 use IXP\Http\Requests\User\Store as WebStoreUser;
 use IXP\Models\Customer;
 
@@ -109,5 +111,59 @@ class RulesParityTest extends TestCase
             array_intersect_key( StoreUser::delta(), $web->rules() ),
             'The user delta shadows a rule which already exists upstream.'
         );
+    }
+
+    /**
+     * Connection rules must match the wizard's, once the additions and the deliberate
+     * overrides are set aside.
+     */
+    public function testConnectionRulesMatchWizard(): void
+    {
+        $web = WebStoreWizard::create( '/', 'POST', [] );
+        $api = StoreConnection::create( '/', 'POST', [] );
+
+        $inherited = array_diff_key(
+            $api->rules(),
+            StoreConnection::delta(),
+            StoreConnection::overrides()
+        );
+
+        $this->assertEquals(
+            array_diff_key( $web->rules(), StoreConnection::overrides() ),
+            $inherited,
+            'Connection validation rules have diverged from the virtual interface wizard.'
+        );
+    }
+
+    /**
+     * The connection delta must add only.
+     */
+    public function testConnectionDeltaAddsOnly(): void
+    {
+        $web = WebStoreWizard::create( '/', 'POST', [] );
+
+        $this->assertEmpty(
+            array_intersect_key( StoreConnection::delta(), $web->rules() ),
+            'The connection delta shadows a rule which already exists upstream - it belongs in overrides().'
+        );
+    }
+
+    /**
+     * Every override must genuinely replace an upstream rule.
+     *
+     * An entry here which upstream no longer has is a rule we think we are overriding but are
+     * not - the most likely way for the two to drift apart without anyone noticing.
+     */
+    public function testConnectionOverridesReplaceExistingRules(): void
+    {
+        $web = WebStoreWizard::create( '/', 'POST', [] );
+
+        foreach( array_keys( StoreConnection::overrides() ) as $field ) {
+            $this->assertArrayHasKey(
+                $field,
+                $web->rules(),
+                "'{$field}' is declared as an override but upstream has no such rule."
+            );
+        }
     }
 }
