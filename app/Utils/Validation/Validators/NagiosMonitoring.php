@@ -36,7 +36,7 @@ use IXP\Models\Vlan;
 /**
  * This validator checks
  */
-class NagiosMonitoringValidator implements Validator
+class NagiosMonitoring implements Validator
 {
 
     #[\Override]

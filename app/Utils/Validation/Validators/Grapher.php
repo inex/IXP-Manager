@@ -33,7 +33,7 @@ use IXP\Models\Vlan;
 /**
  * @author Thomas Kerin <thomas@islandbridgenetworks.ie>
  */
-class GrapherValidator implements Validator
+class Grapher implements Validator
 {
     #[\Override]
     public function getName(): string

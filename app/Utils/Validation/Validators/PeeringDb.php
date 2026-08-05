@@ -26,7 +26,7 @@ namespace IXP\Utils\Validation\Validators;
 
 use IXP\Contracts\Validation\ValidationBackend;
 use IXP\Contracts\Validation\Validator;
-use IXP\Services\PeeringDb;
+use IXP\Services\PeeringDb as PeeringDbService;
 
 
 /**
@@ -35,7 +35,7 @@ use IXP\Services\PeeringDb;
  *
  * @author Thomas Kerin <thomas@islandbridgenetworks.ie>
  */
-class PeeringDbValidator implements Validator
+class PeeringDb implements Validator
 {
     #[\Override]
     public function getName(): string
@@ -100,7 +100,7 @@ class PeeringDbValidator implements Validator
             return;
         }
 
-        $pdb = app(PeeringDb::class);
+        $pdb = app(PeeringDbService::class);
         try {
             $pdb->getPeeringAsns();
             if ($pdb->status === 200) {

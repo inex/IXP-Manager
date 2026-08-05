@@ -24,50 +24,48 @@ declare(strict_types=1);
 
 namespace IXP\Utils\Validation\Validators;
 
-use Carbon\Carbon;
-use Carbon\CarbonInterval;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection as SupportCollection;
 use IXP\Contracts\Validation\ValidationBackend;
 use IXP\Contracts\Validation\Validator;
 use IXP\Models\Infrastructure;
 use IXP\Models\Router;
-use IXP\Models\TaskLastRun;
 use IXP\Models\Vlan;
 
 /**
- * This validator checks the laravel task scheduler is running
+ * @author Thomas Kerin <thomas@islandbridgenetworks.ie>
  */
-class ScheduledTasksValidator implements Validator
+class As112 implements Validator
 {
 
     #[\Override]
     public function getName(): string
     {
-        return "Scheduler Task validator";
+        return "AS112 validator";
     }
 
     #[\Override]
     public function getDescription(): string
     {
-        return "Checks the IXP Manager task scheduler is running.";
+        return "Check AS112 feature settings";
     }
 
     #[\Override]
     public function getPriority(): int
     {
-        return 13;
+        return 50;
     }
 
     #[\Override]
     public function run( ValidationBackend $backend ): void
     {
-        $schedulerLastRun = TaskLastRun::whereTaskKey( TaskLastRun::SCHEDULER_CRON_JOB )->first();
+        if (! config ( 'ixp.as112.ui_active' ) ) {
+            return;
+        }
 
-        if ( !$schedulerLastRun ) {
-            $backend->error( "No record of task scheduler running - your automated tasks are not running!")
-                ->withDocsPath( "features/cronjobs/" );
-        } else if( $schedulerLastRun->last_run_at->diffInMinutes( Carbon::now() ) > 10 ) {
-            $backend->error( "Task scheduler hasn't run for 10 minutes - your automated tasks are not running!")
-                ->withDocsPath( "features/cronjobs/" );
+        if (Router::whereType(Router::TYPE_AS112)->count() === 0) {
+            $backend->error("AS112 enabled but no AS112 routers setup")
+                ->withDocsPath("features/as112/");
         }
     }
 }

@@ -46,7 +46,7 @@ class ValidationRunnerFactory
     public function getRunners(): array
     {
         $runners = [];
-        foreach( glob( app_path( 'Utils/Validation/Validators/*Validator.php' ) ) as $filename) {
+        foreach( glob( app_path( 'Utils/Validation/Validators/*.php' ) ) as $filename) {
             $validatorClass = "\\IXP\\Utils\\Validation\\Validators\\" . basename( $filename, ".php" );
             // don't run anything that doesn't implement ValidatorInterface
             $reflectionClass = new \ReflectionClass( $validatorClass );

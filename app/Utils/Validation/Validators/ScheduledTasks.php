@@ -24,40 +24,50 @@ declare(strict_types=1);
 
 namespace IXP\Utils\Validation\Validators;
 
+use Carbon\Carbon;
+use Carbon\CarbonInterval;
 use IXP\Contracts\Validation\ValidationBackend;
 use IXP\Contracts\Validation\Validator;
-use IXP\Models\PatchPanel;
+use IXP\Models\Infrastructure;
+use IXP\Models\Router;
+use IXP\Models\TaskLastRun;
+use IXP\Models\Vlan;
 
 /**
- * @author Thomas Kerin <thomas@islandbridgenetworks.ie>
+ * This validator checks the laravel task scheduler is running
  */
-class PatchPanelValidator implements Validator
+class ScheduledTasks implements Validator
 {
 
     #[\Override]
     public function getName(): string
     {
-        return "Patch Panel validator";
+        return "Scheduler Task validator";
     }
 
     #[\Override]
     public function getDescription(): string
     {
-        return "Checks patch panel configuration";
+        return "Checks the IXP Manager task scheduler is running.";
     }
 
     #[\Override]
     public function getPriority(): int
     {
-        return 70;
+        return 13;
     }
 
     #[\Override]
     public function run( ValidationBackend $backend ): void
     {
-        if (PatchPanel::count() === 0) {
-            $backend->suggestion("Did you know IXP Manager can help you manage your patch panel?")
-                ->withDocsPath('features/patch-panels/');
+        $schedulerLastRun = TaskLastRun::whereTaskKey( TaskLastRun::SCHEDULER_CRON_JOB )->first();
+
+        if ( !$schedulerLastRun ) {
+            $backend->error( "No record of task scheduler running - your automated tasks are not running!")
+                ->withDocsPath( "features/cronjobs/" );
+        } else if( $schedulerLastRun->last_run_at->diffInMinutes( Carbon::now() ) > 10 ) {
+            $backend->error( "Task scheduler hasn't run for 10 minutes - your automated tasks are not running!")
+                ->withDocsPath( "features/cronjobs/" );
         }
     }
 }

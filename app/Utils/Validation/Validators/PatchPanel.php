@@ -26,51 +26,38 @@ namespace IXP\Utils\Validation\Validators;
 
 use IXP\Contracts\Validation\ValidationBackend;
 use IXP\Contracts\Validation\Validator;
+use IXP\Models\PatchPanel as PatchPanelModel;
 
 /**
  * @author Thomas Kerin <thomas@islandbridgenetworks.ie>
  */
-class IxpManagerRunningLatestVersionValidator implements Validator
+class PatchPanel implements Validator
 {
+
     #[\Override]
     public function getName(): string
     {
-        return "IXP Manager version check";
+        return "Patch Panel validator";
     }
 
     #[\Override]
     public function getDescription(): string
     {
-        return "Records which version of IXP Manager is installed, and notifies if an update is available.";
+        return "Checks patch panel configuration";
     }
 
     #[\Override]
     public function getPriority(): int
     {
-        return 5;
+        return 70;
     }
 
     #[\Override]
     public function run( ValidationBackend $backend ): void
     {
-        $backend->software("IXP Manager", APPLICATION_VERSION);
-
-        try {
-            $apiResponse = \Http::withHeader('User-Agent', 'IXP-Manager-validation-tool')
-                ->get('https://api.github.com/repos/inex/IXP-Manager/tags');
-        } catch (\Exception $e) {
-            throw new \RuntimeException("Failed to lookup tags using Github API: " . $e->getMessage());
-        }
-
-        // Extract IXP Manager published versions and compare against the installed version
-        // Github sorts results by their version string.
-        $tags = $apiResponse->json();
-        if ( version_compare( ltrim(APPLICATION_VERSION, "v"), ltrim( $tags[0]['name'], "v" ), '<' ) ) {
-            $backend
-                ->warning( "A newer version of IXP-Manager is available: " . htmlentities( $tags[0]['name'], ENT_QUOTES, 'UTF-8' ) )
-                ->withDocsPath('install/upgrading/');
-        } else if ( version_compare( ltrim(APPLICATION_VERSION, "v"), ltrim( $tags[0]['name'], "v" ), '=' ) ) {
-            $backend->info( "Running latest version of IXP-Manager" );
+        if (PatchPanelModel::count() === 0) {
+            $backend->suggestion("Did you know IXP Manager can help you manage your patch panel?")
+                ->withDocsPath('features/patch-panels/');
         }
     }
 }

@@ -35,7 +35,7 @@ use IXP\Models\VlanInterface;
 /**
  * @author Thomas Kerin <thomas@islandbridgenetworks.ie>
  */
-class RouterValidator implements Validator
+class Router implements Validator
 {
 
     #[\Override]

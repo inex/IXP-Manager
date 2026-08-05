@@ -27,14 +27,14 @@ namespace Tests\Utils\Validation\Validators;
 use IXP\Contracts\Validation\ValidationRunner;
 use IXP\Utils\Validation\Backend;
 use IXP\Utils\Validation\Enums\ResultType;
-use IXP\Utils\Validation\Validators\GrapherValidator;
+use IXP\Utils\Validation\Validators\Grapher;
 use Tests\TestCase;
 
-class GrapherValidatorTest extends TestCase
+class GrapherTest extends TestCase
 {
     public function testBasicInfo()
     {
-        $validator = new GrapherValidator();
+        $validator = new Grapher();
         $this->assertEquals("Grapher validator", $validator->getName());
         $this->assertEquals("Performs checks on grapher configuration.", $validator->getDescription());
         $this->assertEquals(44, $validator->getPriority());
@@ -46,7 +46,7 @@ class GrapherValidatorTest extends TestCase
         $providers['myprovider'] = '\IXP\UnknownNamespace\UnknownClass';
         config(['grapher.providers' => $providers]);
 
-        $runner = new Backend(GrapherValidator::class);
+        $runner = new Backend(Grapher::class);
         $runner->run();
         $this->assertHasError($runner, "myprovider backend provider (\IXP\UnknownNamespace\UnknownClass) does not exist.");
     }
@@ -57,7 +57,7 @@ class GrapherValidatorTest extends TestCase
         $providers['myprovider'] = 'Directory';
         config(['grapher.providers' => $providers]);
 
-        $runner = new Backend(GrapherValidator::class);
+        $runner = new Backend(Grapher::class);
         $runner->run();
         $this->assertHasError($runner, "Grapher backend provider (Directory) does not implement interface IXP\Contracts\Grapher\Backend");
     }

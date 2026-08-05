@@ -31,7 +31,7 @@ use IXP\Contracts\Validation\Validator;
 /**
  * @author Thomas Kerin <thomas@islandbridgenetworks.ie>
  */
-class BasicValidator implements Validator
+class Basic implements Validator
 {
     #[\Override]
     public function getName(): string

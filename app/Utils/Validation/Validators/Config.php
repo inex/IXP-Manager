@@ -31,7 +31,7 @@ use Ramsey\Uuid\Uuid;
 /**
  * @author Thomas Kerin <thomas@islandbridgenetworks.ie>
  */
-class ConfigValidator implements Validator
+class Config implements Validator
 {
     #[\Override]
     public function getName(): string

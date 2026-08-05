@@ -31,7 +31,7 @@ use IXP\Contracts\Validation\Validator;
 /**
  * @author Thomas Kerin <thomas@islandbridgenetworks.ie>
  */
-class SecurityValidator implements Validator
+class Security implements Validator
 {
 
     #[\Override]
