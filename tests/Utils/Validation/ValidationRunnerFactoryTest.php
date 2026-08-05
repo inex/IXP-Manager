@@ -24,7 +24,6 @@ declare(strict_types=1);
 
 namespace Tests\Utils\Validation;
 
-use IXP\Contracts\Validation\Validator;
 use IXP\Utils\Validation\Backend;
 use IXP\Utils\Validation\ValidationRunnerFactory;
 use Tests\TestCase;

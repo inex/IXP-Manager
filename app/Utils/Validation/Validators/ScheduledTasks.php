@@ -25,13 +25,9 @@ declare(strict_types=1);
 namespace IXP\Utils\Validation\Validators;
 
 use Carbon\Carbon;
-use Carbon\CarbonInterval;
 use IXP\Contracts\Validation\ValidationBackend;
 use IXP\Contracts\Validation\Validator;
-use IXP\Models\Infrastructure;
-use IXP\Models\Router;
 use IXP\Models\TaskLastRun;
-use IXP\Models\Vlan;
 
 /**
  * This validator checks the laravel task scheduler is running

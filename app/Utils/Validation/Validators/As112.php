@@ -24,13 +24,9 @@ declare(strict_types=1);
 
 namespace IXP\Utils\Validation\Validators;
 
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Collection as SupportCollection;
 use IXP\Contracts\Validation\ValidationBackend;
 use IXP\Contracts\Validation\Validator;
-use IXP\Models\Infrastructure;
 use IXP\Models\Router;
-use IXP\Models\Vlan;
 
 /**
  * @author Thomas Kerin <thomas@islandbridgenetworks.ie>
