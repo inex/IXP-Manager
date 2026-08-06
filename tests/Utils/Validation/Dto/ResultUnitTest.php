@@ -105,5 +105,14 @@ class ResultUnitTest extends TestCase
             $result->jsonSerialize(),
             ["message", "type", "docs_url", "settings_url", "call_to_action", "additional_info"]
         );
+
+        $values = [10, 9, 8];
+        $runCount = 0;
+        $result->each($values, function ($result, $item, $key) use (&$runCount) {
+            $this->assertEquals($runCount, $key, "expected array key to equal $runCount on run $runCount");
+            $this->assertEquals(10-$runCount, $item, "expected array value to equal ".(10-$runCount)." on run $runCount");
+            $runCount++;
+        });
+        $this->assertEquals(3, $runCount, "expected each() to call callback 3 times");
     }
 }

@@ -116,6 +116,18 @@ class Result implements JsonSerializable
         return $this;
     }
 
+    /**
+     * Each is a fluent API helper method - invokes $callback on each item of
+     * $items. Callback is provided the current Result, the $item, and it's $key.
+     */
+    public function each(iterable $values, \Closure $callback): Result
+    {
+        foreach ($values as $key => $value) {
+            $callback($this, $value, $key);
+        }
+        return $this;
+    }
+
     #[\Override]
     public function jsonSerialize(): array
     {

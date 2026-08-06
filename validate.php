@@ -429,6 +429,37 @@ function doLaravelRequiredExtensionChecks(array $requiredByLaravel): array
     return $results;
 }
 
+function doLaravelWritableDirectoryChecks(): array
+{
+    $storageDirectories = ["storage/app/", "storage/docstore/", "storage/docstore_customers/", "storage/files/",
+            "storage/framework/cache/", "storage/framework/sessions/", "storage/framework/views/",
+            "storage/grapher/", "storage/logs/", "storage/tmp/"];
+
+    $unwritable = [];
+    foreach ( $storageDirectories as $storageDirectory ) {
+        $testFile = rtrim(dirname( __FILE__ ), "/" ) . "/" . rtrim($storageDirectory, "/") . "/.permission-test-" . bin2hex(random_bytes(4));
+
+        try {
+            $written = @file_put_contents($testFile, "This file is part of the IXP Manager storage directory permission check. If found outside of testing it can safely be deleted.");
+            if ($written === false) {
+                $unwritable[] = $storageDirectory;
+            }
+        } catch (\Throwable $t) {
+            $unwritable[] = $storageDirectory;
+        } finally {
+            if (file_exists($testFile)) {
+                @unlink($testFile);
+            }
+        }
+    }
+
+    $results = [];
+    if (count($unwritable) > 0) {
+        $results[] = new CheckResult( ResultStatus::ERROR, [ 'Found framework directories without write permission: ' . implode( ', ', $unwritable ) ] );
+    }
+    return $results;
+}
+
 /**
  * Checks local version against latest version on Github
  * See https://docs.github.com/en/rest/repos/repos?apiVersion=2026-03-10#list-repository-tags for this api call
@@ -567,6 +598,7 @@ $tasks[] = new BasicValidation( 'Composer', doComposerCheck(...), [] );
 $tasks[] = new BasicValidation( 'Env File', doEnvFileChecks(...), [] );
 $tasks[] = new BasicValidation( 'MySQL', doMySqlCheck(...), [ $manifest['mysql_version']['min'], $manifest['mysql_version']['recommended'], $manifest['mysql_version']['max'] ] );
 $tasks[] = new BasicValidation( 'Laravel Required Extensions', doLaravelRequiredExtensionChecks(...), [ $manifest['laravel_required_extensions'] ] );
+$tasks[] = new BasicValidation( 'Laravel Storage Directories', doLaravelWritableDirectoryChecks(...), [ $manifest['laravel_required_extensions'] ] );
 $tasks[] = new BasicValidation( 'IXP Manager', doIxpManagerReleaseCheck(...), [ APPLICATION_VERSION ] );
 
 $softwareVersionResults = [];

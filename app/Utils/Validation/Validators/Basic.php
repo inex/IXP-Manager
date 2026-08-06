@@ -26,8 +26,10 @@ namespace IXP\Utils\Validation\Validators;
 
 use Composer\InstalledVersions;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\File;
 use IXP\Contracts\Validation\ValidationBackend;
 use IXP\Contracts\Validation\Validator;
+use IXP\Utils\Validation\Dto\Result;
 
 /**
  * @author Thomas Kerin <thomas@islandbridgenetworks.ie>
@@ -212,5 +214,61 @@ class Basic implements Validator
         if ( count( $presentExtensions ) > 0 ) {
             $backend->info( "Required extensions found: " . implode(', ', $presentExtensions) );
         }
+
+        $writableDirectories = ["storage/app/", "storage/docstore/", "storage/docstore_customers/", "storage/files/",
+            "storage/framework/cache/", "storage/framework/sessions/", "storage/framework/views/",
+            "storage/grapher/", "storage/logs/", "storage/tmp/"];
+
+        $writable = [];
+        $unwritable = [];
+        foreach ($writableDirectories as $directory) {
+            $isWritable = $this->isDirectoryWritable($directory);
+            if ($isWritable) {
+                $writable[] = $directory;
+            } else {
+                $unwritable[] = $directory;
+            }
+        }
+
+        if (count($unwritable) === 0) {
+            $backend->info( "All storage directories are writable" )
+                ->each( $writable, function( Result $result, $directory ) {
+                    $result->addAdditionalInfoText( " - " . $directory . " was writable" );
+                });
+        } else {
+            $backend->error( "Found storage directories without write permission" )
+                ->each( $unwritable, function( Result $result, $directory ) {
+                    $result->addAdditionalInfoText( " - " . $directory . " was unwritable" );
+                });
+            if (count($writable) > 0) {
+                $backend->info( "Found storage directories with write permission" )
+                    ->each( $writable, function( Result $result, $directory ) {
+                        $result->addAdditionalInfoText( " - " . $directory . " was writable" );
+                    });
+            }
+        }
     }
+
+    /**
+     * Returns true if it was possible to write a file into the provided relative filesystem path (eg storage/logs/))
+     */
+    private function isDirectoryWritable(string $path): bool
+    {
+        $testFile = rtrim(base_path($path), "/") . "/.permission-test-" . \Str::random(8);
+
+        try {
+            $written = @file_put_contents($testFile, "This file is part of the IXP Manager storage directory permission check. If found outside of testing it can safely be deleted.");
+            if ($written === false) {
+                return false;
+            }
+            return true;
+        } catch (\Throwable $t) {
+            return false;
+        } finally {
+            if (File::exists($testFile)) {
+                @unlink($testFile);
+            }
+        }
+    }
+
 }
