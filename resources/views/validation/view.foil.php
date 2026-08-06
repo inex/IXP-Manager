@@ -121,12 +121,13 @@ System Validation
 <script type="module">
     let jobId = "<?= $t->ee( $t->jobId, "js" ); ?>";
 
+    // Currently relying on these increasing in severity
     let resultTypeBadgeClass = {
-        'ERROR': 'tw-border-red-600 tw-bg-red-600',
-        'WARNING': 'tw-border-orange-400 tw-bg-orange-400',
-        'SUGGEST': 'tw-border-yellow-300 tw-bg-yellow-300',
-        'INFO': 'tw-border-white-1000 tw-bg-white-1000',
         'DEBUG': 'tw-border-gray-300 tw-bg-gray-300',
+        'INFO': 'tw-border-white-1000 tw-bg-white-1000',
+        'SUGGEST': 'tw-border-yellow-300 tw-bg-yellow-300',
+        'WARNING': 'tw-border-orange-400 tw-bg-orange-400',
+        'ERROR': 'tw-border-red-600 tw-bg-red-600',
     };
 
     const loadingSpinner = $('.loading-results-indicator');
@@ -228,7 +229,6 @@ System Validation
 
         function createNoOutputFragment() {
             return $( noOutputTemplate.prop('content') ).clone();
-
         }
 
         function createValidationResultFragment(resultData) {
@@ -294,18 +294,25 @@ System Validation
         }
     });
 
+    /**
+     * Flip dropdown caret icon upside down if clicked
+     */
     validationContainer.on('click', ".validation-content-container", function() {
         if ( $(this).find(".validation-extra-content").text() ) {
             $(this).find("i.expandable-caret").toggleClass("tw-rotate-180");
         }
     });
 
+    /**
+     * Show/hide extra content when clicked
+     */
     validationContainer.on('click','.validation-result', function() {
         $(this).find('.validation-extra-content').toggleClass('tw-hidden');
     });
 
     /**
-     * Enable/disable badges
+     * When a result-type badge is clicked, toggle opacity, and call toggleInformation
+     * to refresh
      */
     $(document).on('click','.resultStatusButton',function() {
         $(this).toggleClass('tw-opacity-40');
@@ -313,18 +320,40 @@ System Validation
     });
 
     /**
-     * Regenerate diagnostics data show or hide based on badge buttons state
+     * Based on the set of active result types, hide validation results of types
+     * we aren't interested in, and completely hide validations which have no
+     * results we are interested in
      */
     function toggleInformation() {
+
+        // This hides a result (inside a validation-wrapper) if it's result type isn't active:
         const badgeButtons = $('.resultStatusButton');
         badgeButtons.each( function() {
-            let status = $(this).data("target");
-            let disable = $(this).hasClass('tw-opacity-40');
+            let resultType = $(this).data("target");
+            let isDisabled = $(this).hasClass('tw-opacity-40');
 
-            $(".validation-result[data-result-type='" + status + "']").each( function() {
-                $(this).removeClass('tw-hidden');
-                if(disable) { $(this).addClass('tw-hidden'); }
+            // Toggle tw-hidden on validation-results of type resultType based on button state
+            $(".validation-result[data-result-type='" + resultType + "']").toggleClass('tw-hidden', isDisabled);
+        });
+
+        $('.validation-wrapper').each(function() {
+            let wrapper = $(this);
+
+            // Check if wrapper has results matching at least one active result type
+            const hasDisplayedResults = wrapper.find('.validation-result').toArray().some(function(result) {
+                const type = $(result).data('result-type');
+                return $(`.resultStatusButton[data-target="${type}"]:not(.tw-opacity-40)`).length > 0;
             });
+
+            // Only toggle tw-hidden on the validation-wrapper if the validation didn't fail or timeout,
+            // once there are actual validation-results
+            const isFailed = !wrapper.find('.validation-failure-button').hasClass('tw-hidden');
+            const isTimedOut = !wrapper.find('.validation-timeout-button').hasClass('tw-hidden');
+            const hasAnyResults = wrapper.find('.validation-result').length > 0;
+
+            if (hasAnyResults && !isFailed && !isTimedOut) {
+                wrapper.toggleClass('tw-hidden', !hasDisplayedResults);
+            }
         });
     }
 </script>
