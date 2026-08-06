@@ -407,6 +407,14 @@ a:hover{
   @apply tw-text-center tw-whitespace-nowrap tw-w-1 tw-px-2 tw-py-2 tw-mr-4;
 }
 
+/****************************************************************************************
+ **** Validation view
+ ****************************************************************************************/
+
+.result-type-disabled {
+  @apply tw-opacity-40;
+}
+
 /**
  * This injects all of Tailwind's utility classes, generated based on your
  * config file.

@@ -19,8 +19,8 @@ System Validation
         <span data-target="ERROR" class="resultStatusButton  hover:tw-opacity-80 tw-cursor-pointer tw-inline-flex tw-items-center tw-rounded-md tw-ml-2 tw-px-2 tw-py-1 tw-text-xs tw-font-medium tw-bg-pink-50 tw-text-red-600 tw-ring-pink-700/10 tw-ring-1 tw-ring-inset">Error</span>
         <span data-target="WARNING" class="resultStatusButton  hover:tw-opacity-80 tw-cursor-pointer tw-inline-flex tw-items-center tw-rounded-md tw-ml-2 tw-px-2 tw-py-1 tw-text-xs tw-font-medium tw-bg-orange-50 -text-orange-500 tw-ring-orange-600/20 tw-ring-1 tw-ring-inset">Warning</span>
         <span data-target="SUGGEST" class="resultStatusButton  hover:tw-opacity-80 tw-cursor-pointer tw-inline-flex tw-items-center tw-rounded-md tw-ml-2 tw-px-2 tw-py-1 tw-text-xs tw-font-medium tw-bg-yellow-50 -text-yellow-300 tw-ring-yellow-600/20 tw-ring-1 tw-ring-inset">Suggest</span>
-        <span data-target="INFO" class="resultStatusButton   tw-opacity-40 hover:tw-opacity-80 tw-cursor-pointer tw-inline-flex tw-items-center tw-rounded-md tw-ml-2 tw-px-2 tw-py-1 tw-text-xs tw-font-medium tw-bg-white-50 tw-text-grey-200 tw-ring-blue-700/10 tw-ring-1 tw-ring-inset">Info</span>
-        <span data-target="DEBUG" class="resultStatusButton  tw-opacity-40 hover:tw-opacity-80 tw-cursor-pointer tw-inline-flex tw-items-center tw-rounded-md tw-ml-2 tw-px-2 tw-py-1 tw-text-xs tw-font-medium tw-bg-gray-50 tw-text-gray-600 tw-ring-gray-500/10 tw-ring-1 tw-ring-inset">Debug</span>
+        <span data-target="INFO" class="resultStatusButton   result-type-disabled hover:tw-opacity-80 tw-cursor-pointer tw-inline-flex tw-items-center tw-rounded-md tw-ml-2 tw-px-2 tw-py-1 tw-text-xs tw-font-medium tw-bg-white-50 tw-text-grey-200 tw-ring-blue-700/10 tw-ring-1 tw-ring-inset">Info</span>
+        <span data-target="DEBUG" class="resultStatusButton  result-type-disabled hover:tw-opacity-80 tw-cursor-pointer tw-inline-flex tw-items-center tw-rounded-md tw-ml-2 tw-px-2 tw-py-1 tw-text-xs tw-font-medium tw-bg-gray-50 tw-text-gray-600 tw-ring-gray-500/10 tw-ring-1 tw-ring-inset">Debug</span>
     </div>
     <a class="btn btn-white" href="<?= route('validation@start' ) ?>">
         <span class="fa fa-repeat"></span>
@@ -315,7 +315,7 @@ System Validation
      * to refresh
      */
     $(document).on('click','.resultStatusButton',function() {
-        $(this).toggleClass('tw-opacity-40');
+        $(this).toggleClass('result-type-disabled');
         toggleInformation();
     });
 
@@ -330,7 +330,7 @@ System Validation
         const badgeButtons = $('.resultStatusButton');
         badgeButtons.each( function() {
             let resultType = $(this).data("target");
-            let isDisabled = $(this).hasClass('tw-opacity-40');
+            let isDisabled = $(this).hasClass('result-type-disabled');
 
             // Toggle tw-hidden on validation-results of type resultType based on button state
             $(".validation-result[data-result-type='" + resultType + "']").toggleClass('tw-hidden', isDisabled);
@@ -342,7 +342,7 @@ System Validation
             // Check if wrapper has results matching at least one active result type
             const hasDisplayedResults = wrapper.find('.validation-result').toArray().some(function(result) {
                 const type = $(result).data('result-type');
-                return $(`.resultStatusButton[data-target="${type}"]:not(.tw-opacity-40)`).length > 0;
+                return $(`.resultStatusButton[data-target="${type}"]:not(.result-type-disabled)`).length > 0;
             });
 
             // Only toggle tw-hidden on the validation-wrapper if the validation didn't fail or timeout,
