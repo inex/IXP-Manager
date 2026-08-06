@@ -54,7 +54,7 @@ System Validation
         <!-- validation-title -->
         <!-- validation-link -->
 
-        <div class="set-wrapper col-12 tw-mb-4">
+        <div class="validation-wrapper col-12 tw-mb-4">
             <h1 class="head-set tw-font-semibold tw-text-base tw-border-b-1 tw-h-8 tw-leading-8 tw-text-gray-900 tw-mb-0 tw-mt-3 tw-border-gray-600 tw-overflow-hidden">
                 <button type="button" class="validation-info-button tw-mr-1 tw-rounded tw-bg-white tw-text-gray-700 hover:tw-bg-gray-50 hover:tw-border-gray-800 tw-border-2 tw-border-gray-600 tw-w-6 tw-h-6 tw-leading-5"
                         data-toggle="popover" title="" data-content="" tabIndex="0"
@@ -169,10 +169,12 @@ System Validation
                             let resultFragment = createValidationResultFragment(resultData);
 
                             // Append the result clone into the validation clone's list
-                            validationFragment.find('.set-wrapper').append(resultFragment);
+                            validationFragment.find('.validation-wrapper').append(resultFragment);
                         });
+
+                        // todo: what about timed out message?
                         if (validationData.results.length === 0) {
-                            validationFragment.find('.set-wrapper').append(createNoOutputFragment());
+                            validationFragment.find('.validation-wrapper').append(createNoOutputFragment());
                         }
 
                         validationData.software.forEach(function (software) {
