@@ -27,6 +27,7 @@ namespace IXP\Utils\Validation\Validators;
 use IXP\Contracts\Validation\ValidationBackend;
 use IXP\Contracts\Validation\Validator;
 use IXP\Services\PeeringDb as PeeringDbService;
+use IXP\Utils\Validation\Dto\Result;
 
 
 /**
@@ -70,6 +71,8 @@ class PeeringDb implements Validator
                 ->withSettingsLink("auth", "peeringdb_oauth_enabled")
             ;
         } else {
+            $backend->info("Login with PeeringDB is enabled");
+
             // Key is the last part of the config key string. Value is the field on the settings ui page.
             $configToSetting = [
                 "client_id"     => "peeringdb_oauth_client_id",
@@ -79,9 +82,12 @@ class PeeringDb implements Validator
 
             $missingConfig = array_filter( array_keys($configToSetting), fn( $field ) => config( "services.peeringdb." . $field ) === null );
             if (count($missingConfig) > 0) {
-                $backend->error( "PeeringDB OAUTH settings are not complete. Please check your service settings (" . implode(", ", $missingConfig) . ").")
+                $backend->error( "PeeringDB OAUTH settings are not complete. Please check your service settings.")
                     ->withDocsPath('features/peeringdb-oauth/')
                     ->withSettingsLink("auth", $configToSetting[$missingConfig[0]])
+                    ->each($missingConfig, function (Result $result, $configKey) {
+                        $result->addAdditionalInfoText("PeeringDB OAuth " . $configKey . " is missing!");
+                    });
                 ;
             }
         }

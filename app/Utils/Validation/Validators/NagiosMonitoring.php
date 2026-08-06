@@ -64,14 +64,15 @@ class NagiosMonitoring implements Validator
         $lastRunNagiosCustomers = TaskLastRun::whereTaskKey( TaskLastRun::NAGIOS_CUSTOMERS )->get();
         if ( $lastRunNagiosCustomers->isEmpty() ) {
             $backend->suggestion( "Did you know IXP-Manager can generate nagios configuration to monitor your customers VLAN interfaces?")
-                ->withDocsPath("features/nagios/" );
+                ->withDocsPath("features/nagios/#monitoring-member-reachability" );
         } else {
+            $backend->info("IXP-Manager is generating customer VLAN monitoring configuration");
             foreach( $lastRunNagiosCustomers as $lastRun ) {
                 if( $lastRun->last_run_at->lessThan(now()->sub($warningInterval))) {
                     $backend->warning("Nagios customer configuration (for VLAN ID #" . $lastRun->parameters['vlan'] .
                         " IPv" . $lastRun->parameters['protocol'] . " with template " . $lastRun->parameters['template'] .
                         ") has not been refreshed in over " . $warningIntervalDef . "!")
-                        ->withDocsPath("features/nagios/");
+                        ->withDocsPath("features/nagios/#monitoring-member-reachability");
                 }
             }
         }
@@ -79,15 +80,16 @@ class NagiosMonitoring implements Validator
         $lastRunNagiosSwitches = TaskLastRun::whereTaskKey( TaskLastRun::NAGIOS_SWITCHES )->get();
         if ( $lastRunNagiosSwitches->isEmpty() ) {
             $backend->suggestion( "Did you know IXP-Manager can generate nagios configuration to monitor your switches in a given infrastructure?" )
-                ->withDocsPath("features/nagios/");
+                ->withDocsPath("features/nagios/#switch-monitoring");
         } else {
+            $backend->info("IXP-Manager is generating switch monitoring configuration");
             foreach( $lastRunNagiosSwitches as $lastRun ) {
                 if( $lastRun->last_run_at->lessThan(now()->sub($warningInterval))) {
                     $infra = Infrastructure::find($lastRun->parameters['infrastructure'])->name ?? "infrastructure ID #" . $lastRun->parameters['infrastructure'];
                     $backend->warning("Nagios switch configuration (for infrastructure " . $infra .
                         " with template " . $lastRun->parameters['template'] .
                         ") has not been refreshed in over " . $warningIntervalDef . "!" )
-                        ->withDocsPath("features/nagios/");
+                        ->withDocsPath("features/nagios/#switch-monitoring");
                 }
             }
         }
@@ -95,14 +97,15 @@ class NagiosMonitoring implements Validator
         $lastRunNagiosBirdseye = TaskLastRun::whereTaskKey( TaskLastRun::NAGIOS_BIRDSEYE_DAEMONS )->get();
         if ( $lastRunNagiosBirdseye->isEmpty() ) {
             $backend->suggestion( "Did you know IXP-Manager can generate nagios configuration to monitor your birdseye daemons?")
-                ->withDocsPath("features/nagios/");
+                ->withDocsPath("features/nagios/#birdseye-daemon-monitoring");
         } else {
+            $backend->info("IXP-Manager is generating birdseye daemon monitoring configuration");
             foreach( $lastRunNagiosBirdseye as $lastRun ) {
                 if( $lastRun->last_run_at->lessThan(now()->sub($warningInterval))) {
                     $backend->warning("Nagios birdseye daemon configuration (using template " . $lastRun->parameters['template'] .
                         ($lastRun->parameters['vlan'] !== null ? " and VLAN ID " . $lastRun->parameters['vlan'] : "") .
                         ") has not been refreshed in over " . $warningIntervalDef . "!")
-                        ->withDocsPath("features/nagios/");
+                        ->withDocsPath("features/nagios/#birdseye-daemon-monitoring");
                 }
             }
         }
@@ -110,15 +113,16 @@ class NagiosMonitoring implements Validator
         $lastRunNagiosBirdseyeBgpDaemon = TaskLastRun::whereTaskKey( TaskLastRun::NAGIOS_BIRDSEYE_BGP_SESSIONS )->get();
         if ( $lastRunNagiosBirdseyeBgpDaemon->isEmpty() ) {
             $backend->suggestion( "Did you know IXP-Manager can generate nagios configuration to monitor your birdseye BGP sessions?")
-                ->withDocsPath("features/nagios/");
+                ->withDocsPath("features/nagios/#birdseye-bgp-session-monitoring");
         } else {
+            $backend->info("IXP-Manager is generating birdseye BGP session monitoring configuration");
             foreach( $lastRunNagiosBirdseyeBgpDaemon as $lastRun ) {
                 if( $lastRun->last_run_at->lessThan(now()->sub($warningInterval))) {
                     $backend->warning("Nagios birdseye BGP session configuration (for ". Router::$TYPES[$lastRun->parameters['type']] .
                         "on VLAN id #".$lastRun->parameters['vlan'] . " IPv" . $lastRun->parameters['protocol'] .
                         " using template " . $lastRun->parameters['template'] .
                         ") has not been refreshed in over " . $warningIntervalDef . "!")
-                        ->withDocsPath("features/nagios/");
+                        ->withDocsPath("features/nagios/#birdseye-bgp-session-monitoring");
                 }
             }
         }

@@ -31,6 +31,7 @@ use IXP\Contracts\Validation\Validator;
 use IXP\Models\Customer;
 use IXP\Models\Router as RouterModel;
 use IXP\Models\VlanInterface;
+use IXP\Utils\Validation\Dto\Result;
 
 /**
  * @author Thomas Kerin <thomas@islandbridgenetworks.ie>
@@ -63,21 +64,27 @@ class Router implements Validator
             $backend->suggestion("Did you know that IXP Manager can generate configuration for route servers?")
                 ->withDocsPath('features/route-servers/');
         } else {
+            $backend->info("Found route servers configured");
+
             $routeServersNoRpki = RouterModel::where('type', RouterModel::TYPE_ROUTE_SERVER)
                 ->where('rpki', 0)
                 ->exists();
 
-            if (!config('ixp.rpki.rtr1.host') && !config('ixp.rpki.rtr1.host')) {
+            if (!config('ixp.rpki.rtr1.host') && !config('ixp.rpki.rtr2.host')) {
                 // No RPKI servers configured - suggest they setup the feature
-                $backend->suggestion("Did you know IXP-Manager supports RPKI for route server configuration?")
-                    ->withDocsPath('features/rpki/')
-                    ->withSettingsLink("route_servers", "rs_rpki_rtr1_host");
+                $backend->suggestion( "Did you know IXP-Manager supports RPKI for route server configuration?" )
+                    ->withDocsPath( 'features/rpki/' )
+                    ->withSettingsLink( "route_servers", "rs_rpki_rtr1_host" );
 
             } else if (!config('ixp.rpki.rtr1.host') || !config('ixp.rpki.rtr2.host')) {
+                $backend->info("Found RPKI host configured");
+
                 // Only missing one RPKI server.. suggest a second.
                 $backend->suggestion("A second RPKI instance is recommended for redundancy.")
                     ->withDocsPath('features/rpki/')
                     ->withSettingsLink("route_servers", "rs_rpki_rtr1_host");
+            } else {
+                $backend->info("Found RPKI hosts configured");
             }
 
             if ( ( config('ixp.rpki.rtr1.host') || config('ixp.rpki.rtr2.host') ) && $routeServersNoRpki) {
@@ -108,7 +115,25 @@ class Router implements Validator
             }
         }
 
-        $customerRsVlansWithoutIrrdbFiltering = VlanInterface::with('virtualInterface.customer')
+        if (count($needsLookingGlass) > 0) {
+            // todo: check this: routers or route servers?
+            $backend->warning("We recommend configuring Looking Glass on all routers - some found without: " . implode(", ", $needsLookingGlass))
+                ->withDocsPath('features/looking-glass/');
+        }
+
+        if ( $customerRsVlansWithoutIrrdbFiltering = $this->findRouteServerClientsWithoutIrrdbFiltering() ) {
+            $backend->error("Found customer VLAN's that are route server clients without IRRDB filtering enabled!")
+                ->withDocsPath("usage/interfaces/#general-vlan-settings")
+                ->addAdditionalInfoText("VLAN Interfaces (max 5 returned):")
+                ->each($customerRsVlansWithoutIrrdbFiltering, function (Result $result, $vlan) {
+                    $result->addAdditionalInfoUrl(route("vlan-interface@edit", ['vli' => $vlan->id]), "Vlan Interface " . $vlan->id . " (".$vlan->virtualInterface->customer->name . ")");
+                });
+        }
+    }
+
+    private function findRouteServerClientsWithoutIrrdbFiltering(): array
+    {
+        return VlanInterface::with('virtualInterface.customer')
             ->whereRsclient(1)
             ->whereIrrdbfilter(0)
             ->whereHas('virtualInterface.customer', function (Builder $query) {
@@ -118,20 +143,5 @@ class Router implements Validator
             ->limit(5)
             ->get()
             ->all();
-
-        if (count($customerRsVlansWithoutIrrdbFiltering) > 0) {
-            $result = $backend->error("Found customer VLAN's that are route server clients without IRRDB filtering enabled!")
-                ->withDocsPath("usage/interfaces/#general-vlan-settings")
-                ->addAdditionalInfoText("VLAN Interfaces (max 5 returned):");
-            foreach ($customerRsVlansWithoutIrrdbFiltering as $vlan) {
-                $result->addAdditionalInfoUrl(route("vlan-interface@edit", ['vli' => $vlan->id]), "Vlan Interface " . $vlan->id . " (".$vlan->virtualInterface->customer->name . ")");
-            }
-        }
-
-        if (count($needsLookingGlass) > 0) {
-            // todo: check this: routers or route servers?
-            $backend->warning("We recommend configuring Looking Glass on all routers - some found without: " . implode(", ", $needsLookingGlass))
-                ->withDocsPath('features/looking-glass/');
-        }
     }
 }

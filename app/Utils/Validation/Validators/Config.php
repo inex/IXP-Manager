@@ -83,6 +83,8 @@ class Config implements Validator
             ;
         } else if ( config('cache.default') === "array" ) {
             $backend->error("A persistent cache is required to use the filtered prefixes feature - cannot use array." );
+        } else {
+            $backend->info("Filtered Prefixes UI is enabled.");
         }
 
         if ( config( 'ixp_fe.frontend.disabled.settings' ) ) {
