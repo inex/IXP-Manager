@@ -57,16 +57,15 @@ class Security implements Validator
     {
         if (config('ixp_api.unsecured_api_access')) {
             $backend->error("Unsecured API Access is enabled - this is strongly discouraged, and support will be removed in a future release. Update any dependent software and disable this ASAP.")
-                ->withDocsPath( "install/security/" )
+                ->withDocsPath( "install/security/#securing-administrative-functions" )
                 ->withSettingsLink("auth", "unsecured_api_access")
             ;
         }
 
         if (config('ixp_api.allow_apikeys_get_parameter')) {
             $backend->error("Passing API Keys as a GET parameter is enabled - this is strongly discouraged, and support for this will be removed in a future release. Update any dependent software and disable this ASAP.")
-                ->withDocsPath( "install/security/" )
-                ->withSettingsLink("auth", "api_key_via_get")
-            ;
+                ->withDocsPath( "install/security/#api-key-as-get-parameter" )
+                ->withSettingsLink("auth", "api_key_via_get");
         }
 
         try {
@@ -75,12 +74,15 @@ class Security implements Validator
             $headers = $loginResponse->headers();
             $hsts = $headers['Strict-Transport-Security'][0] ?? null;
             if (is_null($hsts)) {
-                $backend->error("Your server is missing the Strict-Transport-Security header.");
+                $backend->error("Your server is missing the Strict-Transport-Security header.")
+                    ->withDocsPath("install/security/#strict-transport-security");
             }
 
             $frameDeny = $headers['X-Frame-Options'][0] ?? null;
-            if (is_null($frameDeny)) {
-                $backend->error("Your server is missing the X-Frame-Options header.");
+            if (is_null($frameDeny))
+            {
+                $backend->error("Your server is missing the X-Frame-Options header.")
+                    ->withDocsPath("install/security/#x-frame-options");
             }
 
         } catch (ConnectionException $e) {
