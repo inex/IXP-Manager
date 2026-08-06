@@ -119,7 +119,7 @@ class Basic implements Validator
         }
 
         if ($foundDevRequirement) {
-            $backend->error("URGENT: Found composer packages installed due to `dev_requirement`. This is a security risk on a production system. Please see install/upgrade instructions for instructions on installing libraries from composer.")
+            $backend->error("URGENT: Found composer packages installed due to `dev_requirement`. This is a security risk on a production system. Please check the documentation for instructions on installing libraries from composer.")
                 ->withDocsPath("install/upgrading/");
         }
     }
