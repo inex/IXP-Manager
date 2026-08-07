@@ -73,7 +73,7 @@ dpkg -l | grep php   (or equivalent for your OS - list of php packages installed
 <!--- Paste the output of the following between quotes below:
 
 (run from IXP Manager's root directory (e.g. /srv/ixpmanager)
-cat .env | egrep -v '(^#|^\s*$|^DB_|^APP_KEY|^HELPDESK|^IDENTITY|^MAIL_|^IXP_API_RIR_PASSWORD|^IXP_API_PEERING_DB_)'
+grep -Ev '(^#|^\s*$|^APP_KEY|^APP_PREVIOUS_KEYS|^ATLAS_MEASUREMENT_KEY|^AWS_ACCESS_KEY_ID|^AWS_SECRET_ACCESS_KEY|^DB_|^GRAPHER.*SNMPPASSWD|^HELPDESK|^IDENTITY|^IXP_API_RIR_PASSWORD|^IXP_API_PEERING_DB_|^IXP_RIPE_API_KEY|^.*JSONEXPORTSCHEMA_ACCESS_KEY|^.*LAYER2_ADDRESSES_EMAIL|^LOG_SLACK_|^MAIL_|^MAILGUN|^PAPERTRAIL|^POSTMARK|^PEERINGDB_OAUTH_|^REDIS|^STRIPE)' .env
 
 NB: sanity check the output to make sure you are happy you are not leaking any security information!
 -->

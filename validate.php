@@ -153,7 +153,7 @@ function printIssueAssistanceInfo(): void {
     // Configuration: Non-critical environment variables.
     $envInfo = false;
     if (PHP_OS_FAMILY === "Linux" || PHP_OS_FAMILY === "BSD" || PHP_OS_FAMILY === "Darwin") {
-        exec("grep -Ev '(^#|^\s*$|^DB_|^APP_KEY|^HELPDESK|^IDENTITY|^MAIL_|^IXP_API_RIR_PASSWORD|^IXP_API_PEERING_DB_)' .env", $output, $exitCode);
+        exec("grep -Ev '(^#|^\s*$|^APP_KEY|^APP_PREVIOUS_KEYS|^ATLAS_MEASUREMENT_KEY|^AWS_ACCESS_KEY_ID|^AWS_SECRET_ACCESS_KEY|^DB_|^GRAPHER.*SNMPPASSWD|^HELPDESK|^IDENTITY|^IXP_API_RIR_PASSWORD|^IXP_API_PEERING_DB_|^IXP_RIPE_API_KEY|^.*JSONEXPORTSCHEMA_ACCESS_KEY|^.*LAYER2_ADDRESSES_EMAIL|^LOG_SLACK_|^MAIL_|^MAILGUN|^PAPERTRAIL|^POSTMARK|^PEERINGDB_OAUTH_|^REDIS|^STRIPE)' .env", $output, $exitCode);
         if ($exitCode === 0) {
             $envInfo = implode("\n", $output);
         }
