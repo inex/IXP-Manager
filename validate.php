@@ -189,6 +189,23 @@ $versionInfo
 " . $envInfo . "
 ```
 
+
+##### STEPS TO REPRODUCE
+
+
+##### EXPECTED RESULTS
+
+_What did you expect to happen when running the steps above?_
+
+##### ACTUAL RESULTS
+
+_What actually happened?_
+
+##### IMPORTANCE
+
+_Please let us know if the issue is affecting you in a production environment_
+
+
 ";
 }
 

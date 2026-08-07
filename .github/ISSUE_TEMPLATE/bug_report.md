@@ -21,9 +21,17 @@ For issues with documentation, please use the following issue tracker:
 
 -->
 
-##### ISSUE TYPE
+<!---
+IXP Manager includes a tool which can generate a Github Issue template with the requested system information prepopulated.
 
-Bug Report
+Run `php ./validate.php --github-issue` from your IXP-Manager directory, copy/paste the output here, and
+fill in the remaining information about your issue.
+
+-->
+
+##### ISSUE SUMMARY
+
+**Describe your issue here**
 
 ##### OS
 
@@ -62,7 +70,7 @@ dpkg -l | grep php   (or equivalent for your OS - list of php packages installed
 
 ##### CONFIGURATION
 
-<!--- Paste the output of the followingbetween quotes below:
+<!--- Paste the output of the following between quotes below:
 
 (run from IXP Manager's root directory (e.g. /srv/ixpmanager)
 cat .env | egrep -v '(^#|^\s*$|^DB_|^APP_KEY|^HELPDESK|^IDENTITY|^MAIL_|^IXP_API_RIR_PASSWORD|^IXP_API_PEERING_DB_)'
@@ -75,9 +83,6 @@ NB: sanity check the output to make sure you are happy you are not leaking any s
 ```
 
 <!--- You can also use gist.github.com links for larger files -->
-
-##### SUMMARY
-<!--- Explain the problem briefly -->
 
 ##### STEPS TO REPRODUCE
 
