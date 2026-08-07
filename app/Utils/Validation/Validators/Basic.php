@@ -67,23 +67,25 @@ class Basic implements Validator
     private function doPhpChecks(ValidationBackend $backend): void
     {
         $phpVersion = phpversion();
-        $manifest = APPLICATION_MANIFEST;
 
         $backend->software('PHP', $phpVersion);
 
-        if ( version_compare( $phpVersion, $manifest['php_version']['min'], '>=' ) && ($manifest['php_version']['max'] === null || version_compare( $phpVersion, $manifest['php_version']['max'], '<=')) ) {
+        $minVersion = APPLICATION_MANIFEST['php_version']['min'];
+        /** @var null|string $maxVersion */
+        $maxVersion = APPLICATION_MANIFEST['php_version']['max'];
+        if ( version_compare( $phpVersion, $minVersion, '>=' ) && ($maxVersion === null || version_compare( $phpVersion, $maxVersion, '<=')) ) {
             $backend->info( "Running a supported PHP version (" . $phpVersion . "). " .
-                (str_starts_with( $phpVersion,  $manifest['php_version']['recommended'])
+                (str_starts_with( $phpVersion,  APPLICATION_MANIFEST['php_version']['recommended'])
                     ? "Version is a recommended version" : "") );
         } else {
-            if ( version_compare( $phpVersion, $manifest['php_version']['min'], '<' ) ) {
-                $backend->error( "PHP version " . $manifest['php_version']['min'] . " or higher required (" . $phpVersion . " found)" );
+            if ( version_compare( $phpVersion, $minVersion, '<' ) ) {
+                $backend->error( "PHP version " . $minVersion . " or higher required (" . $phpVersion . " found)" );
             }
-            if ($manifest['php_version']['max'] !== null && version_compare( $phpVersion, $manifest['php_version']['max'], '>' ) ) {
-                $backend->error("PHP version exceeds max supported version " . $manifest['php_version']['max'] . " (" . $phpVersion . " found)" );
+            if ($maxVersion !== null && version_compare( $phpVersion, $maxVersion, '>' ) ) {
+                $backend->error("PHP version exceeds max supported version " . $maxVersion . " (" . $phpVersion . " found)" );
             }
         }
-        if ( !str_starts_with( $phpVersion, $manifest['php_version']['recommended'] ) ) {
+        if ( !str_starts_with( $phpVersion, APPLICATION_MANIFEST['php_version']['recommended'] ) ) {
             $backend->warning("Not running a recommended PHP version.");
         }
 
@@ -96,7 +98,7 @@ class Basic implements Validator
         if ( !extension_loaded('pdo_mysql') ) {
             $backend->error('PDO MySQL extension is not installed');
         } else {
-            $backend->software('PDO MySQL', phpversion( 'pdo_mysql' ) ?? 'unknown');
+            $backend->software('PDO MySQL', phpversion( 'pdo_mysql' ) ?: 'unknown');
         }
     }
 
@@ -167,6 +169,7 @@ class Basic implements Validator
         }
 
         $minVersion = APPLICATION_MANIFEST['mysql_version']['min'];
+        /** @var null|string $maxVersion */
         $maxVersion = APPLICATION_MANIFEST['mysql_version']['max'];
         $recommendedPrefix = APPLICATION_MANIFEST['mysql_version']['recommended'];
         if ( version_compare( $minVersion, $version, '<=' ) &&
@@ -179,7 +182,7 @@ class Basic implements Validator
             if ( !str_starts_with( $version, $recommendedPrefix ) ) {
                 $backend->warning( "Not running a recommended MySQL version. (" . $version . " found)" );
             }
-            if ($maxVersion !== null && version_compare( phpversion(), $maxVersion, '>' ) ) {
+            if ($maxVersion !== null && version_compare( $version, $maxVersion, '>' ) ) {
                 $backend->error( "MySQL version exceeds max supported version " . $maxVersion . " (" . $version . " found)" );
             }
         }
