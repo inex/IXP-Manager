@@ -49,9 +49,9 @@ final class Store extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return string[]
+     * @return array<string, string>
      *
-     * @psalm-return array{host: 'nullable|string|max:255', source: 'required|string|max:255', notes: 'nullable|string'}
+     * @psalm-return array{host: 'nullable|string|max:255', source: 'required|string|max:255|regex:/[A-Z0-9-]+/', notes: 'nullable|string'}
      */
     public function rules(): array
     {
@@ -62,10 +62,15 @@ final class Store extends FormRequest
         ];
     }
 
+    /**
+     * @return array<string, string>
+     *
+     * @psalm-return array{'source.regex': 'The source must only contain uppercase letters and numbers and the - character.'}
+     */
+    #[\Override]
     public function messages(): array
     {
         return [
-
             'source.regex' => 'The source must only contain uppercase letters and numbers and the - character.',
         ];
     }
