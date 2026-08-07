@@ -79,10 +79,9 @@ class Security implements Validator
             }
 
             $frameDeny = $headers['X-Frame-Options'][0] ?? null;
-            if (is_null($frameDeny))
-            {
+            if (is_null($frameDeny)) {
                 $backend->error("Your server is missing the X-Frame-Options header.")
-                    ->withDocsPath("install/security/#x-frame-options");
+                    ->withDocsPath("install/security/#x-frame-options-and-content-security-policy-frame-ancestors");
             }
 
         } catch (ConnectionException $e) {
