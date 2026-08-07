@@ -33,6 +33,23 @@ use Illuminate\Foundation\Http\FormRequest;
  * RegisterInfrastructureRequest
  *
  * Contains validation rules for IXP Registration form
+ * @property-read string $website
+ * @property-read string|null $ixpmurl
+ * @property-read string|null $submitted_by_name
+ * @property-read string|null $submitted_by_email
+ * @property-read string|null $submitted_by_ml
+ * @property-read int|null $since
+ * @property-read array<int, array{
+ *      fullname?: string,
+ *      shortname?: string,
+ *      city?: string|null,
+ *      peeringdbid?: int|string|null,
+ *      ixfid?: int|string|null,
+ *      country?: string,
+ *      gpsx?: string|null,
+ *      gpsy?: string|null,
+ *      register?: mixed
+ *  }> $infrastructure
  */
 class RegisterInfrastructureRequest extends FormRequest
 {
@@ -51,7 +68,7 @@ class RegisterInfrastructureRequest extends FormRequest
      *
      * @return string[]
      *
-     * @psalm-return array{name: 'required|string|max:255', colo_reference: 'required|string|max:255', cabinet_id: 'required|integer|exists:cabinet,id', cable_type: 'required|integer', connector_type: 'required|integer', installation_date: 'date', port_prefix: 'string|nullable', u_position: 'numeric|nullable', colo_pp_type: 'numeric', mounted_at: string, numberOfPorts: 'required|integer'}
+     * @psalm-return array{'infrastructure.*.city': 'nullable|string|max:30', 'infrastructure.*.country': 'required_if_accepted:infrastructure.*.register|string|max:2', 'infrastructure.*.fullname': 'required_if_accepted:infrastructure.*.register|nullable|string|max:255', 'infrastructure.*.gpsx': list{'nullable', 'string', \IXP\Rules\Longitude}, 'infrastructure.*.gpsy': list{'nullable', 'string', \IXP\Rules\Latitude}, 'infrastructure.*.ixfid': 'nullable|integer', 'infrastructure.*.peeringdbid': 'nullable|integer', 'infrastructure.*.register': 'nullable', 'infrastructure.*.shortname': 'required_if_accepted:infrastructure.*.register|nullable|string|max:30', ixpmurl: 'nullable|string|max:255', since: 'nullable|integer', submitted_by_email: 'nullable|email|max:100', submitted_by_ml: 'nullable|integer', submitted_by_name: 'nullable|string|max:100', website: 'required|url|max:255'}
      */
     public function rules(): array
     {
@@ -60,6 +77,7 @@ class RegisterInfrastructureRequest extends FormRequest
             'ixpmurl'               => 'nullable|string|max:255',
             'submitted_by_name'     => 'nullable|string|max:100',
             'submitted_by_email'    => 'nullable|email|max:100',
+            'submitted_by_ml'       => 'nullable|integer',
             'since'                 => 'nullable|integer',
 
             'infrastructure.*.fullname'              => 'required_if_accepted:infrastructure.*.register|nullable|string|max:255',
@@ -70,10 +88,13 @@ class RegisterInfrastructureRequest extends FormRequest
             'infrastructure.*.country'               => 'required_if_accepted:infrastructure.*.register|string|max:2',
             'infrastructure.*.gpsx'                  => [ 'nullable','string', new Longitude() ],
             'infrastructure.*.gpsy'                  => [ 'nullable','string', new Latitude() ],
-            'infrastructure.*.register'              => [ 'nullable',  ],
+            'infrastructure.*.register'              => 'nullable',
         ];
     }
 
+    /**
+     * @psalm-return array<string, string>
+     */
     #[\Override]
     public function messages(): array
     {
