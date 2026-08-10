@@ -29,6 +29,7 @@ use IXP\Contracts\Validation\Validator;
 use IXP\Contracts\Grapher\Backend as GrapherBackendContract;
 use IXP\Models\User;
 use IXP\Models\Vlan;
+use IXP\Utils\Validation\Dto\Result;
 
 /**
  * @author Thomas Kerin <thomas@islandbridgenetworks.ie>
@@ -85,10 +86,11 @@ class Grapher implements Validator
     {
         // Warn if there are no active backends, or only dummy is configured. Otherwise print active backends & providers.
         // Relevant setting: GRAPHER_BACKENDS
-        if (count(config('grapher.backend')) === 0) {
+        if (count(config()->array('grapher.backend')) === 0) {
+            // This likely will never happen due to GrapherServiceProvider config check. When setting empty it throws.
             $backend->warning("No backends configured")
                 ->withDocsPath('grapher/introduction/');
-        } else if (count(config('grapher.backend')) === 1 && config('grapher.backend')[0] === "dummy") {
+        } else if (count(config()->array('grapher.backend')) === 1 && config()->array('grapher.backend')[0] === "dummy") {
             $backend->warning("Only the dummy backend is active.")
                 ->withDocsPath('grapher/introduction/');
         } else {
