@@ -37,8 +37,8 @@ jobs:
     - name: Execute tests (Unit and Feature tests) via PHPUnit
       run: vendor/bin/phpunit --testsuite 'Docstore Test Suite,IXP Manager Test Suite'
     - name: Static code analysis
-      run: vendor/bin/psalm --use-baseline psalm-baseline.xml
-    - name: QA test - Settings UI configuration
+      run: vendor/bin/psalm --use-baseline=psalm-baseline.xml
+    - name: Settings UI QA tests
       run: QA_COMMANDS=1 ./artisan qa:check-settings-ui-config
     - name: QA test - Eloquent2Frontend column links
       run: QA_COMMANDS=1 ./artisan qa:check-e2f-links
