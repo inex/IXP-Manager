@@ -40,7 +40,7 @@ use IXP\Traits\Observable;
  * @property int $user_id
  * @property int $privs
  * @property array|null $extra_attributes
- * @property string|null $last_login_date
+ * @property \Illuminate\Support\Carbon|null $last_login_date
  * @property string|null $last_login_from
  * @property string|null $last_login_via
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -76,6 +76,7 @@ class CustomerToUser extends Model
      */
     protected $casts = [
         'extra_attributes' => 'json',
+        'last_login_date' => 'datetime',
     ];
 
     /**
