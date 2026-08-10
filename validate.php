@@ -629,13 +629,15 @@ if (array_any($argv, fn($v) => $v === '--github-issue')) {
 
 $logLevel = null;
 foreach ($argv as $i => $value) {
-    if (str_starts_with($value, '--log-level=')) {
-        // If there's an equals, take the value after the equals as log level.
-        $logLevel = substr($value, strlen('--log-level='));
-        break;
-    } else if ($value === "--log-level" && $argc > $i) {
-        // If they pass the flag by itself, and we have more parameters to come, treat the following parameter as log level.
-        $logLevel = $argv[$i+1];
+    // If they pass the flag with equals, log level immediately follows =
+    // or if they pass the flag by itself, and we have more parameters to come, treat the following parameter as the log level
+    if(
+        ( str_starts_with( $value, '--log-level=' ) && ( $tmp = substr( $value, strlen( '--log-level=' ) ) ) )  ||
+        ( $value === "--log-level" && $argc > $i && ($tmp = $argv[$i + 1] ) ) ) {
+        // check log level is in the whitelist
+        if (in_array($tmp, ['debug', 'info', 'suggest', 'warning', 'error'])) {
+            $logLevel = $tmp;
+        }
         break;
     }
 }
@@ -696,7 +698,18 @@ if ( $haveErrors ) {
 
 echo "No errors detected during basic validations\n";
 
-echo shell_exec(__DIR__ .
-        "/artisan validator:run " .
-        ($logLevel ? "--log-level=$logLevel " : ""));
+// psalm gets giddy about using parameters in shell exec, so we'll take the long way. NB: log level is only set if in the whitelist.
+$command = sprintf("%s validator:run %s", escapeshellcmd(__DIR__ . '/artisan'), $logLevel ? '--log-level=' . escapeshellarg($logLevel) : '' );
+
+$descriptors = [
+    1 => ['pipe', 'w'],
+    2 => ['redirect', 1], // redirect stderr into stdout
+];
+
+$process = proc_open($command, $descriptors, $pipes);
+if (is_resource($process)) {
+    echo stream_get_contents($pipes[1]);
+    fclose($pipes[1]);
+    proc_close($process);
+}
 
