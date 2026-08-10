@@ -222,7 +222,7 @@ class Basic implements Validator
         // Since we have a need to create additional directories (grapher), add a separate directory create check here.
         // Although file and directory creation have the same permissions, external factors can cause one to fail
         // and not the other.
-        $writableDirectories = ["storage/app/", "storage/docstore/", "storage/docstore_customers/", "storage/files/",
+        $writableDirectories = ["bootstrap", "storage/app/", "storage/docstore/", "storage/docstore_customers/", "storage/files/",
             "storage/framework/cache/", "storage/framework/sessions/", "storage/framework/views/",
             "storage/logs/", "storage/tmp/", "storage/"];
 
