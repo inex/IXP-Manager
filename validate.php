@@ -675,7 +675,7 @@ foreach ( $softwareVersionResults as $software => $result ) {
 }
 
 $basicReport .= "\n";
-$basicReport .= "warnings:\n";
+$basicReport .= "Results:\n";
 foreach ( $checkResults as $taskName => $taskResults ) {
     if (count($taskResults) === 0) {
         continue;
