@@ -609,6 +609,19 @@ if (array_any($argv, fn($v) => $v === '--github-issue')) {
     return;
 }
 
+$logLevel = null;
+foreach ($argv as $i => $value) {
+    if (str_starts_with($value, '--log-level=')) {
+        // If there's an equals, take the value after the equals as log level.
+        $logLevel = substr($value, strlen('--log-level='));
+        break;
+    } else if ($value === "--log-level" && $argc > $i) {
+        // If they pass the flag by itself, and we have more parameters to come, treat the following parameter as log level.
+        $logLevel = $argv[$i+1];
+        break;
+    }
+}
+
 $tasks = [];
 $tasks[] = new BasicValidation( 'PHP', doMinimumPhpVersionCheck(...), [ $manifest['php_version']['min'], $manifest['php_version']['recommended'], $manifest['php_version']['max'] ] );
 $tasks[] = new BasicValidation( 'Composer', doComposerCheck(...), [] );
@@ -665,5 +678,7 @@ if ( $haveErrors ) {
 
 echo "No errors detected during basic validations\n";
 
-echo shell_exec(__DIR__ . "/artisan validator:run");
+echo shell_exec(__DIR__ .
+        "/artisan validator:run " .
+        ($logLevel ? "--log-level=$logLevel " : ""));
 
