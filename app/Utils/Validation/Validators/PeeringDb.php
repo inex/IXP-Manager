@@ -99,11 +99,13 @@ class PeeringDb implements Validator
             $backend->warning("PeeringDB no longer supports basic authentication. IXP_API_PEERING_DB_USERNAME and IXP_API_PEERING_DB_PASSWORD should be removed from your .env file.");
         }
 
-        if (!config()->has('ixp_api.peeringDB.api-key')) {
+        if (null === config('ixp_api.peeringDB.api-key')) {
             // have nothing setup
             $backend->suggestion("We recommend configuring a PeeringDB API key for reduced rate limits.")
                 ->withSettingsLink("third_party", "peeringdb_api_key");
             return;
+        } else {
+            $backend->info("PeeringDB API key is correctly set.");
         }
 
         $pdb = app(PeeringDbService::class);
