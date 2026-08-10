@@ -220,7 +220,7 @@ class Basic implements Validator
 
         $writableDirectories = ["storage/app/", "storage/docstore/", "storage/docstore_customers/", "storage/files/",
             "storage/framework/cache/", "storage/framework/sessions/", "storage/framework/views/",
-            "storage/grapher/", "storage/logs/", "storage/tmp/"];
+            "storage/grapher/", "storage/logs/", "storage/tmp/", "storage/"];
 
         $writable = [];
         $unwritable = [];
