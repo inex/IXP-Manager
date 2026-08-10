@@ -36,7 +36,7 @@ use Illuminate\Database\Eloquent\{
  * @property int $id
  * @property int|null $user_id
  * @property string $ip
- * @property string $at
+ * @property \Illuminate\Support\Carbon $at
  * @property int|null $customer_to_user_id
  * @property string|null $via
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -63,6 +63,10 @@ class UserLoginHistory extends Model
      * @var string
      */
     protected $table = 'user_logins';
+
+    protected $casts = [
+        'at' => 'datetime',
+    ];
 
     /**
      * Get the customer to user
