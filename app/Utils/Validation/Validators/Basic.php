@@ -218,34 +218,52 @@ class Basic implements Validator
             $backend->info( "Required extensions found: " . implode(', ', $presentExtensions) );
         }
 
+        // storage/grapher is not present in a git clone, so we don't include it in this list.
+        // Since we have a need to create additional directories (grapher), add a separate directory create check here.
+        // Although file and directory creation have the same permissions, external factors can cause one to fail
+        // and not the other.
         $writableDirectories = ["storage/app/", "storage/docstore/", "storage/docstore_customers/", "storage/files/",
             "storage/framework/cache/", "storage/framework/sessions/", "storage/framework/views/",
-            "storage/grapher/", "storage/logs/", "storage/tmp/", "storage/"];
+            "storage/logs/", "storage/tmp/", "storage/"];
 
-        $writable = [];
-        $unwritable = [];
-        foreach ($writableDirectories as $directory) {
-            $isWritable = $this->isDirectoryWritable($directory);
+        $this->testWritePermission($backend, "file", $writableDirectories);
+        $this->testWritePermission($backend, "directory", $writableDirectories);
+    }
+
+    /**
+     * Parameterized storage directory write test, since we have to test file creation as well as directory creation
+     * @param ValidationBackend $backend
+     * @param string $type
+     * @param string[] $directories
+     */
+    private function testWritePermission( ValidationBackend $backend, string $type, array $directories ): void
+    {
+        $writeOk = [];
+        $writeFail = [];
+        foreach ($directories as $directory) {
+            $isWritable = $type === "file"
+                ? $this->haveFileWritePermission($directory)
+                : $this->haveDirectoryWritePermission($directory);
             if ($isWritable) {
-                $writable[] = $directory;
+                $writeOk[] = $directory;
             } else {
-                $unwritable[] = $directory;
+                $writeFail[] = $directory;
             }
         }
 
-        if (count($unwritable) === 0) {
-            $backend->info( "All storage directories are writable" )
-                ->each( $writable, function( Result $result, $directory ) {
-                    $result->addAdditionalInfoText( " - " . $directory . " was writable" );
-                });
+        if (count($writeFail) === 0) {
+            $backend->info( "All " . $type . " write permission tests passed" )
+                ->each( $writeOk, function( Result $result, $directory ) {
+                    $result->addAdditionalInfoText( " - " . $directory . " was writable");
+                } );
         } else {
-            $backend->error( "Found storage directories without write permission" )
-                ->each( $unwritable, function( Result $result, $directory ) {
-                    $result->addAdditionalInfoText( " - " . $directory . " was unwritable" );
+            $backend->error( "Missing " . $type . " write permission for some storage directories:" )
+                ->each( $writeFail, function( Result $result, $directory ) use ($type) {
+                    $result->addAdditionalInfoText( " - Failed to create test " . $type . " in " . $directory );
                 });
-            if (count($writable) > 0) {
-                $backend->info( "Found storage directories with write permission" )
-                    ->each( $writable, function( Result $result, $directory ) {
+            if (count($writeOk) > 0) {
+                $backend->info( "Had " . $type . " write permission for some storage directories:" )
+                    ->each( $writeOk, function( Result $result, $directory ) {
                         $result->addAdditionalInfoText( " - " . $directory . " was writable" );
                     });
             }
@@ -255,7 +273,7 @@ class Basic implements Validator
     /**
      * Returns true if it was possible to write a file into the provided relative filesystem path (eg storage/logs/))
      */
-    private function isDirectoryWritable(string $path): bool
+    private function haveFileWritePermission( string $path ): bool
     {
         $testFile = rtrim(base_path($path), "/") . "/.permission-test-" . \Str::random(8);
 
@@ -270,6 +288,28 @@ class Basic implements Validator
         } finally {
             if (File::exists($testFile)) {
                 @unlink($testFile);
+            }
+        }
+    }
+
+    /**
+     * Returns true if it was possible to write a new directory into the provided relative filesystem path (eg storage/)
+     */
+    private function haveDirectoryWritePermission( string $path ): bool
+    {
+        $testDir = rtrim(base_path($path), "/") . "/.permission-test-" . \Str::random(8);
+
+        try {
+            $written = @mkdir($testDir);
+            if ($written === false) {
+                return false;
+            }
+            return true;
+        } catch (\Throwable $t) {
+            return false;
+        } finally {
+            if (File::exists($testDir)) {
+                @rmdir($testDir);
             }
         }
     }

@@ -450,29 +450,47 @@ function doLaravelWritableDirectoryChecks(): array
 {
     $storageDirectories = ["storage/app/", "storage/docstore/", "storage/docstore_customers/", "storage/files/",
             "storage/framework/cache/", "storage/framework/sessions/", "storage/framework/views/",
-            "storage/grapher/", "storage/logs/", "storage/tmp/", "storage/"];
+            "storage/logs/", "storage/tmp/", "storage/"];
 
-    $unwritable = [];
+    $fileFail = [];
+    $dirFail = [];
     foreach ( $storageDirectories as $storageDirectory ) {
         $testFile = rtrim(dirname( __FILE__ ), "/" ) . "/" . rtrim($storageDirectory, "/") . "/.permission-test-" . bin2hex(random_bytes(4));
 
         try {
             $written = @file_put_contents($testFile, "This file is part of the IXP Manager storage directory permission check. If found outside of testing it can safely be deleted.");
             if ($written === false) {
-                $unwritable[] = $storageDirectory;
+                $fileFail[] = $storageDirectory;
             }
         } catch (\Throwable $t) {
-            $unwritable[] = $storageDirectory;
+            $fileFail[] = $storageDirectory;
         } finally {
             if (file_exists($testFile)) {
                 @unlink($testFile);
             }
         }
+
+        $testDir = rtrim(dirname( __FILE__ ), "/" ) . "/" . rtrim($storageDirectory, "/") . "/.permission-test-" . bin2hex(random_bytes(4));
+        try {
+            $written = @mkdir($testDir);
+            if ($written === false) {
+                $dirFail[] = $storageDirectory;
+            }
+        } catch (\Throwable $t) {
+            $dirFail[] = $storageDirectory;
+        } finally {
+            if (file_exists($testDir)) {
+                @rmdir($testDir);
+            }
+        }
     }
 
     $results = [];
-    if (count($unwritable) > 0) {
-        $results[] = new CheckResult( ResultStatus::ERROR, [ 'Found framework directories without write permission: ' . implode( ', ', $unwritable ) ] );
+    if (count($fileFail) > 0) {
+        $results[] = new CheckResult( ResultStatus::ERROR, [ 'Missing file write permission in these storage directories: ' . implode( ', ', $fileFail ) ] );
+    }
+    if (count($dirFail) > 0) {
+        $results[] = new CheckResult( ResultStatus::ERROR, [ 'Missing directory write permission in these storage directories: ' . implode( ', ', $dirFail ) ] );
     }
     return $results;
 }
