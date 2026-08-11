@@ -24,22 +24,13 @@ declare(strict_types=1);
 
 namespace IXP\Http\Controllers;
 
-use Carbon\Carbon;
-use Illuminate\Contracts\Cache\LockTimeoutException;
 use Illuminate\Contracts\View\View;
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
-use Illuminate\Foundation\Bus\DispatchesJobs;
-use Illuminate\Foundation\Validation\ValidatesRequests;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use IXP\Contracts\Validation\ValidationRunner;
 use IXP\Utils\ConcurrentJobRunner;
-use IXP\Services\Validation\Dto\CallToActionLink;
 use IXP\Services\Validation\Dto\JobState;
-use IXP\Services\Validation\Dto\Result;
-use IXP\Services\Validation\Dto\Software;
 use IXP\Services\Validation\ValidationRunnerFactory;
 use IXP\Utils\View\Alert\Container as AlertContainer;
 use Ramsey\Uuid\Uuid;
