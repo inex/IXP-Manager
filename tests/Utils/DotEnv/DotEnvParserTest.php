@@ -144,59 +144,69 @@ final class DotEnvParserTest extends TestCase
     }
 
 
-    /**
-     * @throws DotEnvParserException
-     */
-    public function testParseContentBlankCommentLines(): void
+    public static function blankLineCommentDataProvider(): array
     {
-        foreach( [ "#\n", "#\r\n", "#\r", "#\n\r", "#\r\n\r", "#   \n", "#  \r\n", "#     \r", "#\t   \n\r", "#   \t\r\n\r" ] as $line ) {
-            $p = $this->makeParser()
-                ->setContent( $line )
-                ->parse();
+        return [
+            ["#\n"], ["#\r\n"], ["#\r"], ["#\n\r"], ["#\r\n\r"], ["#   \n"], ["#  \r\n"], ["#     \r"], ["#\t   \n\r"], ["#   \t\r\n\r"],
+        ];
 
-            $this->assertEquals(
-                [ 0 => [
-                    "key"     => null,
-                    "value"   => null,
-                    "comment" => "",
-                ] ],
-                $p->settings()
-            );
-        }
     }
 
     /**
      * @throws DotEnvParserException
      */
-    public function testParseContentCommentLines(): void
+    #[DataProvider('blankLineCommentDataProvider')]
+    public function testParseContentBlankCommentLines($line): void
     {
-        foreach(
-                [
-                    "# comment \n" => "comment",
-                    "# comment comment \r\n" => "comment comment",
-                    "# this is at !! comment   \r" => "this is at !! comment",
-                    "# hey \$ho yolo\tthhe\n\r" => "hey \$ho yolo\tthhe",
-                    "#    thesis yo\r\n\r" => "thesis yo",
-                    "#  yes, sisko was the best star trek captain! \n" => "yes, sisko was the best star trek captain!",
-                    "#     no, it was't kirk. or picard. <====\r\n" => "no, it was't kirk. or picard. <====",
-                    "#yes the defiant WAS a cool ship     \r" => "yes the defiant WAS a cool ship",
-                    "#\tncc1701\t   \n\r" => "ncc1701",
-                ] as $line => $expected ) {
+        $p = $this->makeParser()
+            ->setContent( $line )
+            ->parse();
 
+        $this->assertEquals(
+            [ 0 => [
+                "key"     => null,
+                "value"   => null,
+                "comment" => "",
+                "raw"     => rtrim($line, "\r\n"),  ## Lines are split by \r|\n so they will not be found in raw
+            ] ],
+            $p->settings()
+        );
+    }
 
-            $p = $this->makeParser()
-                ->setContent( $line )
-                ->parse();
+    public static function contentCommentLinesDataProvider(): array
+    {
+        return [
+            ["# comment \n", "comment"],
+            ["# comment comment \r\n", "comment comment"],
+            ["# this is at !! comment   \r", "this is at !! comment"],
+            ["# hey \$ho yolo\tthhe\n\r", "hey \$ho yolo\tthhe"],
+            ["#    thesis yo\r\n\r", "thesis yo"],
+            ["#  yes, sisko was the best star trek captain! \n", "yes, sisko was the best star trek captain!"],
+            ["#     no, it was't kirk. or picard. <====\r\n", "no, it was't kirk. or picard. <===="],
+            ["#yes the defiant WAS a cool ship     \r", "yes the defiant WAS a cool ship"],
+            ["#\tncc1701\t   \n\r", "ncc1701"],
+        ];
+    }
 
-            $this->assertEquals(
-                [ 0 => [
-                    "key"     => null,
-                    "value"   => null,
-                    "comment" => $expected,
-                ] ],
-                $p->settings()
-            );
-        }
+    /**
+     * @throws DotEnvParserException
+     */
+    #[DataProvider('contentCommentLinesDataProvider')]
+    public function testParseContentCommentLines($line, $expected): void
+    {
+        $p = $this->makeParser()
+            ->setContent( $line )
+            ->parse();
+
+        $this->assertEquals(
+            [ 0 => [
+                "key"     => null,
+                "value"   => null,
+                "comment" => $expected,
+                "raw"     => rtrim($line, "\r\n"), ## Lines are split by \r|\n so they will not be found in raw
+            ] ],
+            $p->settings()
+        );
     }
 
     public static function unparsableValuesProvider(): array

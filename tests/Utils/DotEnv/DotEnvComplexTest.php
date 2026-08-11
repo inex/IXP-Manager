@@ -74,7 +74,7 @@ final class DotEnvComplexTest extends TestCase
             . "#       An indented comment\n"
             . "#   - An indented list item\n";
         $parser = new DotEnvParser( $env )->parse();
-        $container = new DotEnvContainer( $parser->settings( true ) );
+        $container = new DotEnvContainer( $parser->settings() );
 
         $this->assertSame( $env, new DotEnvWriter( $container->settings() )->generateContent() );
     }

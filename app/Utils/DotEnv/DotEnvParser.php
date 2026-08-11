@@ -67,16 +67,9 @@ class DotEnvParser
         return $this;
     }
 
-    public function settings( bool $includeMetadata = false ): array
+    public function settings(): array
     {
-        if( $includeMetadata ) {
-            return $this->settings;
-        }
-
-        return array_map( function( array $setting ): array {
-            unset( $setting['raw'] );
-            return $setting;
-        }, $this->settings );
+        return $this->settings;
     }
 
     /**
