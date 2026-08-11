@@ -19,15 +19,15 @@ NB: Issues that are requests for help will be closed. Please use the mailing lis
 For issues with documentation, please use the following issue tracker:
   https://github.com/inex/ixp-manager-docs-md/issues
 
+#########################################################################
+
+IXP Manager includes a tool which can generate a GitHub Issue template with the requested system information prepopulated.
+
+Run `php ./validate.php --github-issue` from your IXP-Manager directory, paste its entire output in as the
+Github Issue body, and fill in the final few fields describing your issue.
+
 -->
 
-<!---
-IXP Manager includes a tool which can generate a Github Issue template with the requested system information prepopulated.
-
-Run `php ./validate.php --github-issue` from your IXP-Manager directory, copy/paste the output here, and
-fill in the remaining information about your issue.
-
--->
 
 ##### ISSUE SUMMARY
 

@@ -76,9 +76,11 @@ class Router implements Validator
                     ->withDocsPath( 'features/rpki/' )
                     ->withSettingsLink( "route_servers", "rs_rpki_rtr1_host" );
 
-            } else if (!config('ixp.rpki.rtr1.host') || !config('ixp.rpki.rtr2.host')) {
-                $backend->info("Found RPKI host configured");
-
+            } else if (!config('ixp.rpki.rtr1.host')) {
+                // have RTR2 but not RTR1
+                $backend->error("RPKI RTR1 is the primary RPKI server, RTR2 is secondary/fallback. Without RTR1 your configuration won't use RPKI!")
+                    ->withSettingsLink( "route_servers", "rs_rpki_rtr1_host" );
+            } else if (!config('ixp.rpki.rtr2.host')) {
                 // Only missing one RPKI server.. suggest a second.
                 $backend->suggestion("A second RPKI instance is recommended for redundancy.")
                     ->withDocsPath('features/rpki/')
