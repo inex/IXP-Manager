@@ -227,7 +227,7 @@ class NagiosController extends Controller
             abort( 404, "No suitable router(s) found." );
         }
 
-        TaskLastRun::updateNagiosBirdseyeDaemons( [ 'vlan' => $vlan->id, 'protocol' => $protocol, 'type' => $type, 'template' => $tmpl ] );
+        TaskLastRun::updateNagiosBgpSessions( [ 'vlan' => $vlan->id, 'protocol' => $protocol, 'type' => $type, 'template' => $tmpl ] );
 
         return response()
             ->view( $tmpl, [
