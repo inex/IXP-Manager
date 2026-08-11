@@ -266,9 +266,7 @@ function loadEnv(string $path, &$errorMessage): array|false
             $value = trim( $value );
 
             // handle inline comments:
-            if ( str_contains( $value, '#' ) ) {
-                $value = trim( substr( $value, 0, strpos( $value, '#' ) ) );
-            }
+            [$value, ] = splitValueAndComment($value);
 
             // extract from optional quotes
             $value = preg_replace( '/^["\'](.*)["\']$/', '$1', $value );
@@ -281,20 +279,43 @@ function loadEnv(string $path, &$errorMessage): array|false
 }
 
 /**
- * Implement truthiness checks for an env value having been parsed and cast to a boolean
- * true, (true), false, (false), null, (null), empty, (empty) are reserved and interpreted
- * as true, false, null, and '' respectively.
+ * dotenv value & inline comment parser based on listerr's
+ *
+ * @psalm-return array{0: string, 1: string|null}
  */
-function parseBooleanEnvVar( string $value): bool
+function splitValueAndComment( string $valueElement ): array
 {
-    $lower = strtolower( $value );
-    return (bool) match ($lower) {
-        'true',  '(true)'  => true,
-        'false', '(false)' => false,
-        'null',  '(null)'  => null,
-        'empty', '(empty)' => "",
-        default            => $value
-    };
+    // avoid loop if there's no inline comment
+    if( !str_contains($valueElement, "#") ) {
+        return [ $valueElement, null ];
+    }
+
+    $quote = null;
+    /** @var bool $escaped */
+    $escaped = false;
+
+    for( $i = 0, $length = strlen( $valueElement ); $i < $length; $i++ ) {
+        $character = $valueElement[ $i ];
+
+        if( $escaped ) {
+            $escaped = false;
+        } else if( $character === '\\' && $quote === '"' ) {
+            $escaped = true;
+        } else if( $quote !== null ) {
+            if( $character === $quote ) {
+                $quote = null;
+            }
+        } else if( $character === '"' || $character === "'" ) {
+            $quote = $character;
+        } else if( $character === '#' ) {
+            return [
+                    substr( $valueElement, 0, $i ),
+                    trim( substr( $valueElement, $i + 1 ) ),
+            ];
+        }
+    }
+
+    return [ $valueElement, null ];
 }
 
 function doMinimumPhpVersionCheck( string $minVersion, string $recommendedPrefix, ?string $maxVersion): array
