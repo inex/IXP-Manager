@@ -22,15 +22,15 @@
 
 declare(strict_types=1);
 
-namespace IXP\Http\Controllers\Utils;
+namespace IXP\Services\Infrastructure\Registration;
 
 use IXP\Models\Infrastructure;
 
 /**
  * InfrastructureRegistrationCheckResult
- * @see InfrastructureRegistrationChecker
+ * @see RegistrationChecker
  */
-class InfrastructureRegistrationCheckResult
+class RegistrationCheckResult
 {
     /**
      * Any infrastructures which are not excluded from IX-F export are eligible for registration.

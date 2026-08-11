@@ -29,7 +29,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use IXP\Http\Controllers\Utils\InfrastructureRegistrationChecker;
+use IXP\Services\Infrastructure\Registration\RegistrationChecker;
 use IXP\Http\Requests\RegisterInfrastructureRequest;
 use IXP\Models\Infrastructure;
 use Countries;
@@ -38,7 +38,7 @@ use IXP\Utils\View\Alert\Container;
 
 class IxpRegistrationController
 {
-    public function register( Request $request, InfrastructureRegistrationChecker $checker): View|RedirectResponse
+    public function register( Request $request, RegistrationChecker $checker): View|RedirectResponse
     {
         if ($infrastructureList = $request->infrastructure) {
             $query = Infrastructure::whereExcludeFromIxfExport(0);

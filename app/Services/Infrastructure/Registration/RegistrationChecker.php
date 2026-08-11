@@ -22,7 +22,7 @@
 
 declare(strict_types=1);
 
-namespace IXP\Http\Controllers\Utils;
+namespace IXP\Services\Infrastructure\Registration;
 
 use IXP\Models\Infrastructure;
 
@@ -38,15 +38,15 @@ use IXP\Models\Infrastructure;
  * note: this _could_ be improved, by tracking which fields are registered (pdb/ixf id).. and if we added
  * a new field which isn't registered, we _could_ report that back as to be registered.. but not super important now.
  */
-class InfrastructureRegistrationChecker
+class RegistrationChecker
 {
     /**
      * @throws \Illuminate\Http\Client\ConnectionException
      */
-    public function check(): InfrastructureRegistrationCheckResult
+    public function check(): RegistrationCheckResult
     {
         \Log::info("Checking infrastructures for registration on ixpmanager.org");
-        $result = new InfrastructureRegistrationCheckResult();
+        $result = new RegistrationCheckResult();
 
         $result->eligibleInfrastructures = Infrastructure::whereExcludeFromIxfExport(0)->get()->all();
         if (count($result->eligibleInfrastructures) === 0) {

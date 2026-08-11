@@ -27,7 +27,7 @@ namespace IXP\Utils\Validation\Validators;
 use Illuminate\Http\Client\ConnectionException;
 use IXP\Contracts\Validation\ValidationBackend;
 use IXP\Contracts\Validation\Validator;
-use IXP\Http\Controllers\Utils\InfrastructureRegistrationChecker;
+use IXP\Services\Infrastructure\Registration\RegistrationChecker;
 use IXP\Models\Infrastructure;
 
 
@@ -67,7 +67,7 @@ class IxpManagerIsRegistered implements Validator
     #[\Override]
     public function run( ValidationBackend $backend ): void
     {
-        $checker = app(InfrastructureRegistrationChecker::class);
+        $checker = app(RegistrationChecker::class);
         try {
             $result = $checker->check();
         } catch ( ConnectionException $e) {
