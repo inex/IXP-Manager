@@ -148,7 +148,7 @@ class SettingsController extends Controller
         }
         
         
-        return new DotEnvContainer( new DotEnvParser( $env )->parse()->settings( true ) );
+        return new DotEnvContainer( new DotEnvParser( $env )->parse()->settings() );
     }
     
     /**
