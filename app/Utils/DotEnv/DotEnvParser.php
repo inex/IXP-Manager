@@ -189,7 +189,13 @@ class DotEnvParser
      */
     private function splitValueAndComment( string $valueElement ): array
     {
+        // avoid loop if there's no inline comment
+        if( !str_contains($valueElement, "#") ) {
+            return [ $valueElement, null ];
+        }
+
         $quote = null;
+        /** @var bool $escaped */
         $escaped = false;
 
         for( $i = 0, $length = strlen( $valueElement ); $i < $length; $i++ ) {
@@ -197,27 +203,15 @@ class DotEnvParser
 
             if( $escaped ) {
                 $escaped = false;
-                continue;
-            }
-
-            if( $character === '\\' && $quote === '"' ) {
+            } else if( $character === '\\' && $quote === '"' ) {
                 $escaped = true;
-                continue;
-            }
-
-            if( $quote !== null ) {
+            } else if( $quote !== null ) {
                 if( $character === $quote ) {
                     $quote = null;
                 }
-                continue;
-            }
-
-            if( $character === '"' || $character === "'" ) {
+            } else if( $character === '"' || $character === "'" ) {
                 $quote = $character;
-                continue;
-            }
-
-            if( $character === '#' ) {
+            } else if( $character === '#' ) {
                 return [
                     substr( $valueElement, 0, $i ),
                     trim( substr( $valueElement, $i + 1 ) ),

@@ -312,6 +312,7 @@ final class DotEnvParserTest extends TestCase
             [ "TEST=\"true false something else\"\n", "TEST", '"true false something else"', null ],
             [ "TEST_VAR=\"there once was a \"   ### comment\n", "TEST_VAR", '"there once was a "', "## comment" ],
             [ "APP_KEY=\"base64:01234567899876543210abcdefghijjihgfedcba123=\"", "APP_KEY", '"base64:01234567899876543210abcdefghijjihgfedcba123="', null ],
+            [ 'API_RESPONSE="{\"status\": \"ok\"}" # API payload default', "API_RESPONSE", '"{\"status\": \"ok\"}"', "API payload default" ],
         ];
     }
 
