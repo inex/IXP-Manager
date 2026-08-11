@@ -90,7 +90,7 @@ class DotEnvParser
         }
 
         // remove leading blank lines
-        while( $lines[0] === "" ) {
+        while( count($lines) && $lines[0] === "" ) {
             array_shift( $lines );
         }
 

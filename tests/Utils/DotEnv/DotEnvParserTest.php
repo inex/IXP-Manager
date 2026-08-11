@@ -325,5 +325,27 @@ final class DotEnvParserTest extends TestCase
         );
     }
 
+    public function testParserWithNoContent()
+    {
+        $p = $this->makeParser()
+            ->setContent( "" )
+            ->parse();
+        $this->assertCount(0, $p->settings());
 
+        $p->setContent("\n")
+            ->parse();
+        $this->assertCount(0, $p->settings());
+    }
+
+    public function testParserResets()
+    {
+        $p = $this->makeParser()
+            ->setContent( "TEST=\n" )
+            ->parse();
+        $this->assertCount(1, $p->settings());
+
+        $p->setContent("")
+            ->parse();
+        $this->assertCount(0, $p->settings());
+    }
 }
