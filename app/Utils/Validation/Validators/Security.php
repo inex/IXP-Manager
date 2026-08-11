@@ -69,8 +69,7 @@ class Security implements Validator
         }
 
         try {
-            $url = url("/login");
-            $loginResponse = \Http::get($url);
+            $loginResponse = \Http::timeout(5)->get(url("/login"));
             $headers = $loginResponse->headers();
             $hsts = $headers['Strict-Transport-Security'][0] ?? null;
             if (is_null($hsts)) {

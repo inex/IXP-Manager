@@ -84,7 +84,7 @@ class ValidationController
     {
         Log::debug( "Validation job starting", ['job_id' => $jobState->jobId]);
 
-        $runner->timeout(30);
+        $runner->timeout(20);
 
         $jobs = [];
         foreach( $jobState->runners as $backend ) {

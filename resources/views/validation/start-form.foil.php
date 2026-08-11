@@ -24,7 +24,7 @@ $this->layout( 'layouts/ixpv4' )
                     ->actionButtonsCustomClass( "grey-box");
                 ?>
 
-                <?=Former::actions( Former::primary_submit( 'Run Validations' )->class( "mb-2 mb-sm-0"),
+                <?=Former::actions( Former::primary_submit( 'Run Validations' )->id( "validation-start" )->class( "mb-2 mb-sm-0"),
                     Former::success_button( 'Help' )->id( 'help-btn' )->class( "mb-2 mb-sm-0")
                 );?>
 

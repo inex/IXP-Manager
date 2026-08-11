@@ -47,7 +47,7 @@ class RunCommand extends Command
      * @var string
      */
     protected $signature = "validator:run
-                                {--timeout=30     : Set a task timeout in seconds }
+                                {--timeout=20     : Set a task timeout in seconds }
                                 {--log-level=suggest  : Select the lowest log level to print. In ascending order: debug, info, suggest, warning, error }
     ";
 
