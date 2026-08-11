@@ -196,7 +196,7 @@ class SettingsController extends Controller
                         continue;
                     }
 
-                    if( ( $fconfig[ 'rules' ] ?? null ) === 'boolean' ) {
+                    if( $fconfig[ 'type' ] === 'radio' ) {
                         $value = filter_var( $validated[ $fname ], FILTER_VALIDATE_BOOLEAN );
 
                         if( $value === (bool)$orig ) {

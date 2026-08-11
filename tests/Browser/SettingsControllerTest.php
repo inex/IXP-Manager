@@ -76,7 +76,8 @@ class SettingsControllerTest extends DuskTestCase
                 ->waitForLocation( '/admin/dashboard' );
 
             $browser->visit( route( 'settings@index' ) )
-                ->assertSee( 'IXP Manager Settings' );
+                ->assertSee( 'IXP Manager Settings' )
+                ->assertSee( '.env last modified: ' );
             
             $browser->driver->executeScript( 'window.scrollTo(0, 3000);' );
             
@@ -121,7 +122,41 @@ class SettingsControllerTest extends DuskTestCase
             
             $this->assertStringNotContainsString( 'IXP_RPKI_RTR1_PORT=3323', $nenv );
             $this->assertStringContainsString( 'IXP_RPKI_RTR1_PORT=12345', $nenv );
-            
+
+            // Test out changing a boolean setting, since we write true/false to config now
+            $this->assertStringContainsString( 'IXP_FE_FRONTEND_DISABLED_APP_PASSWORD=0', $nenv );
+
+            $browser->uncheck('app-passwords')
+                ->driver->executeScript( 'window.scrollTo(0, 3000);' );
+            $browser->press( 'Save Changes' )
+                ->waitForText( 'Settings have been successfully updated' );
+
+            $nenv = file_get_contents( __DIR__ . '/../../.env' );
+            $this->assertStringContainsString( 'IXP_FE_FRONTEND_DISABLED_APP_PASSWORD=true', $nenv );
+
+            $browser->check('app-passwords')
+                ->driver->executeScript( 'window.scrollTo(0, 3000);' );
+            $browser->press( 'Save Changes' )
+                ->waitForText( 'Settings have been successfully updated' );
+
+            $nenv = file_get_contents( __DIR__ . '/../../.env' );
+            $this->assertStringContainsString( 'IXP_FE_FRONTEND_DISABLED_APP_PASSWORD=false', $nenv );
+
+            // Test not-writable warning, and that form submit is disabled
+            $originalMode = fileperms( __DIR__ . '/../../.env' ) & 0777;
+
+            chmod(__DIR__ . '/../../.env', $originalMode & ~0222); # remove readable bit from permissions
+            sleep(1);
+
+            $browser->visit( route( 'settings@index' ) )
+                ->assertSee( 'Server has no write permissions for .env file. Changes disabled.' );
+
+            $this->assertEquals("true", $browser->element("#envForm #updateButton")->getAttribute("disabled"), "expect form to be disabled when .env is not writable");
+
+            chmod(__DIR__ . '/../../.env', $originalMode); # restore original permissions, whatever they were
+
+            $browser->visit( route( 'settings@index' ) )
+                ->assertDontSee( 'Server has no write permissions for .env file. Changes disabled.' );
         } );
     }
 }
