@@ -25,7 +25,6 @@ declare(strict_types=1);
 namespace IXP\Services\Validation;
 
 use IXP\Contracts\Validation\Validator;
-use IXP\Services\Validation\Backend;
 
 /**
  * ValidationRunnerFactory - prepare a list of backends for Validators
@@ -41,8 +40,8 @@ class ValidationRunnerFactory
     public function getRunners(): array
     {
         $runners = [];
-        foreach( glob( app_path( 'Utils/Validation/Validators/*.php' ) ) as $filename) {
-            $validatorClass = "\\IXP\\Utils\\Validation\\Validators\\" . basename( $filename, ".php" );
+        foreach( glob( app_path( 'Services/Validation/Validators/*.php' ) ) as $filename) {
+            $validatorClass = "\\IXP\\Services\\Validation\\Validators\\" . basename( $filename, ".php" );
             // don't run anything that doesn't implement ValidatorInterface
             $reflectionClass = new \ReflectionClass( $validatorClass );
             if ( !( $reflectionClass->implementsInterface( Validator::class ) ) ) {

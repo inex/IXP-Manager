@@ -33,6 +33,8 @@ class ValidationRunnerFactoryTest extends TestCase
     public function testLoadsBackends()
     {
         $factory = new ValidationRunnerFactory();
+        $this->assertGreaterThan(0, count($factory->getRunners()));
+
         $seenBefore = [];
         foreach ($factory->getRunners() as $runner) {
             $this->assertInstanceOf(Backend::class, $runner);
