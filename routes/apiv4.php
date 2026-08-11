@@ -54,7 +54,7 @@ Route::group( [  'prefix' => 'member-export' ], function() {
 Route::get( 'ixpmanager-users/ixf-ids', function() {
     return response()->json( Cache::remember('ixpmanager-users/ixf-ids', 120, function() {
         $ixfids = [];
-        if( $ixps = file_get_contents( config('ixp_api.ixp-manager-dotorg.base_url') . '/js/ixp-manager-users.json' ) ) {
+        if( $ixps = file_get_contents( ixp_manager_website_url('/js/ixp-manager-users.json') ) ) {
             foreach( json_decode( $ixps, false )->ixp_list as $ix ) {
                 if( $ix->ixf_id ) {
                     $ixfids[] = $ix->ixf_id;

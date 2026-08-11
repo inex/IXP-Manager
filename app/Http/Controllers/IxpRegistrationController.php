@@ -129,7 +129,7 @@ class IxpRegistrationController
 
         try {
             $response = \Http::withHeaders(['Accept' => 'application/json'])
-                ->post(config('ixp_api.ixp-manager-dotorg.base_url') . "/api/community/submit-ixp", $payload);
+                ->post(ixp_manager_website_url("/api/community/submit-ixp"), $payload);
 
             if ($response->successful()) {
                 Container::push("Registration received!", Alert::SUCCESS);
@@ -141,16 +141,16 @@ class IxpRegistrationController
                     'status' => $response->status(),
                     'body' => $response->body(),
                 ]);
-                Container::push("Failed to register infrastructures via API. <a target='_blank' href='".config("ixp_api.ixp-manager-dotorg.base_url") . "/community/users/submit'>please register manually instead</a>", Alert::WARNING);
+                Container::push("Failed to register infrastructures via API. <a target='_blank' href='" . ixp_manager_website_url( "/community/users/submit" ) . "'>please register manually instead</a>", Alert::WARNING);
             } else {
                 \Log::warning("Unexpected error while registering IXP manager.", [
                     'status' => $response->status(),
                     'body' => $response->body(),
                 ]);
-                Container::push("Failed to register infrastructures via API. <a target='_blank' href='".config("ixp_api.ixp-manager-dotorg.base_url") . "/community/users/submit'>please register manually instead</a>", Alert::WARNING);
+                Container::push("Failed to register infrastructures via API. <a target='_blank' href='" . ixp_manager_website_url( "/community/users/submit" ) . "'>please register manually instead</a>", Alert::WARNING);
             }
         } catch (ConnectionException $e) {
-            Container::push("Failed to connect to " . config('ixp_api.ixp-manager-dotorg.base_url') . " - please try again later", Alert::WARNING);
+            Container::push( "Failed to connect to " . config( 'ixp_api.ixp-manager-dotorg.base_url' ) . " - please try again later", Alert::WARNING );
         } catch (\Throwable $e) {
             \Log::error( "Unexpected error during IXP registration", [ 'error' => $e->getMessage() ] );
             Container::push( "An unexpected error occurred. Please try again.", Alert::WARNING );

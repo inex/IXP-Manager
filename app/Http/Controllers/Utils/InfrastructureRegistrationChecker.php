@@ -56,7 +56,7 @@ class InfrastructureRegistrationChecker
 
         \Log::info("Fetching registered IX information from ixpmanager.org");
 
-        $ixpList    = \Http::get(config('ixp_api.ixp-manager-dotorg.base_url') . '/js/ixp-manager-users.json')->json('ixp_list');
+        $ixpList    = \Http::get(ixp_manager_website_url('/js/ixp-manager-users.json'))->json('ixp_list');
         $pdbIds     = array_column($ixpList, 'peeringdb_id');
         $ixfIds     = array_column($ixpList, 'ixf_id');
 

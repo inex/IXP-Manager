@@ -266,11 +266,8 @@ if( !function_exists( 'documentation_url' ) ) {
      */
     function documentation_url( string $path ): string
     {
-        if ($path && $path[0] != '/') {
-            $path = '/' . $path;
-        }
-        return config( 'ixp_fe.documentation.base_url' ) . $path;
-    }
+        return rtrim( config( 'ixp_fe.documentation.base_url' ), "/" ) . "/" . ltrim( $path, '/' );
+     }
 }
 
 if( !function_exists( 'settings_ui_url' ) ) {
@@ -295,5 +292,20 @@ if( !function_exists( 'settings_ui_url' ) ) {
         }
 
         return route( 'settings@index', [ 'tab' => $panel ] ) . ( $field ? "#" . $field : '' );
+    }
+}
+
+if( !function_exists( 'ixp_manager_website_url' ) ) {
+    /**
+     * Generate a link to the IXP Manager documentation.
+     *
+     * This takes a path, and builds the complete URL using the base url from configuration.
+     *
+     * @param string $path
+     * @return string
+     */
+    function ixp_manager_website_url( string $path ): string
+    {
+        return rtrim( config( 'ixp_api.ixp-manager-dotorg.base_url' ), "/" ) . "/" . ltrim( $path, '/' );
     }
 }
