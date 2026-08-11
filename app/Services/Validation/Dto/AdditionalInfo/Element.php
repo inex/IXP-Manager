@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
@@ -12,7 +11,7 @@
  *
  * IXP Manager is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the GpNU General Public License for
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
  * more details.
  *
  * You should have received a copy of the GNU General Public License v2.0
@@ -20,26 +19,13 @@
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-
 declare(strict_types=1);
 
-namespace IXP\Http\Controllers\Api\V4;
+namespace IXP\Services\Validation\Dto\AdditionalInfo;
 
-use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Cache;
-use IXP\Services\Validation\Dto\JobState;
-
-class ValidationController
+/**
+ * Interface which additional info classes must implement
+ * for array type safety and to enforce JsonSerializable requirement */
+interface Element extends \JsonSerializable
 {
-    /**
-     * Load JobState from cache using it's ID and return the result as JSON
-     */
-    public function apiResults(string $id): JsonResponse
-    {
-        if ( !( $jobState = Cache::store('file')->get( JobState::getCacheKey( $id ) ) ) ) {
-            return response()->json( null, 404 )->setData(null);
-        }
-
-        return response()->json( $jobState );
-    }
 }

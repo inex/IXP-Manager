@@ -27,10 +27,10 @@ namespace IXP\Console\Commands\Validator;
 use IXP\Console\Commands\Command;
 use IXP\Contracts\Validation\ValidationRunner;
 use IXP\Utils\ConcurrentJobRunner;
-use IXP\Utils\Validation\Dto\Result;
-use IXP\Utils\Validation\Dto\Software;
-use IXP\Utils\Validation\Enums\ResultType;
-use IXP\Utils\Validation\ValidationRunnerFactory;
+use IXP\Services\Validation\Dto\Result;
+use IXP\Services\Validation\Dto\Software;
+use IXP\Services\Validation\Enums\ResultType;
+use IXP\Services\Validation\ValidationRunnerFactory;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Helper\TableSeparator;
 

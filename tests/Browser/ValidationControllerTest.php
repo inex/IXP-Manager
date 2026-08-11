@@ -25,8 +25,8 @@ namespace Tests\Browser;
 
 use Illuminate\Support\Facades\Cache;
 use IXP\Contracts\Validation\ValidationRunner;
-use IXP\Utils\Validation\Dto\JobState;
-use IXP\Utils\Validation\ValidationRunnerFactory;
+use IXP\Services\Validation\Dto\JobState;
+use IXP\Services\Validation\ValidationRunnerFactory;
 use Laravel\Dusk\Browser;
 use Tests\DuskTestCase;
 

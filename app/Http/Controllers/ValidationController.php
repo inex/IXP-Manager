@@ -36,11 +36,11 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use IXP\Contracts\Validation\ValidationRunner;
 use IXP\Utils\ConcurrentJobRunner;
-use IXP\Utils\Validation\Dto\CallToActionLink;
-use IXP\Utils\Validation\Dto\JobState;
-use IXP\Utils\Validation\Dto\Result;
-use IXP\Utils\Validation\Dto\Software;
-use IXP\Utils\Validation\ValidationRunnerFactory;
+use IXP\Services\Validation\Dto\CallToActionLink;
+use IXP\Services\Validation\Dto\JobState;
+use IXP\Services\Validation\Dto\Result;
+use IXP\Services\Validation\Dto\Software;
+use IXP\Services\Validation\ValidationRunnerFactory;
 use IXP\Utils\View\Alert\Container as AlertContainer;
 use Ramsey\Uuid\Uuid;
 

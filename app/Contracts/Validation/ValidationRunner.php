@@ -22,10 +22,10 @@
 
 namespace IXP\Contracts\Validation;
 
-use IXP\Utils\Validation\Dto\FailureInfo;
-use IXP\Utils\Validation\Dto\Result;
-use IXP\Utils\Validation\Dto\Software;
-use IXP\Utils\Validation\Dto\ValidationReport;
+use IXP\Services\Validation\Dto\FailureInfo;
+use IXP\Services\Validation\Dto\Result;
+use IXP\Services\Validation\Dto\Software;
+use IXP\Services\Validation\Dto\ValidationReport;
 
 /**
  * ValidationRunner is the interface for creating the underlying validator, performing
