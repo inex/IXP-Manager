@@ -119,6 +119,26 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     protected $table = 'user';
 
     /**
+     * The attributes hidden from array and JSON representations.
+     *
+     * Without this, anything which serialises a user emits the password hash. That is not
+     * hypothetical: UserController::json() answers with User::byPrivs()->get()->toArray(),
+     * and that route is reachable with an API key and without a CSRF token
+     * (routes/apiv4-ext-auth-superuser.php) - so a superuser key returned the bcrypt hash of
+     * every user of every customer.
+     *
+     * This hides the attribute from serialisation only. Direct access still works, which
+     * matters: the console server and RADIUS templates under
+     * resources/views/api/v4/user/formatted/ read $user->password deliberately, and
+     * authentication reads it through getAuthPassword(). Neither goes through toArray().
+     *
+     * @var array
+     */
+    protected $hidden = [
+        'password',
+    ];
+
+    /**
      * The attributes that should be cast.
      *
      * @var array
