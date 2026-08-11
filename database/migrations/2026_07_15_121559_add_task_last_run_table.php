@@ -6,12 +6,14 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    private string $tableName = "task_last_run";
+
     /**
      * Run the migrations.
      */
     public function up(): void
     {
-        Schema::create('task_last_run', function (Blueprint $table) {
+        Schema::create($this->tableName, function (Blueprint $table) {
             $table->string("task_key", 64);
             $table->string('parameters', 255);
             $table->dateTime("last_run_at");
@@ -25,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('task_last_run');
+        Schema::dropIfExists($this->tableName);
     }
 };
