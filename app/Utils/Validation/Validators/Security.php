@@ -25,6 +25,7 @@ declare(strict_types=1);
 namespace IXP\Utils\Validation\Validators;
 
 use Illuminate\Http\Client\ConnectionException;
+use Illuminate\Support\Facades\Http;
 use IXP\Contracts\Validation\ValidationBackend;
 use IXP\Contracts\Validation\Validator;
 
@@ -69,7 +70,7 @@ class Security implements Validator
         }
 
         try {
-            $loginResponse = \Http::timeout(5)->get(url("/login"));
+            $loginResponse = Http::timeout(5)->get(url("/login"));
             $headers = $loginResponse->headers();
             $hsts = $headers['Strict-Transport-Security'][0] ?? null;
             if (is_null($hsts)) {
