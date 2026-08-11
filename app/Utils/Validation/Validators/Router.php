@@ -102,7 +102,7 @@ class Router implements Validator
             // exclude quarantine?
             if (!$router->quarantine) {
                 if ($router->api_type === null || $router->api_type == 0) {
-                    $needsLookingGlass[] = $router->handle;
+                    $needsLookingGlass[] = $router;
                 } else if ($router->api === null) {
                     $backend->error("Router " . $router->handle . " has Looking Glass API type configured, but API endpoint is empty")
                         ->withDocsPath('features/looking-glass/');
@@ -119,7 +119,10 @@ class Router implements Validator
 
         if (count($needsLookingGlass) > 0) {
             // todo: check this: routers or route servers?
-            $backend->warning("We recommend configuring Looking Glass on all routers - some found without: " . implode(", ", $needsLookingGlass))
+            $backend->warning("We recommend configuring Looking Glass on all routers - some found without")
+                ->each($needsLookingGlass, function (Result $result, RouterModel $router) {
+                    $result->addAdditionalInfoUrl(route("router@edit", ['router' => $router->id]), $router->name);
+                })
                 ->withDocsPath('features/looking-glass/');
         }
 
