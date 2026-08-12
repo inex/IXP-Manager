@@ -96,7 +96,6 @@ return [
             'ripe-atlas'                => true, // not ready for use yet
             'rs-filters'                => env( 'IXP_FE_FRONTEND_DISABLED_RS_FILTERS',        true  ),
             'settings'                  => env( 'IXP_FE_FRONTEND_DISABLED_SETTINGS',          false ),
-            'validation'                => env( 'IXP_FE_FRONTEND_DISABLED_VALIDATION',        false ),
         ],
     ],
 

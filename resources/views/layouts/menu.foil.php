@@ -412,13 +412,11 @@
                 </li>
             <?php endif; ?>
 
-            <?php if( !config( 'ixp_fe.frontend.disabled.validation' ) ): ?>
-                <li class="<?= request()->is( 'admin/validation*' ) ? 'active' : ''?>">
-                    <a href="<?= route( 'validation@start' ) ?>" class="nav-link">
-                        System Validation
-                    </a>
-                </li>
-            <?php endif; ?>
+            <li class="<?= request()->is( 'admin/validation*' ) ? 'active' : ''?>">
+                <a href="<?= route( 'validation@start' ) ?>" class="nav-link">
+                    System Validation
+                </a>
+            </li>
 
             <?php if( Gate::allows( 'viewHorizon' ) && config( 'queue.default' ) === 'redis' ): ?>
                 <li>
