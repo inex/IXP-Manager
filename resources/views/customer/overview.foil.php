@@ -279,13 +279,6 @@
 
                 <?php if( !$c->typeAssociate() && !$c->hasLeft() ): ?>
                     <?php if( $c->routeServerClient() ): ?>
-                        <?php if( !config( 'ixp_fe.frontend.disabled.rs-prefixes' ) ): ?>
-                            <li class="nav-item">
-                                <a class="nav-link" href="<?= route( "rs-prefixes@view", [ 'cust' =>  $c->id ] ) ?>">
-                                    RS Prefixes &raquo;
-                                </a>
-                            </li>
-                        <?php endif ?>
 
                         <?php if( !config( 'ixp_fe.frontend.disabled.filtered-prefixes' ) ): ?>
                             <li class="nav-item">

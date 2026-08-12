@@ -244,17 +244,6 @@ return [
                                         administrators only and shows the output of <code>phpinfo()</code>.',
                 ],
 
-                'rs-prefixes'               => [
-                    'config_key' => 'ixp_fe.frontend.disabled.rs-prefixes',
-                    'dotenv_key' => 'IXP_FE_FRONTEND_DISABLED_RS_PREFIXES',
-                    'type'       => 'radio',
-                    'invert'     => true,
-                    'rules'      => 'boolean',
-                    'name'       => 'RS Prefixes',
-                    'docs_url'   => null,
-                    'help'       => '[DEPRECATED] <em>Filtered Prefixes</em> above should be used instead of this.',
-                ],
-
                 'rs-filters'                => [
                     'config_key' => 'ixp_fe.frontend.disabled.rs-filters',
                     'dotenv_key' => 'IXP_FE_FRONTEND_DISABLED_RS_FILTERS',

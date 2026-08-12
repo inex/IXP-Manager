@@ -969,16 +969,6 @@
       <code><![CDATA[public function handle( Request $r, Closure $next )]]></code>
     </MissingDocblockType>
   </file>
-  <file src="app/Http/Middleware/RsPrefixes.php">
-    <MissingDocblockType>
-      <code><![CDATA[public function handle( Request $r, Closure $next )]]></code>
-    </MissingDocblockType>
-    <RedundantCast>
-      <code><![CDATA[(int)config( 'ixp_fe.rs-prefixes.access' )]]></code>
-      <code><![CDATA[(int)config( 'ixp_fe.rs-prefixes.access' )]]></code>
-      <code><![CDATA[(int)config( 'ixp_fe.rs-prefixes.access' )]]></code>
-    </RedundantCast>
-  </file>
   <file src="app/Http/Middleware/Services/Grapher.php">
     <NoEnvOutsideConfig>
       <code><![CDATA[env]]></code>
