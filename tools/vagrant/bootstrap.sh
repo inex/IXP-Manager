@@ -171,7 +171,7 @@ cd /vagrant
 echo "Installing composer packages..."
 su - vagrant -c "cd /vagrant && COMPOSER_ALLOW_SUPERUSER=1 composer install" &>/dev/null
 
-echo "Installing / migrating database..." &>/dev/null
+echo "Installing / migrating database..."
 php /vagrant/artisan migrate --force &>/dev/null
 
 

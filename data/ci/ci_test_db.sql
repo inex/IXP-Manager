@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 8.0.36, for macos14 (arm64)
+-- MySQL dump 10.13  Distrib 8.0.45, for macos15 (arm64)
 --
 -- Host: 127.0.0.1    Database: ixp_ci
 -- ------------------------------------------------------
--- Server version	8.0.36
+-- Server version	8.0.45
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -25,9 +25,9 @@ DROP TABLE IF EXISTS `api_keys`;
 CREATE TABLE `api_keys` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `user_id` int NOT NULL,
-  `token_identifier` varchar(12) COLLATE utf8mb3_unicode_ci DEFAULT NULL,
-  `token_hash` char(64) COLLATE utf8mb3_unicode_ci DEFAULT NULL,
-  `api_key` varchar(255) COLLATE utf8mb3_unicode_ci DEFAULT NULL,
+  `token_identifier` varchar(12) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
+  `token_hash` char(64) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
+  `api_key` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
   `expires` datetime NOT NULL,
   `allowed_ips` mediumtext CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
   `last_seen_at` datetime DEFAULT NULL,
@@ -63,12 +63,12 @@ DROP TABLE IF EXISTS `app_passwords`;
 CREATE TABLE `app_passwords` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
   `user_id` int NOT NULL,
-  `password` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `salt` varchar(64) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `salt` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `expires` datetime NOT NULL,
   `last_seen_at` datetime DEFAULT NULL,
-  `last_seen_from` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `description` longtext COLLATE utf8mb4_unicode_ci,
+  `last_seen_from` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `description` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -97,7 +97,7 @@ CREATE TABLE `app_passwords_last_logins` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
   `app_password_id` bigint unsigned NOT NULL,
   `last_seen_at` datetime NOT NULL,
-  `last_seen_from` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `last_seen_from` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `app_passwords_last_logins_app_password_id_foreign` (`app_password_id`),
@@ -1601,7 +1601,7 @@ CREATE TABLE `migrations` (
   `migration` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `batch` int NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=49 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=50 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1610,7 +1610,7 @@ CREATE TABLE `migrations` (
 
 LOCK TABLES `migrations` WRITE;
 /*!40000 ALTER TABLE `migrations` DISABLE KEYS */;
-INSERT INTO `migrations` VALUES (1,'2014_10_12_100000_create_password_resets_table',1),(2,'2018_08_08_100000_create_telescope_entries_table',1),(3,'2019_03_25_211956_create_failed_jobs_table',1),(4,'2020_02_06_204556_create_docstore_directories',2),(5,'2020_02_06_204608_create_docstore_files',2),(6,'2020_02_06_204911_create_docstore_logs',2),(7,'2020_03_09_110945_create_docstore_customer_directories',3),(8,'2020_03_09_111505_create_docstore_customer_files',3),(9,'2020_07_21_094354_create_route_server_filters',4),(12,'2020_09_03_153723_add_timestamps',5),(13,'2020_09_18_095136_delete_ixp_table',6),(14,'2020_11_16_102415_database_fixes',7),(15,'2021_03_12_150418_create_log_table',8),(16,'2021_04_14_125742_user_pref',9),(17,'2021_04_14_101948_update_timestamps',10),(18,'2021_05_18_085721_add_note_infrastructure',11),(19,'2021_05_18_114206_update_pp_prefix_size',12),(20,'2020_06_01_143931_database_schema_at_end_v5',13),(21,'2021_03_30_124916_create_atlas_probes',13),(22,'2021_03_30_125238_create_atlas_runs',13),(23,'2021_03_30_125422_create_atlas_measurements',13),(24,'2021_03_30_125723_create_atlas_results',13),(25,'2021_06_11_141137_update_db_doctrine2eloquent',13),(26,'2021_07_20_134716_fix_last_updated_and_timestamps',13),(27,'2021_09_16_195333_add_rate_limit_col_to_physint',13),(28,'2021_09_17_144421_modernise_irrdb_conf_table',13),(29,'2021_09_21_100354_create_route_server_filters_prod',14),(30,'2021_09_21_162700_rs_pairing',15),(31,'2022_02_12_183121_add_colo_pp_type_patch_panel',15),(32,'2023_09_26_191150_add_registration_details',15),(33,'2024_03_18_191322_add_export_to_ixf_vlan',15),(34,'2024_08_10_125003_create_irrdb_update_logs',16),(35,'2024_09_05_111855_create_p2p_daily_stats_table',17),(36,'2024_05_29_102028_reset-views',18),(37,'2025_09_01_102636_add_ipv6_max_prefixes',19),(38,'2025_11_11_085835_add_exclude_from_ixf_export_to_infrastructure',20),(39,'2026_02_16_205211_remove_legacy_columns_from_contacts',21),(40,'2026_04_20_161912_remove_user_privs',22),(42,'2026_04_27_110644_create_asn_table',23),(46,'2026_06_11_102639_create_app_passwords_table',24),(47,'2026_06_11_112737_create_app_passwords_last_logins_table',24),(48,'2026_06_25_133900_set_api_keys_expires_not_nullable',24);
+INSERT INTO `migrations` VALUES (1,'2014_10_12_100000_create_password_resets_table',1),(2,'2018_08_08_100000_create_telescope_entries_table',1),(3,'2019_03_25_211956_create_failed_jobs_table',1),(4,'2020_02_06_204556_create_docstore_directories',2),(5,'2020_02_06_204608_create_docstore_files',2),(6,'2020_02_06_204911_create_docstore_logs',2),(7,'2020_03_09_110945_create_docstore_customer_directories',3),(8,'2020_03_09_111505_create_docstore_customer_files',3),(9,'2020_07_21_094354_create_route_server_filters',4),(12,'2020_09_03_153723_add_timestamps',5),(13,'2020_09_18_095136_delete_ixp_table',6),(14,'2020_11_16_102415_database_fixes',7),(15,'2021_03_12_150418_create_log_table',8),(16,'2021_04_14_125742_user_pref',9),(17,'2021_04_14_101948_update_timestamps',10),(18,'2021_05_18_085721_add_note_infrastructure',11),(19,'2021_05_18_114206_update_pp_prefix_size',12),(20,'2020_06_01_143931_database_schema_at_end_v5',13),(21,'2021_03_30_124916_create_atlas_probes',13),(22,'2021_03_30_125238_create_atlas_runs',13),(23,'2021_03_30_125422_create_atlas_measurements',13),(24,'2021_03_30_125723_create_atlas_results',13),(25,'2021_06_11_141137_update_db_doctrine2eloquent',13),(26,'2021_07_20_134716_fix_last_updated_and_timestamps',13),(27,'2021_09_16_195333_add_rate_limit_col_to_physint',13),(28,'2021_09_17_144421_modernise_irrdb_conf_table',13),(29,'2021_09_21_100354_create_route_server_filters_prod',14),(30,'2021_09_21_162700_rs_pairing',15),(31,'2022_02_12_183121_add_colo_pp_type_patch_panel',15),(32,'2023_09_26_191150_add_registration_details',15),(33,'2024_03_18_191322_add_export_to_ixf_vlan',15),(34,'2024_08_10_125003_create_irrdb_update_logs',16),(35,'2024_09_05_111855_create_p2p_daily_stats_table',17),(36,'2024_05_29_102028_reset-views',18),(37,'2025_09_01_102636_add_ipv6_max_prefixes',19),(38,'2025_11_11_085835_add_exclude_from_ixf_export_to_infrastructure',20),(39,'2026_02_16_205211_remove_legacy_columns_from_contacts',21),(40,'2026_04_20_161912_remove_user_privs',22),(42,'2026_04_27_110644_create_asn_table',23),(46,'2026_06_11_102639_create_app_passwords_table',24),(47,'2026_06_11_112737_create_app_passwords_last_logins_table',24),(48,'2026_06_25_133900_set_api_keys_expires_not_nullable',24),(49,'2026_08_12_113213_remove_rs_prefixes_table',25);
 /*!40000 ALTER TABLE `migrations` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2222,36 +2222,6 @@ LOCK TABLES `routers` WRITE;
 /*!40000 ALTER TABLE `routers` DISABLE KEYS */;
 INSERT INTO `routers` VALUES (1,NULL,1,'rc1-lan1-ipv4',4,2,'INEX LAN1 - Route Collector - IPv4','RC1 - LAN1 - IPv4','192.0.2.8','192.0.2.8',65500,'1','203.0.113.8','http://rc1-lan1-ipv4.mgmt.example.com/api',1,0,0,0,'api/v4/router/collector/bird/standard',0,NULL,0,NULL,NULL,NULL,0,NULL,NULL,NULL,0),(2,NULL,1,'rc1-lan1-ipv6',6,2,'INEX LAN1 - Route Collector - IPv6','RC1 - LAN1 - IPv6','192.0.2.8','2001:db8::8',65500,'1','2001:db8:0:0:2::8','http://rc1-lan1-ipv6.mgmt.example.com/api',1,0,0,0,'api/v4/router/collector/bird/standard',0,NULL,0,NULL,NULL,NULL,0,NULL,NULL,NULL,0),(3,NULL,2,'rc1-lan2-ipv4',4,2,'INEX LAN2 - Route Collector - IPv4','RC1 - LAN2 - IPv4','192.0.2.9','192.0.2.9',65500,'1','203.0.113.9','http://rc1-lan2-ipv4.mgmt.example.com/api',1,0,0,0,'api/v4/router/collector/bird/standard',0,NULL,0,NULL,NULL,NULL,0,NULL,NULL,NULL,0),(4,NULL,2,'rc1-lan2-ipv6',6,2,'INEX LAN2 - Route Collector - IPv6','RC1 - LAN2 - IPv6','192.0.2.9','2001:db8::9',65500,'1','2001:db8:0:0:2::9','http://rc1-lan2-ipv6.mgmt.example.com/api',1,0,0,0,'api/v4/router/collector/bird/standard',0,NULL,0,NULL,NULL,NULL,0,NULL,NULL,NULL,0),(5,NULL,1,'rs1-lan1-ipv4',4,1,'INEX LAN1 - Route Server - IPv4','RS1 - LAN1 - IPv4','192.0.2.18','192.0.2.18',65501,'1','203.0.113.18','http://rs1-lan1-ipv4.mgmt.example.com/api',0,0,0,0,'api/v4/router/server/bird/standard',0,NULL,0,NULL,NULL,NULL,0,NULL,NULL,NULL,0),(6,NULL,1,'rs1-lan1-ipv6',6,1,'INEX LAN1 - Route Server - IPv6','RS1 - LAN1 - IPv6','192.0.2.18','2001:db8::18',65501,'1','2001:db8:0:0:2::18','http://rs1-lan1-ipv6.mgmt.example.com/api',1,0,0,0,'api/v4/router/server/bird/standard',0,NULL,0,NULL,NULL,NULL,0,NULL,NULL,NULL,0),(7,NULL,2,'rs1-lan2-ipv4',4,1,'INEX LAN2 - Route Server - IPv4','RS1 - LAN2 - IPv4','192.0.2.19','192.0.2.19',65501,'1','203.0.113.19','http://rs1-lan2-ipv4.mgmt.example.com/api',1,0,0,1,'api/v4/router/server/bird/standard',0,NULL,0,NULL,NULL,NULL,0,NULL,NULL,NULL,0),(8,NULL,2,'rs1-lan2-ipv6',6,1,'INEX LAN2 - Route Server - IPv6','RS1 - LAN2 - IPv6','192.0.2.19','2001:db8::19',65501,'1','2001:db8:0:0:2::19','http://rs1-lan2-ipv6.mgmt.example.com/api',1,0,0,0,'api/v4/router/server/bird/standard',0,NULL,0,NULL,NULL,NULL,0,NULL,NULL,NULL,0),(9,NULL,1,'as112-lan1-ipv4',4,3,'INEX LAN1 - AS112 Service - IPv4','AS112 - LAN1 - IPv4','192.0.2.6','192.0.2.6',112,'1','203.0.113.6','http://as112-lan1-ipv4.mgmt.example.com/api',1,0,0,0,'api/v4/router/as112/bird/standard',1,NULL,0,NULL,NULL,NULL,0,NULL,NULL,NULL,0),(10,NULL,1,'as112-lan1-ipv6',6,3,'INEX LAN1 - AS112 Service - IPv6','AS112 - LAN1 - IPv6','192.0.2.6','2001:db8:0:0:2::6',112,'1','203.0.113.6','http://as112-lan1-ipv6.mgmt.example.com/api',1,0,0,0,'api/v4/router/as112/bird/standard',1,NULL,0,NULL,NULL,NULL,0,NULL,NULL,NULL,0),(11,NULL,2,'as112-lan2-ipv4',4,3,'INEX LAN2 - AS112 Service - IPv4','AS112 - LAN2 - IPv4','192.0.2.16','192.0.2.16',112,'1','203.0.113.16','http://as112-lan2-ipv4.mgmt.example.com/api',1,0,0,0,'api/v4/router/as112/bird/standard',0,NULL,0,NULL,NULL,NULL,0,NULL,NULL,NULL,0),(12,NULL,2,'as112-lan2-ipv6',6,3,'INEX LAN2 - AS112 Service - IPv6','AS112 - LAN2 - IPv6','192.0.2.16','2001:db8:0:0:2::16',112,'1','203.0.113.16','http://as112-lan2-ipv6.mgmt.example.com/api',1,0,0,0,'api/v4/router/as112/bird/standard',0,NULL,0,NULL,NULL,NULL,0,NULL,NULL,NULL,0),(13,NULL,1,'unknown-template',6,2,'INEX LAN2 - Route Collector - IPv6','RC1 - LAN2 - IPv6','192.0.2.9','2001:db8::9',65500,'1','2001:db8:0:0:2::9','http://rc1-lan2-ipv6.mgmt.example.com/api',1,0,0,0,'api/v4/router/does-not-exist',0,NULL,0,NULL,NULL,NULL,0,NULL,NULL,NULL,0),(29,NULL,1,'b2-rs1-lan1-ipv4',4,1,'Bird2 - INEX LAN1 - Route Server - IPv4','B2 RS1 - LAN1 - IPv4','192.0.2.18','192.0.2.18',65501,'6','203.0.113.18',NULL,0,0,0,1,'api/v4/router/server/bird2/standard',0,NULL,1,NULL,NULL,NULL,0,NULL,NULL,NULL,0),(30,NULL,1,'b2-rs1-lan1-ipv6',6,1,'Bird2 - INEX LAN1 - Route Server - IPv6','B2 RS1 - LAN1 - IPv6','192.0.2.18','2001:db8::8',65501,'6','203.0.113.18',NULL,0,0,0,1,'api/v4/router/server/bird2/standard',0,NULL,1,NULL,NULL,NULL,1,NULL,NULL,NULL,0),(31,NULL,1,'b2-rc1-lan1-ipv4',4,2,'Bird2 - INEX LAN1 - Route Collector - IPv4','B2 RC1 - LAN1 - IPv4','192.0.2.8','192.0.2.8',65500,'1','203.0.113.8','http://rc1-lan1-ipv4.mgmt.example.com/api',1,0,0,1,'api/v4/router/collector/bird2/standard',0,NULL,1,NULL,NULL,NULL,0,NULL,NULL,NULL,0),(32,NULL,1,'b2-rc1-lan1-ipv6',6,2,'Bird2 - INEX LAN1 - Route Collector - IPv6','B2 RC1 - LAN1 - IPv6','192.0.2.8','2001:db8::8',65500,'1','2001:db8:0:0:2::8','http://rc1-lan1-ipv6.mgmt.example.com/api',1,0,0,1,'api/v4/router/collector/bird2/standard',0,NULL,1,NULL,NULL,NULL,0,NULL,NULL,NULL,0),(33,NULL,1,'b2-as112-lan1-ipv4',4,3,'INEX LAN1 - AS112 BIRD2 - IPv4','AS112 - LAN1 - IPv4','192.0.2.6','192.0.2.6',112,'6','203.0.113.6','http://as112-lan1-ipv4.mgmt.example.com/api',1,0,0,0,'api/v4/router/as112/bird2/standard',1,NULL,1,NULL,NULL,NULL,0,NULL,NULL,NULL,0),(34,NULL,1,'b2-as112-lan1-ipv6',6,3,'INEX LAN1 - AS112 BIRD2 - IPv6','AS112 - LAN1 - IPv6','192.0.2.6','2001:db8:0:0:2::6',112,'6','203.0.113.6','http://as112-lan1-ipv6.mgmt.example.com/api',1,0,0,0,'api/v4/router/as112/bird2/standard',1,NULL,1,NULL,NULL,NULL,0,NULL,NULL,NULL,0),(35,NULL,2,'b2-as112-lan2-ipv4',4,3,'INEX LAN2 - AS112 BIRD2 - IPv4','AS112 - LAN2 - IPv4','192.0.2.16','192.0.2.16',112,'6','203.0.113.16','http://as112-lan2-ipv4.mgmt.example.com/api',1,0,0,0,'api/v4/router/as112/bird2/standard',0,NULL,0,NULL,NULL,NULL,0,NULL,NULL,NULL,0),(36,NULL,2,'b2-as112-lan2-ipv6',6,3,'INEX LAN2 - AS112 BIRD2 - IPv6','AS112 - LAN2 - IPv6','192.0.2.16','2001:db8:0:0:2::16',112,'6','203.0.113.16','http://as112-lan2-ipv6.mgmt.example.com/api',1,0,0,0,'api/v4/router/as112/bird2/standard',0,NULL,0,NULL,NULL,NULL,0,NULL,NULL,NULL,0);
 /*!40000 ALTER TABLE `routers` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `rs_prefixes`
---
-
-DROP TABLE IF EXISTS `rs_prefixes`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `rs_prefixes` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `custid` int DEFAULT NULL,
-  `timestamp` datetime DEFAULT NULL,
-  `prefix` varchar(64) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
-  `protocol` int DEFAULT NULL,
-  `irrdb` int DEFAULT NULL,
-  `rs_origin` int DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `IDX_29FA9871DA0209B9` (`custid`),
-  CONSTRAINT `FK_29FA9871DA0209B9` FOREIGN KEY (`custid`) REFERENCES `cust` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `rs_prefixes`
---
-
-LOCK TABLES `rs_prefixes` WRITE;
-/*!40000 ALTER TABLE `rs_prefixes` DISABLE KEYS */;
-/*!40000 ALTER TABLE `rs_prefixes` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -3175,4 +3145,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-06-29 23:24:17
+-- Dump completed on 2026-08-12 11:45:29
