@@ -65,12 +65,8 @@ Route::group( [ 'namespace' => 'PatchPanel\Port', 'prefix' => 'patch-panel-port'
 /////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
 ///
-/// Route Server Prefixes
+/// Filtered Prefixes
 ///
-Route::group( [ 'prefix' => 'rs-prefixes', 'middleware' => [ 'rs-prefixes' ] ], function() {
-    Route::get(     'list',          'RsPrefixesController@list' )->name( 'rs-prefixes@list'  );
-    Route::get(     'view/{cust}',   'RsPrefixesController@view' )->name( 'rs-prefixes@view'  );
-});
 
 Route::get('filtered-prefixes/{cust}', 'FilteredPrefixesController@list' )->name( 'filtered-prefixes@list' );
 

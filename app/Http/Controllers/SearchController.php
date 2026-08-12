@@ -34,9 +34,7 @@ use Illuminate\View\View;
 use IXP\Models\{
     Contact,
     Customer,
-    CustomerToUser,
     PatchPanelPort,
-    RsPrefix,
     User,
     VirtualInterface,
     VlanInterface};
@@ -159,11 +157,6 @@ class SearchController extends Controller
                 $results[ 'users' ]     = User::where( 'email', $search )
                     ->with( 'customers' )->get();
                 $results[ 'contacts' ]  = Contact::where( 'email', $search )->get();
-            }
-            else if( preg_match( '/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\/\d{1,2}$/', $search ) || preg_match( '/^[0-9a-fA-F]{1,4}:.*:[0-9a-fA-F]{0,4}\/\d{1,3}$/', $search ) ) {
-                // rsprefix search
-                $type       = 'rsprefix';
-                $results    = RsPrefix::wherePrefix( $search )->with( 'customer' )->get();
             }
             else {
                 // wild card search

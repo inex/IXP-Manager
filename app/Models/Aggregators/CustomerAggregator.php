@@ -120,8 +120,6 @@ use Illuminate\Support\Collection;
  * @property-read int|null $route_server_filters_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\RouteServerFilterProd> $routeServerFiltersInProduction
  * @property-read int|null $route_server_filters_in_production_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\RsPrefix> $rsPrefixes
- * @property-read int|null $rs_prefixes_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\CustomerTag> $tags
  * @property-read int|null $tags_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\TrafficDaily> $trafficDailies
