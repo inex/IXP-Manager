@@ -57,4 +57,89 @@ class ConcurrentJobRunnerTest extends TestCase
             }
         }
     }
+
+    public function testReportsFailure()
+    {
+        $task1 = function () {
+            sleep(3);
+            return 1+2;
+        };
+
+        $taskFails = function () {
+            throw new \RuntimeException("Something happened");
+        };
+
+        $resultsInCompletionOrder = [];
+        $failureInOrder = [];
+
+        $runner = new ConcurrentJobRunner();
+        $runner->run([$task1, $taskFails], function ($taskKey, $result, $progress) use (&$resultsInCompletionOrder) {
+            $this->assertTrue(in_array($taskKey, [0, 1]), "this test uses numeric indices for task keys");
+            $resultsInCompletionOrder[] = [$taskKey, $result, $progress];
+        }, null, function ($taskKey, \Throwable $throwable) use (&$failureInOrder) {
+            $failureInOrder[] = [$taskKey, $throwable];
+        });
+
+        // is this racey? mm, perhaps. the exception could take
+        $this->assertCount(1, $resultsInCompletionOrder);
+        $this->assertEquals(0, $resultsInCompletionOrder[0][0]);
+        $this->assertEquals(3, $resultsInCompletionOrder[0][1]);
+        $this->assertEquals(50.0, $resultsInCompletionOrder[0][2]);
+
+        $this->assertCount(1, $failureInOrder);
+        $this->assertEquals(1, $failureInOrder[0][0]);
+        $this->assertEquals("Something happened", $failureInOrder[0][1]->getMessage());
+        $this->assertEquals(\RuntimeException::class, get_class($failureInOrder[0][1]));
+
+    }
+
+
+    public function testReportsTimeout()
+    {
+        $task1 = function () {
+            return 1+2;
+        };
+
+        $taskTimesOut = function () {
+            sleep(5);
+        };
+
+        $resultsInCompletionOrder = [];
+        $timeoutInOrder = [];
+
+        $runner = new ConcurrentJobRunner();
+        $runner->timeout(3);
+        $runner->run([$task1, $taskTimesOut], function ($taskKey, $result, $progress) use (&$resultsInCompletionOrder) {
+            $this->assertTrue(in_array($taskKey, [0, 1]), "this test uses numeric indices for task keys");
+            $resultsInCompletionOrder[] = [$taskKey, $result, $progress];
+        }, function ($taskKey) use (&$timeoutInOrder) {
+            $timeoutInOrder[] = [$taskKey];
+        });
+
+        $this->assertCount(1, $resultsInCompletionOrder);
+        $this->assertEquals(0, $resultsInCompletionOrder[0][0]);
+        $this->assertEquals(3, $resultsInCompletionOrder[0][1]);
+        $this->assertEquals(50.0, $resultsInCompletionOrder[0][2]);
+
+        // all we get back is it's taskKey
+        $this->assertCount(1, $timeoutInOrder);
+        $this->assertEquals(1, $timeoutInOrder[0][0]);
+    }
+
+    public function testStringTaskKey()
+    {
+        $tasks = [
+            "first_task" => function () {
+                return 1+2;
+            },
+            "second_task" => function () {
+                return config('app.key');
+            },
+        ];
+
+        $runner = new ConcurrentJobRunner();
+        $runner->run($tasks, function ($taskKey, $result, $progress) {
+            $this->assertTrue(in_array($taskKey, ["first_task", "second_task"]));
+        });
+    }
 }
