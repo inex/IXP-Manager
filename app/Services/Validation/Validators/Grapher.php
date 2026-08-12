@@ -134,7 +134,7 @@ class Grapher implements Validator
 
         foreach ($infraGraphs as $graphType) {
             if (!in_array(config('grapher.access.' . $graphType), $infraAllowedOptions)) {
-                $backend->error("Invalid access level for $graphType graph " . config('grapher.access.' . $graphType))
+                $backend->error("Invalid access level configured for $graphType graph")
                     ->withDocsPath('grapher/api/#accessibility-of-aggregate-graphs');
             }
         }
@@ -142,9 +142,10 @@ class Grapher implements Validator
         $publicMemberGraphs = [];
         foreach ($memberGraphs as $graphType) {
             if (!in_array(config('grapher.access.' . $graphType), $memberAllowedOptions)) {
-                $backend->error("Invalid access level for $graphType graph " . config('grapher.access.' . $graphType))
+                $backend->error("Invalid access level for $graphType graph")
                     ->withDocsPath('grapher/api/#access-to-member-graphs');
-            } else if (config('grapher.access.' . $graphType) === User::AUTH_PUBLIC) {
+            }
+            if (config('grapher.access.' . $graphType) === User::AUTH_PUBLIC) {
                 $publicMemberGraphs[] = $graphType;
             }
         }
@@ -193,9 +194,9 @@ class Grapher implements Validator
         }
 
         if (is_array(config('grapher.backends.mrtg.trunks'))) {
-            $numTrunks = count(config('grapher.backends.mrtg.trunks'));
+            $numTrunks = count(config()->array('grapher.backends.mrtg.trunks'));
             $backend->info($numTrunks . " trunks defined in configuration");
-        } else if (!is_null(config('grapher.backends.mrtg.trunks'))) {
+        } else {
             $backend->error("MRTG trunks appears misconfigured. grapher_trunks.php file may contain invalid structure.");
         }
     }
@@ -233,15 +234,15 @@ class Grapher implements Validator
                 ->withDocsPath('grapher/smokeping/#ixp-manager-configuration');
         }
 
-        // todo: check vlans in this file exist
         if (file_exists(config_path('grapher_smokeping_overrides.php'))) {
             $backend->info("Found grapher_smokeping_overrides.php configuration file")
                 ->withDocsPath('grapher/smokeping/#ixp-manager-configuration');
         }
+
         if (config()->has('grapher.backends.smokeping.overrides.per_vlan_urls')) {
-            $numOverrides = count(config('grapher.backends.smokeping.overrides.per_vlan_urls'));
+            $numOverrides = count(config()->array('grapher.backends.smokeping.overrides.per_vlan_urls'));
             $backend->info($numOverrides . " per vlan overrides defined");
-            foreach (config('grapher.backends.smokeping.overrides.per_vlan_urls') as $vlan => $url) {
+            foreach (config()->array('grapher.backends.smokeping.overrides.per_vlan_urls') as $vlan => $url) {
                 if (null === Vlan::whereNumber($vlan)->first()) {
                     $backend->warning("Vlan " . $vlan . " used in overrides does not exist. Please check grapher_smokeping_overrides.php file.")
                         ->withDocsPath('grapher/smokeping/#ixp-manager-configuration');
