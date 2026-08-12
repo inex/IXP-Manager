@@ -58,7 +58,7 @@ class NagiosMonitoring implements Validator
     #[\Override]
     public function run( ValidationBackend $backend ): void
     {
-        $warningIntervalDef = config('ixp.validation.nagios.last_updated_warn_after');
+        $warningIntervalDef = "24 hours";
         $warningInterval = CarbonInterval::fromString($warningIntervalDef);
 
         $lastRunNagiosCustomers = TaskLastRun::whereTaskKey( TaskLastRun::NAGIOS_CUSTOMERS )->get();
@@ -85,6 +85,8 @@ class NagiosMonitoring implements Validator
             $backend->info("IXP-Manager is generating switch monitoring configuration");
             foreach( $lastRunNagiosSwitches as $lastRun ) {
                 if( $lastRun->last_run_at->lessThan(now()->sub($warningInterval))) {
+                    // This fallback is in case someone has deleted an old infrastructure, and we don't have its name
+                    // anymore. See also the clear task history command.
                     $infra = Infrastructure::find($lastRun->parameters['infrastructure'])->name ?? "infrastructure ID #" . $lastRun->parameters['infrastructure'];
                     $backend->warning("Nagios switch configuration (for infrastructure " . $infra .
                         " with template " . $lastRun->parameters['template'] .
