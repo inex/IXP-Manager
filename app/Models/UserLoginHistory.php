@@ -42,17 +42,17 @@ use Illuminate\Database\Eloquent\{
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \IXP\Models\CustomerToUser|null $customerToUser
- * @method static Builder|UserLoginHistory newModelQuery()
- * @method static Builder|UserLoginHistory newQuery()
- * @method static Builder|UserLoginHistory query()
- * @method static Builder|UserLoginHistory whereAt($value)
- * @method static Builder|UserLoginHistory whereCreatedAt($value)
- * @method static Builder|UserLoginHistory whereCustomerToUserId($value)
- * @method static Builder|UserLoginHistory whereId($value)
- * @method static Builder|UserLoginHistory whereIp($value)
- * @method static Builder|UserLoginHistory whereUpdatedAt($value)
- * @method static Builder|UserLoginHistory whereUserId($value)
- * @method static Builder|UserLoginHistory whereVia($value)
+ * @method static Builder<static>|UserLoginHistory newModelQuery()
+ * @method static Builder<static>|UserLoginHistory newQuery()
+ * @method static Builder<static>|UserLoginHistory query()
+ * @method static Builder<static>|UserLoginHistory whereAt($value)
+ * @method static Builder<static>|UserLoginHistory whereCreatedAt($value)
+ * @method static Builder<static>|UserLoginHistory whereCustomerToUserId($value)
+ * @method static Builder<static>|UserLoginHistory whereId($value)
+ * @method static Builder<static>|UserLoginHistory whereIp($value)
+ * @method static Builder<static>|UserLoginHistory whereUpdatedAt($value)
+ * @method static Builder<static>|UserLoginHistory whereUserId($value)
+ * @method static Builder<static>|UserLoginHistory whereVia($value)
  * @mixin \Eloquent
  */
 class UserLoginHistory extends Model

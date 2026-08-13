@@ -40,16 +40,16 @@ use Illuminate\Database\Eloquent\{
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \IXP\Models\VirtualInterface|null $virtualInterface
- * @method static Builder|MacAddress newModelQuery()
- * @method static Builder|MacAddress newQuery()
- * @method static Builder|MacAddress query()
- * @method static Builder|MacAddress whereCreatedAt($value)
- * @method static Builder|MacAddress whereFirstseen($value)
- * @method static Builder|MacAddress whereId($value)
- * @method static Builder|MacAddress whereLastseen($value)
- * @method static Builder|MacAddress whereMac($value)
- * @method static Builder|MacAddress whereUpdatedAt($value)
- * @method static Builder|MacAddress whereVirtualinterfaceid($value)
+ * @method static Builder<static>|MacAddress newModelQuery()
+ * @method static Builder<static>|MacAddress newQuery()
+ * @method static Builder<static>|MacAddress query()
+ * @method static Builder<static>|MacAddress whereCreatedAt($value)
+ * @method static Builder<static>|MacAddress whereFirstseen($value)
+ * @method static Builder<static>|MacAddress whereId($value)
+ * @method static Builder<static>|MacAddress whereLastseen($value)
+ * @method static Builder<static>|MacAddress whereMac($value)
+ * @method static Builder<static>|MacAddress whereUpdatedAt($value)
+ * @method static Builder<static>|MacAddress whereVirtualinterfaceid($value)
  * @mixin \Eloquent
  */
 class MacAddress extends Model

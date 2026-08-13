@@ -55,21 +55,19 @@ use IXP\Traits\Observable;
  * @property-read int|null $patch_panels_count
  * @property-read Collection<int, \IXP\Models\Switcher> $switchers
  * @property-read int|null $switchers_count
- * @method static Builder|Cabinet newModelQuery()
- * @method static Builder|Cabinet newQuery()
- * @method static Builder|Cabinet query()
- * @method static Builder|Cabinet whereColocation($value)
- * @method static Builder|Cabinet whereCreatedAt($value)
- * @method static Builder|Cabinet whereHeight($value)
- * @method static Builder|Cabinet whereId($value)
- * @method static Builder|Cabinet whereLocationid($value)
- * @method static Builder|Cabinet whereName($value)
- * @method static Builder|Cabinet whereNotes($value)
- * @method static Builder|Cabinet whereType($value)
- * @method static Builder|Cabinet whereUCountsFrom($value)
- * @method static Builder|Cabinet whereUpdatedAt($value)
- * @property string|null $cololocation
- * @method static Builder|Cabinet whereCololocation($value)
+ * @method static Builder<static>|Cabinet newModelQuery()
+ * @method static Builder<static>|Cabinet newQuery()
+ * @method static Builder<static>|Cabinet query()
+ * @method static Builder<static>|Cabinet whereColocation($value)
+ * @method static Builder<static>|Cabinet whereCreatedAt($value)
+ * @method static Builder<static>|Cabinet whereHeight($value)
+ * @method static Builder<static>|Cabinet whereId($value)
+ * @method static Builder<static>|Cabinet whereLocationid($value)
+ * @method static Builder<static>|Cabinet whereName($value)
+ * @method static Builder<static>|Cabinet whereNotes($value)
+ * @method static Builder<static>|Cabinet whereType($value)
+ * @method static Builder<static>|Cabinet whereUCountsFrom($value)
+ * @method static Builder<static>|Cabinet whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class Cabinet extends Model

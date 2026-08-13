@@ -49,25 +49,22 @@ use IXP\Traits\Observable;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \IXP\Models\ConsoleServer|null $consoleServer
  * @property-read \IXP\Models\CustomerTag|null $customer
- * @property-read \IXP\Models\Switcher|null $switcher
- * @method static Builder|ConsoleServerConnection newModelQuery()
- * @method static Builder|ConsoleServerConnection newQuery()
- * @method static Builder|ConsoleServerConnection query()
- * @method static Builder|ConsoleServerConnection whereAutobaud($value)
- * @method static Builder|ConsoleServerConnection whereConsoleServerId($value)
- * @method static Builder|ConsoleServerConnection whereCreatedAt($value)
- * @method static Builder|ConsoleServerConnection whereCustid($value)
- * @method static Builder|ConsoleServerConnection whereDescription($value)
- * @method static Builder|ConsoleServerConnection whereFlowcontrol($value)
- * @method static Builder|ConsoleServerConnection whereId($value)
- * @method static Builder|ConsoleServerConnection whereNotes($value)
- * @method static Builder|ConsoleServerConnection whereParity($value)
- * @method static Builder|ConsoleServerConnection wherePort($value)
- * @method static Builder|ConsoleServerConnection whereSpeed($value)
- * @method static Builder|ConsoleServerConnection whereStopbits($value)
- * @method static Builder|ConsoleServerConnection whereUpdatedAt($value)
- * @property int|null $switchid
- * @method static Builder|ConsoleServerConnection whereSwitchid($value)
+ * @method static Builder<static>|ConsoleServerConnection newModelQuery()
+ * @method static Builder<static>|ConsoleServerConnection newQuery()
+ * @method static Builder<static>|ConsoleServerConnection query()
+ * @method static Builder<static>|ConsoleServerConnection whereAutobaud($value)
+ * @method static Builder<static>|ConsoleServerConnection whereConsoleServerId($value)
+ * @method static Builder<static>|ConsoleServerConnection whereCreatedAt($value)
+ * @method static Builder<static>|ConsoleServerConnection whereCustid($value)
+ * @method static Builder<static>|ConsoleServerConnection whereDescription($value)
+ * @method static Builder<static>|ConsoleServerConnection whereFlowcontrol($value)
+ * @method static Builder<static>|ConsoleServerConnection whereId($value)
+ * @method static Builder<static>|ConsoleServerConnection whereNotes($value)
+ * @method static Builder<static>|ConsoleServerConnection whereParity($value)
+ * @method static Builder<static>|ConsoleServerConnection wherePort($value)
+ * @method static Builder<static>|ConsoleServerConnection whereSpeed($value)
+ * @method static Builder<static>|ConsoleServerConnection whereStopbits($value)
+ * @method static Builder<static>|ConsoleServerConnection whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class ConsoleServerConnection extends Model
@@ -148,16 +145,6 @@ class ConsoleServerConnection extends Model
     public function customer(): BelongsTo
     {
         return $this->belongsTo(CustomerTag::class, 'custid' );
-    }
-
-    /**
-     * Get the customer that own the console server connection
-     *
-     * @return BelongsTo<Switcher, ConsoleServerConnection>
-     */
-    public function switcher(): BelongsTo
-    {
-        return $this->belongsTo(Switcher::class, 'switchid' );
     }
 
     /**

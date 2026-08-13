@@ -39,13 +39,13 @@ use Illuminate\Database\Eloquent\{
  * @property-read \IXP\Models\CoreLink|null $coreLinkSideA
  * @property-read \IXP\Models\CoreLink|null $coreLinkSideB
  * @property-read \IXP\Models\PhysicalInterface|null $physicalInterface
- * @method static \Illuminate\Database\Eloquent\Builder|CoreInterface newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|CoreInterface newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|CoreInterface query()
- * @method static \Illuminate\Database\Eloquent\Builder|CoreInterface whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CoreInterface whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CoreInterface wherePhysicalInterfaceId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CoreInterface whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CoreInterface newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CoreInterface newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CoreInterface query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CoreInterface whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CoreInterface whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CoreInterface wherePhysicalInterfaceId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CoreInterface whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class CoreInterface extends Model

@@ -48,14 +48,14 @@ use Illuminate\Support\Facades\DB;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property-read \IXP\Models\DocstoreFile $file
- * @method static Builder|DocstoreLog newModelQuery()
- * @method static Builder|DocstoreLog newQuery()
- * @method static Builder|DocstoreLog query()
- * @method static Builder|DocstoreLog whereCreatedAt($value)
- * @method static Builder|DocstoreLog whereDocstoreFileId($value)
- * @method static Builder|DocstoreLog whereDownloadedBy($value)
- * @method static Builder|DocstoreLog whereId($value)
- * @method static Builder|DocstoreLog whereUpdatedAt($value)
+ * @method static Builder<static>|DocstoreLog newModelQuery()
+ * @method static Builder<static>|DocstoreLog newQuery()
+ * @method static Builder<static>|DocstoreLog query()
+ * @method static Builder<static>|DocstoreLog whereCreatedAt($value)
+ * @method static Builder<static>|DocstoreLog whereDocstoreFileId($value)
+ * @method static Builder<static>|DocstoreLog whereDownloadedBy($value)
+ * @method static Builder<static>|DocstoreLog whereId($value)
+ * @method static Builder<static>|DocstoreLog whereUpdatedAt($value)
  * @mixin Eloquent
  */
 class DocstoreLog extends Model

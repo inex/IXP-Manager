@@ -38,15 +38,15 @@ use IXP\Traits\Observable;
  * @property int $id
  * @property int|null $custid
  * @property string $name
+ * @property string|null $position
  * @property string|null $email
  * @property string|null $phone
  * @property string|null $mobile
+ * @property string|null $notes
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property int|null $lastupdatedby
  * @property string|null $creator
  * @property \Illuminate\Support\Carbon|null $created_at
- * @property string|null $position
- * @property string|null $notes
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\ContactGroup> $contactGroups
  * @property-read int|null $contact_groups_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\ContactGroup> $contactGroupsAll
@@ -54,27 +54,21 @@ use IXP\Traits\Observable;
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\ContactGroup> $contactRoles
  * @property-read int|null $contact_roles_count
  * @property-read \IXP\Models\Customer|null $customer
- * @method static Builder|Contact newModelQuery()
- * @method static Builder|Contact newQuery()
- * @method static Builder|Contact query()
- * @method static Builder|Contact whereCreatedAt($value)
- * @method static Builder|Contact whereCreator($value)
- * @method static Builder|Contact whereCustid($value)
- * @method static Builder|Contact whereEmail($value)
- * @method static Builder|Contact whereId($value)
- * @method static Builder|Contact whereLastupdatedby($value)
- * @method static Builder|Contact whereMobile($value)
- * @method static Builder|Contact whereName($value)
- * @method static Builder|Contact whereNotes($value)
- * @method static Builder|Contact wherePhone($value)
- * @method static Builder|Contact wherePosition($value)
- * @method static Builder|Contact whereUpdatedAt($value)
- * @property int|null $user_id
- * @property string|null $lastupdated
- * @property string|null $created
- * @method static Builder|Contact whereCreated($value)
- * @method static Builder|Contact whereLastupdated($value)
- * @method static Builder|Contact whereUserId($value)
+ * @method static Builder<static>|Contact newModelQuery()
+ * @method static Builder<static>|Contact newQuery()
+ * @method static Builder<static>|Contact query()
+ * @method static Builder<static>|Contact whereCreatedAt($value)
+ * @method static Builder<static>|Contact whereCreator($value)
+ * @method static Builder<static>|Contact whereCustid($value)
+ * @method static Builder<static>|Contact whereEmail($value)
+ * @method static Builder<static>|Contact whereId($value)
+ * @method static Builder<static>|Contact whereLastupdatedby($value)
+ * @method static Builder<static>|Contact whereMobile($value)
+ * @method static Builder<static>|Contact whereName($value)
+ * @method static Builder<static>|Contact whereNotes($value)
+ * @method static Builder<static>|Contact wherePhone($value)
+ * @method static Builder<static>|Contact wherePosition($value)
+ * @method static Builder<static>|Contact whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class Contact extends Model

@@ -35,16 +35,14 @@ use Illuminate\Database\Eloquent\{
  * @property int $id
  * @property int $user_id
  * @property string $password
- * @property string|null $expires
- * @property string|null $lastseenAt
- * @property string|null $lastseenFrom
+ * @property string|null $salt
+ * @property string $expires
+ * @property string|null $last_seen_at
+ * @property string|null $last_seen_from
  * @property string|null $description
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \IXP\Models\User $user
- * @property string|null $salt
- * @property string|null $last_seen_at
- * @property string|null $last_seen_from
  * @method static \Illuminate\Database\Eloquent\Builder<static>|AppPassword newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|AppPassword newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|AppPassword query()

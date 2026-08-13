@@ -59,16 +59,16 @@ use Illuminate\Support\Facades\{
  * @property-read DocstoreCustomerDirectory|null $parentDirectory
  * @property-read Collection<int, DocstoreCustomerDirectory> $subDirectories
  * @property-read int|null $sub_directories_count
- * @method static Builder|DocstoreCustomerDirectory newModelQuery()
- * @method static Builder|DocstoreCustomerDirectory newQuery()
- * @method static Builder|DocstoreCustomerDirectory query()
- * @method static Builder|DocstoreCustomerDirectory whereCreatedAt($value)
- * @method static Builder|DocstoreCustomerDirectory whereCustId($value)
- * @method static Builder|DocstoreCustomerDirectory whereDescription($value)
- * @method static Builder|DocstoreCustomerDirectory whereId($value)
- * @method static Builder|DocstoreCustomerDirectory whereName($value)
- * @method static Builder|DocstoreCustomerDirectory whereParentDirId($value)
- * @method static Builder|DocstoreCustomerDirectory whereUpdatedAt($value)
+ * @method static Builder<static>|DocstoreCustomerDirectory newModelQuery()
+ * @method static Builder<static>|DocstoreCustomerDirectory newQuery()
+ * @method static Builder<static>|DocstoreCustomerDirectory query()
+ * @method static Builder<static>|DocstoreCustomerDirectory whereCreatedAt($value)
+ * @method static Builder<static>|DocstoreCustomerDirectory whereCustId($value)
+ * @method static Builder<static>|DocstoreCustomerDirectory whereDescription($value)
+ * @method static Builder<static>|DocstoreCustomerDirectory whereId($value)
+ * @method static Builder<static>|DocstoreCustomerDirectory whereName($value)
+ * @method static Builder<static>|DocstoreCustomerDirectory whereParentDirId($value)
+ * @method static Builder<static>|DocstoreCustomerDirectory whereUpdatedAt($value)
  * @mixin Eloquent
  */
 

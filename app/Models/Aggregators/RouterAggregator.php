@@ -52,8 +52,6 @@ use IXP\Models\User;
  * @property string $template
  * @property bool $skip_md5
  * @property \Illuminate\Support\Carbon|null $last_update_started
- * @property \Illuminate\Support\Carbon|null $last_updated
- * @property int $pause_updates
  * @property bool $rpki
  * @property string|null $software_version
  * @property string|null $operating_system
@@ -61,55 +59,52 @@ use IXP\Models\User;
  * @property int $rfc1997_passthru
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $last_updated
+ * @property int $pause_updates
  * @property-read Router|null $pair
  * @property-read \IXP\Models\Vlan $vlan
- * @method static Builder|Router hasApi()
- * @method static Builder|Router ipv4()
- * @method static Builder|Router ipv6()
- * @method static Builder|Router largeCommunities()
- * @method static Builder|RouterAggregator newModelQuery()
- * @method static Builder|RouterAggregator newQuery()
- * @method static Builder|Router notQuarantine()
- * @method static Builder|RouterAggregator query()
- * @method static Builder|Router routeServer()
- * @method static Builder|Router rpki()
- * @method static Builder|RouterAggregator whereApi($value)
- * @method static Builder|RouterAggregator whereApiType($value)
- * @method static Builder|RouterAggregator whereAsn($value)
- * @method static Builder|RouterAggregator whereBgpLc($value)
- * @method static Builder|RouterAggregator whereCreatedAt($value)
- * @method static Builder|RouterAggregator whereHandle($value)
- * @method static Builder|RouterAggregator whereId($value)
- * @method static Builder|RouterAggregator whereLastUpdateStarted($value)
- * @method static Builder|RouterAggregator whereLastUpdated($value)
- * @method static Builder|RouterAggregator whereLgAccess($value)
- * @method static Builder|RouterAggregator whereMgmtHost($value)
- * @method static Builder|RouterAggregator whereName($value)
- * @method static Builder|RouterAggregator whereOperatingSystem($value)
- * @method static Builder|RouterAggregator whereOperatingSystemVersion($value)
- * @method static Builder|RouterAggregator wherePairId($value)
- * @method static Builder|RouterAggregator wherePauseUpdates($value)
- * @method static Builder|RouterAggregator wherePeeringIp($value)
- * @method static Builder|RouterAggregator whereProtocol($value)
- * @method static Builder|RouterAggregator whereQuarantine($value)
- * @method static Builder|RouterAggregator whereRfc1997Passthru($value)
- * @method static Builder|RouterAggregator whereRouterId($value)
- * @method static Builder|RouterAggregator whereRpki($value)
- * @method static Builder|RouterAggregator whereShortname($value)
- * @method static Builder|RouterAggregator whereSkipMd5($value)
- * @method static Builder|RouterAggregator whereSoftware($value)
- * @method static Builder|RouterAggregator whereSoftwareVersion($value)
- * @method static Builder|RouterAggregator whereTemplate($value)
- * @method static Builder|RouterAggregator whereType($value)
- * @method static Builder|RouterAggregator whereUpdatedAt($value)
- * @method static Builder|RouterAggregator whereVlanId($value)
- * @method static Builder|RouterAggregator routeCollector()
- * @method static Builder|RouterAggregator ipvX(int $protocol)
- * @method static Builder|RouterAggregator ipProtocol(int $protocol)
- * @property int|null $rpki_min_version
- * @property int|null $rpki_max_version
- * @method static Builder<static>|RouterAggregator whereRpkiMaxVersion($value)
- * @method static Builder<static>|RouterAggregator whereRpkiMinVersion($value)
+ * @method static Builder<static>|RouterAggregator hasApi()
+ * @method static Builder<static>|RouterAggregator ipProtocol(int $protocol)
+ * @method static Builder<static>|RouterAggregator ipv4()
+ * @method static Builder<static>|RouterAggregator ipv6()
+ * @method static Builder<static>|RouterAggregator largeCommunities()
+ * @method static Builder<static>|RouterAggregator newModelQuery()
+ * @method static Builder<static>|RouterAggregator newQuery()
+ * @method static Builder<static>|RouterAggregator notQuarantine()
+ * @method static Builder<static>|RouterAggregator query()
+ * @method static Builder<static>|RouterAggregator routeCollector()
+ * @method static Builder<static>|RouterAggregator routeServer()
+ * @method static Builder<static>|RouterAggregator rpki()
+ * @method static Builder<static>|RouterAggregator whereApi($value)
+ * @method static Builder<static>|RouterAggregator whereApiType($value)
+ * @method static Builder<static>|RouterAggregator whereAsn($value)
+ * @method static Builder<static>|RouterAggregator whereBgpLc($value)
+ * @method static Builder<static>|RouterAggregator whereCreatedAt($value)
+ * @method static Builder<static>|RouterAggregator whereHandle($value)
+ * @method static Builder<static>|RouterAggregator whereId($value)
+ * @method static Builder<static>|RouterAggregator whereLastUpdateStarted($value)
+ * @method static Builder<static>|RouterAggregator whereLastUpdated($value)
+ * @method static Builder<static>|RouterAggregator whereLgAccess($value)
+ * @method static Builder<static>|RouterAggregator whereMgmtHost($value)
+ * @method static Builder<static>|RouterAggregator whereName($value)
+ * @method static Builder<static>|RouterAggregator whereOperatingSystem($value)
+ * @method static Builder<static>|RouterAggregator whereOperatingSystemVersion($value)
+ * @method static Builder<static>|RouterAggregator wherePairId($value)
+ * @method static Builder<static>|RouterAggregator wherePauseUpdates($value)
+ * @method static Builder<static>|RouterAggregator wherePeeringIp($value)
+ * @method static Builder<static>|RouterAggregator whereProtocol($value)
+ * @method static Builder<static>|RouterAggregator whereQuarantine($value)
+ * @method static Builder<static>|RouterAggregator whereRfc1997Passthru($value)
+ * @method static Builder<static>|RouterAggregator whereRouterId($value)
+ * @method static Builder<static>|RouterAggregator whereRpki($value)
+ * @method static Builder<static>|RouterAggregator whereShortname($value)
+ * @method static Builder<static>|RouterAggregator whereSkipMd5($value)
+ * @method static Builder<static>|RouterAggregator whereSoftware($value)
+ * @method static Builder<static>|RouterAggregator whereSoftwareVersion($value)
+ * @method static Builder<static>|RouterAggregator whereTemplate($value)
+ * @method static Builder<static>|RouterAggregator whereType($value)
+ * @method static Builder<static>|RouterAggregator whereUpdatedAt($value)
+ * @method static Builder<static>|RouterAggregator whereVlanId($value)
  * @mixin \Eloquent
  */
 class RouterAggregator extends Router

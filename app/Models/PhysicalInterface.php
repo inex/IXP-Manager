@@ -40,13 +40,13 @@ use IXP\Traits\Observable;
  *
  * @property int $id
  * @property int|null $switchportid
+ * @property int|null $fanout_physical_interface_id
  * @property int|null $virtualinterfaceid
  * @property int|null $status
  * @property int|null $speed
  * @property string|null $duplex
  * @property int|null $rate_limit
  * @property string|null $notes
- * @property int|null $fanout_physical_interface_id
  * @property bool $autoneg
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -57,23 +57,23 @@ use IXP\Traits\Observable;
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\TrafficDailyPhysInt> $trafficDailiesPhysInt
  * @property-read int|null $traffic_dailies_phys_int_count
  * @property-read \IXP\Models\VirtualInterface|null $virtualInterface
- * @method static Builder|PhysicalInterface connected()
- * @method static Builder|PhysicalInterface graphable()
- * @method static Builder|PhysicalInterface newModelQuery()
- * @method static Builder|PhysicalInterface newQuery()
- * @method static Builder|PhysicalInterface query()
- * @method static Builder|PhysicalInterface whereAutoneg($value)
- * @method static Builder|PhysicalInterface whereCreatedAt($value)
- * @method static Builder|PhysicalInterface whereDuplex($value)
- * @method static Builder|PhysicalInterface whereFanoutPhysicalInterfaceId($value)
- * @method static Builder|PhysicalInterface whereId($value)
- * @method static Builder|PhysicalInterface whereNotes($value)
- * @method static Builder|PhysicalInterface whereRateLimit($value)
- * @method static Builder|PhysicalInterface whereSpeed($value)
- * @method static Builder|PhysicalInterface whereStatus($value)
- * @method static Builder|PhysicalInterface whereSwitchportid($value)
- * @method static Builder|PhysicalInterface whereUpdatedAt($value)
- * @method static Builder|PhysicalInterface whereVirtualinterfaceid($value)
+ * @method static Builder<static>|PhysicalInterface connected()
+ * @method static Builder<static>|PhysicalInterface graphable()
+ * @method static Builder<static>|PhysicalInterface newModelQuery()
+ * @method static Builder<static>|PhysicalInterface newQuery()
+ * @method static Builder<static>|PhysicalInterface query()
+ * @method static Builder<static>|PhysicalInterface whereAutoneg($value)
+ * @method static Builder<static>|PhysicalInterface whereCreatedAt($value)
+ * @method static Builder<static>|PhysicalInterface whereDuplex($value)
+ * @method static Builder<static>|PhysicalInterface whereFanoutPhysicalInterfaceId($value)
+ * @method static Builder<static>|PhysicalInterface whereId($value)
+ * @method static Builder<static>|PhysicalInterface whereNotes($value)
+ * @method static Builder<static>|PhysicalInterface whereRateLimit($value)
+ * @method static Builder<static>|PhysicalInterface whereSpeed($value)
+ * @method static Builder<static>|PhysicalInterface whereStatus($value)
+ * @method static Builder<static>|PhysicalInterface whereSwitchportid($value)
+ * @method static Builder<static>|PhysicalInterface whereUpdatedAt($value)
+ * @method static Builder<static>|PhysicalInterface whereVirtualinterfaceid($value)
  * @mixin Eloquent
  */
 class PhysicalInterface extends Model

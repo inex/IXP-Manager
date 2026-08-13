@@ -50,17 +50,17 @@ use Illuminate\Database\Eloquent\{
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\AtlasMeasurement> $atlasMeasurements
  * @property-read int|null $atlas_measurements_count
  * @property-read \IXP\Models\Vlan|null $vlan
- * @method static Builder|AtlasRun newModelQuery()
- * @method static Builder|AtlasRun newQuery()
- * @method static Builder|AtlasRun query()
- * @method static Builder|AtlasRun whereCompletedAt($value)
- * @method static Builder|AtlasRun whereCreatedAt($value)
- * @method static Builder|AtlasRun whereId($value)
- * @method static Builder|AtlasRun whereProtocol($value)
- * @method static Builder|AtlasRun whereScheduledAt($value)
- * @method static Builder|AtlasRun whereStartedAt($value)
- * @method static Builder|AtlasRun whereUpdatedAt($value)
- * @method static Builder|AtlasRun whereVlanId($value)
+ * @method static Builder<static>|AtlasRun newModelQuery()
+ * @method static Builder<static>|AtlasRun newQuery()
+ * @method static Builder<static>|AtlasRun query()
+ * @method static Builder<static>|AtlasRun whereCompletedAt($value)
+ * @method static Builder<static>|AtlasRun whereCreatedAt($value)
+ * @method static Builder<static>|AtlasRun whereId($value)
+ * @method static Builder<static>|AtlasRun whereProtocol($value)
+ * @method static Builder<static>|AtlasRun whereScheduledAt($value)
+ * @method static Builder<static>|AtlasRun whereStartedAt($value)
+ * @method static Builder<static>|AtlasRun whereUpdatedAt($value)
+ * @method static Builder<static>|AtlasRun whereVlanId($value)
  * @mixin Eloquent
  */
 class AtlasRun extends Model
