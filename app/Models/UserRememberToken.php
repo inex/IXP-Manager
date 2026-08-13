@@ -42,20 +42,18 @@ use Illuminate\Database\Eloquent\{
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \IXP\Models\User $user
- * @method static Builder|UserRememberToken newModelQuery()
- * @method static Builder|UserRememberToken newQuery()
- * @method static Builder|UserRememberToken query()
- * @method static Builder|UserRememberToken whereCreatedAt($value)
- * @method static Builder|UserRememberToken whereDevice($value)
- * @method static Builder|UserRememberToken whereExpires($value)
- * @method static Builder|UserRememberToken whereId($value)
- * @method static Builder|UserRememberToken whereIp($value)
- * @method static Builder|UserRememberToken whereIs2faComplete($value)
- * @method static Builder|UserRememberToken whereToken($value)
- * @method static Builder|UserRememberToken whereUpdatedAt($value)
- * @method static Builder|UserRememberToken whereUserId($value)
- * @property string $created
- * @method static Builder|UserRememberToken whereCreated($value)
+ * @method static Builder<static>|UserRememberToken newModelQuery()
+ * @method static Builder<static>|UserRememberToken newQuery()
+ * @method static Builder<static>|UserRememberToken query()
+ * @method static Builder<static>|UserRememberToken whereCreatedAt($value)
+ * @method static Builder<static>|UserRememberToken whereDevice($value)
+ * @method static Builder<static>|UserRememberToken whereExpires($value)
+ * @method static Builder<static>|UserRememberToken whereId($value)
+ * @method static Builder<static>|UserRememberToken whereIp($value)
+ * @method static Builder<static>|UserRememberToken whereIs2faComplete($value)
+ * @method static Builder<static>|UserRememberToken whereToken($value)
+ * @method static Builder<static>|UserRememberToken whereUpdatedAt($value)
+ * @method static Builder<static>|UserRememberToken whereUserId($value)
  * @mixin \Eloquent
  */
 class UserRememberToken extends Model

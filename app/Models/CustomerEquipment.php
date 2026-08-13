@@ -42,16 +42,16 @@ use IXP\Traits\Observable;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \IXP\Models\Cabinet|null $cabinet
- * @method static Builder|CustomerEquipment newModelQuery()
- * @method static Builder|CustomerEquipment newQuery()
- * @method static Builder|CustomerEquipment query()
- * @method static Builder|CustomerEquipment whereCabinetid($value)
- * @method static Builder|CustomerEquipment whereCreatedAt($value)
- * @method static Builder|CustomerEquipment whereCustid($value)
- * @method static Builder|CustomerEquipment whereDescr($value)
- * @method static Builder|CustomerEquipment whereId($value)
- * @method static Builder|CustomerEquipment whereName($value)
- * @method static Builder|CustomerEquipment whereUpdatedAt($value)
+ * @method static Builder<static>|CustomerEquipment newModelQuery()
+ * @method static Builder<static>|CustomerEquipment newQuery()
+ * @method static Builder<static>|CustomerEquipment query()
+ * @method static Builder<static>|CustomerEquipment whereCabinetid($value)
+ * @method static Builder<static>|CustomerEquipment whereCreatedAt($value)
+ * @method static Builder<static>|CustomerEquipment whereCustid($value)
+ * @method static Builder<static>|CustomerEquipment whereDescr($value)
+ * @method static Builder<static>|CustomerEquipment whereId($value)
+ * @method static Builder<static>|CustomerEquipment whereName($value)
+ * @method static Builder<static>|CustomerEquipment whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class CustomerEquipment extends Model

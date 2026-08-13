@@ -24,6 +24,7 @@ namespace IXP\Models\Aggregators;
  */
 use Hash, Log;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
 
 use IXP\Events\User\{
@@ -48,18 +49,20 @@ use IXP\Models\{
  * @property string|null $email
  * @property string|null $authorisedMobile
  * @property int|null $uid
- * @property int|null $privs
  * @property int|null $disabled
  * @property int|null $lastupdatedby
  * @property string|null $creator
  * @property string|null $name
  * @property int|null $peeringdb_id
- * @property array|null $extra_attributes
- * @property array|null $prefs
+ * @property array<array-key, mixed>|null $extra_attributes (DC2Type:json)
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property array<array-key, mixed>|null $prefs
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\ApiKey> $apiKeys
  * @property-read int|null $api_keys_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\AppPassword> $appPasswords
+ * @property-read int|null $app_passwords_count
+ * @property-read CustomerToUser|null $currentCustomerToUser
  * @property-read Customer|null $customer
  * @property-read \Illuminate\Database\Eloquent\Collection<int, CustomerToUser> $customerToUser
  * @property-read int|null $customer_to_user_count
@@ -70,35 +73,27 @@ use IXP\Models\{
  * @property-read \IXP\Models\User2FA|null $user2FA
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\UserRememberToken> $userRememberTokens
  * @property-read int|null $user_remember_tokens_count
- * @method static Builder|User activeOnly()
- * @method static Builder|User byPrivs(?int $priv = null)
- * @method static \Illuminate\Database\Eloquent\Builder|UserAggregator newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|UserAggregator newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|UserAggregator query()
- * @method static \Illuminate\Database\Eloquent\Builder|UserAggregator whereAuthorisedMobile($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UserAggregator whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UserAggregator whereCreator($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UserAggregator whereCustid($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UserAggregator whereDisabled($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UserAggregator whereEmail($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UserAggregator whereExtraAttributes($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UserAggregator whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UserAggregator whereLastupdatedby($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UserAggregator whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UserAggregator wherePassword($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UserAggregator wherePeeringdbId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UserAggregator wherePrefs($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UserAggregator wherePrivs($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UserAggregator whereUid($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UserAggregator whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UserAggregator whereUsername($value)
- * @property string|null $lastupdated
- * @property string|null $created
- * @method static \Illuminate\Database\Eloquent\Builder|UserAggregator whereCreated($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UserAggregator whereLastupdated($value)
- * @property-read CustomerToUser|null $currentCustomerToUser
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\AppPassword> $appPasswords
- * @property-read int|null $app_passwords_count
+ * @method static Builder<static>|UserAggregator activeOnly()
+ * @method static Builder<static>|UserAggregator byPrivs(?int $priv = null)
+ * @method static Builder<static>|UserAggregator newModelQuery()
+ * @method static Builder<static>|UserAggregator newQuery()
+ * @method static Builder<static>|UserAggregator query()
+ * @method static Builder<static>|UserAggregator whereAuthorisedMobile($value)
+ * @method static Builder<static>|UserAggregator whereCreatedAt($value)
+ * @method static Builder<static>|UserAggregator whereCreator($value)
+ * @method static Builder<static>|UserAggregator whereCustid($value)
+ * @method static Builder<static>|UserAggregator whereDisabled($value)
+ * @method static Builder<static>|UserAggregator whereEmail($value)
+ * @method static Builder<static>|UserAggregator whereExtraAttributes($value)
+ * @method static Builder<static>|UserAggregator whereId($value)
+ * @method static Builder<static>|UserAggregator whereLastupdatedby($value)
+ * @method static Builder<static>|UserAggregator whereName($value)
+ * @method static Builder<static>|UserAggregator wherePassword($value)
+ * @method static Builder<static>|UserAggregator wherePeeringdbId($value)
+ * @method static Builder<static>|UserAggregator wherePrefs($value)
+ * @method static Builder<static>|UserAggregator whereUid($value)
+ * @method static Builder<static>|UserAggregator whereUpdatedAt($value)
+ * @method static Builder<static>|UserAggregator whereUsername($value)
  * @mixin \Eloquent
  */
 class UserAggregator extends User

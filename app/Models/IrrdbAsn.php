@@ -36,17 +36,17 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null $last_seen
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @method static \Illuminate\Database\Eloquent\Builder|IrrdbAsn newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|IrrdbAsn newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|IrrdbAsn query()
- * @method static \Illuminate\Database\Eloquent\Builder|IrrdbAsn whereAsn($value)
- * @method static \Illuminate\Database\Eloquent\Builder|IrrdbAsn whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|IrrdbAsn whereCustomerId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|IrrdbAsn whereFirstSeen($value)
- * @method static \Illuminate\Database\Eloquent\Builder|IrrdbAsn whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|IrrdbAsn whereLastSeen($value)
- * @method static \Illuminate\Database\Eloquent\Builder|IrrdbAsn whereProtocol($value)
- * @method static \Illuminate\Database\Eloquent\Builder|IrrdbAsn whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|IrrdbAsn newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|IrrdbAsn newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|IrrdbAsn query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|IrrdbAsn whereAsn($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|IrrdbAsn whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|IrrdbAsn whereCustomerId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|IrrdbAsn whereFirstSeen($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|IrrdbAsn whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|IrrdbAsn whereLastSeen($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|IrrdbAsn whereProtocol($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|IrrdbAsn whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class IrrdbAsn extends Model

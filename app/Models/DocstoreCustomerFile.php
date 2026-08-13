@@ -57,22 +57,22 @@ use IXP\Traits\Observable;
  * @property Carbon|null $updated_at
  * @property-read \IXP\Models\Customer $customer
  * @property-read \IXP\Models\DocstoreCustomerDirectory|null $directory
- * @method static Builder|DocstoreCustomerFile newModelQuery()
- * @method static Builder|DocstoreCustomerFile newQuery()
- * @method static Builder|DocstoreCustomerFile query()
- * @method static Builder|DocstoreCustomerFile whereCreatedAt($value)
- * @method static Builder|DocstoreCustomerFile whereCreatedBy($value)
- * @method static Builder|DocstoreCustomerFile whereCustId($value)
- * @method static Builder|DocstoreCustomerFile whereDescription($value)
- * @method static Builder|DocstoreCustomerFile whereDisk($value)
- * @method static Builder|DocstoreCustomerFile whereDocstoreCustomerDirectoryId($value)
- * @method static Builder|DocstoreCustomerFile whereFileLastUpdated($value)
- * @method static Builder|DocstoreCustomerFile whereId($value)
- * @method static Builder|DocstoreCustomerFile whereMinPrivs($value)
- * @method static Builder|DocstoreCustomerFile whereName($value)
- * @method static Builder|DocstoreCustomerFile wherePath($value)
- * @method static Builder|DocstoreCustomerFile whereSha256($value)
- * @method static Builder|DocstoreCustomerFile whereUpdatedAt($value)
+ * @method static Builder<static>|DocstoreCustomerFile newModelQuery()
+ * @method static Builder<static>|DocstoreCustomerFile newQuery()
+ * @method static Builder<static>|DocstoreCustomerFile query()
+ * @method static Builder<static>|DocstoreCustomerFile whereCreatedAt($value)
+ * @method static Builder<static>|DocstoreCustomerFile whereCreatedBy($value)
+ * @method static Builder<static>|DocstoreCustomerFile whereCustId($value)
+ * @method static Builder<static>|DocstoreCustomerFile whereDescription($value)
+ * @method static Builder<static>|DocstoreCustomerFile whereDisk($value)
+ * @method static Builder<static>|DocstoreCustomerFile whereDocstoreCustomerDirectoryId($value)
+ * @method static Builder<static>|DocstoreCustomerFile whereFileLastUpdated($value)
+ * @method static Builder<static>|DocstoreCustomerFile whereId($value)
+ * @method static Builder<static>|DocstoreCustomerFile whereMinPrivs($value)
+ * @method static Builder<static>|DocstoreCustomerFile whereName($value)
+ * @method static Builder<static>|DocstoreCustomerFile wherePath($value)
+ * @method static Builder<static>|DocstoreCustomerFile whereSha256($value)
+ * @method static Builder<static>|DocstoreCustomerFile whereUpdatedAt($value)
  * @mixin Eloquent
  */
 

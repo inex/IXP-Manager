@@ -42,18 +42,16 @@ use IXP\Traits\Observable;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \IXP\Models\VlanInterface $vlanInterface
- * @method static Builder|Layer2Address newModelQuery()
- * @method static Builder|Layer2Address newQuery()
- * @method static Builder|Layer2Address query()
- * @method static Builder|Layer2Address whereCreatedAt($value)
- * @method static Builder|Layer2Address whereFirstseen($value)
- * @method static Builder|Layer2Address whereId($value)
- * @method static Builder|Layer2Address whereLastseen($value)
- * @method static Builder|Layer2Address whereMac($value)
- * @method static Builder|Layer2Address whereUpdatedAt($value)
- * @method static Builder|Layer2Address whereVlanInterfaceId($value)
- * @property string|null $created
- * @method static Builder|Layer2Address whereCreated($value)
+ * @method static Builder<static>|Layer2Address newModelQuery()
+ * @method static Builder<static>|Layer2Address newQuery()
+ * @method static Builder<static>|Layer2Address query()
+ * @method static Builder<static>|Layer2Address whereCreatedAt($value)
+ * @method static Builder<static>|Layer2Address whereFirstseen($value)
+ * @method static Builder<static>|Layer2Address whereId($value)
+ * @method static Builder<static>|Layer2Address whereLastseen($value)
+ * @method static Builder<static>|Layer2Address whereMac($value)
+ * @method static Builder<static>|Layer2Address whereUpdatedAt($value)
+ * @method static Builder<static>|Layer2Address whereVlanInterfaceId($value)
  * @mixin \Eloquent
  */
 class Layer2Address extends Model

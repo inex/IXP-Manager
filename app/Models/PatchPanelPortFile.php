@@ -48,20 +48,20 @@ use IXP\Traits\Observable;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \IXP\Models\PatchPanelPort|null $patchPanelPort
- * @method static Builder|PatchPanelPortFile newModelQuery()
- * @method static Builder|PatchPanelPortFile newQuery()
- * @method static Builder|PatchPanelPortFile query()
- * @method static Builder|PatchPanelPortFile whereCreatedAt($value)
- * @method static Builder|PatchPanelPortFile whereId($value)
- * @method static Builder|PatchPanelPortFile whereIsPrivate($value)
- * @method static Builder|PatchPanelPortFile whereName($value)
- * @method static Builder|PatchPanelPortFile wherePatchPanelPortId($value)
- * @method static Builder|PatchPanelPortFile whereSize($value)
- * @method static Builder|PatchPanelPortFile whereStorageLocation($value)
- * @method static Builder|PatchPanelPortFile whereType($value)
- * @method static Builder|PatchPanelPortFile whereUpdatedAt($value)
- * @method static Builder|PatchPanelPortFile whereUploadedAt($value)
- * @method static Builder|PatchPanelPortFile whereUploadedBy($value)
+ * @method static Builder<static>|PatchPanelPortFile newModelQuery()
+ * @method static Builder<static>|PatchPanelPortFile newQuery()
+ * @method static Builder<static>|PatchPanelPortFile query()
+ * @method static Builder<static>|PatchPanelPortFile whereCreatedAt($value)
+ * @method static Builder<static>|PatchPanelPortFile whereId($value)
+ * @method static Builder<static>|PatchPanelPortFile whereIsPrivate($value)
+ * @method static Builder<static>|PatchPanelPortFile whereName($value)
+ * @method static Builder<static>|PatchPanelPortFile wherePatchPanelPortId($value)
+ * @method static Builder<static>|PatchPanelPortFile whereSize($value)
+ * @method static Builder<static>|PatchPanelPortFile whereStorageLocation($value)
+ * @method static Builder<static>|PatchPanelPortFile whereType($value)
+ * @method static Builder<static>|PatchPanelPortFile whereUpdatedAt($value)
+ * @method static Builder<static>|PatchPanelPortFile whereUploadedAt($value)
+ * @method static Builder<static>|PatchPanelPortFile whereUploadedBy($value)
  * @mixin Eloquent
  */
 

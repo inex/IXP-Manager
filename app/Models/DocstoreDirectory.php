@@ -57,15 +57,15 @@ use Illuminate\Support\Facades\{
  * @property-read DocstoreDirectory|null $parentDirectory
  * @property-read EloquentCollection<int, DocstoreDirectory> $subDirectories
  * @property-read int|null $sub_directories_count
- * @method static Builder|DocstoreDirectory newModelQuery()
- * @method static Builder|DocstoreDirectory newQuery()
- * @method static Builder|DocstoreDirectory query()
- * @method static Builder|DocstoreDirectory whereCreatedAt($value)
- * @method static Builder|DocstoreDirectory whereDescription($value)
- * @method static Builder|DocstoreDirectory whereId($value)
- * @method static Builder|DocstoreDirectory whereName($value)
- * @method static Builder|DocstoreDirectory whereParentDirId($value)
- * @method static Builder|DocstoreDirectory whereUpdatedAt($value)
+ * @method static Builder<static>|DocstoreDirectory newModelQuery()
+ * @method static Builder<static>|DocstoreDirectory newQuery()
+ * @method static Builder<static>|DocstoreDirectory query()
+ * @method static Builder<static>|DocstoreDirectory whereCreatedAt($value)
+ * @method static Builder<static>|DocstoreDirectory whereDescription($value)
+ * @method static Builder<static>|DocstoreDirectory whereId($value)
+ * @method static Builder<static>|DocstoreDirectory whereName($value)
+ * @method static Builder<static>|DocstoreDirectory whereParentDirId($value)
+ * @method static Builder<static>|DocstoreDirectory whereUpdatedAt($value)
  * @mixin Eloquent
  */
 

@@ -58,20 +58,20 @@ use IXP\Traits\Observable;
  * @property-read int|null $sflow_receivers_count
  * @property-read Collection<int, \IXP\Models\VlanInterface> $vlanInterfaces
  * @property-read int|null $vlan_interfaces_count
- * @method static Builder|VirtualInterface newModelQuery()
- * @method static Builder|VirtualInterface newQuery()
- * @method static Builder|VirtualInterface query()
- * @method static Builder|VirtualInterface whereChannelgroup($value)
- * @method static Builder|VirtualInterface whereCreatedAt($value)
- * @method static Builder|VirtualInterface whereCustid($value)
- * @method static Builder|VirtualInterface whereDescription($value)
- * @method static Builder|VirtualInterface whereFastlacp($value)
- * @method static Builder|VirtualInterface whereId($value)
- * @method static Builder|VirtualInterface whereLagFraming($value)
- * @method static Builder|VirtualInterface whereMtu($value)
- * @method static Builder|VirtualInterface whereName($value)
- * @method static Builder|VirtualInterface whereTrunk($value)
- * @method static Builder|VirtualInterface whereUpdatedAt($value)
+ * @method static Builder<static>|VirtualInterface newModelQuery()
+ * @method static Builder<static>|VirtualInterface newQuery()
+ * @method static Builder<static>|VirtualInterface query()
+ * @method static Builder<static>|VirtualInterface whereChannelgroup($value)
+ * @method static Builder<static>|VirtualInterface whereCreatedAt($value)
+ * @method static Builder<static>|VirtualInterface whereCustid($value)
+ * @method static Builder<static>|VirtualInterface whereDescription($value)
+ * @method static Builder<static>|VirtualInterface whereFastlacp($value)
+ * @method static Builder<static>|VirtualInterface whereId($value)
+ * @method static Builder<static>|VirtualInterface whereLagFraming($value)
+ * @method static Builder<static>|VirtualInterface whereMtu($value)
+ * @method static Builder<static>|VirtualInterface whereName($value)
+ * @method static Builder<static>|VirtualInterface whereTrunk($value)
+ * @method static Builder<static>|VirtualInterface whereUpdatedAt($value)
  * @mixin Eloquent
  */
 class VirtualInterface extends Model

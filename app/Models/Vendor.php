@@ -45,16 +45,16 @@ use IXP\Traits\Observable;
  * @property-read int|null $console_servers_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\Switcher> $switchers
  * @property-read int|null $switchers_count
- * @method static Builder|Vendor newModelQuery()
- * @method static Builder|Vendor newQuery()
- * @method static Builder|Vendor query()
- * @method static Builder|Vendor whereBundleName($value)
- * @method static Builder|Vendor whereCreatedAt($value)
- * @method static Builder|Vendor whereId($value)
- * @method static Builder|Vendor whereNagiosName($value)
- * @method static Builder|Vendor whereName($value)
- * @method static Builder|Vendor whereShortname($value)
- * @method static Builder|Vendor whereUpdatedAt($value)
+ * @method static Builder<static>|Vendor newModelQuery()
+ * @method static Builder<static>|Vendor newQuery()
+ * @method static Builder<static>|Vendor query()
+ * @method static Builder<static>|Vendor whereBundleName($value)
+ * @method static Builder<static>|Vendor whereCreatedAt($value)
+ * @method static Builder<static>|Vendor whereId($value)
+ * @method static Builder<static>|Vendor whereNagiosName($value)
+ * @method static Builder<static>|Vendor whereName($value)
+ * @method static Builder<static>|Vendor whereShortname($value)
+ * @method static Builder<static>|Vendor whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class Vendor extends Model

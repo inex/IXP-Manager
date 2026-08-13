@@ -45,8 +45,8 @@ use Illuminate\Support\Carbon;
  * @property string|null $atlas_create
  * @property string|null $atlas_start
  * @property string|null $atlas_stop
- * @property mixed|null $atlas_data
- * @property mixed|null $atlas_request
+ * @property string|null $atlas_data
+ * @property string|null $atlas_request
  * @property string|null $atlas_state
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
@@ -54,22 +54,22 @@ use Illuminate\Support\Carbon;
  * @property-read \IXP\Models\AtlasRun $atlasRun
  * @property-read \IXP\Models\Customer|null $custDest
  * @property-read \IXP\Models\Customer|null $custSource
- * @method static Builder|AtlasMeasurement newModelQuery()
- * @method static Builder|AtlasMeasurement newQuery()
- * @method static Builder|AtlasMeasurement query()
- * @method static Builder|AtlasMeasurement whereAtlasCreate($value)
- * @method static Builder|AtlasMeasurement whereAtlasData($value)
- * @method static Builder|AtlasMeasurement whereAtlasId($value)
- * @method static Builder|AtlasMeasurement whereAtlasRequest($value)
- * @method static Builder|AtlasMeasurement whereAtlasStart($value)
- * @method static Builder|AtlasMeasurement whereAtlasState($value)
- * @method static Builder|AtlasMeasurement whereAtlasStop($value)
- * @method static Builder|AtlasMeasurement whereCreatedAt($value)
- * @method static Builder|AtlasMeasurement whereCustDest($value)
- * @method static Builder|AtlasMeasurement whereCustSource($value)
- * @method static Builder|AtlasMeasurement whereId($value)
- * @method static Builder|AtlasMeasurement whereRunId($value)
- * @method static Builder|AtlasMeasurement whereUpdatedAt($value)
+ * @method static Builder<static>|AtlasMeasurement newModelQuery()
+ * @method static Builder<static>|AtlasMeasurement newQuery()
+ * @method static Builder<static>|AtlasMeasurement query()
+ * @method static Builder<static>|AtlasMeasurement whereAtlasCreate($value)
+ * @method static Builder<static>|AtlasMeasurement whereAtlasData($value)
+ * @method static Builder<static>|AtlasMeasurement whereAtlasId($value)
+ * @method static Builder<static>|AtlasMeasurement whereAtlasRequest($value)
+ * @method static Builder<static>|AtlasMeasurement whereAtlasStart($value)
+ * @method static Builder<static>|AtlasMeasurement whereAtlasState($value)
+ * @method static Builder<static>|AtlasMeasurement whereAtlasStop($value)
+ * @method static Builder<static>|AtlasMeasurement whereCreatedAt($value)
+ * @method static Builder<static>|AtlasMeasurement whereCustDest($value)
+ * @method static Builder<static>|AtlasMeasurement whereCustSource($value)
+ * @method static Builder<static>|AtlasMeasurement whereId($value)
+ * @method static Builder<static>|AtlasMeasurement whereRunId($value)
+ * @method static Builder<static>|AtlasMeasurement whereUpdatedAt($value)
  * @mixin Eloquent
  */
 

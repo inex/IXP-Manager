@@ -60,13 +60,6 @@ use Illuminate\Support\Carbon;
  * @method static Builder<static>|ApiKey whereTokenIdentifier($value)
  * @method static Builder<static>|ApiKey whereUpdatedAt($value)
  * @method static Builder<static>|ApiKey whereUserId($value)
- * @property string $apiKey
- * @property string|null $allowedIPs
- * @property string|null $lastseenAt
- * @property string|null $lastseenFrom
- * @method static Builder<static>|ApiKey whereAllowedIPs($value)
- * @method static Builder<static>|ApiKey whereLastseenAt($value)
- * @method static Builder<static>|ApiKey whereLastseenFrom($value)
  * @mixin Eloquent
  */
 class ApiKey extends Model

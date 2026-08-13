@@ -31,9 +31,9 @@ use Illuminate\Database\Eloquent\{
 /**
  * IXP\Models\Aggregators\SwitchPortAggregator
  *
- * @method static Builder|SwitchPortAggregator newModelQuery()
- * @method static Builder|SwitchPortAggregator newQuery()
- * @method static Builder|SwitchPortAggregator query()
+ * @method static Builder<static>|SwitchPortAggregator newModelQuery()
+ * @method static Builder<static>|SwitchPortAggregator newQuery()
+ * @method static Builder<static>|SwitchPortAggregator query()
  * @mixin \Eloquent
  */
 class SwitchPortAggregator extends Model

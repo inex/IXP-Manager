@@ -43,23 +43,19 @@ use Illuminate\Database\Eloquent\{
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \IXP\Models\Customer|null $customer
  * @property-read \IXP\Models\Customer|null $peer
- * @method static \Illuminate\Database\Eloquent\Builder|PeeringManager newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|PeeringManager newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|PeeringManager query()
- * @method static \Illuminate\Database\Eloquent\Builder|PeeringManager whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PeeringManager whereCustid($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PeeringManager whereEmailLastSent($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PeeringManager whereEmailsSent($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PeeringManager whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PeeringManager whereNotes($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PeeringManager wherePeered($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PeeringManager wherePeerid($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PeeringManager whereRejected($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PeeringManager whereUpdatedAt($value)
- * @property string|null $created
- * @property string|null $updated
- * @method static \Illuminate\Database\Eloquent\Builder|PeeringManager whereCreated($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PeeringManager whereUpdated($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PeeringManager newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PeeringManager newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PeeringManager query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PeeringManager whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PeeringManager whereCustid($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PeeringManager whereEmailLastSent($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PeeringManager whereEmailsSent($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PeeringManager whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PeeringManager whereNotes($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PeeringManager wherePeered($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PeeringManager wherePeerid($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PeeringManager whereRejected($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PeeringManager whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class PeeringManager extends Model

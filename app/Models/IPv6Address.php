@@ -39,14 +39,14 @@ use Illuminate\Database\Eloquent\{
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \IXP\Models\Vlan|null $vlan
  * @property-read \IXP\Models\VlanInterface|null $vlanInterface
- * @method static \Illuminate\Database\Eloquent\Builder|IPv6Address newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|IPv6Address newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|IPv6Address query()
- * @method static \Illuminate\Database\Eloquent\Builder|IPv6Address whereAddress($value)
- * @method static \Illuminate\Database\Eloquent\Builder|IPv6Address whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|IPv6Address whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|IPv6Address whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|IPv6Address whereVlanid($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|IPv6Address newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|IPv6Address newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|IPv6Address query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|IPv6Address whereAddress($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|IPv6Address whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|IPv6Address whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|IPv6Address whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|IPv6Address whereVlanid($value)
  * @mixin \Eloquent
  */
 class IPv6Address extends Model

@@ -47,6 +47,8 @@ use OSS_SNMP\SNMP;
  * @property int|null $switchid
  * @property int|null $type
  * @property string|null $name
+ * @property int $active
+ * @property int|null $ifIndex
  * @property string|null $ifName
  * @property string|null $ifAlias
  * @property int|null $ifHighSpeed
@@ -56,8 +58,6 @@ use OSS_SNMP\SNMP;
  * @property int|null $ifOperStatus
  * @property int|null $ifLastChange
  * @property string|null $lastSnmpPoll
- * @property int|null $ifIndex
- * @property int $active
  * @property int|null $lagIfIndex
  * @property string|null $mauType
  * @property string|null $mauState
@@ -70,33 +70,33 @@ use OSS_SNMP\SNMP;
  * @property-read \IXP\Models\PatchPanelPort|null $patchPanelPort
  * @property-read \IXP\Models\PhysicalInterface|null $physicalInterface
  * @property-read \IXP\Models\Switcher|null $switcher
- * @method static Builder|SwitchPort newModelQuery()
- * @method static Builder|SwitchPort newQuery()
- * @method static Builder|SwitchPort query()
- * @method static Builder|SwitchPort whereActive($value)
- * @method static Builder|SwitchPort whereCreatedAt($value)
- * @method static Builder|SwitchPort whereId($value)
- * @method static Builder|SwitchPort whereIfAdminStatus($value)
- * @method static Builder|SwitchPort whereIfAlias($value)
- * @method static Builder|SwitchPort whereIfHighSpeed($value)
- * @method static Builder|SwitchPort whereIfIndex($value)
- * @method static Builder|SwitchPort whereIfLastChange($value)
- * @method static Builder|SwitchPort whereIfMtu($value)
- * @method static Builder|SwitchPort whereIfName($value)
- * @method static Builder|SwitchPort whereIfOperStatus($value)
- * @method static Builder|SwitchPort whereIfPhysAddress($value)
- * @method static Builder|SwitchPort whereLagIfIndex($value)
- * @method static Builder|SwitchPort whereLastSnmpPoll($value)
- * @method static Builder|SwitchPort whereMauAutoNegAdminState($value)
- * @method static Builder|SwitchPort whereMauAutoNegSupported($value)
- * @method static Builder|SwitchPort whereMauAvailability($value)
- * @method static Builder|SwitchPort whereMauJacktype($value)
- * @method static Builder|SwitchPort whereMauState($value)
- * @method static Builder|SwitchPort whereMauType($value)
- * @method static Builder|SwitchPort whereName($value)
- * @method static Builder|SwitchPort whereSwitchid($value)
- * @method static Builder|SwitchPort whereType($value)
- * @method static Builder|SwitchPort whereUpdatedAt($value)
+ * @method static Builder<static>|SwitchPort newModelQuery()
+ * @method static Builder<static>|SwitchPort newQuery()
+ * @method static Builder<static>|SwitchPort query()
+ * @method static Builder<static>|SwitchPort whereActive($value)
+ * @method static Builder<static>|SwitchPort whereCreatedAt($value)
+ * @method static Builder<static>|SwitchPort whereId($value)
+ * @method static Builder<static>|SwitchPort whereIfAdminStatus($value)
+ * @method static Builder<static>|SwitchPort whereIfAlias($value)
+ * @method static Builder<static>|SwitchPort whereIfHighSpeed($value)
+ * @method static Builder<static>|SwitchPort whereIfIndex($value)
+ * @method static Builder<static>|SwitchPort whereIfLastChange($value)
+ * @method static Builder<static>|SwitchPort whereIfMtu($value)
+ * @method static Builder<static>|SwitchPort whereIfName($value)
+ * @method static Builder<static>|SwitchPort whereIfOperStatus($value)
+ * @method static Builder<static>|SwitchPort whereIfPhysAddress($value)
+ * @method static Builder<static>|SwitchPort whereLagIfIndex($value)
+ * @method static Builder<static>|SwitchPort whereLastSnmpPoll($value)
+ * @method static Builder<static>|SwitchPort whereMauAutoNegAdminState($value)
+ * @method static Builder<static>|SwitchPort whereMauAutoNegSupported($value)
+ * @method static Builder<static>|SwitchPort whereMauAvailability($value)
+ * @method static Builder<static>|SwitchPort whereMauJacktype($value)
+ * @method static Builder<static>|SwitchPort whereMauState($value)
+ * @method static Builder<static>|SwitchPort whereMauType($value)
+ * @method static Builder<static>|SwitchPort whereName($value)
+ * @method static Builder<static>|SwitchPort whereSwitchid($value)
+ * @method static Builder<static>|SwitchPort whereType($value)
+ * @method static Builder<static>|SwitchPort whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class SwitchPort extends Model

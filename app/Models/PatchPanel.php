@@ -48,10 +48,10 @@ use IXP\Traits\Observable;
  * @property int $connector_type
  * @property string|null $installation_date
  * @property string $port_prefix
- * @property int $active
- * @property int $colo_pp_type
  * @property int $chargeable
  * @property string $location_notes
+ * @property int $active
+ * @property int $colo_pp_type
  * @property int|null $u_position
  * @property int|null $mounted_at
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -59,25 +59,25 @@ use IXP\Traits\Observable;
  * @property-read \IXP\Models\Cabinet|null $cabinet
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\PatchPanelPort> $patchPanelPorts
  * @property-read int|null $patch_panel_ports_count
- * @method static Builder|PatchPanel newModelQuery()
- * @method static Builder|PatchPanel newQuery()
- * @method static Builder|PatchPanel query()
- * @method static Builder|PatchPanel whereActive($value)
- * @method static Builder|PatchPanel whereCabinetId($value)
- * @method static Builder|PatchPanel whereCableType($value)
- * @method static Builder|PatchPanel whereChargeable($value)
- * @method static Builder|PatchPanel whereColoPpType($value)
- * @method static Builder|PatchPanel whereColoReference($value)
- * @method static Builder|PatchPanel whereConnectorType($value)
- * @method static Builder|PatchPanel whereCreatedAt($value)
- * @method static Builder|PatchPanel whereId($value)
- * @method static Builder|PatchPanel whereInstallationDate($value)
- * @method static Builder|PatchPanel whereLocationNotes($value)
- * @method static Builder|PatchPanel whereMountedAt($value)
- * @method static Builder|PatchPanel whereName($value)
- * @method static Builder|PatchPanel wherePortPrefix($value)
- * @method static Builder|PatchPanel whereUPosition($value)
- * @method static Builder|PatchPanel whereUpdatedAt($value)
+ * @method static Builder<static>|PatchPanel newModelQuery()
+ * @method static Builder<static>|PatchPanel newQuery()
+ * @method static Builder<static>|PatchPanel query()
+ * @method static Builder<static>|PatchPanel whereActive($value)
+ * @method static Builder<static>|PatchPanel whereCabinetId($value)
+ * @method static Builder<static>|PatchPanel whereCableType($value)
+ * @method static Builder<static>|PatchPanel whereChargeable($value)
+ * @method static Builder<static>|PatchPanel whereColoPpType($value)
+ * @method static Builder<static>|PatchPanel whereColoReference($value)
+ * @method static Builder<static>|PatchPanel whereConnectorType($value)
+ * @method static Builder<static>|PatchPanel whereCreatedAt($value)
+ * @method static Builder<static>|PatchPanel whereId($value)
+ * @method static Builder<static>|PatchPanel whereInstallationDate($value)
+ * @method static Builder<static>|PatchPanel whereLocationNotes($value)
+ * @method static Builder<static>|PatchPanel whereMountedAt($value)
+ * @method static Builder<static>|PatchPanel whereName($value)
+ * @method static Builder<static>|PatchPanel wherePortPrefix($value)
+ * @method static Builder<static>|PatchPanel whereUPosition($value)
+ * @method static Builder<static>|PatchPanel whereUpdatedAt($value)
  * @mixin Eloquent
  */
 
