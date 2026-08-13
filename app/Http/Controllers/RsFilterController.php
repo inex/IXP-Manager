@@ -62,7 +62,7 @@ use IXP\Utils\View\Alert\{
  * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class RsFilterController extends Controller
+class RsFilterController extends \Illuminate\Routing\Controller
 {
     /**
      * Display the list of customers with Route Server Filters

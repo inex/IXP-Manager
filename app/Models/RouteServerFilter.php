@@ -1,7 +1,4 @@
 <?php
-
-namespace IXP\Models;
-
 /*
  * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
@@ -22,6 +19,10 @@ namespace IXP\Models;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
 */
+
+declare(strict_types=1);
+
+namespace IXP\Models;
 
 use Illuminate\Database\Eloquent\{
     Model,
