@@ -36,6 +36,7 @@ class RsFilterControllerTest extends TestCase
 {
     use ModifiesEnv;
 
+    #[\Override]
     public function setUp(): void
     {
         $this->overrideEnv(["IXP_FE_FRONTEND_DISABLED_RS_FILTERS" => false]);
