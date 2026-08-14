@@ -26,7 +26,7 @@ namespace Tests\Services\Validation\Validators;
 
 use IXP\Contracts\Validation\ValidationRunner;
 use IXP\Services\Validation\Backend;
-use IXP\Services\Validation\Enums\ResultType;
+use IXP\Services\Validation\Enums\Severity;
 use IXP\Services\Validation\Validators\Grapher;
 use Tests\TestCase;
 
@@ -66,7 +66,7 @@ class GrapherTest extends TestCase
     {
         $located = false;
         foreach ($runner->getResults() as $result) {
-            if ($result->type === ResultType::Error && $result->message === $message) {
+            if ($result->severity === Severity::Error && $result->message === $message) {
                 $located = true;
             }
         }

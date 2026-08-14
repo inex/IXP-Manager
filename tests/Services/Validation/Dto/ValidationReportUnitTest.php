@@ -28,7 +28,7 @@ use IXP\Services\Validation\Dto\FailureInfo;
 use IXP\Services\Validation\Dto\Result;
 use IXP\Services\Validation\Dto\Software;
 use IXP\Services\Validation\Dto\ValidationReport;
-use IXP\Services\Validation\Enums\ResultType;
+use IXP\Services\Validation\Enums\Severity;
 use PHPUnit\Framework\TestCase;
 
 class ValidationReportUnitTest extends TestCase
@@ -46,7 +46,7 @@ class ValidationReportUnitTest extends TestCase
                 new Software("PHP", "v8.4.0"),
             ],
             [
-                new Result("It worked", ResultType::Info),
+                new Result("It worked", Severity::Info),
             ],
             FailureInfo::fromThrowable(new \RuntimeException("until it didn't"))
         );

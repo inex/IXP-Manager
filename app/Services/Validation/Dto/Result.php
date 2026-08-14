@@ -27,7 +27,7 @@ namespace IXP\Services\Validation\Dto;
 use IXP\Services\Validation\Dto\AdditionalInfo\Element;
 use IXP\Services\Validation\Dto\AdditionalInfo\TextElement;
 use IXP\Services\Validation\Dto\AdditionalInfo\UrlElement;
-use IXP\Services\Validation\Enums\ResultType;
+use IXP\Services\Validation\Enums\Severity;
 use JsonSerializable;
 
 /**
@@ -43,8 +43,8 @@ class Result implements JsonSerializable
     private(set) array             $additionalInfo = [];
 
     public function __construct(
-        readonly private(set) string     $message,
-        readonly private(set) ResultType $type,
+        readonly private(set) string   $message,
+        readonly private(set) Severity $severity,
     ) {}
 
     /**
@@ -133,7 +133,7 @@ class Result implements JsonSerializable
     {
         return  [
             'message'          => $this->message,
-            'type'             => $this->type,
+            'severity'         => $this->severity,
             'additional_info'  => $this->additionalInfo,
             'docs_url'         => $this->docsUrl,
             'settings_url'     => $this->settingsUrl,

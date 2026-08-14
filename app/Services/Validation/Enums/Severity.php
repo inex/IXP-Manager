@@ -29,11 +29,43 @@ namespace IXP\Services\Validation\Enums;
  *
  * @author Thomas Kerin <thomas@islandbridgenetworks.ie>
  */
-enum ResultType: string
+enum Severity: string
 {
-    case Debug = 'DEBUG';
-    case Info = 'INFO';
-    case Suggestion = 'SUGGEST';
-    case Warning = 'WARNING';
-    case Error = 'ERROR';
+    case Debug = 'debug';
+    case Info = 'info';
+    case Suggestion = 'suggest';
+    case Warning = 'warning';
+    case Error = 'error';
+
+    /**
+     * Establish a ranking for severity levels so they can be compared
+     * @return int
+     */
+    public function rank(): int
+    {
+        return match( $this ) {
+            self::Debug => 10,
+            self::Info => 20,
+            self::Suggestion => 30,
+            self::Warning => 40,
+            self::Error => 50,
+        };
+    }
+
+    public function isAtLeast(self $other): bool
+    {
+        return $this->rank() >= $other->rank();
+    }
+
+    /**
+     * Return an array of the values of the enum
+     * @return string[]
+     */
+    public static function values(): array
+    {
+        return array_map(
+            fn( Severity $severity): string => $severity->value,
+            Severity::cases()
+        );
+    }
 }

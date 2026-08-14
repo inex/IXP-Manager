@@ -27,16 +27,16 @@ namespace Tests\Services\Validation\Dto;
 use IXP\Services\Validation\Dto\AdditionalInfo\TextElement;
 use IXP\Services\Validation\Dto\AdditionalInfo\UrlElement;
 use IXP\Services\Validation\Dto\Result;
-use IXP\Services\Validation\Enums\ResultType;
+use IXP\Services\Validation\Enums\Severity;
 use PHPUnit\Framework\TestCase;
 
 class ResultUnitTest extends TestCase
 {
     public function testDto()
     {
-        $result = new Result("Reporting back...", ResultType::Info);
+        $result = new Result("Reporting back...", Severity::Info);
         $this->assertEquals("Reporting back...", $result->message);
-        $this->assertEquals(ResultType::Info, $result->type);
+        $this->assertEquals(Severity::Info, $result->severity);
 
         // Test passing absolute docs url
         $this->assertNull($result->docsUrl);
@@ -92,7 +92,7 @@ class ResultUnitTest extends TestCase
         $this->assertArrayIsEqualToArrayOnlyConsideringListOfKeys(
             [
                 "message" => "Reporting back...",
-                "type" => ResultType::Info,
+                "severity" => Severity::Info,
                 "docs_url" => "https://ixp.local/docs/page",
                 "settings_url" => "https://ixp.local/settings",
                 "call_to_action" => $result->callToAction,
@@ -103,7 +103,7 @@ class ResultUnitTest extends TestCase
                 ]
             ],
             $result->jsonSerialize(),
-            ["message", "type", "docs_url", "settings_url", "call_to_action", "additional_info"]
+            ["message", "severity", "docs_url", "settings_url", "call_to_action", "additional_info"]
         );
 
         $values = [10, 9, 8];

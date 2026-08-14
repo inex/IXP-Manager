@@ -29,7 +29,7 @@ use IXP\Contracts\Validation\ValidationRunner;
 use IXP\Utils\ConcurrentJobRunner;
 use IXP\Services\Validation\Dto\Result;
 use IXP\Services\Validation\Dto\Software;
-use IXP\Services\Validation\Enums\ResultType;
+use IXP\Services\Validation\Enums\Severity;
 use IXP\Services\Validation\ValidationRunnerFactory;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Helper\TableSeparator;
@@ -48,7 +48,7 @@ class RunCommand extends Command
      */
     protected $signature = "validator:run
                                 {--timeout=20     : Set a task timeout in seconds }
-                                {--log-level=suggest  : Select the lowest log level to print. In ascending order: debug, info, suggest, warning, error }
+                                {--severity=suggest  : Select the minimum severity to print. In ascending order: debug, info, suggest, warning, error }
     ";
 
     /**
@@ -59,10 +59,9 @@ class RunCommand extends Command
     protected $description = "Run system validation routines";
 
     /**
-     * List of result types which we are interested in seeing displayed.
-     * @var ResultType[]
+     * Only show results with at least this severity
      */
-    private array $logResultTypes;
+    private Severity $minSeverity;
 
     /**
      * @var ValidationRunner[]
@@ -70,9 +69,9 @@ class RunCommand extends Command
     private array $runners;
 
     /**
-     * For summary purposes, count the number of result types
+     * For summary purposes, count the number of results of each severity.
      */
-    private array $resultTypeCount;
+    private array $resultSeverityCount;
 
     /**
      * For summary purposes, count the number of validators which failed to complete
@@ -91,11 +90,11 @@ class RunCommand extends Command
      */
     public function handle( ValidationRunnerFactory $validation, ConcurrentJobRunner $jobRunner ): int
     {
-        if (ResultType::tryFrom(strtoupper($this->option('log-level'))) === null) {
-            $this->line("Unknown log level '{$this->option('log-level')}'");
+        if( null === ( $this->minSeverity = Severity::tryFrom( strtolower( $this->option( 'severity' ) ) ) ) ) {
+            $this->line("Unknown severity '{$this->option('severity')}'");
             return 1;
         }
-        $this->logResultTypes = $this->resultTypesToRender(ResultType::from(strtoupper($this->option('log-level'))));
+
         $this->initEmptyResultsSummary();
         $this->runners = $validation->getRunners();
 
@@ -110,9 +109,9 @@ class RunCommand extends Command
 
         $this->printResultsFromRunners();
 
-        $this->line("");
-        $this->line("Log level: " . $this->option('log-level'));
-        $this->line("Validations summary: " . $this->buildResultsSummary());
+        $this->line( "" );
+        $this->line( "Severity level: " . $this->minSeverity->value );
+        $this->line( "Validations summary: " . $this->buildResultsSummary() );
 
         if ( ( $failedRunners = array_filter( $this->runners, fn( ValidationRunner $runner ) => $runner->isFailed() ) ) ) {
             $this->line("");
@@ -146,7 +145,7 @@ class RunCommand extends Command
 
         // Record result type, or failure count
         foreach ( $runner->getResults() as $result ) {
-            $this->recordResultType( $result->type );
+            $this->recordResultSeverity( $result->severity );
         }
         $this->failureCount += $runner->isFailed() ? 1 : 0;
         // do we want a progress bar or something?
@@ -209,19 +208,19 @@ class RunCommand extends Command
             } else if ($results->isEmpty()) {
                 $rows = [[$validatorName, null, "<comment>The validator did not report any results</comment>"]];
             } else {
-                // Filter out irrelevant result types (based on log level setting) and return results
+                // Filter out irrelevant result types (based on min severity) and return results
                 $rows = $results
-                    ->filter( fn ($result) => in_array( $result->type, $this->logResultTypes ) )
+                    ->filter( fn (Result $result) => $result->severity->isAtLeast($this->minSeverity) )
                     ->values()
                     ->map(fn (Result $result, $key ) => [
                         $key === 0 ? $validatorName : null,
-                        $result->type->name,
+                        $result->severity->name,
                         $result->message
                     ])->all();
 
-                // There _were_ results, but our log level excluded all of them. Provide an explanation.
+                // There _were_ results, but our minimum severity excluded all of them. Provide an explanation.
                 if ( count($rows) === 0 ) {
-                    $rows[] = [$validatorName, null, "<comment>No results reached the log-level threshold</comment>"];
+                    $rows[] = [$validatorName, null, "<comment>No results reached the minimum severity</comment>"];
                 }
             }
 
@@ -248,28 +247,19 @@ class RunCommand extends Command
     }
 
     /**
-     * Assuming that ResultTypes are defined in the order of increasing severity,
-     * take min log level, and only return result types with that level or higher.
-     */
-    private function resultTypesToRender(ResultType $minLevel): array
-    {
-        return array_slice(ResultType::cases(), array_search($minLevel, ResultType::cases()));
-    }
-
-    /**
      * Initialise the results counts array, which keeps a count of the number of results for each type
      */
     private function initEmptyResultsSummary(): void
     {
-        $this->resultTypeCount = array_fill_keys(array_map(fn( $enum) => $enum->value, ResultType::cases()), 0);
+        $this->resultSeverityCount = array_fill_keys(Severity::values(), 0);
     }
 
     /**
-     * Increase the result count for the given ResultType
+     * Increase the result count for the given severity
      */
-    private function recordResultType(ResultType $type): void
+    private function recordResultSeverity( Severity $type): void
     {
-        $this->resultTypeCount[$type->value]++;
+        $this->resultSeverityCount[$type->value]++;
     }
 
     /**
@@ -277,7 +267,7 @@ class RunCommand extends Command
      */
     private function buildResultsSummary(): string
     {
-        $summary = collect($this->resultTypeCount)
+        $summary = collect($this->resultSeverityCount)
             ->filter(fn(int $count) => $count > 0)
             ->implode(function(int $count, string $type): string {
                 return strtolower($type) . ": {$count}";

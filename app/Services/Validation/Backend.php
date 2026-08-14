@@ -31,7 +31,7 @@ use IXP\Services\Validation\Dto\FailureInfo;
 use IXP\Services\Validation\Dto\Result;
 use IXP\Services\Validation\Dto\Software;
 use IXP\Services\Validation\Dto\ValidationReport;
-use IXP\Services\Validation\Enums\ResultType;
+use IXP\Services\Validation\Enums\Severity;
 
 /**
  * Backend.
@@ -153,40 +153,40 @@ class Backend implements ValidationBackend, ValidationRunner
     #[\Override]
     public function debug( string $message ): Result
     {
-        return $this->addResult($message, ResultType::Debug);
+        return $this->addResult($message, Severity::Debug);
     }
 
     #[\Override]
     public function info( string $message ): Result
     {
-        return $this->addResult($message, ResultType::Info);
+        return $this->addResult($message, Severity::Info);
     }
 
     #[\Override]
     public function suggestion( string $message ): Result
     {
-        return $this->addResult($message, ResultType::Suggestion);
+        return $this->addResult($message, Severity::Suggestion);
     }
 
     #[\Override]
     public function warning( string $message ): Result
     {
-        return $this->addResult($message, ResultType::Warning);
+        return $this->addResult($message, Severity::Warning);
     }
 
     #[\Override]
     public function error( string $message ): Result
     {
-        return $this->addResult($message, ResultType::Error);
+        return $this->addResult($message, Severity::Error);
     }
 
     /**
-     * Create a new result from message and type, and add it to the list.
+     * Create a new result from the message and type and add it to the list.
      * Return the object so further customisations may be made.
      */
-    private function addResult( string $message, ResultType $type ): Result
+    private function addResult( string $message, Severity $severity ): Result
     {
-        $result = new Result($message, $type);
+        $result = new Result( $message, $severity );
         $this->results[] = $result;
         return $result;
     }

@@ -28,7 +28,7 @@ use IXP\Contracts\Validation\ValidationBackend;
 use IXP\Contracts\Validation\Validator;
 use IXP\Services\Validation\Backend;
 use IXP\Services\Validation\Dto\FailureInfo;
-use IXP\Services\Validation\Enums\ResultType;
+use IXP\Services\Validation\Enums\Severity;
 use Mockery;
 use Tests\TestCase;
 
@@ -58,19 +58,19 @@ class BackendTest extends TestCase
 
         $this->assertCount(5, $backend->getResults());
         $this->assertEquals("debug message!", $backend->getResults()[0]->message);
-        $this->assertEquals(ResultType::Debug, $backend->getResults()[0]->type);
+        $this->assertEquals(Severity::Debug, $backend->getResults()[0]->severity);
 
         $this->assertEquals("some informational message", $backend->getResults()[1]->message);
-        $this->assertEquals(ResultType::Info, $backend->getResults()[1]->type);
+        $this->assertEquals(Severity::Info, $backend->getResults()[1]->severity);
 
         $this->assertEquals("why not try", $backend->getResults()[2]->message);
-        $this->assertEquals(ResultType::Suggestion, $backend->getResults()[2]->type);
+        $this->assertEquals(Severity::Suggestion, $backend->getResults()[2]->severity);
 
         $this->assertEquals("something isn't right", $backend->getResults()[3]->message);
-        $this->assertEquals(ResultType::Warning, $backend->getResults()[3]->type);
+        $this->assertEquals(Severity::Warning, $backend->getResults()[3]->severity);
 
         $this->assertEquals("we got a big problem", $backend->getResults()[4]->message);
-        $this->assertEquals(ResultType::Error, $backend->getResults()[4]->type);
+        $this->assertEquals(Severity::Error, $backend->getResults()[4]->severity);
     }
 
     public function testValidationRunnerOk()

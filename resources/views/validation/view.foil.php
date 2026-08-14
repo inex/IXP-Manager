@@ -16,11 +16,11 @@ System Validation
         <span class="text-muted">Performing system validation checks.. &nbsp;&nbsp;</span>
     </span>
     <div>
-        <span data-target="ERROR" class="resultStatusButton  hover:tw-opacity-80 tw-cursor-pointer tw-inline-flex tw-items-center tw-rounded-md tw-ml-2 tw-px-2 tw-py-1 tw-text-xs tw-font-medium tw-bg-pink-50 tw-text-red-600 tw-ring-pink-700/10 tw-ring-1 tw-ring-inset">Error</span>
-        <span data-target="WARNING" class="resultStatusButton  hover:tw-opacity-80 tw-cursor-pointer tw-inline-flex tw-items-center tw-rounded-md tw-ml-2 tw-px-2 tw-py-1 tw-text-xs tw-font-medium tw-bg-orange-50 -text-orange-500 tw-ring-orange-600/20 tw-ring-1 tw-ring-inset">Warning</span>
-        <span data-target="SUGGEST" class="resultStatusButton  hover:tw-opacity-80 tw-cursor-pointer tw-inline-flex tw-items-center tw-rounded-md tw-ml-2 tw-px-2 tw-py-1 tw-text-xs tw-font-medium tw-bg-yellow-50 -text-yellow-300 tw-ring-yellow-600/20 tw-ring-1 tw-ring-inset">Suggest</span>
-        <span data-target="INFO" class="resultStatusButton   result-type-disabled hover:tw-opacity-80 tw-cursor-pointer tw-inline-flex tw-items-center tw-rounded-md tw-ml-2 tw-px-2 tw-py-1 tw-text-xs tw-font-medium tw-bg-white-50 tw-text-grey-200 tw-ring-blue-700/10 tw-ring-1 tw-ring-inset">Info</span>
-        <span data-target="DEBUG" class="resultStatusButton  result-type-disabled hover:tw-opacity-80 tw-cursor-pointer tw-inline-flex tw-items-center tw-rounded-md tw-ml-2 tw-px-2 tw-py-1 tw-text-xs tw-font-medium tw-bg-gray-50 tw-text-gray-600 tw-ring-gray-500/10 tw-ring-1 tw-ring-inset">Debug</span>
+        <span data-severity="error" class="severity-toggle hover:tw-opacity-80 tw-cursor-pointer tw-inline-flex tw-items-center tw-rounded-md tw-ml-2 tw-px-2 tw-py-1 tw-text-xs tw-font-medium tw-bg-pink-50 tw-text-red-600 tw-ring-pink-700/10 tw-ring-1 tw-ring-inset">Error</span>
+        <span data-severity="warning" class="severity-toggle hover:tw-opacity-80 tw-cursor-pointer tw-inline-flex tw-items-center tw-rounded-md tw-ml-2 tw-px-2 tw-py-1 tw-text-xs tw-font-medium tw-bg-orange-50 tw-text-orange-500 tw-ring-orange-600/20 tw-ring-1 tw-ring-inset">Warning</span>
+        <span data-severity="suggest" class="severity-toggle hover:tw-opacity-80 tw-cursor-pointer tw-inline-flex tw-items-center tw-rounded-md tw-ml-2 tw-px-2 tw-py-1 tw-text-xs tw-font-medium tw-bg-yellow-50 tw-text-yellow-300 tw-ring-yellow-600/20 tw-ring-1 tw-ring-inset">Suggest</span>
+        <span data-severity="info" class="severity-toggle severity-disabled hover:tw-opacity-80 tw-cursor-pointer tw-inline-flex tw-items-center tw-rounded-md tw-ml-2 tw-px-2 tw-py-1 tw-text-xs tw-font-medium tw-bg-white-50 tw-text-grey-200 tw-ring-blue-700/10 tw-ring-1 tw-ring-inset">Info</span>
+        <span data-severity="debug" class="severity-toggle severity-disabled hover:tw-opacity-80 tw-cursor-pointer tw-inline-flex tw-items-center tw-rounded-md tw-ml-2 tw-px-2 tw-py-1 tw-text-xs tw-font-medium tw-bg-gray-50 tw-text-gray-600 tw-ring-gray-500/10 tw-ring-1 tw-ring-inset">Debug</span>
     </div>
     <a class="btn btn-white" href="<?= route('validation@start' ) ?>">
         <span class="fa fa-repeat"></span>
@@ -79,11 +79,12 @@ System Validation
     </template>
 
     <template id="result-template">
-        <!-- validation-result attr data-result-type -->
+        <!-- validation-result attr data-severity -->
         <!-- result-badge  -->
-        <div class="validation-result tw-relative tw-h-fit !tw-important tw-text-xs tw-border-b-1 tw-leading-6 tw-text-gray-900 tw-pl-4 tw-mt-2 tw-flex tw-justify-start tw-align-middle" data-result-type="">
+        <!-- severity  -->
+        <div class="validation-result tw-relative tw-h-fit !tw-important tw-text-xs tw-border-b-1 tw-leading-6 tw-text-gray-900 tw-pl-4 tw-mt-2 tw-flex tw-justify-start tw-align-middle" data-severity="">
             <div class="result-badge badgeDot tw-rounded-full tw-border-2 tw-w-5 tw-h-5 tw-mr-1" title=""></div>
-            <div class="result-type tw-min-w-16 tw-ml-1"></div>
+            <div class="severity tw-min-w-16 tw-ml-1"></div>
             <div class="validation-content-container tw-relative tw-w-[calc(100%-6.5rem)]  tw-border tw-border-transparent tw-text-[0.9rem] tw-transition-[height] tw-duration-250">
                 <div>
                     <span class="validation-content"></span>
@@ -122,12 +123,12 @@ System Validation
     let jobId = "<?= $t->ee( $t->jobId, "js" ); ?>";
 
     // Currently relying on these increasing in severity
-    let resultTypeBadgeClass = {
-        'DEBUG': 'tw-border-gray-300 tw-bg-gray-300',
-        'INFO': 'tw-border-white-1000 tw-bg-white-1000',
-        'SUGGEST': 'tw-border-yellow-300 tw-bg-yellow-300',
-        'WARNING': 'tw-border-orange-400 tw-bg-orange-400',
-        'ERROR': 'tw-border-red-600 tw-bg-red-600',
+    let severityBadgeClass = {
+        'debug': 'tw-border-gray-300 tw-bg-gray-300',
+        'info': 'tw-border-white-1000 tw-bg-white-1000',
+        'suggest': 'tw-border-yellow-300 tw-bg-yellow-300',
+        'warning': 'tw-border-orange-400 tw-bg-orange-400',
+        'error': 'tw-border-red-600 tw-bg-red-600',
     };
 
     const loadingSpinner = $('.loading-results-indicator');
@@ -234,15 +235,15 @@ System Validation
         function createValidationResultFragment(resultData) {
             let resultClone = $( resultTemplate.prop('content') ).clone();
 
-            resultClone.find('.validation-result').attr("data-result-type", resultData.type);
+            resultClone.find('.validation-result').attr("data-severity", resultData.severity);
 
             resultClone.find('.result-badge')
                 .attr("title", resultData.message)
-                .addClass(resultTypeBadgeClass[resultData.type]);
+                .addClass(severityBadgeClass[resultData.severity]);
 
-            resultClone.find('.result-type').text(resultData.type.toUpperCase());
+            resultClone.find('.severity').text(resultData.severity.toUpperCase());
             resultClone.find('.validation-content').text(resultData.message);
-            resultClone.attr('data-result-type', resultData.type);
+            resultClone.attr('data-severity', resultData.severity);
 
             if (resultData.additional_info.length > 0) {
                 let extraContent = resultClone.find('.validation-extra-content');
@@ -311,11 +312,11 @@ System Validation
     });
 
     /**
-     * When a result-type badge is clicked, toggle opacity, and call toggleInformation
+     * When a severity badge is clicked, toggle opacity, and call toggleInformation
      * to refresh
      */
-    $(document).on('click','.resultStatusButton',function() {
-        $(this).toggleClass('result-type-disabled');
+    $(document).on('click','.severity-toggle',function() {
+        $(this).toggleClass('severity-disabled');
         toggleInformation();
     });
 
@@ -327,13 +328,13 @@ System Validation
     function toggleInformation() {
 
         // This hides a result (inside a validation-wrapper) if it's result type isn't active:
-        const badgeButtons = $('.resultStatusButton');
+        const badgeButtons = $('.severity-toggle');
         badgeButtons.each( function() {
-            let resultType = $(this).data("target");
-            let isDisabled = $(this).hasClass('result-type-disabled');
+            let resultType = $(this).data("severity");
+            let isDisabled = $(this).hasClass('severity-disabled');
 
             // Toggle tw-hidden on validation-results of type resultType based on button state
-            $(".validation-result[data-result-type='" + resultType + "']").toggleClass('tw-hidden', isDisabled);
+            $(".validation-result[data-severity='" + resultType + "']").toggleClass('tw-hidden', isDisabled);
         });
 
         $('.validation-wrapper').each(function() {
@@ -341,8 +342,8 @@ System Validation
 
             // Check if wrapper has results matching at least one active result type
             const hasDisplayedResults = wrapper.find('.validation-result').toArray().some(function(result) {
-                const type = $(result).data('result-type');
-                return $(`.resultStatusButton[data-target="${type}"]:not(.result-type-disabled)`).length > 0;
+                const type = $(result).data('severity');
+                return $(`.severity-toggle[data-severity="${type}"]:not(.severity-disabled)`).length > 0;
             });
 
             // Only toggle tw-hidden on the validation-wrapper if the validation didn't fail or timeout,

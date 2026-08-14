@@ -25,16 +25,16 @@ declare(strict_types=1);
 namespace Tests\Services\Validation\Dto;
 
 use IXP\Services\Validation\Dto\Result;
-use IXP\Services\Validation\Enums\ResultType;
+use IXP\Services\Validation\Enums\Severity;
 use Tests\TestCase;
 
 class ResultFeatureTest extends TestCase
 {
     public function testDto()
     {
-        $result = new Result("Reporting back...", ResultType::Info);
+        $result = new Result("Reporting back...", Severity::Info);
         $this->assertEquals("Reporting back...", $result->message);
-        $this->assertEquals(ResultType::Info, $result->type);
+        $this->assertEquals(Severity::Info, $result->severity);
 
         // Test withDocsPath - involves helper method and config
         $this->assertNull($result->docsUrl);
