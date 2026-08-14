@@ -48,7 +48,7 @@ class RunCommand extends Command
      */
     protected $signature = "validator:run
                                 {--timeout=20     : Set a task timeout in seconds }
-                                {--severity=suggest  : Select the minimum severity to print. In ascending order: debug, info, suggest, warning, error }
+                                {--severity=suggestion  : Select the minimum severity to print. In ascending order: debug, info, suggest, warning, error }
     ";
 
     /**
@@ -90,11 +90,12 @@ class RunCommand extends Command
      */
     public function handle( ValidationRunnerFactory $validation, ConcurrentJobRunner $jobRunner ): int
     {
-        if( null === ( $this->minSeverity = Severity::tryFrom( strtolower( $this->option( 'severity' ) ) ) ) ) {
+        if( null === ( $minSeverity = Severity::tryFrom( strtolower( $this->option( 'severity' ) ) ) ) ) {
             $this->line("Unknown severity '{$this->option('severity')}'");
             return 1;
         }
 
+        $this->minSeverity = $minSeverity;
         $this->initEmptyResultsSummary();
         $this->runners = $validation->getRunners();
 
@@ -173,6 +174,7 @@ class RunCommand extends Command
         $this->runners[$taskKey]->validatorFailure($exception);
         $this->failureCount++;
     }
+
     /**
      * Print a table of software versions, and runner results
      */
