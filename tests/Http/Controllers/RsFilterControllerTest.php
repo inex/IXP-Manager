@@ -22,7 +22,7 @@
 
 declare(strict_types=1);
 
-namespace Http\Controllers;
+namespace Tests\Http\Controllers;
 
 use IXP\Models\RouteServerFilter;
 use IXP\Models\User;

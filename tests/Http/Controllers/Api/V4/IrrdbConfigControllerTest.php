@@ -22,7 +22,7 @@
 
 declare(strict_types=1);
 
-namespace Http\Controllers\Api\V4;
+namespace Tests\Http\Controllers\Api\V4;
 
 use IXP\Models\IrrdbConfig;
 use Tests\TestCase;
