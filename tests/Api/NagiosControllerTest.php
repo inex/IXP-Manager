@@ -126,6 +126,45 @@ class NagiosControllerTest extends TestCase
         ]);
     }
 
+    public function testCustomersParams(): void
+    {
+        $vlan1 = Vlan::whereId(1)->firstOrFail();
+
+        $this->withHeader( 'X-IXP-Manager-API-Key', self::API_KEY_SUPERUSER )
+            ->get("admin/api/v4/nagios/customers/{$vlan1->id}/4")
+            ->assertOk()
+            ->assertHeader('content-type', 'text/plain; charset=utf-8')
+            ->assertViewIs('api.v4.nagios.customers.default')
+            ->assertSeeText("ixp-manager-member-host")
+            ->assertSeeText("ixp-manager-member-service")
+            ->assertSeeText("ixp-manager-member-ping-service")
+            ->assertSeeText("ixp-manager-member-ping-busy-service")
+            ->assertDontSeeText("parameter-member-host")
+            ->assertDontSeeText("parameter-member-service")
+            ->assertDontSeeText("parameter-member-ping-service")
+            ->assertDontSeeText("parameter-member-ping-busy-service")
+        ;
+
+        $this->withHeader( 'X-IXP-Manager-API-Key', self::API_KEY_SUPERUSER )
+            ->call('GET',"admin/api/v4/nagios/customers/{$vlan1->id}/4", [
+                'host_definition' => 'parameter-member-host',
+                'service_definition' => 'parameter-member-service',
+                'ping_service_definition' => 'parameter-member-ping-service',
+                'ping_busy_service_definition' => 'parameter-member-ping-busy-service'
+            ])
+            ->assertOk()
+            ->assertHeader('content-type', 'text/plain; charset=utf-8')
+            ->assertViewIs('api.v4.nagios.customers.default')
+            ->assertDontSeeText("ixp-manager-member-host")
+            ->assertDontSeeText("ixp-manager-member-service")
+            ->assertDontSeeText("ixp-manager-member-ping-service")
+            ->assertDontSeeText("ixp-manager-member-ping-busy-service")
+            ->assertSeeText("parameter-member-host")
+            ->assertSeeText("parameter-member-service")
+            ->assertSeeText("parameter-member-ping-service")
+            ->assertSeeText("parameter-member-ping-busy-service");
+    }
+
     public function testSwitchesInfraNotFound(): void
     {
         $this->withHeader( 'X-IXP-Manager-API-Key', self::API_KEY_SUPERUSER )
@@ -176,6 +215,29 @@ class NagiosControllerTest extends TestCase
         ]);
     }
 
+    public function testSwitchesParams()
+    {
+        $infrastructure1 = Infrastructure::whereId(1)->firstOrFail();
+
+        $this->withHeader( 'X-IXP-Manager-API-Key', self::API_KEY_SUPERUSER )
+            ->get("admin/api/v4/nagios/switches/{$infrastructure1->id}")
+            ->assertOk()
+            ->assertHeader('content-type', 'text/plain; charset=utf-8')
+            ->assertViewIs('api.v4.nagios.switches.default')
+            ->assertSeeText("ixp-manager-production-switch")
+            ->assertDontSeeText("parameter-production-switch");
+
+        $this->withHeader( 'X-IXP-Manager-API-Key', self::API_KEY_SUPERUSER )
+            ->call('GET', "admin/api/v4/nagios/switches/{$infrastructure1->id}", [
+                'host_definition' => 'parameter-production-switch',
+            ])
+            ->assertOk()
+            ->assertHeader('content-type', 'text/plain; charset=utf-8')
+            ->assertViewIs('api.v4.nagios.switches.default')
+            ->assertDontSeeText("ixp-manager-production-switch")
+            ->assertSeeText("parameter-production-switch");
+    }
+
     public function testBirdseyeDaemonsVlanNotFound(): void
     {
         $this->withHeader( 'X-IXP-Manager-API-Key', self::API_KEY_SUPERUSER )
@@ -222,6 +284,32 @@ class NagiosControllerTest extends TestCase
             'parameters->vlan' => $vlan1->id,
             'parameters->template' => 'api/v4/nagios/birdseye-daemons/default',
         ]);
+    }
+
+    public function testBirdseyeDaemonsParams()
+    {
+        $this->withHeader( 'X-IXP-Manager-API-Key', self::API_KEY_SUPERUSER )
+            ->get("admin/api/v4/nagios/birdseye-daemons")
+            ->assertOk()
+            ->assertHeader('content-type', 'text/plain; charset=utf-8')
+            ->assertViewIs('api.v4.nagios.birdseye-daemons.default')
+            ->assertSeeText("ixp-manager-host-birdseye-daemon")
+            ->assertSeeText("ixp-manager-service-birdseye-daemon")
+            ->assertDontSeeText("parameter-host-birdseye-daemon")
+            ->assertDontSeeText("parameter-service-birdseye-daemon");
+
+        $this->withHeader( 'X-IXP-Manager-API-Key', self::API_KEY_SUPERUSER )
+            ->call('GET', "admin/api/v4/nagios/birdseye-daemons", [
+                'host_definition' => 'parameter-host-birdseye-daemon',
+                'service_definition' => 'parameter-service-birdseye-daemon',
+            ])
+            ->assertOk()
+            ->assertHeader('content-type', 'text/plain; charset=utf-8')
+            ->assertViewIs('api.v4.nagios.birdseye-daemons.default')
+            ->assertDontSeeText("ixp-manager-host-birdseye-daemon")
+            ->assertDontSeeText("ixp-manager-service-birdseye-daemon")
+            ->assertSeeText("parameter-host-birdseye-daemon")
+            ->assertSeeText("parameter-service-birdseye-daemon");
     }
 
     public function testBirdseyeDaemonsNoBirdsEyeRouters(): void
@@ -332,6 +420,31 @@ class NagiosControllerTest extends TestCase
             'parameters->type' => Router::TYPE_ROUTE_SERVER,
             'parameters->template' => 'api/v4/nagios/birdseye-bgp-sessions/default',
         ]);
+    }
+
+    public function testBirdseyeBgpSessionsParams()
+    {
+        $vlan2 = Vlan::whereId(2)->firstOrFail();
+
+        $this->withHeader( 'X-IXP-Manager-API-Key', self::API_KEY_SUPERUSER )
+            ->get("admin/api/v4/nagios/birdseye-bgp-sessions/{$vlan2->id}/4/" . Router::TYPE_ROUTE_SERVER)
+            ->assertOk()
+            ->assertHeader('content-type', 'text/plain; charset=utf-8')
+            ->assertViewIs('api.v4.nagios.birdseye-bgp-sessions.default')
+            ->assertSeeText("ixp-manager-member-bgp-session-service")
+            ->assertDontSeeText("parameter-member-bgp-session-service")
+        ;
+
+        $this->withHeader( 'X-IXP-Manager-API-Key', self::API_KEY_SUPERUSER )
+            ->call('GET', "admin/api/v4/nagios/birdseye-bgp-sessions/{$vlan2->id}/4/" . Router::TYPE_ROUTE_SERVER, [
+                'service_definition' => 'parameter-member-bgp-session-service',
+            ])
+            ->assertOk()
+            ->assertHeader('content-type', 'text/plain; charset=utf-8')
+            ->assertViewIs('api.v4.nagios.birdseye-bgp-sessions.default')
+            ->assertDontSeeText("ixp-manager-member-bgp-session-service")
+            ->assertSeeText("parameter-member-bgp-session-service")
+        ;;
     }
 
 }
