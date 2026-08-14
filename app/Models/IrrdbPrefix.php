@@ -40,17 +40,17 @@ use Illuminate\Database\Eloquent\{
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \IXP\Models\Customer $customer
- * @method static \Illuminate\Database\Eloquent\Builder|IrrdbPrefix newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|IrrdbPrefix newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|IrrdbPrefix query()
- * @method static \Illuminate\Database\Eloquent\Builder|IrrdbPrefix whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|IrrdbPrefix whereCustomerId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|IrrdbPrefix whereFirstSeen($value)
- * @method static \Illuminate\Database\Eloquent\Builder|IrrdbPrefix whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|IrrdbPrefix whereLastSeen($value)
- * @method static \Illuminate\Database\Eloquent\Builder|IrrdbPrefix wherePrefix($value)
- * @method static \Illuminate\Database\Eloquent\Builder|IrrdbPrefix whereProtocol($value)
- * @method static \Illuminate\Database\Eloquent\Builder|IrrdbPrefix whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|IrrdbPrefix newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|IrrdbPrefix newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|IrrdbPrefix query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|IrrdbPrefix whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|IrrdbPrefix whereCustomerId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|IrrdbPrefix whereFirstSeen($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|IrrdbPrefix whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|IrrdbPrefix whereLastSeen($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|IrrdbPrefix wherePrefix($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|IrrdbPrefix whereProtocol($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|IrrdbPrefix whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class IrrdbPrefix extends Model

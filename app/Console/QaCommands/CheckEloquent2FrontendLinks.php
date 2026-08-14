@@ -111,12 +111,12 @@ class CheckEloquent2FrontendLinks extends  Command
 
     private function getFeParamsForController(string $class): \stdClass
     {
-        $class = new $class();
-        $class->feInit();
-        $accessorClosure = \Closure::bind(function() {
-            return $this->feParams;
-        }, $class, get_class($class));
-        return $accessorClosure($class);
+        $controller = new $class();
+        $controller->feInit();
+        $reflection = new \ReflectionProperty($class, 'feParams');
+
+        /** @var \stdClass */
+        return $reflection->getValue($controller);
     }
 
     /**

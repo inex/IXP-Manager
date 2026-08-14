@@ -6,9 +6,6 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * @method static \Illuminate\Database\Eloquent\Builder|IrrdbUpdateLog newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|IrrdbUpdateLog newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|IrrdbUpdateLog query()
  * @property int $id
  * @property int $cust_id
  * @property \Illuminate\Support\Carbon|null $prefix_v4
@@ -17,14 +14,16 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Illuminate\Support\Carbon|null $asn_v6
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @method static \Illuminate\Database\Eloquent\Builder|IrrdbUpdateLog whereAsnV4($value)
- * @method static \Illuminate\Database\Eloquent\Builder|IrrdbUpdateLog whereAsnV6($value)
- * @method static \Illuminate\Database\Eloquent\Builder|IrrdbUpdateLog whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|IrrdbUpdateLog whereCustId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|IrrdbUpdateLog whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|IrrdbUpdateLog wherePrefixV4($value)
- * @method static \Illuminate\Database\Eloquent\Builder|IrrdbUpdateLog wherePrefixV6($value)
- * @method static \Illuminatfinal e\Database\Eloquent\Builder|IrrdbUpdateLog whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|IrrdbUpdateLog newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|IrrdbUpdateLog newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|IrrdbUpdateLog query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|IrrdbUpdateLog whereAsnV4($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|IrrdbUpdateLog whereAsnV6($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|IrrdbUpdateLog whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|IrrdbUpdateLog whereCustId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|IrrdbUpdateLog whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|IrrdbUpdateLog wherePrefixV4($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|IrrdbUpdateLog wherePrefixV6($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|IrrdbUpdateLog whereUpdatedAt($value)
  * @mixin \Eloquent
  */

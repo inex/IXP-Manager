@@ -54,8 +54,6 @@ use IXP\Traits\Observable;
  * @property string $template
  * @property bool $skip_md5
  * @property \Illuminate\Support\Carbon|null $last_update_started
- * @property \Illuminate\Support\Carbon|null $last_updated
- * @property int $pause_updates
  * @property bool $rpki
  * @property string|null $software_version
  * @property string|null $operating_system
@@ -63,55 +61,52 @@ use IXP\Traits\Observable;
  * @property int $rfc1997_passthru
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $last_updated
+ * @property int $pause_updates
  * @property-read Router|null $pair
  * @property-read \IXP\Models\Vlan $vlan
- * @method static Builder|Router hasApi()
- * @method static Builder|Router ipv4()
- * @method static Builder|Router ipv6()
- * @method static Builder|Router largeCommunities()
- * @method static Builder|Router newModelQuery()
- * @method static Builder|Router newQuery()
- * @method static Builder|Router notQuarantine()
- * @method static Builder|Router query()
- * @method static Builder|Router routeServer()
- * @method static Builder|Router rpki()
- * @method static Builder|Router whereApi($value)
- * @method static Builder|Router whereApiType($value)
- * @method static Builder|Router whereAsn($value)
- * @method static Builder|Router whereBgpLc($value)
- * @method static Builder|Router whereCreatedAt($value)
- * @method static Builder|Router whereHandle($value)
- * @method static Builder|Router whereId($value)
- * @method static Builder|Router whereLastUpdateStarted($value)
- * @method static Builder|Router whereLastUpdated($value)
- * @method static Builder|Router whereLgAccess($value)
- * @method static Builder|Router whereMgmtHost($value)
- * @method static Builder|Router whereName($value)
- * @method static Builder|Router whereOperatingSystem($value)
- * @method static Builder|Router whereOperatingSystemVersion($value)
- * @method static Builder|Router wherePairId($value)
- * @method static Builder|Router wherePauseUpdates($value)
- * @method static Builder|Router wherePeeringIp($value)
- * @method static Builder|Router whereProtocol($value)
- * @method static Builder|Router whereQuarantine($value)
- * @method static Builder|Router whereRfc1997Passthru($value)
- * @method static Builder|Router whereRouterId($value)
- * @method static Builder|Router whereRpki($value)
- * @method static Builder|Router whereShortname($value)
- * @method static Builder|Router whereSkipMd5($value)
- * @method static Builder|Router whereSoftware($value)
- * @method static Builder|Router whereSoftwareVersion($value)
- * @method static Builder|Router whereTemplate($value)
- * @method static Builder|Router whereType($value)
- * @method static Builder|Router whereUpdatedAt($value)
- * @method static Builder|Router whereVlanId($value)
- * @method static Builder|Router routeCollector()
- * @method static Builder|Router ipvX(int $protocol)
- * @method static Builder|Router ipProtocol(int $protocol)
- * @property int|null $rpki_min_version
- * @property int|null $rpki_max_version
- * @method static Builder<static>|Router whereRpkiMaxVersion($value)
- * @method static Builder<static>|Router whereRpkiMinVersion($value)
+ * @method static Builder<static>|Router hasApi()
+ * @method static Builder<static>|Router ipProtocol(int $protocol)
+ * @method static Builder<static>|Router ipv4()
+ * @method static Builder<static>|Router ipv6()
+ * @method static Builder<static>|Router largeCommunities()
+ * @method static Builder<static>|Router newModelQuery()
+ * @method static Builder<static>|Router newQuery()
+ * @method static Builder<static>|Router notQuarantine()
+ * @method static Builder<static>|Router query()
+ * @method static Builder<static>|Router routeCollector()
+ * @method static Builder<static>|Router routeServer()
+ * @method static Builder<static>|Router rpki()
+ * @method static Builder<static>|Router whereApi($value)
+ * @method static Builder<static>|Router whereApiType($value)
+ * @method static Builder<static>|Router whereAsn($value)
+ * @method static Builder<static>|Router whereBgpLc($value)
+ * @method static Builder<static>|Router whereCreatedAt($value)
+ * @method static Builder<static>|Router whereHandle($value)
+ * @method static Builder<static>|Router whereId($value)
+ * @method static Builder<static>|Router whereLastUpdateStarted($value)
+ * @method static Builder<static>|Router whereLastUpdated($value)
+ * @method static Builder<static>|Router whereLgAccess($value)
+ * @method static Builder<static>|Router whereMgmtHost($value)
+ * @method static Builder<static>|Router whereName($value)
+ * @method static Builder<static>|Router whereOperatingSystem($value)
+ * @method static Builder<static>|Router whereOperatingSystemVersion($value)
+ * @method static Builder<static>|Router wherePairId($value)
+ * @method static Builder<static>|Router wherePauseUpdates($value)
+ * @method static Builder<static>|Router wherePeeringIp($value)
+ * @method static Builder<static>|Router whereProtocol($value)
+ * @method static Builder<static>|Router whereQuarantine($value)
+ * @method static Builder<static>|Router whereRfc1997Passthru($value)
+ * @method static Builder<static>|Router whereRouterId($value)
+ * @method static Builder<static>|Router whereRpki($value)
+ * @method static Builder<static>|Router whereShortname($value)
+ * @method static Builder<static>|Router whereSkipMd5($value)
+ * @method static Builder<static>|Router whereSoftware($value)
+ * @method static Builder<static>|Router whereSoftwareVersion($value)
+ * @method static Builder<static>|Router whereTemplate($value)
+ * @method static Builder<static>|Router whereType($value)
+ * @method static Builder<static>|Router whereUpdatedAt($value)
+ * @method static Builder<static>|Router whereVlanId($value)
  * @mixin \Eloquent
  */
 class Router extends Model

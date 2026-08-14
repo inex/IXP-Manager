@@ -58,21 +58,21 @@ use IXP\Traits\Observable;
  * @property-read \IXP\Models\DocstoreDirectory|null $directory
  * @property-read Collection<int, \IXP\Models\DocstoreLog> $logs
  * @property-read int|null $logs_count
- * @method static Builder|DocstoreFile newModelQuery()
- * @method static Builder|DocstoreFile newQuery()
- * @method static Builder|DocstoreFile query()
- * @method static Builder|DocstoreFile whereCreatedAt($value)
- * @method static Builder|DocstoreFile whereCreatedBy($value)
- * @method static Builder|DocstoreFile whereDescription($value)
- * @method static Builder|DocstoreFile whereDisk($value)
- * @method static Builder|DocstoreFile whereDocstoreDirectoryId($value)
- * @method static Builder|DocstoreFile whereFileLastUpdated($value)
- * @method static Builder|DocstoreFile whereId($value)
- * @method static Builder|DocstoreFile whereMinPrivs($value)
- * @method static Builder|DocstoreFile whereName($value)
- * @method static Builder|DocstoreFile wherePath($value)
- * @method static Builder|DocstoreFile whereSha256($value)
- * @method static Builder|DocstoreFile whereUpdatedAt($value)
+ * @method static Builder<static>|DocstoreFile newModelQuery()
+ * @method static Builder<static>|DocstoreFile newQuery()
+ * @method static Builder<static>|DocstoreFile query()
+ * @method static Builder<static>|DocstoreFile whereCreatedAt($value)
+ * @method static Builder<static>|DocstoreFile whereCreatedBy($value)
+ * @method static Builder<static>|DocstoreFile whereDescription($value)
+ * @method static Builder<static>|DocstoreFile whereDisk($value)
+ * @method static Builder<static>|DocstoreFile whereDocstoreDirectoryId($value)
+ * @method static Builder<static>|DocstoreFile whereFileLastUpdated($value)
+ * @method static Builder<static>|DocstoreFile whereId($value)
+ * @method static Builder<static>|DocstoreFile whereMinPrivs($value)
+ * @method static Builder<static>|DocstoreFile whereName($value)
+ * @method static Builder<static>|DocstoreFile wherePath($value)
+ * @method static Builder<static>|DocstoreFile whereSha256($value)
+ * @method static Builder<static>|DocstoreFile whereUpdatedAt($value)
  * @mixin Eloquent
  */
 

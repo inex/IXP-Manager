@@ -24,7 +24,7 @@ namespace IXP\Models\Aggregators;
  */
 
 use Exception;
-use IXP_Exception;
+use Illuminate\Database\Eloquent\Builder;
 use IXP\Models\{
     Router,
     Vlan
@@ -35,11 +35,11 @@ use IXP\Models\{
  * IXP\Models\Aggregators\VlanAggregator
  *
  * @property int $id
+ * @property int $infrastructureid
  * @property string|null $name
  * @property int|null $number
- * @property string|null $notes
  * @property bool $private
- * @property int $infrastructureid
+ * @property string|null $notes
  * @property int $peering_matrix
  * @property int $peering_manager
  * @property bool $export_to_ixf
@@ -61,25 +61,25 @@ use IXP\Models\{
  * @property-read int|null $routers_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\VlanInterface> $vlanInterfaces
  * @property-read int|null $vlan_interfaces_count
- * @method static \Illuminate\Database\Eloquent\Builder|VlanAggregator newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|VlanAggregator newQuery()
- * @method static Builder|Vlan peeringManager()
- * @method static Builder|Vlan privateOnly()
- * @method static Builder|Vlan publicOnly()
- * @method static \Illuminate\Database\Eloquent\Builder|VlanAggregator query()
- * @method static \Illuminate\Database\Eloquent\Builder|VlanAggregator whereConfigName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|VlanAggregator whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|VlanAggregator whereExportToIxf($value)
- * @method static \Illuminate\Database\Eloquent\Builder|VlanAggregator whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|VlanAggregator whereInfrastructureid($value)
- * @method static \Illuminate\Database\Eloquent\Builder|VlanAggregator whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|VlanAggregator whereNotes($value)
- * @method static \Illuminate\Database\Eloquent\Builder|VlanAggregator whereNumber($value)
- * @method static \Illuminate\Database\Eloquent\Builder|VlanAggregator wherePeeringManager($value)
- * @method static \Illuminate\Database\Eloquent\Builder|VlanAggregator wherePeeringMatrix($value)
- * @method static \Illuminate\Database\Eloquent\Builder|VlanAggregator wherePrivate($value)
- * @method static \Illuminate\Database\Eloquent\Builder|VlanAggregator whereUpdatedAt($value)
- * @method static Builder|VlanAggregator publicProductionPeeringLan()
+ * @method static Builder<static>|VlanAggregator newModelQuery()
+ * @method static Builder<static>|VlanAggregator newQuery()
+ * @method static Builder<static>|VlanAggregator peeringManager()
+ * @method static Builder<static>|VlanAggregator privateOnly()
+ * @method static Builder<static>|VlanAggregator publicOnly()
+ * @method static Builder<static>|VlanAggregator publicProductionPeeringLan()
+ * @method static Builder<static>|VlanAggregator query()
+ * @method static Builder<static>|VlanAggregator whereConfigName($value)
+ * @method static Builder<static>|VlanAggregator whereCreatedAt($value)
+ * @method static Builder<static>|VlanAggregator whereExportToIxf($value)
+ * @method static Builder<static>|VlanAggregator whereId($value)
+ * @method static Builder<static>|VlanAggregator whereInfrastructureid($value)
+ * @method static Builder<static>|VlanAggregator whereName($value)
+ * @method static Builder<static>|VlanAggregator whereNotes($value)
+ * @method static Builder<static>|VlanAggregator whereNumber($value)
+ * @method static Builder<static>|VlanAggregator wherePeeringManager($value)
+ * @method static Builder<static>|VlanAggregator wherePeeringMatrix($value)
+ * @method static Builder<static>|VlanAggregator wherePrivate($value)
+ * @method static Builder<static>|VlanAggregator whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class VlanAggregator extends Vlan

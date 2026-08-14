@@ -87,7 +87,7 @@
             <?php endif; ?>
 
             <?php if( $t->rsFilters->count() ): ?>
-                <table id='table-list' class="table table-striped table-responsive-ixp-with-header" width="100%">
+                <table id='<?php if($t->in_sync): ?>production-table-list<?php else: ?>staged-table-list<?php endif; ?>' class="table table-striped table-responsive-ixp-with-header" width="100%">
                     <thead class="thead-dark">
                         <tr>
                             <th>
@@ -181,24 +181,24 @@
                                 </td>
                                 <td>
                                     <div class="btn-group btn-group-sm" role="group">
-                                        <a class="btn btn-white" href="<?= route( 'rs-filter@view' , [ 'rsf' =>  $rsf->id ] ) ?>" title="Preview">
+                                        <a class="btn btn-white" id="view-rsf-<?= $rsf->id ?>" href="<?= route( 'rs-filter@view' , [ 'rsf' =>  $rsf->id ] ) ?>" title="Preview">
                                             <i class="fa fa-eye"></i>
                                         </a>
 
                                         <?php if( !$isCustUser ): ?>
-                                            <a class="btn btn-white" href="<?= route( 'rs-filter@edit' , [ 'rsf' =>  $rsf->id ] ) ?>" title="Edit">
+                                            <a class="btn btn-white" id="edit-rsf-<?= $rsf->id ?>" href="<?= route( 'rs-filter@edit' , [ 'rsf' =>  $rsf->id ] ) ?>" title="Edit">
                                                 <i class="fa fa-pencil"></i>
                                             </a>
-                                            <a class="btn btn-white" href="<?= route( "rs-filter@toggle-enable", [ "rsf" => $rsf->id, "enable" => $rsf->enabled ? 0 : 1 ] ) ?>" title="<?= $rsf->enabled ? "Disable" : "Enable" ?>">
+                                            <a class="btn btn-white" id="toggle-rsf-<?= $rsf->id ?>" href="<?= route( "rs-filter@toggle-enable", [ "rsf" => $rsf->id, "enable" => $rsf->enabled ? 0 : 1 ] ) ?>" title="<?= $rsf->enabled ? "Disable" : "Enable" ?>">
                                                 <i class="fa <?= $rsf->enabled ? "fa-times-circle" : "fa-check-circle" ?>"></i>
                                             </a>
                                             <a class="btn btn-white delete-rsf" id="delete-rsf-<?= $rsf->id ?>" data-object-id="<?=  $rsf->id ?>"  href="<?= route( 'rs-filter@delete' , [ 'rsf' => $rsf->id ]  )  ?>" title="Delete">
                                                 <i class="fa fa-trash"></i>
                                             </a>
-                                            <a class="btn btn-white <?= $t->rsFilters->first()->id !== $rsf->id ?: "disabled" ?>" href="<?= route( "rs-filter@change-order", [ "rsf" => $rsf->id, "up" => 1 ] ) ?>">
+                                            <a class="btn btn-white <?= $t->rsFilters->first()->id !== $rsf->id ?: "disabled" ?>" id="change-rsf-order-up-<?= $rsf->id ?>" href="<?= route( "rs-filter@change-order", [ "rsf" => $rsf->id, "up" => 1 ] ) ?>">
                                                 <i class="fa fa-arrow-up"></i>
                                             </a>
-                                            <a class="btn btn-white <?= $t->rsFilters->last()->id !== $rsf->id ?: "disabled"  ?>" href="<?= route( "rs-filter@change-order", [ "rsf" => $rsf->id , "up" => 0 ] ) ?>">
+                                            <a class="btn btn-white <?= $t->rsFilters->last()->id !== $rsf->id ?: "disabled"  ?>" id="change-rsf-order-down-<?= $rsf->id ?>" href="<?= route( "rs-filter@change-order", [ "rsf" => $rsf->id , "up" => 0 ] ) ?>">
                                                 <i class="fa fa-arrow-down"></i>
                                             </a>
                                         <?php endif; ?>
@@ -232,7 +232,8 @@
                 <h3 class="my-4">Rules in Production</h3>
 
                 <?php if( $t->rsFiltersProd->count() ): ?>
-                    <table id='table-list' class="table table-striped table-responsive-ixp-with-header" width="100%">
+                <?php /// note - we name the ABOVE table production-table-list if the tables are in sync ?>
+                    <table id='production-table-list' class="table table-striped table-responsive-ixp-with-header" width="100%">
                         <thead class="thead-dark">
                         <tr>
                             <th>

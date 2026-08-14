@@ -33,14 +33,14 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $organisation
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @method static \Illuminate\Database\Eloquent\Builder|Oui newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Oui newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Oui query()
- * @method static \Illuminate\Database\Eloquent\Builder|Oui whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Oui whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Oui whereOrganisation($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Oui whereOui($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Oui whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Oui newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Oui newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Oui query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Oui whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Oui whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Oui whereOrganisation($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Oui whereOui($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Oui whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class Oui extends Model

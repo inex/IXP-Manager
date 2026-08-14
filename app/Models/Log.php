@@ -36,23 +36,23 @@ use Illuminate\Database\Eloquent\Builder;
  * @property int|null $model_id
  * @property string $action
  * @property string $message
- * @property array $models
+ * @property array<array-key, mixed> $models
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \IXP\Models\User|null $user
- * @method static Builder|Log filter(array $filters)
- * @method static Builder|Log newModelQuery()
- * @method static Builder|Log newQuery()
- * @method static Builder|Log query()
- * @method static Builder|Log whereAction($value)
- * @method static Builder|Log whereCreatedAt($value)
- * @method static Builder|Log whereId($value)
- * @method static Builder|Log whereMessage($value)
- * @method static Builder|Log whereModel($value)
- * @method static Builder|Log whereModelId($value)
- * @method static Builder|Log whereModels($value)
- * @method static Builder|Log whereUpdatedAt($value)
- * @method static Builder|Log whereUserId($value)
+ * @method static Builder<static>|Log filter(array $filters)
+ * @method static Builder<static>|Log newModelQuery()
+ * @method static Builder<static>|Log newQuery()
+ * @method static Builder<static>|Log query()
+ * @method static Builder<static>|Log whereAction($value)
+ * @method static Builder<static>|Log whereCreatedAt($value)
+ * @method static Builder<static>|Log whereId($value)
+ * @method static Builder<static>|Log whereMessage($value)
+ * @method static Builder<static>|Log whereModel($value)
+ * @method static Builder<static>|Log whereModelId($value)
+ * @method static Builder<static>|Log whereModels($value)
+ * @method static Builder<static>|Log whereUpdatedAt($value)
+ * @method static Builder<static>|Log whereUserId($value)
  * @mixin \Eloquent
  */
 class Log extends Model

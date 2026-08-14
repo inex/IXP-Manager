@@ -25,13 +25,15 @@ namespace IXP\Models;
 
 use Eloquent;
 
-use Illuminate\Database\Eloquent\{Builder,
+use Illuminate\Database\Eloquent\{
+    Builder,
     Model,
     Relations\BelongsTo,
     Relations\BelongsToMany,
     Relations\HasMany,
     Relations\HasOne};
 
+use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Notifications\Notifiable;
 
 use Illuminate\Auth\Authenticatable;
@@ -110,7 +112,7 @@ use IXP\Traits\Observable;
 class User extends Model implements AuthenticatableContract, CanResetPasswordContract
 {
 
-    use Authenticatable, CanResetPassword, Notifiable, Observable;
+    use Authenticatable, Authorizable, CanResetPassword, Notifiable, Observable;
     /**
      * The table associated with the model.
      *

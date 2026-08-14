@@ -1,7 +1,4 @@
 <?php
-
-namespace IXP\Models\Aggregators;
-
 /*
  * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
@@ -22,6 +19,10 @@ namespace IXP\Models\Aggregators;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+
+declare(strict_types=1);
+
+namespace IXP\Models\Aggregators;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -50,24 +51,23 @@ use IXP\Models\RouteServerFilterProd;
  * @property-read Customer|null $customer
  * @property-read Customer|null $peer
  * @property-read \IXP\Models\Vlan|null $vlan
- * @method static Builder|RouteServerFilterAggregator newModelQuery()
- * @method static Builder|RouteServerFilterAggregator newQuery()
- * @method static Builder|RouteServerFilterAggregator query()
- * @method static Builder|RouteServerFilterAggregator whereActionAdvertise($value)
- * @method static Builder|RouteServerFilterAggregator whereActionReceive($value)
- * @method static Builder|RouteServerFilterAggregator whereAdvertisedPrefix($value)
- * @method static Builder|RouteServerFilterAggregator whereCreatedAt($value)
- * @method static Builder|RouteServerFilterAggregator whereCustomerId($value)
- * @method static Builder|RouteServerFilterAggregator whereEnabled($value)
- * @method static Builder|RouteServerFilterAggregator whereId($value)
- * @method static Builder|RouteServerFilterAggregator whereLive($value)
- * @method static Builder|RouteServerFilterAggregator whereOrderBy($value)
- * @method static Builder|RouteServerFilterAggregator wherePeerId($value)
- * @method static Builder|RouteServerFilterAggregator whereProtocol($value)
- * @method static Builder|RouteServerFilterAggregator whereReceivedPrefix($value)
- * @method static Builder|RouteServerFilterAggregator whereUpdatedAt($value)
- * @method static Builder|RouteServerFilterAggregator whereVlanId($value)
+ * @method static Builder<static>|RouteServerFilterAggregator newModelQuery()
+ * @method static Builder<static>|RouteServerFilterAggregator newQuery()
+ * @method static Builder<static>|RouteServerFilterAggregator query()
  * @method static Builder<static>|RouteServerFilterAggregator whereActionAdvertise($value)
+ * @method static Builder<static>|RouteServerFilterAggregator whereActionReceive($value)
+ * @method static Builder<static>|RouteServerFilterAggregator whereAdvertisedPrefix($value)
+ * @method static Builder<static>|RouteServerFilterAggregator whereCreatedAt($value)
+ * @method static Builder<static>|RouteServerFilterAggregator whereCustomerId($value)
+ * @method static Builder<static>|RouteServerFilterAggregator whereEnabled($value)
+ * @method static Builder<static>|RouteServerFilterAggregator whereId($value)
+ * @method static Builder<static>|RouteServerFilterAggregator whereLive($value)
+ * @method static Builder<static>|RouteServerFilterAggregator whereOrderBy($value)
+ * @method static Builder<static>|RouteServerFilterAggregator wherePeerId($value)
+ * @method static Builder<static>|RouteServerFilterAggregator whereProtocol($value)
+ * @method static Builder<static>|RouteServerFilterAggregator whereReceivedPrefix($value)
+ * @method static Builder<static>|RouteServerFilterAggregator whereUpdatedAt($value)
+ * @method static Builder<static>|RouteServerFilterAggregator whereVlanId($value)
  * @mixin \Eloquent
  */
 class RouteServerFilterAggregator extends RouteServerFilter

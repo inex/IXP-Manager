@@ -13,6 +13,7 @@
             title: "Delete Route Server Filter",
             buttons: {
                 cancel: {
+                    id: 'delete-rsf-cancel',
                     label: 'Close',
                     className: 'btn-secondary',
                     callback: function () {
@@ -21,6 +22,7 @@
                     }
                 },
                 submit: {
+                    id: 'delete-rsf-confirm',
                     label: 'Delete',
                     className: 'btn-danger',
                     callback: function () {
@@ -41,6 +43,7 @@
             title: "Revert Changes",
             buttons: {
                 cancel: {
+                    id: 'submit-revert-cancel',
                     label: 'Close',
                     className: 'btn-secondary',
                     callback: function () {
@@ -49,6 +52,7 @@
                     }
                 },
                 submit: {
+                    id: 'submit-revert-confirm',
                     label: 'Revert',
                     className: 'btn-danger',
                     callback: function () {
@@ -72,6 +76,7 @@
             title: "Commit Changes",
             buttons: {
                 cancel: {
+                    id: 'submit-commit-cancel',
                     label: 'Close',
                     className: 'btn-secondary',
                     callback: function () {
@@ -80,6 +85,7 @@
                     }
                 },
                 submit: {
+                    id: 'submit-commit-confirm',
                     label: 'Commit',
                     className: 'btn-danger',
                     callback: function () {

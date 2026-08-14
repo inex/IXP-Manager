@@ -22,7 +22,7 @@ namespace IXP\Models;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-use Eloquent, stdClass;
+use Eloquent;
 
 use Illuminate\Database\Eloquent\{
     Builder,
@@ -32,7 +32,6 @@ use Illuminate\Database\Eloquent\{
 
 use Illuminate\Support\{
     Carbon,
-    Collection
 };
 
 /**
@@ -50,31 +49,31 @@ use Illuminate\Support\{
  * @property int $is_public
  * @property string|null $last_connected
  * @property string|null $status
- * @property mixed|null $api_data
+ * @property string|null $api_data
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property-read \IXP\Models\Customer $customer
- * @method static Builder|AtlasProbe forActiveProtocol(int $protocol)
- * @method static Builder|AtlasProbe forAtlas(int $atlasid)
- * @method static Builder|AtlasProbe forCustomer(int $custid)
- * @method static Builder|AtlasProbe newModelQuery()
- * @method static Builder|AtlasProbe newQuery()
- * @method static Builder|AtlasProbe query()
- * @method static Builder|AtlasProbe whereAddressV4($value)
- * @method static Builder|AtlasProbe whereAddressV6($value)
- * @method static Builder|AtlasProbe whereApiData($value)
- * @method static Builder|AtlasProbe whereAsn($value)
- * @method static Builder|AtlasProbe whereAtlasId($value)
- * @method static Builder|AtlasProbe whereCreatedAt($value)
- * @method static Builder|AtlasProbe whereCustId($value)
- * @method static Builder|AtlasProbe whereId($value)
- * @method static Builder|AtlasProbe whereIsAnchor($value)
- * @method static Builder|AtlasProbe whereIsPublic($value)
- * @method static Builder|AtlasProbe whereLastConnected($value)
- * @method static Builder|AtlasProbe whereStatus($value)
- * @method static Builder|AtlasProbe whereUpdatedAt($value)
- * @method static Builder|AtlasProbe whereV4Enabled($value)
- * @method static Builder|AtlasProbe whereV6Enabled($value)
+ * @method static Builder<static>|AtlasProbe forActiveProtocol(int $protocol)
+ * @method static Builder<static>|AtlasProbe forAtlas(int $atlasid)
+ * @method static Builder<static>|AtlasProbe forCustomer(int $custid)
+ * @method static Builder<static>|AtlasProbe newModelQuery()
+ * @method static Builder<static>|AtlasProbe newQuery()
+ * @method static Builder<static>|AtlasProbe query()
+ * @method static Builder<static>|AtlasProbe whereAddressV4($value)
+ * @method static Builder<static>|AtlasProbe whereAddressV6($value)
+ * @method static Builder<static>|AtlasProbe whereApiData($value)
+ * @method static Builder<static>|AtlasProbe whereAsn($value)
+ * @method static Builder<static>|AtlasProbe whereAtlasId($value)
+ * @method static Builder<static>|AtlasProbe whereCreatedAt($value)
+ * @method static Builder<static>|AtlasProbe whereCustId($value)
+ * @method static Builder<static>|AtlasProbe whereId($value)
+ * @method static Builder<static>|AtlasProbe whereIsAnchor($value)
+ * @method static Builder<static>|AtlasProbe whereIsPublic($value)
+ * @method static Builder<static>|AtlasProbe whereLastConnected($value)
+ * @method static Builder<static>|AtlasProbe whereStatus($value)
+ * @method static Builder<static>|AtlasProbe whereUpdatedAt($value)
+ * @method static Builder<static>|AtlasProbe whereV4Enabled($value)
+ * @method static Builder<static>|AtlasProbe whereV6Enabled($value)
  * @mixin Eloquent
  */
 class AtlasProbe extends Model

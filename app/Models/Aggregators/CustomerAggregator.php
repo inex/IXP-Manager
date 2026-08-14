@@ -43,11 +43,17 @@ use Illuminate\Support\Collection;
  * IXP\Models\Aggregators\CustomerAggregator
  *
  * @property int $id
+ * @property int|null $irrdb
+ * @property int|null $company_registered_detail_id
+ * @property int|null $company_billing_details_id
+ * @property int|null $reseller
  * @property string|null $name
  * @property int|null $type
  * @property string|null $shortname
+ * @property string|null $abbreviatedName
  * @property int|null $autsys
  * @property int|null $maxprefixes
+ * @property int|null $maxprefixesv6
  * @property string|null $peeringemail
  * @property string|null $nocphone
  * @property string|null $noc24hphone
@@ -55,8 +61,8 @@ use Illuminate\Support\Collection;
  * @property string|null $nocemail
  * @property string|null $nochours
  * @property string|null $nocwww
- * @property int|null $irrdb
  * @property string|null $peeringmacro
+ * @property string|null $peeringmacrov6
  * @property string|null $peeringpolicy
  * @property string|null $corpwww
  * @property string|null $datejoin
@@ -65,125 +71,115 @@ use Illuminate\Support\Collection;
  * @property int|null $activepeeringmatrix
  * @property int|null $lastupdatedby
  * @property string|null $creator
- * @property int|null $company_registered_detail_id
- * @property int|null $company_billing_details_id
- * @property string|null $peeringmacrov6
- * @property string|null $abbreviatedName
  * @property string|null $MD5Support
- * @property int|null $reseller
  * @property int $isReseller
  * @property int $in_manrs
  * @property int $in_peeringdb
  * @property int $peeringdb_oauth
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\AtlasMeasurement> $AtlasMeasurementsDest
+ * @property-read EloquentCollection<int, \IXP\Models\AtlasMeasurement> $AtlasMeasurementsDest
  * @property-read int|null $atlas_measurements_dest_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\AtlasMeasurement> $AtlasMeasurementsSource
+ * @property-read EloquentCollection<int, \IXP\Models\AtlasMeasurement> $AtlasMeasurementsSource
  * @property-read int|null $atlas_measurements_source_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\AtlasProbe> $AtlasProbes
+ * @property-read EloquentCollection<int, \IXP\Models\AtlasProbe> $AtlasProbes
  * @property-read int|null $atlas_probes_count
  * @property-read \IXP\Models\CompanyBillingDetail|null $companyBillingDetail
  * @property-read \IXP\Models\CompanyRegisteredDetail|null $companyRegisteredDetail
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\ConsoleServerConnection> $consoleServerConnections
+ * @property-read EloquentCollection<int, \IXP\Models\ConsoleServerConnection> $consoleServerConnections
  * @property-read int|null $console_server_connections_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\Contact> $contacts
+ * @property-read EloquentCollection<int, \IXP\Models\Contact> $contacts
  * @property-read int|null $contacts_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\CustomerEquipment> $customerEquipments
+ * @property-read EloquentCollection<int, \IXP\Models\CustomerEquipment> $customerEquipments
  * @property-read int|null $customer_equipments_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\CustomerNote> $customerNotes
+ * @property-read EloquentCollection<int, \IXP\Models\CustomerNote> $customerNotes
  * @property-read int|null $customer_notes_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\CustomerToUser> $customerToUser
+ * @property-read EloquentCollection<int, \IXP\Models\CustomerToUser> $customerToUser
  * @property-read int|null $customer_to_user_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\DocstoreCustomerDirectory> $docstoreCustomerDirectories
+ * @property-read EloquentCollection<int, \IXP\Models\DocstoreCustomerDirectory> $docstoreCustomerDirectories
  * @property-read int|null $docstore_customer_directories_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\DocstoreCustomerFile> $docstoreCustomerFiles
+ * @property-read EloquentCollection<int, \IXP\Models\DocstoreCustomerFile> $docstoreCustomerFiles
  * @property-read int|null $docstore_customer_files_count
  * @property-read \IXP\Models\IrrdbConfig|null $irrdbConfig
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\IrrdbPrefix> $irrdbPrefixes
+ * @property-read EloquentCollection<int, \IXP\Models\IrrdbPrefix> $irrdbPrefixes
  * @property-read int|null $irrdb_prefixes_count
+ * @property-read \IXP\Models\IrrdbUpdateLog|null $irrdbUpdateLog
  * @property-read \IXP\Models\Logo|null $logo
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\PatchPanelPortHistory> $patchPanelPortHistories
+ * @property-read EloquentCollection<int, \IXP\Models\PatchPanelPortHistory> $patchPanelPortHistories
  * @property-read int|null $patch_panel_port_histories_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\PatchPanelPort> $patchPanelPorts
+ * @property-read EloquentCollection<int, \IXP\Models\PatchPanelPort> $patchPanelPorts
  * @property-read int|null $patch_panel_ports_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\RouteServerFilter> $peerRouteServerFilters
+ * @property-read EloquentCollection<int, \IXP\Models\RouteServerFilter> $peerRouteServerFilters
  * @property-read int|null $peer_route_server_filters_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, PeeringManager> $peers
+ * @property-read EloquentCollection<int, PeeringManager> $peers
  * @property-read int|null $peers_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, PeeringManager> $peersWith
+ * @property-read EloquentCollection<int, PeeringManager> $peersWith
  * @property-read int|null $peers_with_count
  * @property-read Customer|null $resellerObject
- * @property-read \Illuminate\Database\Eloquent\Collection<int, Customer> $resoldCustomers
+ * @property-read EloquentCollection<int, Customer> $resoldCustomers
  * @property-read int|null $resold_customers_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\RouteServerFilter> $routeServerFilters
+ * @property-read EloquentCollection<int, \IXP\Models\RouteServerFilter> $routeServerFilters
  * @property-read int|null $route_server_filters_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\RouteServerFilterProd> $routeServerFiltersInProduction
+ * @property-read EloquentCollection<int, \IXP\Models\RouteServerFilterProd> $routeServerFiltersInProduction
  * @property-read int|null $route_server_filters_in_production_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\CustomerTag> $tags
+ * @property-read EloquentCollection<int, \IXP\Models\CustomerTag> $tags
  * @property-read int|null $tags_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\TrafficDaily> $trafficDailies
+ * @property-read EloquentCollection<int, \IXP\Models\TrafficDaily> $trafficDailies
  * @property-read int|null $traffic_dailies_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\User> $users
+ * @property-read EloquentCollection<int, \IXP\Models\User> $users
  * @property-read int|null $users_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\VirtualInterface> $virtualInterfaces
+ * @property-read EloquentCollection<int, \IXP\Models\VirtualInterface> $virtualInterfaces
  * @property-read int|null $virtual_interfaces_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\VlanInterface> $vlanInterfaces
+ * @property-read EloquentCollection<int, \IXP\Models\VlanInterface> $vlanInterfaces
  * @property-read int|null $vlan_interfaces_count
- * @method static Builder|Customer active()
- * @method static Builder|Customer addressesForVlan(int $vlanid, int $cust, int $protocol)
- * @method static Builder|Customer associate()
- * @method static Builder|Customer current()
- * @method static Builder|Customer currentActive(bool $trafficing = false, bool $externalOnly = false, bool $connected = true)
- * @method static Builder|Customer internal()
- * @method static Builder|CustomerAggregator newModelQuery()
- * @method static Builder|CustomerAggregator newQuery()
- * @method static Builder|Customer notDeleted()
- * @method static Builder|CustomerAggregator query()
- * @method static Builder|Customer resellerOnly()
- * @method static Builder|Customer trafficking()
- * @method static Builder|CustomerAggregator whereAbbreviatedName($value)
- * @method static Builder|CustomerAggregator whereActivepeeringmatrix($value)
- * @method static Builder|CustomerAggregator whereAutsys($value)
- * @method static Builder|CustomerAggregator whereCompanyBillingDetailsId($value)
- * @method static Builder|CustomerAggregator whereCompanyRegisteredDetailId($value)
- * @method static Builder|CustomerAggregator whereCorpwww($value)
- * @method static Builder|CustomerAggregator whereCreatedAt($value)
- * @method static Builder|CustomerAggregator whereCreator($value)
- * @method static Builder|CustomerAggregator whereDatejoin($value)
- * @method static Builder|CustomerAggregator whereDateleave($value)
- * @method static Builder|CustomerAggregator whereId($value)
- * @method static Builder|CustomerAggregator whereInManrs($value)
- * @method static Builder|CustomerAggregator whereInPeeringdb($value)
- * @method static Builder|CustomerAggregator whereIrrdb($value)
- * @method static Builder|CustomerAggregator whereIsReseller($value)
- * @method static Builder|CustomerAggregator whereLastupdatedby($value)
- * @method static Builder|CustomerAggregator whereMD5Support($value)
- * @method static Builder|CustomerAggregator whereMaxprefixes($value)
- * @method static Builder|CustomerAggregator whereName($value)
- * @method static Builder|CustomerAggregator whereNoc24hphone($value)
- * @method static Builder|CustomerAggregator whereNocemail($value)
- * @method static Builder|CustomerAggregator whereNocfax($value)
- * @method static Builder|CustomerAggregator whereNochours($value)
- * @method static Builder|CustomerAggregator whereNocphone($value)
- * @method static Builder|CustomerAggregator whereNocwww($value)
- * @method static Builder|CustomerAggregator wherePeeringdbOauth($value)
- * @method static Builder|CustomerAggregator wherePeeringemail($value)
- * @method static Builder|CustomerAggregator wherePeeringmacro($value)
- * @method static Builder|CustomerAggregator wherePeeringmacrov6($value)
- * @method static Builder|CustomerAggregator wherePeeringpolicy($value)
- * @method static Builder|CustomerAggregator whereReseller($value)
- * @method static Builder|CustomerAggregator whereShortname($value)
- * @method static Builder|CustomerAggregator whereStatus($value)
- * @method static Builder|CustomerAggregator whereType($value)
- * @method static Builder|CustomerAggregator whereUpdatedAt($value)
- * @property string|null $lastupdated
- * @property string|null $created
- * @method static Builder|CustomerAggregator whereCreated($value)
- * @method static Builder|CustomerAggregator whereLastupdated($value)
- * @property-read \IXP\Models\IrrdbUpdateLog|null $irrdbUpdateLog
- * @property int|null $maxprefixesv6
+ * @method static Builder<static>|CustomerAggregator active()
+ * @method static Builder<static>|CustomerAggregator addressesForVlan(int $vlanid, int $cust, int $protocol)
+ * @method static Builder<static>|CustomerAggregator associate()
+ * @method static Builder<static>|CustomerAggregator current()
+ * @method static Builder<static>|CustomerAggregator currentActive(bool $trafficing = false, bool $externalOnly = false, bool $connected = true)
+ * @method static Builder<static>|CustomerAggregator internal()
+ * @method static Builder<static>|CustomerAggregator newModelQuery()
+ * @method static Builder<static>|CustomerAggregator newQuery()
+ * @method static Builder<static>|CustomerAggregator notDeleted()
+ * @method static Builder<static>|CustomerAggregator query()
+ * @method static Builder<static>|CustomerAggregator resellerOnly()
+ * @method static Builder<static>|CustomerAggregator trafficking()
+ * @method static Builder<static>|CustomerAggregator whereAbbreviatedName($value)
+ * @method static Builder<static>|CustomerAggregator whereActivepeeringmatrix($value)
+ * @method static Builder<static>|CustomerAggregator whereAutsys($value)
+ * @method static Builder<static>|CustomerAggregator whereCompanyBillingDetailsId($value)
+ * @method static Builder<static>|CustomerAggregator whereCompanyRegisteredDetailId($value)
+ * @method static Builder<static>|CustomerAggregator whereCorpwww($value)
+ * @method static Builder<static>|CustomerAggregator whereCreatedAt($value)
+ * @method static Builder<static>|CustomerAggregator whereCreator($value)
+ * @method static Builder<static>|CustomerAggregator whereDatejoin($value)
+ * @method static Builder<static>|CustomerAggregator whereDateleave($value)
+ * @method static Builder<static>|CustomerAggregator whereId($value)
+ * @method static Builder<static>|CustomerAggregator whereInManrs($value)
+ * @method static Builder<static>|CustomerAggregator whereInPeeringdb($value)
+ * @method static Builder<static>|CustomerAggregator whereIrrdb($value)
+ * @method static Builder<static>|CustomerAggregator whereIsReseller($value)
+ * @method static Builder<static>|CustomerAggregator whereLastupdatedby($value)
+ * @method static Builder<static>|CustomerAggregator whereMD5Support($value)
+ * @method static Builder<static>|CustomerAggregator whereMaxprefixes($value)
  * @method static Builder<static>|CustomerAggregator whereMaxprefixesv6($value)
+ * @method static Builder<static>|CustomerAggregator whereName($value)
+ * @method static Builder<static>|CustomerAggregator whereNoc24hphone($value)
+ * @method static Builder<static>|CustomerAggregator whereNocemail($value)
+ * @method static Builder<static>|CustomerAggregator whereNocfax($value)
+ * @method static Builder<static>|CustomerAggregator whereNochours($value)
+ * @method static Builder<static>|CustomerAggregator whereNocphone($value)
+ * @method static Builder<static>|CustomerAggregator whereNocwww($value)
+ * @method static Builder<static>|CustomerAggregator wherePeeringdbOauth($value)
+ * @method static Builder<static>|CustomerAggregator wherePeeringemail($value)
+ * @method static Builder<static>|CustomerAggregator wherePeeringmacro($value)
+ * @method static Builder<static>|CustomerAggregator wherePeeringmacrov6($value)
+ * @method static Builder<static>|CustomerAggregator wherePeeringpolicy($value)
+ * @method static Builder<static>|CustomerAggregator whereReseller($value)
+ * @method static Builder<static>|CustomerAggregator whereShortname($value)
+ * @method static Builder<static>|CustomerAggregator whereStatus($value)
+ * @method static Builder<static>|CustomerAggregator whereType($value)
+ * @method static Builder<static>|CustomerAggregator whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class CustomerAggregator extends Customer

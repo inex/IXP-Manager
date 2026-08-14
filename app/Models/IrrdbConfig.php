@@ -42,17 +42,15 @@ use IXP\Traits\Observable;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\Customer> $customers
  * @property-read int|null $customers_count
- * @method static Builder|IrrdbConfig newModelQuery()
- * @method static Builder|IrrdbConfig newQuery()
- * @method static Builder|IrrdbConfig query()
- * @method static Builder|IrrdbConfig whereCreatedAt($value)
- * @method static Builder|IrrdbConfig whereHost($value)
- * @method static Builder|IrrdbConfig whereId($value)
- * @method static Builder|IrrdbConfig whereNotes($value)
- * @method static Builder|IrrdbConfig whereSource($value)
- * @method static Builder|IrrdbConfig whereUpdatedAt($value)
- * @property string|null $protocol
- * @method static Builder|IrrdbConfig whereProtocol($value)
+ * @method static Builder<static>|IrrdbConfig newModelQuery()
+ * @method static Builder<static>|IrrdbConfig newQuery()
+ * @method static Builder<static>|IrrdbConfig query()
+ * @method static Builder<static>|IrrdbConfig whereCreatedAt($value)
+ * @method static Builder<static>|IrrdbConfig whereHost($value)
+ * @method static Builder<static>|IrrdbConfig whereId($value)
+ * @method static Builder<static>|IrrdbConfig whereNotes($value)
+ * @method static Builder<static>|IrrdbConfig whereSource($value)
+ * @method static Builder<static>|IrrdbConfig whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class IrrdbConfig extends Model

@@ -25,9 +25,9 @@ declare(strict_types=1);
 
 namespace IXP\Models\Aggregators;
 
-
-
 use IXP\Models\CustomerToUser;
+
+use Illuminate\Database\Eloquent\Builder;
 
 /**
  * CustomerToUserAggregator
@@ -41,9 +41,9 @@ use IXP\Models\CustomerToUser;
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\UserLoginHistory> $userLoginHistories
  * @property-read int|null $user_login_histories_count
  * @method static Builder<static>|CustomerToUserAggregator custAdmin()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|CustomerToUserAggregator newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|CustomerToUserAggregator newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|CustomerToUserAggregator query()
+ * @method static Builder<static>|CustomerToUserAggregator newModelQuery()
+ * @method static Builder<static>|CustomerToUserAggregator newQuery()
+ * @method static Builder<static>|CustomerToUserAggregator query()
  * @mixin \Eloquent
  */
 class CustomerToUserAggregator extends CustomerToUser
