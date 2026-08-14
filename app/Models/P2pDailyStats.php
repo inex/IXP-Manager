@@ -111,7 +111,7 @@ class P2pDailyStats extends Model
      */
     public function total_traffic(): int
     {
-        return $this->ipv4_total_out + $this->ipv4_total_in + $this->ipv6_total_out + $this->ipv6_total_in;
+        return (int)$this->ipv4_total_out + (int)$this->ipv4_total_in + (int)$this->ipv6_total_out + (int)$this->ipv6_total_in;
     }
 
 
