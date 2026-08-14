@@ -41,7 +41,7 @@ class IxpRegistrationController
     public function register( Request $request, RegistrationChecker $checker): View|RedirectResponse
     {
         if ($infrastructureList = $request->infrastructure) {
-            $query = Infrastructure::whereExcludeFromIxfExport(0);
+            $query = Infrastructure::whereExcludeFromIxfExport(false);
             if (is_array($infrastructureList)) {
                 // Were we given a list of infrastructures?
                 $query->whereIn('id', $infrastructureList);
