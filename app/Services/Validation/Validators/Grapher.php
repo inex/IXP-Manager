@@ -191,13 +191,13 @@ class Grapher implements Validator
 
         if (file_exists(config_path() . '/grapher_trunks.php')) {
             $backend->info("Found grapher_trunks.php configuration file");
-        }
 
-        if (is_array(config('grapher.backends.mrtg.trunks'))) {
-            $numTrunks = count(config()->array('grapher.backends.mrtg.trunks'));
-            $backend->info($numTrunks . " trunks defined in configuration");
-        } else {
-            $backend->error("MRTG trunks appears misconfigured. grapher_trunks.php file may contain invalid structure.");
+            if (is_array(config('grapher.backends.mrtg.trunks'))) {
+                $numTrunks = count(config()->array('grapher.backends.mrtg.trunks'));
+                $backend->info($numTrunks . " trunks defined in configuration");
+            } else {
+                $backend->error("MRTG trunks appears misconfigured. grapher_trunks.php file may contain invalid structure.");
+            }
         }
     }
 
