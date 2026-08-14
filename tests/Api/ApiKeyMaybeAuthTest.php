@@ -60,6 +60,8 @@ class ApiKeyMaybeAuthTest extends TestCase
 
     public function testApiMaybeAuthAccessKeyViaGet(): void
     {
+        config()->set('ixp_api.allow_apikeys_get_parameter', true);
+
         // this should be the default
         $response = $this->get( '/api/v4/test?apikey=' . self::TEST_KEYS[ 1 ] );
         $response->assertStatus( 200 )
@@ -76,6 +78,8 @@ class ApiKeyMaybeAuthTest extends TestCase
 
     public function testApiMaybeAuthAccessKeyViaGetJson(): void
     {
+        config()->set('ixp_api.allow_apikeys_get_parameter', true);
+
         // this should be the default
         $response = $this->get( '/api/v4/test?format=json&apikey=' . self::TEST_KEYS[ 1 ] );
         $response->assertStatus( 200 )
