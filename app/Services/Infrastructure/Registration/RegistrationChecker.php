@@ -48,7 +48,7 @@ class RegistrationChecker
         \Log::info("Checking infrastructures for registration on ixpmanager.org");
         $result = new RegistrationCheckResult();
 
-        $result->eligibleInfrastructures = Infrastructure::whereExcludeFromIxfExport(0)->get()->all();
+        $result->eligibleInfrastructures = Infrastructure::whereExcludeFromIxfExport(false)->get()->all();
         if (count($result->eligibleInfrastructures) === 0) {
             // no eligible infrastructures, move on
             return $result;
