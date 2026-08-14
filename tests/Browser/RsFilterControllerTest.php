@@ -142,8 +142,15 @@ class RsFilterControllerTest extends DuskTestCase
         // Click Revert on the warning box, and confirm. No more staged changes, nothing in production.
         // CustomerPolicy::revertRsFilters
         $browser->click( "#form-revert #submit-revert" )
+            ->waitFor('.bootbox.modal')
+            ->waitFor('#submit-revert-cancel')
             ->waitForText( 'Are you sure you want to revert your changes?' )
-            ->click( ".submit-revert-confirm" )
+            ->click('#submit-revert-cancel') // can cancel the dialog!
+            ->waitUntilMissing( '.bootbox.modal' );
+
+        $browser->click( '#form-revert #submit-revert' )
+            ->waitForText( 'Are you sure you want to revert your changes?' )
+            ->click( "#submit-revert-confirm" )
             ->waitForLocation( "/rs-filtering/" . $customer->id )
             ->assertSee( "Staged changes reverted." )
             ->assertSee( "You have no filters in production." );
@@ -166,10 +173,17 @@ class RsFilterControllerTest extends DuskTestCase
 
         // Click Commit on the warning box, and confirm. No more staged changes, 1 rule in production.
         // CustomerPolicy::commitRsFilter
-        $browser->press( "#form-commit #submit-commit" )
+        $browser->press( '#form-commit #submit-commit' )
+            ->waitFor( '.bootbox.modal' )
+            ->waitFor( '#submit-commit-cancel' )
             ->waitForText( 'Are you sure you want to commit your changes to production?' )
-            ->click( ".submit-commit-confirm" )
-            ->waitForLocation( "/rs-filtering/" . $customer->id )
+            ->click( '#submit-commit-cancel' ) // can cancel the dialog!
+            ->waitUntilMissing( '.bootbox.modal' );
+
+        $browser->press( '#form-commit #submit-commit' )
+            ->waitForText( 'Are you sure you want to commit your changes to production?' )
+            ->click( '#submit-commit-confirm' )
+            ->waitForLocation( '/rs-filtering/' . $customer->id )
             ->assertSee( "Staged changes commited. There is no information available as to how often the route servers are updated." )
             ->assertSee( "Your filters are in sync with our production configuration." );
 
@@ -183,9 +197,17 @@ class RsFilterControllerTest extends DuskTestCase
          */
         // Get that filter we just created, and click delete button. Confirm delete. RouteServerFilterPolicy::delete
         $rsFilter = RouteServerFilter::whereCustomerId( $customer->id )->orderBy( 'id', 'desc' )->first();
+        // First test we can dismiss the dialog
+        $browser->press( '#delete-rsf-' . $rsFilter->id )
+            ->waitFor( '.bootbox.modal' )
+            ->waitFor( '#delete-rsf-cancel' )
+            ->waitForText( 'Do you want to delete this route server filter?' )
+            ->click( '#delete-rsf-cancel' ) // can cancel the dialog!
+            ->waitUntilMissing( '.bootbox.modal' );
+
         $browser->click( '#delete-rsf-' . $rsFilter->id )
             ->waitForText( "Do you want to delete this route server filter?" )
-            ->press( ".delete-rsf-confirm" )
+            ->press( "#delete-rsf-confirm" )
             ->waitForLocation( "/rs-filtering/" . $customer->id )
             ->assertSee( "Route server filter deleted." )
             ->assertSee( "Your filters are not in sync with our production configuration. You can continue editing or:" )
@@ -198,7 +220,7 @@ class RsFilterControllerTest extends DuskTestCase
         // Commit changes, confirm action - now there's no staged or production rules. CustomerPolicy::commitRsFilters
         $browser->press( "#form-commit #submit-commit" )
             ->waitForText( 'Are you sure you want to commit your changes to production?' )
-            ->click( ".submit-commit-confirm" )
+            ->click( "#submit-commit-confirm" )
             ->waitForLocation( "/rs-filtering/" . $customer->id )
             ->assertSee( "Staged changes commited. There is no information available as to how often the route servers are updated." )
             ->assertSee( "You have no filters in production." )
@@ -331,7 +353,7 @@ class RsFilterControllerTest extends DuskTestCase
 
         $browser->press( "#form-commit #submit-commit" )
             ->waitForText( 'Are you sure you want to commit your changes to production?' )
-            ->click( ".submit-commit-confirm" )
+            ->click( "#submit-commit-confirm" )
             ->waitForLocation( "/rs-filtering/" . $customer->id )
             ->assertSee( "Staged changes commited. There is no information available as to how often the route servers are updated." )
             ->assertSee( "Your filters are in sync with our production configuration." );

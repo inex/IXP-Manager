@@ -13,16 +13,18 @@
             title: "Delete Route Server Filter",
             buttons: {
                 cancel: {
+                    id: 'delete-rsf-cancel',
                     label: 'Close',
-                    className: 'btn-secondary delete-rsf-cancel',
+                    className: 'btn-secondary',
                     callback: function () {
                         $('.bootbox.modal').modal('hide');
                         return false;
                     }
                 },
                 submit: {
+                    id: 'delete-rsf-confirm',
                     label: 'Delete',
-                    className: 'btn-danger delete-rsf-confirm',
+                    className: 'btn-danger',
                     callback: function () {
                         $('#form-delete').submit();
                     }
@@ -41,16 +43,18 @@
             title: "Revert Changes",
             buttons: {
                 cancel: {
+                    id: 'submit-revert-cancel',
                     label: 'Close',
-                    className: 'btn-secondary submit-revert-cancel',
+                    className: 'btn-secondary',
                     callback: function () {
                         $('.bootbox.modal').modal('hide');
                         return false;
                     }
                 },
                 submit: {
+                    id: 'submit-revert-confirm',
                     label: 'Revert',
-                    className: 'btn-danger submit-revert-confirm',
+                    className: 'btn-danger',
                     callback: function () {
                         $( "#form-revert" ).submit();
                     }
@@ -72,16 +76,18 @@
             title: "Commit Changes",
             buttons: {
                 cancel: {
+                    id: 'submit-commit-cancel',
                     label: 'Close',
-                    className: 'btn-secondary submit-commit-cancel',
+                    className: 'btn-secondary',
                     callback: function () {
                         $('.bootbox.modal').modal('hide');
                         return false;
                     }
                 },
                 submit: {
+                    id: 'submit-commit-confirm',
                     label: 'Commit',
-                    className: 'btn-danger submit-commit-confirm',
+                    className: 'btn-danger',
                     callback: function () {
                         $( "#form-commit" ).submit();
                     }
