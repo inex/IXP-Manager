@@ -86,15 +86,24 @@
      * check if the subnet is valid and display a message
      */
     function checkSubnet( subnet ) {
-        $( subnet ).removeClass( 'is-invalid' );
-        $( subnet ).parent().find('span').remove();
-        if( $( subnet ).val() !== '' ) {
-            if( !validSubnet( $( subnet ).val() ) ) {
-                $( subnet ).addClass( 'is-invalid' );
-                $( subnet ).parent().append( `<span class='help-block invalid-feedback' style='display: block'>The subnet is not valid</span>` );
+        const $subnet = $(subnet);
+        const value = $subnet.val().trim();
+
+        // 1. Reset state completely
+        $subnet.removeClass('is-valid is-invalid');
+        $subnet.parent().find('.invalid-feedback, .valid-feedback').remove();
+
+        if (value !== '') {
+            if (!validSubnet(value)) {
+                $subnet.addClass('is-invalid');
+                $subnet.parent().append(
+                    `<span class='help-block invalid-feedback' style='display: block'>The subnet is not valid</span>`
+                );
             } else {
-                $( subnet ).addClass( 'is-valid' );
-                $( subnet ).parent().append( `<span class='help-block valid-feedback' style='display: block' >The subnet is valid</span>` );
+                $subnet.addClass('is-valid');
+                $subnet.parent().append(
+                    `<span class='help-block valid-feedback' style='display: block'>The subnet is valid</span>`
+                );
             }
         }
     }
@@ -103,7 +112,7 @@
      * Check if the subnet provided is valid
      */
     function validSubnet( subnet ){
-        let address = new Address4( subnet );
-        return address.isValid();
+        if (!subnet.includes('/')) return false;
+        return Address4.isValid(subnet);
     }
 </script>

@@ -390,15 +390,22 @@
      * set the next valid subnet to the new core link form
      */
     function setNextSubnet( new_core_link_form , subnet ){
-        let address = new Address4( subnet );
-        if( !address.isValid() ){
-            new_core_link_form.find( '.message-new-cl' ).html( `<div class='alert alert-danger' role='alert'>The subnet ${subnet} is not valid!</div>` );
+
+        // 1. Validate before instantiating
+        if (!Address4.isValid(subnet)) {
+            new_core_link_form.find('.message-new-cl').html(
+                `<div class='alert alert-danger' role='alert'>The subnet ${subnet} is not valid!</div>`
+            );
             return false;
         }
 
-        let nextAddressAsInt = parseInt( address.endAddress().bigInteger() ) + 1;
-        let nextAddressStart = Address4.fromBigInteger( nextAddressAsInt );
-        let nextAddress      = new Address4( nextAddressStart.address + '/' + address.subnetMask );
+        const address = new Address4(subnet);
+        const nextAddressStart = Address4.fromBigInt(address.endAddress().bigInt() + 1n);
+
+        // Construct the next subnet address
+        const nextAddress = new Address4(`${nextAddressStart.correctForm()}/${address.subnetMask}`);
+        
+        
         new_core_link_form.find( '.subnet' ).val( nextAddress.address );
     }
 
