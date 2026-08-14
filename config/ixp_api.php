@@ -126,7 +126,6 @@ return [
         // all responses cached for:
         'cache_ttl' => env( 'IXP_API_WHOIS_CACHE_TTL', 60 * 60 * 12 ),
 
-
         'asn' => [
             'host' => env( 'IXP_API_WHOIS_ASN_HOST',    'whois.peeringdb.com' ),
             'port' => env( 'IXP_API_WHOIS_ASN_PORT',    43 ),
@@ -173,9 +172,11 @@ return [
     |
     | This previously supported authentication mode is being deprecated in favour of
     | providing the key via HTTP Headers. A log will be generated when an API Key uses
-    | this feature. The setting will be turned off in a future release.
+    | this feature.
+    |
+    | The setting defaults to off as of v7.4.0.
     |
     | See: https://docs.ixpmanager.org/latest/features/api/
     */
-    'allow_apikeys_get_parameter' => env( 'IXP_ALLOW_DEPRECATED_APIKEYS_VIA_GET', true ),
+    'allow_apikeys_get_parameter' => env( 'IXP_ALLOW_DEPRECATED_APIKEYS_VIA_GET', false ),
 ];
