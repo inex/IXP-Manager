@@ -55,7 +55,7 @@ class RouteServerFilterPolicy
      *
      * @return null|true
      */
-    public function before( User $user, $ability ): bool|null
+    public function before( User $user, $ability ): ?bool
     {
         if( $user->isSuperUser() ) {
             return true;
