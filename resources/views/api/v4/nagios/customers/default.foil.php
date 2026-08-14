@@ -18,14 +18,14 @@
 #
 # The following objects are used by inheritance here and need to be defined by your own configuration:
 #
-# 1. Hose definition:    <?= $t->host_definition ?>;
+# 1. Host definition:    <?= $t->host_definition ?>;
 # 2. Service definition: <?= $t->service_definition ?>; and
 # 3. Ping service definition: <?= $t->ping_service_definition ?>.
 #
 # You would create these yourself by creating a configuration file containing something like:
 #
 # define host {
-#     name                    ixp-manager-member-host
+#     name                    <?= $t->host_definition ?>
 #     check_command           check-host-alive
 #     check_period            24x7
 #     max_check_attempts      10
@@ -38,7 +38,7 @@
 #
 #
 # define service {
-#     name                    ixp-manager-member-service
+#     name                    <?= $t->service_definition ?>
 #     check_period            24x7
 #     max_check_attempts      10
 #     check_interval          5
@@ -51,16 +51,16 @@
 # }
 #
 # define service {
-#     name                    ixp-manager-member-ping-service
-#     use                     ixp-manager-member-service
+#     name                    <?= $t->ping_service_definition ?>
+#     use                     <?= $t->service_definition ?>
 #     service_description     PING
 #     check_command           check_ping!250.0,20%!500.0,60%
 #     register                0
 # }
 #
 # define service {
-#     name                    ixp-manager-member-ping-busy-service
-#     use                     ixp-manager-member-service
+#     name                    <?= $t->ping_busy_service_definition ?>
+#     use                     <?= $t->service_definition ?>
 #     service_description     PING-Busy
 #     check_command           check_ping!1000.0,80%!2000.0,90%
 #     register                0
