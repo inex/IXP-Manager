@@ -18,7 +18,7 @@ System Validation
     <div>
         <span data-severity="error" class="severity-toggle hover:tw-opacity-80 tw-cursor-pointer tw-inline-flex tw-items-center tw-rounded-md tw-ml-2 tw-px-2 tw-py-1 tw-text-xs tw-font-medium tw-bg-pink-50 tw-text-red-600 tw-ring-pink-700/10 tw-ring-1 tw-ring-inset">Error</span>
         <span data-severity="warning" class="severity-toggle hover:tw-opacity-80 tw-cursor-pointer tw-inline-flex tw-items-center tw-rounded-md tw-ml-2 tw-px-2 tw-py-1 tw-text-xs tw-font-medium tw-bg-orange-50 tw-text-orange-500 tw-ring-orange-600/20 tw-ring-1 tw-ring-inset">Warning</span>
-        <span data-severity="suggest" class="severity-toggle hover:tw-opacity-80 tw-cursor-pointer tw-inline-flex tw-items-center tw-rounded-md tw-ml-2 tw-px-2 tw-py-1 tw-text-xs tw-font-medium tw-bg-yellow-50 tw-text-yellow-300 tw-ring-yellow-600/20 tw-ring-1 tw-ring-inset">Suggest</span>
+        <span data-severity="suggestion" class="severity-toggle hover:tw-opacity-80 tw-cursor-pointer tw-inline-flex tw-items-center tw-rounded-md tw-ml-2 tw-px-2 tw-py-1 tw-text-xs tw-font-medium tw-bg-yellow-50 tw-text-yellow-300 tw-ring-yellow-600/20 tw-ring-1 tw-ring-inset">Suggestion</span>
         <span data-severity="info" class="severity-toggle severity-disabled hover:tw-opacity-80 tw-cursor-pointer tw-inline-flex tw-items-center tw-rounded-md tw-ml-2 tw-px-2 tw-py-1 tw-text-xs tw-font-medium tw-bg-white-50 tw-text-grey-200 tw-ring-blue-700/10 tw-ring-1 tw-ring-inset">Info</span>
         <span data-severity="debug" class="severity-toggle severity-disabled hover:tw-opacity-80 tw-cursor-pointer tw-inline-flex tw-items-center tw-rounded-md tw-ml-2 tw-px-2 tw-py-1 tw-text-xs tw-font-medium tw-bg-gray-50 tw-text-gray-600 tw-ring-gray-500/10 tw-ring-1 tw-ring-inset">Debug</span>
     </div>
@@ -84,7 +84,7 @@ System Validation
         <!-- severity  -->
         <div class="validation-result tw-relative tw-h-fit !tw-important tw-text-xs tw-border-b-1 tw-leading-6 tw-text-gray-900 tw-pl-4 tw-mt-2 tw-flex tw-justify-start tw-align-middle" data-severity="">
             <div class="result-badge badgeDot tw-rounded-full tw-border-2 tw-w-5 tw-h-5 tw-mr-1" title=""></div>
-            <div class="severity tw-min-w-16 tw-ml-1"></div>
+            <div class="severity tw-min-w-24 tw-ml-1 tw-text-center"></div>
             <div class="validation-content-container tw-relative tw-w-[calc(100%-6.5rem)]  tw-border tw-border-transparent tw-text-[0.9rem] tw-transition-[height] tw-duration-250">
                 <div>
                     <span class="validation-content"></span>
@@ -108,7 +108,7 @@ System Validation
 
     <template id="no-output-template">
         <div class="tw-relative tw-h-fit !tw-important tw-text-xs tw-border-b-1 tw-leading-6 tw-text-gray-900 tw-pl-4 tw-mt-2 tw-flex tw-justify-start tw-align-middle">
-            <div class="tw-min-w-16 tw-ml-1"></div>
+            <div class="tw-min-w-24 tw-ml-1"></div>
             <div class="tw-relative tw-w-[calc(100%-6.5rem)] tw-border tw-border-transparent tw-text-[0.9rem]">
                 <em>This validator did not produce any output</em>
             </div>
@@ -120,205 +120,213 @@ System Validation
 
 <?php $this->section('scripts') ?>
 <script type="module">
-    let jobId = "<?= $t->ee( $t->jobId, "js" ); ?>";
+    const jobId = "<?= $t->ee( $t->jobId, "js" ); ?>";
 
     // Currently relying on these increasing in severity
     let severityBadgeClass = {
         'debug': 'tw-border-gray-300 tw-bg-gray-300',
         'info': 'tw-border-white-1000 tw-bg-white-1000',
-        'suggest': 'tw-border-yellow-300 tw-bg-yellow-300',
+        'suggestion': 'tw-border-yellow-300 tw-bg-yellow-300',
         'warning': 'tw-border-orange-400 tw-bg-orange-400',
         'error': 'tw-border-red-600 tw-bg-red-600',
     };
 
-    const loadingSpinner = $('.loading-results-indicator');
-    const validationContainer = $('#validation-container');
-    const validationTemplate = $('#validation-template');
-    const softwareTableBody = $('#software-table-list');
-    const noOutputTemplate = $('#no-output-template');
-    const resultTemplate = $('#result-template');
+    let loadingSpinner = $('.loading-results-indicator');
+    let validationContainer = $('#validation-container');
+    let validationTemplate = $('#validation-template');
+    let softwareTableBody = $('#software-table-list');
+    let noOutputTemplate = $('#no-output-template');
+    let resultTemplate = $('#result-template');
+
+    let jobPollingTimeout = null;
 
     $( document ).ready( function() {
+        loadingSpinner = $('.loading-results-indicator');
+        validationContainer = $('#validation-container');
+        validationTemplate = $('#validation-template');
+        softwareTableBody = $('#software-table-list');
+        noOutputTemplate = $('#no-output-template');
+        resultTemplate = $('#result-template');
+
         // Load validation results on page open
         loadJobs();
 
-        // Periodic refresh of validation results
-        let refreshTimeout = setInterval(function () {
-            loadJobs();
-        }, 1000);
+        /**
+         * Flip dropdown caret icon upside down if clicked
+         */
+        validationContainer.on('click', ".validation-content-container", function() {
+            if ( $(this).find(".validation-extra-content").text() ) {
+                $(this).find("i.expandable-caret").toggleClass("tw-rotate-180");
+            }
+        });
 
-        function loadJobs() {
-            $.ajax({
-                url: '<?= route("validation-api@get-results", ['id' => $t->jobId]); ?>',
-                method: 'GET',
-                dataType: 'json',
-                success: function(taskData) {
-                    validationContainer.find('[data-toggle="popover"]').popover('dispose');
+        /**
+         * Show/hide extra content when clicked
+         */
+        validationContainer.on('click','.validation-result', function() {
+            $(this).find('.validation-extra-content').toggleClass('tw-hidden');
+        });
 
-                    // Clear container for fresh data
-                    validationContainer.empty();
-                    softwareTableBody.empty();
+        /**
+         * When a severity badge is clicked, toggle opacity, and call toggleInformation
+         * to refresh
+         */
+        $(document).on('click','.severity-toggle',function() {
+            $(this).toggleClass('severity-disabled');
+            toggleInformation();
+        });
+    });
 
-                    // Loop through each job
-                    taskData['validations'].forEach(function(validationData) {
-                        if (!(validationData.is_complete || validationData.is_timedout)) {
-                            return;
-                        }
-                        let validationFragment = createValidationFragment(validationData);
 
-                        // 3. Loop through and add the child results
-                        validationData.results.forEach(function(resultData) {
-                            let resultFragment = createValidationResultFragment(resultData);
+    function loadJobs() {
+        $.ajax({
+            url: '<?= route("validation-api@get-results", ['id' => $t->jobId]); ?>',
+            method: 'GET',
+            dataType: 'json',
+            success: function(taskData) {
+                validationContainer.find('[data-toggle="popover"]').popover('dispose');
 
-                            // Append the result clone into the validation clone's list
-                            validationFragment.find('.validation-wrapper').append(resultFragment);
-                        });
+                // Clear container for fresh data
+                validationContainer.empty();
+                softwareTableBody.empty();
 
-                        // todo: what about timed out message?
-                        if (validationData.results.length === 0) {
-                            validationFragment.find('.validation-wrapper').append(createNoOutputFragment());
-                        }
+                // Loop through each job
+                taskData['validations'].forEach(function(validationData) {
+                    if (!(validationData.is_complete || validationData.is_timedout)) {
+                        return;
+                    }
+                    let validationFragment = createValidationFragment(validationData);
 
-                        validationData.software.forEach(function (software) {
-                            let rowFragment = createSoftwareTableRow(software);
-                            softwareTableBody.append(rowFragment);
-                        });
+                    // 3. Loop through and add the child results
+                    validationData.results.forEach(function(resultData) {
+                        let resultFragment = createValidationResultFragment(resultData);
 
-                        validationContainer.append(validationFragment);
+                        // Append the result clone into the validation clone's list
+                        validationFragment.find('.validation-wrapper').append(resultFragment);
                     });
 
-                    toggleInformation();
-
-                    if (taskData.complete) {
-                        clearTimeout(refreshTimeout);
-                        loadingSpinner.remove();
+                    // todo: what about timed out message?
+                    if (validationData.results.length === 0) {
+                        validationFragment.find('.validation-wrapper').append(createNoOutputFragment());
                     }
-                },
-                error: function(xhr, status, error) {
-                    console.error("Failed to fetch jobs:", error);
-                    validationContainer.html('<div class="alert alert-danger col-12">Failed to load jobs. Please try again.</div>');
-                },
-                complete: function() {
-                    validationContainer.find('[data-toggle="popover"]').popover({
-                        trigger: 'focus'
+
+                    validationData.software.forEach(function (software) {
+                        let rowFragment = createSoftwareTableRow(software);
+                        softwareTableBody.append(rowFragment);
                     });
-                }
-            });
-        }
 
-        function createValidationFragment(validationData) {
-            let validationClone = $( validationTemplate.prop('content') ).clone();
-            validationClone
-                .find('.validation-info-button')
-                .attr("title", validationData.name)
-                .attr("data-content", validationData.description);
-
-            validationClone.find('.validation-title').text(validationData.name);
-
-            if (validationData.is_failed) {
-                validationClone.find(".validation-failure-button")
-                    .removeClass("tw-hidden")
-                    .attr("title", "An exception occurred while running the validation")
-                    .attr("data-content", "Uncaught " + validationData['failure']['exception'] + ' at ' + validationData['failure']['file'] + ':' + validationData['failure']['line'] + ": " + validationData['failure']['message']);
-            }
-            if (validationData.is_timedout) {
-                validationClone.find(".validation-timeout-button").removeClass("tw-hidden");
-            }
-
-            return validationClone;
-        }
-
-        function createNoOutputFragment() {
-            return $( noOutputTemplate.prop('content') ).clone();
-        }
-
-        function createValidationResultFragment(resultData) {
-            let resultClone = $( resultTemplate.prop('content') ).clone();
-
-            resultClone.find('.validation-result').attr("data-severity", resultData.severity);
-
-            resultClone.find('.result-badge')
-                .attr("title", resultData.message)
-                .addClass(severityBadgeClass[resultData.severity]);
-
-            resultClone.find('.severity').text(resultData.severity.toUpperCase());
-            resultClone.find('.validation-content').text(resultData.message);
-            resultClone.attr('data-severity', resultData.severity);
-
-            if (resultData.additional_info.length > 0) {
-                let extraContent = resultClone.find('.validation-extra-content');
-                resultData.additional_info.forEach(function (item) {
-                    if (item.type === "text") {
-                        extraContent.append($("<span>").text(item.text)).append("<br/>")
-                    } else if (item.type === "url") {
-                        const link = $("<a>")
-                            .attr("href", item.url)
-                            .text(item.text)
-                            .attr("target", "_blank")
-                            .attr("rel", "noopener noreferrer");
-
-                        extraContent.append($("<span>").append(link)).append("<br/>");
-                    } else {
-                        console.warn("Unhandled additional info type (" + item.type + ")");
-                    }
+                    validationContainer.append(validationFragment);
                 });
 
-                resultClone.find('i.expandable-caret')
-                    .removeClass("tw-hidden");
-            }
+                toggleInformation();
 
-            if (resultData.docs_url != null) {
-                resultClone.find('.validation-docs-link')
-                    .attr('href', resultData.docs_url)
-                    .removeClass("tw-hidden");
+                if (taskData.complete) {
+                    loadingSpinner.remove();
+                } else {
+                    // Periodic refresh of validation results
+                    jobPollingTimeout = setTimeout(function () {
+                        loadJobs();
+                    }, 1000);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error("Failed to fetch jobs:", error);
+                validationContainer.html('<div class="alert alert-danger col-12">Failed to load jobs. Please try again.</div>');
+            },
+            complete: function() {
+                validationContainer.find('[data-toggle="popover"]').popover({
+                    trigger: 'focus'
+                });
             }
-            if (resultData.call_to_action != null) {
-                resultClone.find('.validation-call-to-action')
-                    .attr('href', resultData.call_to_action.url)
-                    .text(resultData.call_to_action.text)
-                    .removeClass("tw-hidden");
-            }
-            if (resultData.settings_url != null) {
-                resultClone.find('.validation-settings-link')
-                    .attr('href', resultData.settings_url)
-                    .removeClass("tw-hidden");
-            }
+        });
+    }
 
-            return resultClone;
+    function createValidationFragment(validationData) {
+        let validationClone = $( validationTemplate.prop('content') ).clone();
+        validationClone
+            .find('.validation-info-button')
+            .attr("title", validationData.name)
+            .attr("data-content", validationData.description);
+
+        validationClone.find('.validation-title').text(validationData.name);
+
+        if (validationData.is_failed) {
+            validationClone.find(".validation-failure-button")
+                .removeClass("tw-hidden")
+                .attr("title", "An exception occurred while running the validation")
+                .attr("data-content", "Uncaught " + validationData['failure']['exception'] + ' at ' + validationData['failure']['file'] + ':' + validationData['failure']['line'] + ": " + validationData['failure']['message']);
+        }
+        if (validationData.is_timedout) {
+            validationClone.find(".validation-timeout-button").removeClass("tw-hidden");
         }
 
-        function createSoftwareTableRow(software) {
-            let rowClone = $(  $('#software-table-row-template').prop('content') ).clone();
-            rowClone.find('.software-name').text(software.name);
-            rowClone.find('.software-version').text(software.version);
-            return rowClone;
+        return validationClone;
+    }
+
+    function createNoOutputFragment() {
+        return $( noOutputTemplate.prop('content') ).clone();
+    }
+
+    function createValidationResultFragment(resultData) {
+        let resultClone = $( resultTemplate.prop('content') ).clone();
+
+        resultClone.find('.validation-result').attr("data-severity", resultData.severity);
+
+        resultClone.find('.result-badge')
+            .attr("title", resultData.message)
+            .addClass(severityBadgeClass[resultData.severity] ?? severityBadgeClass['info']);
+
+        resultClone.find('.severity').text(resultData.severity.toUpperCase());
+        resultClone.find('.validation-content').text(resultData.message);
+
+        if (resultData.additional_info.length > 0) {
+            let extraContent = resultClone.find('.validation-extra-content');
+            resultData.additional_info.forEach(function (item) {
+                if (item.type === "text") {
+                    extraContent.append($("<span>").text(item.text)).append("<br/>")
+                } else if (item.type === "url") {
+                    const link = $("<a>")
+                        .attr("href", item.url)
+                        .text(item.text)
+                        .attr("target", "_blank")
+                        .attr("rel", "noopener noreferrer");
+
+                    extraContent.append($("<span>").append(link)).append("<br/>");
+                } else {
+                    console.warn("Unhandled additional info type (" + item.type + ")");
+                }
+            });
+
+            resultClone.find('i.expandable-caret')
+                .removeClass("tw-hidden");
         }
-    });
 
-    /**
-     * Flip dropdown caret icon upside down if clicked
-     */
-    validationContainer.on('click', ".validation-content-container", function() {
-        if ( $(this).find(".validation-extra-content").text() ) {
-            $(this).find("i.expandable-caret").toggleClass("tw-rotate-180");
+        if (resultData.docs_url != null) {
+            resultClone.find('.validation-docs-link')
+                .attr('href', resultData.docs_url)
+                .removeClass("tw-hidden");
         }
-    });
+        if (resultData.call_to_action != null) {
+            resultClone.find('.validation-call-to-action')
+                .attr('href', resultData.call_to_action.url)
+                .text(resultData.call_to_action.text)
+                .removeClass("tw-hidden");
+        }
+        if (resultData.settings_url != null) {
+            resultClone.find('.validation-settings-link')
+                .attr('href', resultData.settings_url)
+                .removeClass("tw-hidden");
+        }
 
-    /**
-     * Show/hide extra content when clicked
-     */
-    validationContainer.on('click','.validation-result', function() {
-        $(this).find('.validation-extra-content').toggleClass('tw-hidden');
-    });
+        return resultClone;
+    }
 
-    /**
-     * When a severity badge is clicked, toggle opacity, and call toggleInformation
-     * to refresh
-     */
-    $(document).on('click','.severity-toggle',function() {
-        $(this).toggleClass('severity-disabled');
-        toggleInformation();
-    });
+    function createSoftwareTableRow(software) {
+        let rowClone = $(  $('#software-table-row-template').prop('content') ).clone();
+        rowClone.find('.software-name').text(software.name);
+        rowClone.find('.software-version').text(software.version);
+        return rowClone;
+    }
 
     /**
      * Based on the set of active result types, hide validation results of types

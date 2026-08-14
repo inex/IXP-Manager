@@ -31,7 +31,7 @@ class SeverityUnitTest extends TestCase
 {
     public function testValues()
     {
-        $this->assertEquals( [ 'debug', 'info', 'suggest', 'warning', 'error' ] , Severity::values());
+        $this->assertEquals( [ 'debug', 'info', 'suggestion', 'warning', 'error' ] , Severity::values());
     }
 
     public function testRank()

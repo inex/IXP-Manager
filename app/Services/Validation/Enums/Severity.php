@@ -33,7 +33,7 @@ enum Severity: string
 {
     case Debug = 'debug';
     case Info = 'info';
-    case Suggestion = 'suggest';
+    case Suggestion = 'suggestion';
     case Warning = 'warning';
     case Error = 'error';
 
