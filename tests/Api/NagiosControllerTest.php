@@ -56,15 +56,30 @@ class NagiosControllerTest extends TestCase
             ->get("admin/api/v4/nagios/customers/999999/4")
             ->assertStatus(404);
     }
+
+    public function testCustomersProtocolUnknown(): void
+    {
+        $vlan1 = Vlan::whereId(1)->firstOrFail();
+
+        $this->withHeader( 'X-IXP-Manager-API-Key', self::API_KEY_SUPERUSER )
+            ->withHeader("accept", "application/json")
+            ->get("admin/api/v4/nagios/customers/{$vlan1->id}/9000/default")
+            ->assertStatus(404)
+            ->assertJson(['message' => "Unknown protocol"]);
+    }
+
     public function testCustomersTemplateNotFound(): void
     {
         $vlan1 = Vlan::whereId(1)->firstOrFail();
 
         $this->withHeader( 'X-IXP-Manager-API-Key', self::API_KEY_SUPERUSER )
+            ->withHeader("accept", "application/json")
             ->get("admin/api/v4/nagios/customers/{$vlan1->id}/4/unknowntemplate")
-            ->assertStatus(404);
+            ->assertStatus(404)
+            ->assertJson(['message' => "Unknown template"]);
     }
-    public function testCustomersTaskLastRun(): void
+
+    public function testCustomers(): void
     {
         $vlan1 = Vlan::whereId(1)->firstOrFail();
         $vlan2 = Vlan::whereId(2)->firstOrFail();
@@ -72,7 +87,9 @@ class NagiosControllerTest extends TestCase
         $this->assertCount(0, TaskLastRun::all());
         $this->withHeader( 'X-IXP-Manager-API-Key', self::API_KEY_SUPERUSER )
             ->get("admin/api/v4/nagios/customers/{$vlan1->id}/4")
-            ->assertOk();
+            ->assertOk()
+            ->assertHeader('content-type', 'text/plain; charset=utf-8')
+            ->assertViewIs('api.v4.nagios.customers.default');
 
         $this->assertDatabaseHas('task_last_run', [
             'task_key' => TaskLastRun::NAGIOS_CUSTOMERS,
@@ -84,7 +101,9 @@ class NagiosControllerTest extends TestCase
         // behaviour with parameters
         $this->withHeader( 'X-IXP-Manager-API-Key', self::API_KEY_SUPERUSER )
             ->get("admin/api/v4/nagios/customers/{$vlan1->id}/6")
-            ->assertOk();
+            ->assertOk()
+            ->assertHeader('content-type', 'text/plain; charset=utf-8')
+            ->assertViewIs('api.v4.nagios.customers.default');
 
         $this->assertDatabaseHas('task_last_run', [
             'task_key' => TaskLastRun::NAGIOS_CUSTOMERS,
@@ -95,7 +114,9 @@ class NagiosControllerTest extends TestCase
 
         $this->withHeader( 'X-IXP-Manager-API-Key', self::API_KEY_SUPERUSER )
             ->get("admin/api/v4/nagios/customers/{$vlan2->id}/6")
-            ->assertOk();;
+            ->assertOk()
+            ->assertHeader('content-type', 'text/plain; charset=utf-8')
+            ->assertViewIs('api.v4.nagios.customers.default');
 
         $this->assertDatabaseHas('task_last_run', [
             'task_key' => TaskLastRun::NAGIOS_CUSTOMERS,
@@ -111,16 +132,19 @@ class NagiosControllerTest extends TestCase
             ->get("admin/api/v4/nagios/switches/999999")
             ->assertStatus(404);
     }
+
     public function testSwitchesTemplateNotFound(): void
     {
         $infrastructure1 = Infrastructure::whereId(1)->firstOrFail();
 
         $this->withHeader( 'X-IXP-Manager-API-Key', self::API_KEY_SUPERUSER )
+            ->withHeader("accept", "application/json")
             ->get("admin/api/v4/nagios/switches/{$infrastructure1->id}/unknowntemplate")
-            ->assertStatus(404);
+            ->assertStatus(404)
+            ->assertJson(['message' => "Unknown template"]);
     }
 
-    public function testSwitchesTaskLastRun(): void
+    public function testSwitches(): void
     {
         $infrastructure1 = Infrastructure::whereId(1)->firstOrFail();
         $infrastructure2 = Infrastructure::whereId(2)->firstOrFail();
@@ -128,7 +152,9 @@ class NagiosControllerTest extends TestCase
         $this->assertCount(0, TaskLastRun::all());
         $this->withHeader( 'X-IXP-Manager-API-Key', self::API_KEY_SUPERUSER )
             ->get("admin/api/v4/nagios/switches/{$infrastructure1->id}")
-            ->assertOk();
+            ->assertOk()
+            ->assertHeader('content-type', 'text/plain; charset=utf-8')
+            ->assertViewIs('api.v4.nagios.switches.default');
 
         $this->assertDatabaseHas('task_last_run', [
             'task_key' => TaskLastRun::NAGIOS_SWITCHES,
@@ -139,7 +165,9 @@ class NagiosControllerTest extends TestCase
         // behaviour with parameters
         $this->withHeader( 'X-IXP-Manager-API-Key', self::API_KEY_SUPERUSER )
             ->get("admin/api/v4/nagios/switches/{$infrastructure2->id}")
-            ->assertOk();
+            ->assertOk()
+            ->assertHeader('content-type', 'text/plain; charset=utf-8')
+            ->assertViewIs('api.v4.nagios.switches.default');
 
         $this->assertDatabaseHas('task_last_run', [
             'task_key' => TaskLastRun::NAGIOS_SWITCHES,
@@ -154,22 +182,26 @@ class NagiosControllerTest extends TestCase
             ->get("admin/api/v4/nagios/birdseye-daemons/default/999999")
             ->assertStatus(404);
     }
+
     public function testBirdseyeDaemonsTemplateNotFound(): void
     {
         $vlan1 = Vlan::whereId(1)->firstOrFail();
 
         $this->withHeader( 'X-IXP-Manager-API-Key', self::API_KEY_SUPERUSER )
+            ->withHeader("accept", "application/json")
             ->get("admin/api/v4/nagios/birdseye-daemons/unknowntemplate/{$vlan1->id}")
-            ->assertStatus(404);
+            ->assertStatus(404)
+            ->assertJson(['message' => "Unknown template"]);
     }
 
-    public function testBirdseyeDaemonsTaskLastRun(): void
+    public function testBirdseyeDaemons(): void
     {
         $this->assertCount(0, TaskLastRun::all());
         $this->withHeader( 'X-IXP-Manager-API-Key', self::API_KEY_SUPERUSER )
             ->get("admin/api/v4/nagios/birdseye-daemons")
-            ->assertOk();
-
+            ->assertOk()
+            ->assertHeader('content-type', 'text/plain; charset=utf-8')
+            ->assertViewIs('api.v4.nagios.birdseye-daemons.default');
 
         $this->assertDatabaseHas('task_last_run', [
             'task_key' => TaskLastRun::NAGIOS_BIRDSEYE_DAEMONS,
@@ -181,7 +213,9 @@ class NagiosControllerTest extends TestCase
         $vlan1 = Vlan::whereId(1)->firstOrFail();
         $this->withHeader( 'X-IXP-Manager-API-Key', self::API_KEY_SUPERUSER )
             ->get("admin/api/v4/nagios/birdseye-daemons/default/" . $vlan1->id)
-            ->assertOk();
+            ->assertOk()
+            ->assertHeader('content-type', 'text/plain; charset=utf-8')
+            ->assertViewIs('api.v4.nagios.birdseye-daemons.default');
 
         $this->assertDatabaseHas('task_last_run', [
             'task_key' => TaskLastRun::NAGIOS_BIRDSEYE_DAEMONS,
@@ -190,28 +224,90 @@ class NagiosControllerTest extends TestCase
         ]);
     }
 
-    public function testBirdseyeBgpSessionsVlanNotFound(): void
+    public function testBirdseyeDaemonsNoBirdsEyeRouters(): void
     {
+        // with vlan param
+        $vlan1 = Vlan::whereId(1)->firstOrFail();
+
+        $birdsEyeRouterIds = Router::where('api_type', Router::API_TYPE_BIRDSEYE)
+            ->where('vlan_id', $vlan1->id)
+            ->get('id')->pluck('id')->toArray();
+
+        Router::whereIn('id', $birdsEyeRouterIds)->update(['api_type' => Router::API_TYPE_OTHER]);
+
         $this->withHeader( 'X-IXP-Manager-API-Key', self::API_KEY_SUPERUSER )
-            ->get("admin/api/v4/nagios/birdseye-bgp-sessions/default/999999")
-            ->assertStatus(404);
+            ->withHeader("accept", "application/json")
+            ->get("admin/api/v4/nagios/birdseye-daemons/default/" . $vlan1->id)
+            ->assertJson(['message' => "No routers for the provided VLAN ID / Bird's Eye API type."])
+            ->assertNotFound();
+
+        Router::whereIn('id', $birdsEyeRouterIds)->update(['api_type' => Router::API_TYPE_BIRDSEYE]);
     }
+
     public function testBirdseyeBgpSessionsTemplateNotFound(): void
     {
         $vlan1 = Vlan::whereId(1)->firstOrFail();
 
         $this->withHeader( 'X-IXP-Manager-API-Key', self::API_KEY_SUPERUSER )
-            ->get("admin/api/v4/nagios/birdseye-bgp-sessions/unknowntemplate/{$vlan1->id}")
-            ->assertStatus(404);
+            ->withHeader("accept", "application/json")
+            ->get("admin/api/v4/nagios/birdseye-bgp-sessions/{$vlan1->id}/4/" . Router::TYPE_ROUTE_SERVER . "/unknowntemplate")
+            ->assertStatus(404)
+            ->assertJson( [ 'message' => "Unknown template" ] );
     }
 
-    public function testBirdseyeBgpSessionsTaskLastRun(): void
+    public function testBirdseyeBgpSessionsUnknownProtocol(): void
+    {
+        $vlan1 = Vlan::whereId(1)->firstOrFail();
+
+        $this->withHeader( 'X-IXP-Manager-API-Key', self::API_KEY_SUPERUSER )
+            ->withHeader("accept", "application/json")
+            ->get("admin/api/v4/nagios/birdseye-bgp-sessions/{$vlan1->id}/9999/" . Router::TYPE_ROUTE_SERVER)
+            ->assertStatus(404)
+            ->assertJson( [ 'message' => "Unknown protocol" ] );
+    }
+
+    public function testBirdseyeBgpSessionsUnknownRouterType(): void
+    {
+        $vlan1 = Vlan::whereId(1)->firstOrFail();
+
+        $this->withHeader( 'X-IXP-Manager-API-Key', self::API_KEY_SUPERUSER )
+            ->withHeader("accept", "application/json")
+            ->get("admin/api/v4/nagios/birdseye-bgp-sessions/{$vlan1->id}/4/12345")
+            ->assertStatus(404)
+            ->assertJson( [ 'message' => "Unknown router type" ] );
+    }
+
+    public function testBirdseyeBgpSessionsNoBirdsEyeRouters(): void
+    {
+        // with vlan param
+        $vlan1 = Vlan::whereId(1)->firstOrFail();
+
+        $birdsEyeRouterIds = Router::where('api_type', Router::API_TYPE_BIRDSEYE)
+            ->where('vlan_id', $vlan1->id)
+            ->get('id')->pluck('id')->toArray();
+
+        Router::whereIn('id', $birdsEyeRouterIds)->update(['api_type' => Router::API_TYPE_OTHER]);
+
+        $this->withHeader( 'X-IXP-Manager-API-Key', self::API_KEY_SUPERUSER )
+            ->withHeader("accept", "application/json")
+            ->get("admin/api/v4/nagios/birdseye-bgp-sessions/" . $vlan1->id . "/4/" . Router::TYPE_ROUTE_SERVER)
+            ->assertJson(['message' => "No suitable router(s) found."])
+            ->assertNotFound();
+
+        Router::whereIn('id', $birdsEyeRouterIds)->update(['api_type' => Router::API_TYPE_BIRDSEYE]);
+    }
+
+    public function testBirdseyeBgpSessions(): void
     {
         $vlan2 = Vlan::whereId(2)->firstOrFail();
 
         $this->withHeader( 'X-IXP-Manager-API-Key', self::API_KEY_SUPERUSER )
+            ->withHeader("accept", "application/json")
             ->get("admin/api/v4/nagios/birdseye-bgp-sessions/{$vlan2->id}/4/" . Router::TYPE_ROUTE_SERVER)
-            ->assertOk();
+            ->assertOk()
+            ->assertHeader('content-type', 'text/plain; charset=utf-8')
+            ->assertViewIs('api.v4.nagios.birdseye-bgp-sessions.default')
+        ;
 
         $this->assertDatabaseHas('task_last_run', [
             'task_key' => TaskLastRun::NAGIOS_BIRDSEYE_BGP_SESSIONS,
@@ -222,8 +318,12 @@ class NagiosControllerTest extends TestCase
         ]);
 
         $this->withHeader( 'X-IXP-Manager-API-Key', self::API_KEY_SUPERUSER )
+            ->withHeader("accept", "application/json")
             ->get("admin/api/v4/nagios/birdseye-bgp-sessions/{$vlan2->id}/6/" . Router::TYPE_ROUTE_SERVER . "/default")
-            ->assertOk();
+            ->assertOk()
+            ->assertHeader('content-type', 'text/plain; charset=utf-8')
+            ->assertViewIs('api.v4.nagios.birdseye-bgp-sessions.default')
+        ;
 
         $this->assertDatabaseHas('task_last_run', [
             'task_key' => TaskLastRun::NAGIOS_BIRDSEYE_BGP_SESSIONS,
