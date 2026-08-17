@@ -48,7 +48,7 @@ declare(strict_types=1);
 /**
  * This function prints a pre-populated GitHub Issue Template.
  */
-function printIssueAssistanceInfo(): void {
+function print_issue_assistance_info(): void {
     // OS Detection
     switch (PHP_OS_FAMILY) {
         case 'BSD':
@@ -99,7 +99,7 @@ function printIssueAssistanceInfo(): void {
     }
 
     try {
-        $env = loadEnv( dirname( __FILE__ ) . "/.env", $errorMsg);
+        $env = load_env( dirname( __FILE__ ) . "/.env", $errorMsg);
 
         // Generate the DSN from our configuration
         $dsn = "mysql:host={$env['DB_HOST']};dbname={$env['DB_DATABASE']}"
@@ -212,7 +212,7 @@ _Please let us know if the issue is affecting you in a production environment_
 /**
  * Discourage running this script as root.
  */
-function requireConfirmationIfRunningRoot(): void
+function require_confirmation_if_running_as_root(): void
 {
     exec( 'id -u', $idOutput, $idExitCode );
     if ( $idExitCode !== 0 ) {
@@ -220,7 +220,7 @@ function requireConfirmationIfRunningRoot(): void
     } else {
         $id = (int) trim( $idOutput[0] );
         if ( $id === 0 ) {
-            echo "WARNING: you are running this script as root, this is not recommended. Are you sure you want to continue? (y/N)?: ";
+            echo "WARNING: you are running this script as root, this is not recommended. You should run this as your www user. Are you sure you want to continue? (y/N)?: ";
             $stdin = fopen( "php://stdin", "r" );
             $line = fgets( $stdin );
             if ( trim( $line ) === 'y' ) {
@@ -237,7 +237,7 @@ function requireConfirmationIfRunningRoot(): void
  * Parses a .env file at $path and returns an array of vars if successful. False on failure
  * ($errorMessage will be written in this case)
  */
-function loadEnv(string $path, &$errorMessage): array|false
+function load_env( string $path, &$errorMessage): array|false
 {
     $env = [];
 
@@ -266,7 +266,7 @@ function loadEnv(string $path, &$errorMessage): array|false
             $value = trim( $value );
 
             // handle inline comments:
-            [$value, ] = splitValueAndComment($value);
+            [$value, ] = split_env_value_and_comment($value);
 
             // extract from optional quotes
             $value = preg_replace( '/^["\'](.*)["\']$/', '$1', $value );
@@ -283,7 +283,7 @@ function loadEnv(string $path, &$errorMessage): array|false
  *
  * @psalm-return array{0: string, 1: string|null}
  */
-function splitValueAndComment( string $valueElement ): array
+function split_env_value_and_comment( string $valueElement ): array
 {
     // avoid loop if there's no inline comment
     if( !str_contains($valueElement, "#") ) {
@@ -318,7 +318,7 @@ function splitValueAndComment( string $valueElement ): array
     return [ $valueElement, null ];
 }
 
-function doMinimumPhpVersionCheck( string $minVersion, string $recommendedPrefix, ?string $maxVersion): array
+function do_minimum_php_version_check( string $minVersion, string $recommendedPrefix, ?string $maxVersion): array
 {
     $results = [];
 
@@ -339,7 +339,7 @@ function doMinimumPhpVersionCheck( string $minVersion, string $recommendedPrefix
     return $results;
 }
 
-function doComposerCheck(): array
+function do_composer_check(): array
 {
     $results = [];
 
@@ -350,7 +350,7 @@ function doComposerCheck(): array
     return $results;
 }
 
-function doEnvFileChecks(): array
+function do_env_file_check(): array
 {
     $results = [];
     $envfile = dirname(__FILE__) . "/.env";
@@ -359,7 +359,7 @@ function doEnvFileChecks(): array
         return $results;
     }
 
-    if ( ( $parseEnv = loadEnv($envfile, $errorMessage ) ) === false ) {
+    if ( ( $parseEnv = load_env($envfile, $errorMessage ) ) === false ) {
         $results[] = new CheckResult( ResultStatus::ERROR, [ $errorMessage ] );
         return $results;
     }
@@ -371,7 +371,7 @@ function doEnvFileChecks(): array
     return $results;
 }
 
-function doMySqlCheck(string $minVersion, string $recommendedPrefix, ?string $maxVersion): array|CheckResult
+function do_mysql_check( string $minVersion, string $recommendedPrefix, ?string $maxVersion): array|CheckResult
 {
     $results = [];
     // Laravel uses pdo-mysql extension to interact with MySQL databases
@@ -380,7 +380,7 @@ function doMySqlCheck(string $minVersion, string $recommendedPrefix, ?string $ma
     }
 
     // Load env file to perform configuration checks
-    if ( ( $env = loadEnv( dirname(__FILE__) . "/.env", $errorMessage ) ) === false ) {
+    if ( ( $env = load_env( dirname(__FILE__) . "/.env", $errorMessage ) ) === false ) {
         return new CheckResult( ResultStatus::ERROR, [ $errorMessage ] );
     }
 
@@ -448,7 +448,7 @@ function doMySqlCheck(string $minVersion, string $recommendedPrefix, ?string $ma
     return $results;
 }
 
-function doLaravelRequiredExtensionChecks(array $requiredByLaravel): array
+function do_laravel_required_extension_checks( array $requiredByLaravel): array
 {
     $results = [];
 
@@ -467,7 +467,7 @@ function doLaravelRequiredExtensionChecks(array $requiredByLaravel): array
     return $results;
 }
 
-function doLaravelWritableDirectoryChecks(): array
+function do_laravel_writable_directory_checks(): array
 {
     $storageDirectories = ["bootstrap", "storage/app/", "storage/docstore/", "storage/docstore_customers/", "storage/files/",
             "storage/framework/cache/", "storage/framework/sessions/", "storage/framework/views/",
@@ -491,6 +491,7 @@ function doLaravelWritableDirectoryChecks(): array
             }
         }
 
+        // Ability to create a directory is required at least in the case of storage/grapher
         $testDir = rtrim(dirname( __FILE__ ), "/" ) . "/" . rtrim($storageDirectory, "/") . "/.permission-test-" . bin2hex(random_bytes(4));
         try {
             $written = @mkdir($testDir);
@@ -523,7 +524,7 @@ function doLaravelWritableDirectoryChecks(): array
  * @param string $localVersion
  * @return array
  */
-function doIxpManagerReleaseCheck(string $localVersion): array
+function do_ixp_manager_release_check(string $localVersion): array
 {
     $results = [];
 
@@ -638,13 +639,13 @@ readonly class SoftwareVersion
 }
 
 
-requireConfirmationIfRunningRoot();
+require_confirmation_if_running_as_root();
 
 include "version.php";
 $manifest = APPLICATION_MANIFEST;
 
 if (array_any($argv, fn($v) => $v === '--github-issue')) {
-    printIssueAssistanceInfo();
+    print_issue_assistance_info();
     return;
 }
 
@@ -664,13 +665,13 @@ foreach ($argv as $i => $value) {
 }
 
 $tasks = [];
-$tasks[] = new BasicValidation( 'PHP', doMinimumPhpVersionCheck(...), [ $manifest['php_version']['min'], $manifest['php_version']['recommended'], $manifest['php_version']['max'] ] );
-$tasks[] = new BasicValidation( 'Composer', doComposerCheck(...), [] );
-$tasks[] = new BasicValidation( 'Env File', doEnvFileChecks(...), [] );
-$tasks[] = new BasicValidation( 'MySQL', doMySqlCheck(...), [ $manifest['mysql_version']['min'], $manifest['mysql_version']['recommended'], $manifest['mysql_version']['max'] ] );
-$tasks[] = new BasicValidation( 'Laravel Required Extensions', doLaravelRequiredExtensionChecks(...), [ $manifest['laravel_required_extensions'] ] );
-$tasks[] = new BasicValidation( 'Laravel Storage Directories', doLaravelWritableDirectoryChecks(...), [ $manifest['laravel_required_extensions'] ] );
-$tasks[] = new BasicValidation( 'IXP Manager', doIxpManagerReleaseCheck(...), [ APPLICATION_VERSION ] );
+$tasks[] = new BasicValidation( 'PHP', do_minimum_php_version_check(...), [ $manifest['php_version']['min'], $manifest['php_version']['recommended'], $manifest['php_version']['max'] ] );
+$tasks[] = new BasicValidation( 'Composer', do_composer_check(...), [] );
+$tasks[] = new BasicValidation( 'Env File', do_env_file_check(...), [] );
+$tasks[] = new BasicValidation( 'MySQL', do_mysql_check(...), [ $manifest['mysql_version']['min'], $manifest['mysql_version']['recommended'], $manifest['mysql_version']['max'] ] );
+$tasks[] = new BasicValidation( 'Laravel Required Extensions', do_laravel_required_extension_checks(...), [ $manifest['laravel_required_extensions'] ] );
+$tasks[] = new BasicValidation( 'Laravel Storage Directories', do_laravel_writable_directory_checks(...), [ $manifest['laravel_required_extensions'] ] );
+$tasks[] = new BasicValidation( 'IXP Manager', do_ixp_manager_release_check(...), [ APPLICATION_VERSION ] );
 
 $softwareVersionResults = [];
 $checkResults = [];
