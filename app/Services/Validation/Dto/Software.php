@@ -29,7 +29,7 @@ use JsonSerializable;
 /**
  * Simple DTO containing a software and it's version
  */
-readonly class Software implements JsonSerializable
+final readonly class Software implements JsonSerializable
 {
     public function __construct(
         private(set) string $name,

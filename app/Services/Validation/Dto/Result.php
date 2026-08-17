@@ -33,7 +33,7 @@ use JsonSerializable;
 /**
  * Simple DTO containing a message and a status, and some optional
  */
-class Result implements JsonSerializable
+final class Result implements JsonSerializable
 {
     private(set) ?string           $docsUrl        = null;
     private(set) ?string           $settingsUrl    = null;
