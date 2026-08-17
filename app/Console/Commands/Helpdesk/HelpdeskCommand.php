@@ -35,7 +35,7 @@ abstract class HelpdeskCommand extends IXPCommand
      */
     private $helpdesk = null;
 
-    protected function getHelpdesk()
+    protected function getHelpdesk(): Helpdesk
     {
         if( $this->helpdesk === null ) {
             $this->helpdesk = App::make( Helpdesk::class );

@@ -71,7 +71,7 @@ class ValidationController
     /**
      * Runs jobs in JobState, updating its state and persisting to cache.
      */
-    private function runValidations( ConcurrentJobRunner $runner, JobState $jobState )
+    private function runValidations( ConcurrentJobRunner $runner, JobState $jobState ): void
     {
         Log::debug( "Validation job starting", ['job_id' => $jobState->jobId]);
 
