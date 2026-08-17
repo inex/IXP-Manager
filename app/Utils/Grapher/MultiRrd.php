@@ -282,6 +282,8 @@ class MultiRrd
      * Get the RRD file
      *
      * @throws BackendFeatureNotImplementedException
+     *
+     * @return never
      */
     public function rrd()
     {
