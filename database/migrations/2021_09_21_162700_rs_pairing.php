@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\{DB,Schema};
 
-class RsPairing extends Migration
+final class RsPairing extends Migration
 {
     /**
      * Run the migrations.

@@ -25,7 +25,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateLogTable extends Migration
+final class CreateLogTable extends Migration
 {
     /**
      * Run the migrations.

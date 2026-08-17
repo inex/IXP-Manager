@@ -26,7 +26,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use IXP\Models\User;
 
-class UserPref extends Migration
+final class UserPref extends Migration
 {
     /**
      * Run the migrations.

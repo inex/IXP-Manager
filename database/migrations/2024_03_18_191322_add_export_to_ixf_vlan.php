@@ -5,7 +5,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use IXP\Models\Vlan;
 
-class AddExportToIxfVlan extends Migration
+final class AddExportToIxfVlan extends Migration
 {
     /**
      * Run the migrations.

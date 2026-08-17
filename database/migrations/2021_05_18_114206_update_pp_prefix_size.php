@@ -25,7 +25,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class UpdatePpPrefixSize extends Migration
+final class UpdatePpPrefixSize extends Migration
 {
     /**
      * Run the migrations.

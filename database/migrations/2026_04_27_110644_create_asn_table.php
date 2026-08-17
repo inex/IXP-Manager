@@ -28,7 +28,7 @@ use Illuminate\Support\Facades\Schema;
 /**
  * Creates a table for storing ASNs
  */
-class CreateAsnTable extends Migration
+final class CreateAsnTable extends Migration
 {
     /**
      * Run the migrations.
