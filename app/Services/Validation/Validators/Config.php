@@ -80,7 +80,6 @@ class Config implements Validator
             $backend->suggestion( "Did you know IXP Manager has a UI to find filtered prefixes for your " . config('ixp_fe.lang.customer.many') . "?" )
                 ->withDocsPath( "features/route-servers/#displaying-filtered-prefixes" )
                 ->withSettingsLink("frontend_controllers", "filtered-prefixes");
-            ;
         } else if ( config('cache.default') === "array" ) {
             $backend->error("A persistent cache is required to use the filtered prefixes feature - cannot use array." );
         } else {

@@ -118,7 +118,6 @@ class Router implements Validator
         }
 
         if (count($needsLookingGlass) > 0) {
-            // todo: check this: routers or route servers?
             $backend->warning("We recommend configuring Looking Glass on all routers - some found without")
                 ->each($needsLookingGlass, function (Result $result, RouterModel $router) {
                     $result->addAdditionalInfoUrl(route("router@edit", ['router' => $router->id]), $router->name);
