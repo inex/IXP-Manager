@@ -114,7 +114,7 @@ class NagiosMonitoring implements Validator
 
         $lastRunNagiosBirdseyeBgpDaemon = TaskLastRun::whereTaskKey( TaskLastRun::NAGIOS_BIRDSEYE_BGP_SESSIONS )->get();
         if ( $lastRunNagiosBirdseyeBgpDaemon->isEmpty() ) {
-            $backend->suggestion( "Did you know IXP- anager can generate nagios configuration to monitor your birdseye BGP sessions?")
+            $backend->suggestion( "Did you know IXP Manager can generate nagios configuration to monitor your birdseye BGP sessions?")
                 ->withDocsPath("features/nagios/#birdseye-bgp-session-monitoring");
         } else {
             $backend->info("IXP Manager is generating birdseye BGP session monitoring configuration");
