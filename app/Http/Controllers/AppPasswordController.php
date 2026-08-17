@@ -367,4 +367,17 @@ class AppPasswordController extends EloquentController
             'data'     => [ 'rows' => $history ],
         ]);
     }
+
+    #[\Override]
+    public function preDelete(): bool
+    {
+        /** @var User $user */
+        $user = Auth::getUser();
+
+        if( $this->object->user_id !== $user->id ) {
+            abort( 403, 'Unauthorized' );
+        }
+
+        return true;
+    }
 }
