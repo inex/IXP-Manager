@@ -63,6 +63,9 @@ class CheckEloquent2FrontendLinks extends  Command
             $class = "\\IXP\\Http\\Controllers\\" . basename(str_replace("/", "\\", substr($file, strlen($pathRoot) )), ".php");
 
             if (in_array($class, $this->ignoredControllers)) {
+                if ($this->isVerbosityVerbose()) {
+                    $this->warn("Ignoring class $class");
+                }
                 continue;
             }
 
@@ -72,7 +75,10 @@ class CheckEloquent2FrontendLinks extends  Command
             }
 
             // Only interested in eloquent controllers, they have the frontend stuff. Load feParams.
-            foreach ([3, 2, 1] as $privs) {
+            foreach (array_keys(User::$PRIVILEGES) as $privs) {
+                if ($this->isVerbosityVerbose()) {
+                    $this->info("Checking controller $class with privs $privs");
+                }
                 // Some controllers, eg ContactController, modify their columns based on the current users permissions.
                 Auth::login(User::byPrivs($privs)->firstOrFail());
 

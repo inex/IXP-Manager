@@ -140,6 +140,9 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     public const AUTH_CUSTADMIN = 2;
     public const AUTH_SUPERUSER = 3;
 
+    /**
+     * @var array<int, string>
+     */
     public static $PRIVILEGES = [
         self::AUTH_CUSTUSER  => 'CUSTUSER',
         self::AUTH_CUSTADMIN => 'CUSTADMIN',
