@@ -25,7 +25,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class UpdateTimestamps extends Migration
+final class UpdateTimestamps extends Migration
 {
     /**
      * Run the migrations.
