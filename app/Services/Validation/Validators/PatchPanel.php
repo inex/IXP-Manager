@@ -31,7 +31,7 @@ use IXP\Models\PatchPanel as PatchPanelModel;
 /**
  * @author Thomas Kerin <thomas@islandbridgenetworks.ie>
  */
-class PatchPanel implements Validator
+final class PatchPanel implements Validator
 {
 
     #[\Override]

@@ -31,7 +31,7 @@ use IXP\Models\Router;
 /**
  * @author Thomas Kerin <thomas@islandbridgenetworks.ie>
  */
-class As112 implements Validator
+final class As112 implements Validator
 {
 
     #[\Override]

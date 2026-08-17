@@ -32,7 +32,7 @@ use IXP\Models\TaskLastRun;
 /**
  * This validator checks the laravel task scheduler is running
  */
-class ScheduledTasks implements Validator
+final class ScheduledTasks implements Validator
 {
 
     #[\Override]
