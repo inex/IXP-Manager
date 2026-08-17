@@ -72,7 +72,7 @@ class Router implements Validator
 
             if (!config('ixp.rpki.rtr1.host') && !config('ixp.rpki.rtr2.host')) {
                 // No RPKI servers configured - suggest they setup the feature
-                $backend->suggestion( "Did you know IXP-Manager supports RPKI for route server configuration?" )
+                $backend->suggestion( "Did you know IXP Manager supports RPKI for route server configuration?" )
                     ->withDocsPath( 'features/rpki/' )
                     ->withSettingsLink( "route_servers", "rs_rpki_rtr1_host" );
 

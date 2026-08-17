@@ -69,7 +69,7 @@ class Config implements Validator
         }
 
         if ( !config ( 'ixp.as112.ui_active' ) ) {
-            $backend->suggestion( "Did you know IXP-Manager can help you run an AS112 service?")
+            $backend->suggestion( "Did you know IXP Manager can help you run an AS112 service?")
                 ->withDocsPath("features/as112/")
                 ->withSettingsLink("frontend_controllers", "as112");
         } else {
@@ -77,7 +77,7 @@ class Config implements Validator
         }
 
         if ( config('ixp_fe.frontend.disabled.filtered-prefixes' ) ) {
-            $backend->suggestion( "Did you know IXP-Manager has a UI to find filtered prefixes for your " . config('ixp_fe.lang.customer.many') . "?" )
+            $backend->suggestion( "Did you know IXP Manager has a UI to find filtered prefixes for your " . config('ixp_fe.lang.customer.many') . "?" )
                 ->withDocsPath( "features/route-servers/#displaying-filtered-prefixes" )
                 ->withSettingsLink("frontend_controllers", "filtered-prefixes");
             ;
