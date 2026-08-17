@@ -253,17 +253,17 @@ final class Basic implements Validator
 
         if (count($writeFail) === 0) {
             $backend->info( "All " . $type . " write permission tests passed" )
-                ->each( $writeOk, function( Result $result, $directory ) {
+                ->each( $writeOk, function( Result $result, string $directory ) {
                     $result->addAdditionalInfoText( " - " . $directory . " was writable");
                 } );
         } else {
             $backend->error( "Missing " . $type . " write permission for some storage directories:" )
-                ->each( $writeFail, function( Result $result, $directory ) use ($type) {
+                ->each( $writeFail, function( Result $result, string $directory ) use ($type) {
                     $result->addAdditionalInfoText( " - Failed to create test " . $type . " in " . $directory );
                 });
             if (count($writeOk) > 0) {
                 $backend->info( "Had " . $type . " write permission for some storage directories:" )
-                    ->each( $writeOk, function( Result $result, $directory ) {
+                    ->each( $writeOk, function( Result $result, string $directory ) {
                         $result->addAdditionalInfoText( " - " . $directory . " was writable" );
                     });
             }
