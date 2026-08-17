@@ -44,7 +44,7 @@ use IXP\Models\Infrastructure;
  *
  * @author Thomas Kerin <thomas@islandbridgenetworks.ie>
  */
-class IxpManagerIsRegistered implements Validator
+final class IxpManagerIsRegistered implements Validator
 {
     #[\Override]
     public function getName(): string

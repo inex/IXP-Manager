@@ -36,7 +36,7 @@ use IXP\Services\Validation\Dto\Result;
  *
  * @author Thomas Kerin <thomas@islandbridgenetworks.ie>
  */
-class PeeringDb implements Validator
+final class PeeringDb implements Validator
 {
     #[\Override]
     public function getName(): string
