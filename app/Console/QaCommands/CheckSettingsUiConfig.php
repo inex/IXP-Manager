@@ -24,13 +24,6 @@ declare(strict_types=1);
 
 namespace IXP\Console\QaCommands;
 
-use Illuminate\Support\Facades\DB;
-use Illuminate\Validation\Rules\Password;
-use Illuminate\Support\Carbon;
-
-
-use IXP\Models\{CompanyBillingDetail, CompanyRegisteredDetail, Customer, CustomerToUser, Infrastructure, User};
-use function Termwind\ask;
 
 /**
  * QA command to check that the settings UI configuration uses the correct config keys, etc
