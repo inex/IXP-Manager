@@ -30,7 +30,7 @@ namespace IXP\Services\Validation\Dto;
  * and cannot be serialized. We use this object to pass back key information about what happened instead.
  * @author Thomas Kerin <thomas@islandbridgenetworks.ie>
  */
-readonly class FailureInfo implements \JsonSerializable
+final readonly class FailureInfo implements \JsonSerializable
 {
     public function __construct(
         private(set) string $exception,

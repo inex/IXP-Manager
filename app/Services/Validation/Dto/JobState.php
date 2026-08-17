@@ -33,7 +33,7 @@ use IXP\Contracts\Validation\ValidationRunner;
  * the task (time started, time finished, progress) as well as wrapping the
  * state about each validation
  */
-class JobState implements \JsonSerializable
+final class JobState implements \JsonSerializable
 {
     private(set) ?int $finishedAt = null;
     private(set) int|float $progress = 0;

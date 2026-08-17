@@ -28,7 +28,7 @@ use IXP\Services\Validation\Enums\AdditionalInfoElementType;
 /**
  * This class contains a URL to be included as additional information under a validator result
  */
-readonly class UrlElement implements Element
+final readonly class UrlElement implements Element
 {
     public function __construct(
         private(set) string $url,

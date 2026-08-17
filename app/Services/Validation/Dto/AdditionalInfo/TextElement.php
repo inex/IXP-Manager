@@ -28,7 +28,7 @@ use IXP\Services\Validation\Enums\AdditionalInfoElementType;
 /**
  * This class contains a text string to be included under a validator result
  */
-readonly class TextElement implements Element
+final readonly class TextElement implements Element
 {
     public function __construct(
         public string $text,

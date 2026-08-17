@@ -30,7 +30,7 @@ use JsonSerializable;
  * This class is used to provide a JSON serialization format for the
  * state of a Backend/ValidationRunner.
  */
-readonly class ValidationReport implements JsonSerializable
+final readonly class ValidationReport implements JsonSerializable
 {
     public function __construct(
         public string $name,

@@ -28,7 +28,7 @@ namespace IXP\Services\Validation\Dto;
  * A generic container for a 'call to action' link displayed prominently beside
  * the validation message
  */
-readonly class CallToActionLink implements \JsonSerializable
+final readonly class CallToActionLink implements \JsonSerializable
 {
     public function __construct(
         private(set) string     $text,
