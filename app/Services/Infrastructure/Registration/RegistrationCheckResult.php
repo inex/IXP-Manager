@@ -38,7 +38,7 @@ class RegistrationCheckResult
      * be sorted into alreadyRegistered or toRegister.
      * @var Infrastructure[]
      */
-    public array $eligibleInfrastructures;
+    public array $eligibleInfrastructures = [];
 
     /**
      * These infrastructures were already registered.
