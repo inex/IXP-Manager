@@ -120,7 +120,7 @@ class Router implements Validator
         if (count($needsLookingGlass) > 0) {
             // todo: check this: routers or route servers?
             $backend->warning("We recommend configuring Looking Glass on all routers - some found without")
-                ->each($needsLookingGlass, function (Result $result, RouterModel $router) {
+                ->each($needsLookingGlass, function (Result $result, RouterModel $router): void {
                     $result->addAdditionalInfoUrl(route("router@edit", ['router' => $router->id]), $router->name);
                 })
                 ->withDocsPath('features/looking-glass/');
@@ -130,7 +130,7 @@ class Router implements Validator
             $backend->error("Found customer VLAN's that are route server clients without IRRDB filtering enabled!")
                 ->withDocsPath("usage/interfaces/#general-vlan-settings")
                 ->addAdditionalInfoText("VLAN Interfaces (max 5 returned):")
-                ->each($customerRsVlansWithoutIrrdbFiltering, function (Result $result, $vlan) {
+                ->each($customerRsVlansWithoutIrrdbFiltering, function (Result $result, VlanInterface $vlan): void {
                     $result->addAdditionalInfoUrl(route("vlan-interface@edit", ['vli' => $vlan->id]), "Vlan Interface " . $vlan->id . " (".$vlan->virtualInterface->customer->name . ")");
                 });
         }
