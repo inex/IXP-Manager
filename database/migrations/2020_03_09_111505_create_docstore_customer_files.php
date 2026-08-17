@@ -25,7 +25,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateDocstoreCustomerFiles extends Migration
+final class CreateDocstoreCustomerFiles extends Migration
 {
     /**
      * Run the migrations.
