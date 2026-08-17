@@ -61,12 +61,16 @@ class Security implements Validator
                 ->withDocsPath( "install/security/#securing-administrative-functions" )
                 ->withSettingsLink("auth", "unsecured_api_access")
             ;
+        } else {
+            $backend->info("Unsecured API Access is disabled.");
         }
 
         if (config('ixp_api.allow_apikeys_get_parameter')) {
             $backend->error("Passing API Keys as a GET parameter is enabled - this is strongly discouraged, and support for this will be removed in a future release. Update any dependent software and disable this ASAP.")
                 ->withDocsPath( "install/security/#api-key-as-get-parameter" )
                 ->withSettingsLink("auth", "api_key_via_get");
+        } else {
+            $backend->info("Passing API Keys as a GET parameter is disabled.");
         }
 
         try {
@@ -76,12 +80,18 @@ class Security implements Validator
             if (is_null($hsts)) {
                 $backend->error("Your server is missing the Strict-Transport-Security header.")
                     ->withDocsPath("install/security/#strict-transport-security");
+            } else {
+                $backend->info("Strict-Transport-Security header is set")
+                    ->addAdditionalInfoText($hsts);
             }
 
             $frameDeny = $headers['X-Frame-Options'][0] ?? null;
             if (is_null($frameDeny)) {
                 $backend->error("Your server is missing the X-Frame-Options header.")
                     ->withDocsPath("install/security/#x-frame-options-and-content-security-policy-frame-ancestors");
+            } else {
+                $backend->info("X-Frame-Options header is set")
+                    ->addAdditionalInfoText($frameDeny);
             }
 
         } catch (ConnectionException $e) {
