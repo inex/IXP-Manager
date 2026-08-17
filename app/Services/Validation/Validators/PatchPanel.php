@@ -55,11 +55,12 @@ class PatchPanel implements Validator
     #[\Override]
     public function run( ValidationBackend $backend ): void
     {
-        if (PatchPanelModel::count() === 0) {
+        $numPatchPanels = PatchPanelModel::count();
+        if ($numPatchPanels === 0) {
             $backend->suggestion("Did you know IXP Manager can help you manage your patch panels?")
                 ->withDocsPath('features/patch-panels/');
         } else {
-            $backend->info("Found patch panels defined");
+            $backend->info("Found " . $numPatchPanels . " patch panels defined");
         }
     }
 }

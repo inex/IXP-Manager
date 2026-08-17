@@ -59,9 +59,12 @@ class As112 implements Validator
             return;
         }
 
-        if (Router::whereType(Router::TYPE_AS112)->count() === 0) {
+        $numAs112Routers = Router::whereType(Router::TYPE_AS112)->count();
+        if ($numAs112Routers === 0) {
             $backend->error("AS112 enabled but no AS112 routers setup")
                 ->withDocsPath("features/as112/");
+        } else {
+            $backend->info("Found " . $numAs112Routers . " AS112 routers");
         }
     }
 }

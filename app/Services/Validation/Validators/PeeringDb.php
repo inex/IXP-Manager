@@ -59,14 +59,14 @@ class PeeringDb implements Validator
     #[\Override]
     public function run( ValidationBackend $backend ): void
     {
-        $this->checkPeeringDbOauthIntegration($backend);
+        $this->checkPeeringDbOAuthIntegration($backend);
         $this->checkPeeringDbApiIntegration($backend);
     }
 
-    private function checkPeeringDbOauthIntegration( ValidationBackend $backend ): void
+    private function checkPeeringDbOAuthIntegration( ValidationBackend $backend ): void
     {
         if (!config('auth.peeringdb.enabled')) {
-            $backend->suggestion("Did you know that IXP Manager supports login with PeeringDb?")
+            $backend->suggestion("Did you know that IXP Manager supports Login with PeeringDb?")
                 ->withDocsPath('features/peeringdb-oauth/')
                 ->withSettingsLink("auth", "peeringdb_oauth_enabled")
             ;
