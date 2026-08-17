@@ -101,7 +101,7 @@ class Router implements Validator
         foreach (RouterModel::all() as $router) {
             // exclude quarantine?
             if (!$router->quarantine) {
-                if ($router->api_type === null || $router->api_type == 0) {
+                if ($router->api_type == 0) {
                     $needsLookingGlass[] = $router;
                 } else if ($router->api === null) {
                     $backend->error("Router " . $router->handle . " has Looking Glass API type configured, but API endpoint is empty")
