@@ -1129,14 +1129,6 @@
       <code><![CDATA[$result[ $ppp->id ]]]></code>
     </MissingDocblockType>
   </file>
-  <file src="app/Models/Aggregators/RsPrefixAggregator.php">
-    <RedundantCondition>
-      <code><![CDATA[$result]]></code>
-    </RedundantCondition>
-    <TypeDoesNotContainType>
-      <code><![CDATA[false]]></code>
-    </TypeDoesNotContainType>
-  </file>
   <file src="app/Models/Aggregators/SwitcherAggregator.php">
     <InvalidOperand>
       <code><![CDATA[$mask]]></code>
