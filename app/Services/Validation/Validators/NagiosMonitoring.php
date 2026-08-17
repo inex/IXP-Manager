@@ -34,7 +34,7 @@ use IXP\Models\TaskLastRun;
 /**
  * This validator checks
  */
-class NagiosMonitoring implements Validator
+final class NagiosMonitoring implements Validator
 {
 
     #[\Override]

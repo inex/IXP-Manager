@@ -36,7 +36,7 @@ use IXP\Services\Validation\Dto\Result;
 /**
  * @author Thomas Kerin <thomas@islandbridgenetworks.ie>
  */
-class Router implements Validator
+final class Router implements Validator
 {
 
     #[\Override]

@@ -34,7 +34,7 @@ use IXP\Services\Validation\Dto\Result;
 /**
  * @author Thomas Kerin <thomas@islandbridgenetworks.ie>
  */
-class Grapher implements Validator
+final class Grapher implements Validator
 {
     #[\Override]
     public function getName(): string
