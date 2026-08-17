@@ -49,7 +49,7 @@ class MetadataTest extends TestCase
             [Basic::class, "Basic validations", "Perform some basic system checks", 0],
             [Config::class, "Configuration validation", "Perform checks of the IXP Manager configuration", 20],
             [Grapher::class, "Grapher validator", "Performs checks on grapher configuration.", 44],
-            [IxpManagerIsRegistered::class, "Check IXP's registered on IXP-Manager", "Checks that eligible infrastructures are recorded on ixpmanager.org", 30],
+            [IxpManagerIsRegistered::class, "Check IXP's registered on IXP Manager", "Checks that eligible infrastructures are recorded on ixpmanager.org", 30],
             [IxpManagerRunningLatestVersion::class, "IXP Manager version check", "Records which version of IXP Manager is installed, and notifies if an update is available.", 5],
             [NagiosMonitoring::class, "Nagios monitoring validator", "Checks that nagios configurations have been refreshed recently.", 14],
             [PatchPanel::class, "Patch Panel validator", "Checks patch panel configuration", 70],

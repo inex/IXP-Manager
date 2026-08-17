@@ -63,10 +63,10 @@ class NagiosMonitoring implements Validator
 
         $lastRunNagiosCustomers = TaskLastRun::whereTaskKey( TaskLastRun::NAGIOS_CUSTOMERS )->get();
         if ( $lastRunNagiosCustomers->isEmpty() ) {
-            $backend->suggestion( "Did you know IXP-Manager can generate nagios configuration to monitor your customers VLAN interfaces?")
+            $backend->suggestion( "Did you know IXP Manager can generate nagios configuration to monitor your customers VLAN interfaces?")
                 ->withDocsPath("features/nagios/#monitoring-member-reachability" );
         } else {
-            $backend->info("IXP-Manager is generating customer VLAN monitoring configuration");
+            $backend->info("IXP Manager is generating customer VLAN monitoring configuration");
             foreach( $lastRunNagiosCustomers as $lastRun ) {
                 if( $lastRun->last_run_at->lessThan(now()->sub($warningInterval))) {
                     $backend->warning("Nagios customer configuration (for VLAN ID #" . $lastRun->parameters['vlan'] .
@@ -79,10 +79,10 @@ class NagiosMonitoring implements Validator
 
         $lastRunNagiosSwitches = TaskLastRun::whereTaskKey( TaskLastRun::NAGIOS_SWITCHES )->get();
         if ( $lastRunNagiosSwitches->isEmpty() ) {
-            $backend->suggestion( "Did you know IXP-Manager can generate nagios configuration to monitor your switches in a given infrastructure?" )
+            $backend->suggestion( "Did you know IXP Manager can generate nagios configuration to monitor your switches in a given infrastructure?" )
                 ->withDocsPath("features/nagios/#switch-monitoring");
         } else {
-            $backend->info("IXP-Manager is generating switch monitoring configuration");
+            $backend->info("IXP Manager is generating switch monitoring configuration");
             foreach( $lastRunNagiosSwitches as $lastRun ) {
                 if( $lastRun->last_run_at->lessThan(now()->sub($warningInterval))) {
                     // This fallback is in case someone has deleted an old infrastructure, and we don't have its name
@@ -98,10 +98,10 @@ class NagiosMonitoring implements Validator
 
         $lastRunNagiosBirdseye = TaskLastRun::whereTaskKey( TaskLastRun::NAGIOS_BIRDSEYE_DAEMONS )->get();
         if ( $lastRunNagiosBirdseye->isEmpty() ) {
-            $backend->suggestion( "Did you know IXP-Manager can generate nagios configuration to monitor your birdseye daemons?")
+            $backend->suggestion( "Did you know IXP Manager can generate nagios configuration to monitor your birdseye daemons?")
                 ->withDocsPath("features/nagios/#birdseye-daemon-monitoring");
         } else {
-            $backend->info("IXP-Manager is generating birdseye daemon monitoring configuration");
+            $backend->info("IXP Manager is generating birdseye daemon monitoring configuration");
             foreach( $lastRunNagiosBirdseye as $lastRun ) {
                 if( $lastRun->last_run_at->lessThan(now()->sub($warningInterval))) {
                     $backend->warning("Nagios birdseye daemon configuration (using template " . $lastRun->parameters['template'] .
@@ -114,10 +114,10 @@ class NagiosMonitoring implements Validator
 
         $lastRunNagiosBirdseyeBgpDaemon = TaskLastRun::whereTaskKey( TaskLastRun::NAGIOS_BIRDSEYE_BGP_SESSIONS )->get();
         if ( $lastRunNagiosBirdseyeBgpDaemon->isEmpty() ) {
-            $backend->suggestion( "Did you know IXP-Manager can generate nagios configuration to monitor your birdseye BGP sessions?")
+            $backend->suggestion( "Did you know IXP- anager can generate nagios configuration to monitor your birdseye BGP sessions?")
                 ->withDocsPath("features/nagios/#birdseye-bgp-session-monitoring");
         } else {
-            $backend->info("IXP-Manager is generating birdseye BGP session monitoring configuration");
+            $backend->info("IXP Manager is generating birdseye BGP session monitoring configuration");
             foreach( $lastRunNagiosBirdseyeBgpDaemon as $lastRun ) {
                 if( $lastRun->last_run_at->lessThan(now()->sub($warningInterval))) {
                     $backend->warning("Nagios birdseye BGP session configuration (for ". Router::$TYPES[$lastRun->parameters['type']] .

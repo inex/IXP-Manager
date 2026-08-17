@@ -49,7 +49,7 @@ class IxpManagerIsRegistered implements Validator
     #[\Override]
     public function getName(): string
     {
-        return "Check IXP's registered on IXP-Manager";
+        return "Check IXP's registered on IXP Manager";
     }
 
     #[\Override]
