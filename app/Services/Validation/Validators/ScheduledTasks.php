@@ -28,6 +28,7 @@ use Carbon\Carbon;
 use IXP\Contracts\Validation\ValidationBackend;
 use IXP\Contracts\Validation\Validator;
 use IXP\Models\TaskLastRun;
+use IXP\Services\Validation\Dto\Result;
 
 /**
  * This validator checks the laravel task scheduler is running
@@ -65,5 +66,25 @@ class ScheduledTasks implements Validator
             $backend->error( "Task scheduler hasn't run for 10 minutes - your automated tasks are not running!")
                 ->withDocsPath( "features/cronjobs/" );
         }
+
+        $tasksInfo = TaskLastRun::all();
+        if (count($tasksInfo) === 0) {
+            $backend->warning("Task history table is empty");
+        } else {
+            $backend->info("Task history is being tracked")
+                ->each($tasksInfo, function(Result $result, TaskLastRun $taskLastRun) {
+                    if ($taskLastRun->parameters !== null) {
+                        $parameters = [];
+                        foreach ($taskLastRun->parameters as $key => $value) {
+                            $parameters[] = "$key: $value";
+                        }
+                        $result->addAdditionalInfoText($taskLastRun->task_key . " with parameters " . implode(", ", $parameters) . " last ran at " . $taskLastRun->last_run_at->toIso8601String());
+                    } else {
+                        $result->addAdditionalInfoText($taskLastRun->task_key . " last ran at " . $taskLastRun->last_run_at->toIso8601String());
+                    }
+                })
+            ;
+        }
+
     }
 }
