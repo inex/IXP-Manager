@@ -69,10 +69,12 @@ class IxpManagerRunningLatestVersion implements Validator
         $latestVersion = ltrim( $tags[0]['name'], "v" );
         if ( version_compare( $runningVersion, $latestVersion, '<' ) ) {
             $backend
-                ->warning( "A newer version of IXP-Manager is available: " . htmlentities( $tags[0]['name'], ENT_QUOTES, 'UTF-8' ) )
+                ->warning( "A newer version of IXP Manager is available: " . htmlentities( $tags[0]['name'], ENT_QUOTES, 'UTF-8' ) )
                 ->withDocsPath('install/upgrading/');
         } else if ( version_compare( $runningVersion, $latestVersion, '=' ) ) {
-            $backend->info( "Running latest version of IXP-Manager: " . $runningVersion );
+            $backend->info( "Running latest version of IXP Manager: v" . APPLICATION_VERSION );
+        } else {
+            $backend->info( "Local IXP Manager is ahead of GitHub releases: v" . APPLICATION_VERSION );
         }
     }
 }
