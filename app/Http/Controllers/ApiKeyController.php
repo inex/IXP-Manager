@@ -312,4 +312,14 @@ class ApiKeyController extends EloquentController
             'expires'            => 'required|date|after:' . now()->format( "Y-m-d" ) . '|before_or_equal:' . $max_date,
         ] );
     }
+
+    #[\Override]
+    protected function preDelete(): bool
+    {
+        if (Auth::user()->id !== $this->object->user_id) {
+            abort( 403, 'Unauthorized' );
+        }
+
+        return true;
+    }
 }
