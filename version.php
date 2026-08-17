@@ -40,6 +40,6 @@ define( 'APPLICATION_MANIFEST', [
         'max' => null,
     ],
     'laravel_required_extensions' => [
-        'filter', 'hash', 'mbstring', 'openssl', 'pcre', 'pdo', 'pdo_mysql', 'session', 'tokenizer', 'xml',
+        'filter', 'hash', 'mbstring', 'openssl', 'pcre', 'pdo', 'pdo_mysql', 'session', 'tokenizer', 'xml', 'ds',
     ],
 ]);
