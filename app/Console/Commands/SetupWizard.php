@@ -1,10 +1,6 @@
 <?php
-namespace IXP\Console\Commands;
-
-define('strict_types', 1);
-
 /*
- * Copyright (C) 2009 - 2025 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,12 +19,17 @@ define('strict_types', 1);
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+
+declare(strict_types=1);
+
+namespace IXP\Console\Commands;
+
+
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Carbon;
 
 
 use IXP\Models\{CompanyBillingDetail, CompanyRegisteredDetail, Customer, CustomerToUser, Infrastructure, User};
-use function Termwind\ask;
 
 /**
  * Artisan command to streamline the initial installation of IXP Manager
@@ -36,7 +37,7 @@ use function Termwind\ask;
  * @author     Iskren Hadzhinedev <i.hadzhinedev@gmail.com>
  * @author     Barry O'Donovan <barry@opensolutions.ie>
  * @package    IXP\Console\Commands
- * @copyright  Copyright (C) 2009 - 2025 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class SetupWizard extends Command
@@ -162,7 +163,7 @@ class SetupWizard extends Command
         // One key element is that a number of settings, which the script will inform and ask for
         // confirmation of, are set in the .env file.
         //
-        // A handful of others are prompted from the user. In particular, the detaails for the
+        // A handful of others are prompted from the user. In particular, the details for the
         // first admin user are asked for.
         //
         // This admin user's password should preferably be set in the IXP_SETUP_ADMIN_PASSWORD
@@ -184,7 +185,10 @@ class SetupWizard extends Command
             return 1;
         }
 
-        $data = $this->gatherData();
+        [$exitCode, $data] = $this->gatherData();
+        if ($exitCode !== null) {
+            return $exitCode;
+        }
 
 
         try {
@@ -303,6 +307,13 @@ class SetupWizard extends Command
         return $this->confirm( 'Do you want to continue?' );
     }
 
+    /**
+     * Returns an array with an exit code, and data.
+     * Exit code is null if OK, and data will be an array of collected data.
+     * If a failure occurred, exit code will be non-null and data will be null.
+     *
+     * @return array
+     */
     private function gatherData(): array {
         $table = [];
         $data = [];
@@ -332,7 +343,7 @@ class SetupWizard extends Command
 
                 } else {
 
-                    $this->ixpdata[$setting][ 'value' ] = ask( $attributes[ 'prompt' ] . ' [' . $attributes[ 'default' ] . '] ' );
+                    $this->ixpdata[$setting][ 'value' ] = $this->ask( $attributes[ 'prompt' ], $attributes[ 'default' ] );
 
                     if( !$this->ixpdata[$setting][ 'value' ] ) {
                         $this->ixpdata[$setting][ 'value' ] = $attributes[ 'default' ];
@@ -371,17 +382,17 @@ class SetupWizard extends Command
             foreach ($validator->errors()->all() as $error) {
                 $this->error("\t" . $error);
             }
-            exit(2);
+            return [2, null];
         }
 
         if( !$this->option('force') && !$this->option( 'skip-confirm' ) ) {
             if( !$this->confirm( 'Is this information correct, and do you want to continue to create the database objects?' ) ) {
                 $this->error( 'No confirmation was given. Exiting.' );
-                exit(3);
+                return [3, null];
             }
         }
 
-        return $data;
+        return [null, $data];
     }
 
 }
