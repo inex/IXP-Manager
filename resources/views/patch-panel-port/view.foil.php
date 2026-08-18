@@ -9,7 +9,7 @@
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-    Patch Panel Port / Cross Connect - <?= $t->ee( $ppp->patchPanel->name ) ?> :: <?= $t->ee( $ppp->name() ) ?>
+    Patch Panel Port / Cross Connect - <?= $t->ee( $ppp->patchPanel->name ) ?> <?php if( !$ppp->patchPanel->active ): ?>[Inactive]<?php endif; ?> :: <?= $t->ee( $ppp->name() ) ?>
 <?php $this->append() ?>
 
 

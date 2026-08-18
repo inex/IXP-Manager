@@ -1,4 +1,6 @@
 <?php
+use IXP\Models\PatchPanelPort;
+
     /** @var Foil\Template\Template $t */
     $this->layout( 'layouts/ixpv4' )
 ?>
@@ -33,6 +35,8 @@
 <?php $this->section('content') ?>
     <div class="row">
         <div class="col-sm-12">
+            <?= $t->alerts() ?>
+
             <?php if( $t->pp ): ?>
                 <div class="alert alert-info" role="alert">
                     <div class="d-flex align-items-center">
@@ -122,8 +126,8 @@
 
                     <?= Former::select( 'chargeable' )
                         ->label( 'Chargeable' )
-                        ->options( \IXP\Models\PatchPanelPort::$CHARGEABLES )
-                        ->select( $t->pp->chargeable ?? \IXP\Models\PatchPanelPort::CHARGEABLE_NO )
+                        ->options( PatchPanelPort::$CHARGEABLES )
+                        ->select( $t->pp->chargeable ?? PatchPanelPort::CHARGEABLE_NO )
                         ->addClass( 'chzn-select' )
                         ->blockHelp( 'Usually IXPs request their members to <em>come to them</em> and bear the costs of that. '
                             . 'However, sometimes a co-location facility may charge the IXP for a half circuit or the IXP may need '
@@ -146,6 +150,15 @@
                         ;
                     ?>
 
+                    <?= Former::checkbox( 'active' )
+                            ->label( 'Active?' )
+                            ->text( '&nbsp;' )
+                            ->value( 1 )
+                            ->inline()
+                            ->blockHelp( 'Set whether this patch panel is active or not. This setting may only be changed when all patch panel ports are <em>available for use</em>, that is, having states consisting only of  ' .
+                                collect(PatchPanelPort::$AVAILABLE_STATES)->map(fn(int $state) => "'" . PatchPanelPort::$STATES[ $state ] . "'")->implode(", ")
+                            );
+                    ?>
 
                     <div class="form-group row">
                         <div class="col-sm-8">

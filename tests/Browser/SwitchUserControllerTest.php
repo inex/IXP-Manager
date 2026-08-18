@@ -141,7 +141,6 @@ class SwitchUserControllerTest extends DuskTestCase
 
             $browser->visit( "/admin/switch-user-back")
                 ->assertPathIs( "/admin/dashboard" )
-                ->screenshot("shotty")
                 ->assertSee( "You are not currently logged in as another user. You are logged in as: " . $travis->username . "( " . $travis->name . ")" );
 
             // cleanup tests
