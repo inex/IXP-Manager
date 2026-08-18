@@ -73,14 +73,11 @@
         "files": [
             "app/Support/helpers.php"
         ]
-     },
-     "autoload-dev": {
-         "classmap": [
-             "tests/TestCase.php"
-         ],
-         "psr-4": {
-             "Tests\\": "tests/"
-         }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
     },
     "extra": {
         "laravel": {
