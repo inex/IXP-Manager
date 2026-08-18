@@ -8,7 +8,7 @@ $this->layout( 'layouts/ixpv4' );
 <?php $this->section( 'page-header-preamble' ) ?>
     Patch Panel Port
     /
-    Edit&nbsp;&nbsp;[<?= $t->ee( $ppp->patchPanel->name ) ?> - <?= $t->ee( $pppname ) ?>]
+    Edit&nbsp;&nbsp;[<?= $t->ee( $ppp->patchPanel->name ) ?> <?php if ( !$ppp->patchPanel->active ): ?>[Inactive]<?php endif; ?> - <?= $t->ee( $pppname ) ?>]
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>

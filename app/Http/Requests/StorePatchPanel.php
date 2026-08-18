@@ -60,7 +60,7 @@ class StorePatchPanel extends FormRequest
      *
      * @return string[]
      *
-     * @psalm-return array{name: 'required|string|max:255', colo_reference: 'required|string|max:255', cabinet_id: 'required|integer|exists:cabinet,id', cable_type: 'required|integer', connector_type: 'required|integer', installation_date: 'date', port_prefix: 'string|nullable', u_position: 'numeric|nullable', colo_pp_type: 'numeric', mounted_at: string, numberOfPorts: 'required|integer'}
+     * @psalm-return array{name: 'required|string|max:255', colo_reference: 'required|string|max:255', cabinet_id: 'required|integer|exists:cabinet,id', cable_type: 'required|integer', connector_type: 'required|integer', installation_date: 'date', port_prefix: 'string|nullable', u_position: 'numeric|nullable', colo_pp_type: 'numeric', mounted_at: string, numberOfPorts: 'required|integer', active: 'required|integer'}
      */
     public function rules(): array
     {
@@ -76,6 +76,7 @@ class StorePatchPanel extends FormRequest
             'colo_pp_type'      => 'numeric',
             'mounted_at'        => 'string|nullable|in:' . implode( ',', array_keys( PatchPanel::$MOUNTED_AT ) ),
             'numberOfPorts'     => 'required|integer',
+            'active'            => 'required|integer',
         ];
     }
 }

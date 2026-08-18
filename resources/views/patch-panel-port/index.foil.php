@@ -9,7 +9,7 @@
 <?php $this->section( 'page-header-preamble' ) ?>
     Patch Panel Port
     <?php if( $t->pp ): ?>
-        - <?= $t->ee( $pp->name ) ?>
+        - <?= $t->ee( $pp->name ) ?> <?php if ( !$pp->active ): ?>[Inactive]<?php endif; ?>
     <?php endif;?>
     <?= isset( $t->data()['summary'] ) ? ' :: ' . $t->ee( $t->summary ) : '' ?>
 <?php $this->append() ?>
