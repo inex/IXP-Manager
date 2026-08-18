@@ -46,6 +46,12 @@ trait CreatesApplication
      */
     public function createApplication(): Application
     {
+        date_default_timezone_set('Europe/Dublin');
+
+        if( !defined('LARAVEL_START') ) {
+            define( 'LARAVEL_START', microtime(true ) );
+        }
+
         $app = require __DIR__ . '/../bootstrap/app.php';
 
         $app->make( Kernel::class )->bootstrap();

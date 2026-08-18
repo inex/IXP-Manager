@@ -45,17 +45,6 @@ abstract class TestCase extends BaseTestCase
     public const API_KEY_CUSTADMIN = 'ixpm_GcMPPjWig7w2_G6yoQYvkQSLhfkOuhwEYoULcsM512Vjt2sQ532';
     public const API_KEY_SUPERUSER = 'ixpm_iqLw1OF50aPU_XX3U8cGvlRiaf7YLX8a41uSJVqBbRAAl0LfKVo';
 
-    public function __construct( $name = null, array $data = [], $dataName = '' )
-    {
-        date_default_timezone_set('Europe/Dublin');
-
-        if( !defined('LARAVEL_START') ) {
-            define( 'LARAVEL_START', microtime(true ) );
-        }
-
-        parent::__construct( $name, $data, $dataName );
-    }
-
     /**
      * Utility function to get a customer user
      *
