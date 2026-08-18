@@ -25,15 +25,15 @@ DROP TABLE IF EXISTS `api_keys`;
 CREATE TABLE `api_keys` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `user_id` int NOT NULL,
-  `token_identifier` varchar(12) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
-  `token_hash` char(64) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
-  `api_key` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
+  `token_identifier` varchar(12) COLLATE utf8mb3_unicode_ci DEFAULT NULL,
+  `token_hash` char(64) COLLATE utf8mb3_unicode_ci DEFAULT NULL,
+  `api_key` varchar(255) COLLATE utf8mb3_unicode_ci DEFAULT NULL,
   `expires` datetime NOT NULL,
   `allowed_ips` mediumtext CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
   `last_seen_at` datetime DEFAULT NULL,
   `last_seen_from` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
   `description` longtext CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
-  `created_at` timestamp NULL DEFAULT NULL,
+  `created_at` timestamp NOT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `UNIQ_9579321F800A1141` (`api_key`),
@@ -63,12 +63,12 @@ DROP TABLE IF EXISTS `app_passwords`;
 CREATE TABLE `app_passwords` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
   `user_id` int NOT NULL,
-  `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `salt` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `password` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `salt` varchar(64) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `expires` datetime NOT NULL,
   `last_seen_at` datetime DEFAULT NULL,
-  `last_seen_from` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `description` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `last_seen_from` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `description` longtext COLLATE utf8mb4_unicode_ci,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -97,7 +97,7 @@ CREATE TABLE `app_passwords_last_logins` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
   `app_password_id` bigint unsigned NOT NULL,
   `last_seen_at` datetime NOT NULL,
-  `last_seen_from` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `last_seen_from` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `app_passwords_last_logins_app_password_id_foreign` (`app_password_id`),
@@ -142,9 +142,9 @@ DROP TABLE IF EXISTS `asns`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `asns` (
   `asn` bigint unsigned NOT NULL,
-  `name` varchar(300) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `class` varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `country_code` varchar(2) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(300) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `class` varchar(16) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `country_code` varchar(2) COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`asn`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -176,7 +176,7 @@ CREATE TABLE `atlas_measurements` (
   `atlas_stop` datetime DEFAULT NULL,
   `atlas_data` json DEFAULT NULL,
   `atlas_request` json DEFAULT NULL,
-  `atlas_state` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `atlas_state` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -208,8 +208,8 @@ DROP TABLE IF EXISTS `atlas_probes`;
 CREATE TABLE `atlas_probes` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `cust_id` int NOT NULL,
-  `address_v4` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `address_v6` varchar(39) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `address_v4` varchar(15) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `address_v6` varchar(39) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `v4_enabled` tinyint DEFAULT NULL,
   `v6_enabled` tinyint DEFAULT NULL,
   `asn` int DEFAULT NULL,
@@ -217,7 +217,7 @@ CREATE TABLE `atlas_probes` (
   `is_anchor` tinyint NOT NULL,
   `is_public` tinyint NOT NULL,
   `last_connected` datetime DEFAULT NULL,
-  `status` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `status` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `api_data` json DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
@@ -246,8 +246,8 @@ DROP TABLE IF EXISTS `atlas_results`;
 CREATE TABLE `atlas_results` (
   `id` int NOT NULL AUTO_INCREMENT,
   `measurement_id` int DEFAULT NULL,
-  `routing` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `path` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `routing` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `path` longtext COLLATE utf8mb4_unicode_ci,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -444,27 +444,27 @@ DROP TABLE IF EXISTS `company_billing_detail`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `company_billing_detail` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `billingContactName` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
-  `billingAddress1` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
-  `billingAddress2` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
-  `billingAddress3` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
-  `billingTownCity` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
-  `billingPostcode` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
-  `billingCountry` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
-  `billingEmail` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
-  `billingTelephone` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
-  `vatNumber` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
-  `vatRate` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
+  `billingContactName` varchar(255) DEFAULT NULL,
+  `billingAddress1` varchar(255) DEFAULT NULL,
+  `billingAddress2` varchar(255) DEFAULT NULL,
+  `billingAddress3` varchar(255) DEFAULT NULL,
+  `billingTownCity` varchar(255) DEFAULT NULL,
+  `billingPostcode` varchar(255) DEFAULT NULL,
+  `billingCountry` varchar(255) DEFAULT NULL,
+  `billingEmail` varchar(255) DEFAULT NULL,
+  `billingTelephone` varchar(255) DEFAULT NULL,
+  `vatNumber` varchar(255) DEFAULT NULL,
+  `vatRate` varchar(255) DEFAULT NULL,
   `purchaseOrderRequired` tinyint(1) NOT NULL DEFAULT '0',
-  `purchaseOrderNumber` varchar(50) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
-  `invoiceMethod` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
-  `invoiceEmail` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
-  `billingFrequency` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
-  `notes` longtext CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
+  `purchaseOrderNumber` varchar(50) DEFAULT NULL,
+  `invoiceMethod` varchar(255) DEFAULT NULL,
+  `invoiceEmail` varchar(255) DEFAULT NULL,
+  `billingFrequency` varchar(255) DEFAULT NULL,
+  `notes` longtext,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -486,20 +486,20 @@ DROP TABLE IF EXISTS `company_registration_detail`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `company_registration_detail` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `registeredName` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
-  `companyNumber` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
-  `jurisdiction` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
-  `address1` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
-  `address2` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
-  `address3` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
-  `townCity` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
-  `postcode` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
-  `country` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
-  `notes` longtext CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
+  `registeredName` varchar(255) DEFAULT NULL,
+  `companyNumber` varchar(255) DEFAULT NULL,
+  `jurisdiction` varchar(255) DEFAULT NULL,
+  `address1` varchar(255) DEFAULT NULL,
+  `address2` varchar(255) DEFAULT NULL,
+  `address3` varchar(255) DEFAULT NULL,
+  `townCity` varchar(255) DEFAULT NULL,
+  `postcode` varchar(255) DEFAULT NULL,
+  `country` varchar(255) DEFAULT NULL,
+  `notes` longtext,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -599,15 +599,15 @@ CREATE TABLE `contact` (
   `id` int NOT NULL AUTO_INCREMENT,
   `custid` int DEFAULT NULL,
   `name` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
-  `position` varchar(50) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
   `email` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
   `phone` varchar(50) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
   `mobile` varchar(50) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
-  `notes` longtext CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
   `updated_at` datetime DEFAULT NULL,
   `lastupdatedby` int DEFAULT NULL,
   `creator` varchar(32) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
   `created_at` datetime DEFAULT NULL,
+  `position` varchar(50) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
+  `notes` longtext CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
   PRIMARY KEY (`id`),
   KEY `IDX_4C62E638DA0209B9` (`custid`),
   CONSTRAINT `FK_4C62E638DA0209B9` FOREIGN KEY (`custid`) REFERENCES `cust` (`id`) ON DELETE CASCADE
@@ -620,7 +620,7 @@ CREATE TABLE `contact` (
 
 LOCK TABLES `contact` WRITE;
 /*!40000 ALTER TABLE `contact` DISABLE KEYS */;
-INSERT INTO `contact` VALUES (1,1,'Travis CI','Master of the Universe','joe@siep.com','+353 86 123 4567','+353 1 123 4567','','2014-01-06 13:54:22',1,'1','2014-01-06 13:54:22'),(2,5,'Imagine CustAdmin','Imagine CustAdmin','imagine-custadmin@example.com','','','','2018-05-15 15:36:12',1,'travis','2018-05-15 15:36:12'),(3,5,'Imagine CustUser','Imagine CustUser','imagine-custuser@example.com','','','','2018-05-15 15:36:54',1,'travis','2018-05-15 15:36:54'),(4,2,'HEAnet CustUser','HEANet CustUser','heanet-custuser@example.com','','','','2018-05-22 12:00:00',1,'travis',NULL),(5,2,'HEAnet CustAdmin','HEANet CustAdmin','heanet-custadmin@example.com','','','','2018-05-22 12:00:00',1,'travis',NULL);
+INSERT INTO `contact` VALUES (1,1,'Travis CI','joe@siep.com','+353 86 123 4567','+353 1 123 4567','2014-01-06 13:54:22',1,'1','2014-01-06 13:54:22','Master of the Universe',''),(2,5,'Imagine CustAdmin','imagine-custadmin@example.com','','','2018-05-15 15:36:12',1,'travis','2018-05-15 15:36:12','Imagine CustAdmin',''),(3,5,'Imagine CustUser','imagine-custuser@example.com','','','2018-05-15 15:36:54',1,'travis','2018-05-15 15:36:54','Imagine CustUser',''),(4,2,'HEAnet CustUser','heanet-custuser@example.com','','','2018-05-22 12:00:00',1,'travis',NULL,'HEANet CustUser',''),(5,2,'HEAnet CustAdmin','heanet-custadmin@example.com','','','2018-05-22 12:00:00',1,'travis',NULL,'HEANet CustAdmin','');
 /*!40000 ALTER TABLE `contact` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -794,14 +794,9 @@ DROP TABLE IF EXISTS `cust`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `cust` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `irrdb` int DEFAULT NULL,
-  `company_registered_detail_id` int DEFAULT NULL,
-  `company_billing_details_id` int DEFAULT NULL,
-  `reseller` int DEFAULT NULL,
   `name` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
   `type` int DEFAULT NULL,
   `shortname` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
-  `abbreviatedName` varchar(30) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
   `autsys` int DEFAULT NULL,
   `maxprefixes` int unsigned DEFAULT NULL,
   `maxprefixesv6` int unsigned DEFAULT NULL,
@@ -812,8 +807,8 @@ CREATE TABLE `cust` (
   `nocemail` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
   `nochours` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
   `nocwww` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
+  `irrdb` int DEFAULT NULL,
   `peeringmacro` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
-  `peeringmacrov6` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
   `peeringpolicy` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
   `corpwww` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
   `datejoin` date DEFAULT NULL,
@@ -822,12 +817,17 @@ CREATE TABLE `cust` (
   `activepeeringmatrix` tinyint(1) DEFAULT NULL,
   `lastupdatedby` int DEFAULT NULL,
   `creator` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
+  `company_registered_detail_id` int DEFAULT NULL,
+  `company_billing_details_id` int DEFAULT NULL,
+  `peeringmacrov6` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
+  `abbreviatedName` varchar(30) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
   `MD5Support` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT 'UNKNOWN',
+  `reseller` int DEFAULT NULL,
   `isReseller` tinyint(1) NOT NULL DEFAULT '0',
   `in_manrs` tinyint(1) NOT NULL DEFAULT '0',
   `in_peeringdb` tinyint(1) NOT NULL DEFAULT '0',
   `peeringdb_oauth` tinyint(1) NOT NULL DEFAULT '1',
-  `created_at` timestamp NULL DEFAULT NULL,
+  `created_at` timestamp NOT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `UNIQ_997B25A64082763` (`shortname`),
@@ -848,7 +848,7 @@ CREATE TABLE `cust` (
 
 LOCK TABLES `cust` WRITE;
 /*!40000 ALTER TABLE `cust` DISABLE KEYS */;
-INSERT INTO `cust` VALUES (1,NULL,1,1,NULL,'INEX',3,'inex','INEX',2128,1000,1000,'peering@siep.net','+353 1 123 4567','+353 1 123 4567','+353 1 123 4568','noc@siep.com','24x7','http://www.siep.com/noc/','AS-INEX','AS-INEX','mandatory','http://www.siep.com/','2014-01-06',NULL,1,1,NULL,'travis','YES',0,0,0,1,'2014-01-05 23:00:00',NULL),(2,1,2,2,NULL,'HEAnet',1,'heanet','HEAnet',1213,1000,200,'peering@example.com',NULL,NULL,'','noc@example.com','0',NULL,'AS-HEANET',NULL,'open','http://www.example.com/','2014-01-06',NULL,1,1,1,'travis','UNKNOWN',0,0,0,1,'2014-01-05 23:00:00','2025-09-01 10:30:50'),(3,13,3,3,NULL,'PCH DNS',1,'pchdns','PCH DNS',42,2000,500,'peering@example.com',NULL,NULL,'','noc@example.com','0',NULL,'AS-PCH',NULL,'open','http://www.example.com/','2014-01-06',NULL,1,1,1,'travis','YES',0,0,0,1,'2014-01-05 23:00:00','2025-09-01 14:25:49'),(4,2,4,4,NULL,'AS112',4,'as112','AS112',112,20,20,'peering@example.com','','','','','0','','',NULL,'open','http://www.example.com/','2014-01-06',NULL,1,1,NULL,'travis','NO',0,0,0,1,'2014-01-05 23:00:00',NULL),(5,1,5,5,NULL,'Imagine',1,'imagine','Imagine',25441,1000,1000,'peering@example.com','','','','','0','','AS-IBIS',NULL,'open','http://www.example.com/','2014-01-06',NULL,1,1,NULL,'travis','YES',0,0,0,1,'2014-01-05 23:00:00',NULL),(6,1,6,6,NULL,'SCIX Route Servers',3,'scixrs','INEX Route Servers',65501,100000,100000,'peering@example.com','+353 1 123 4567',NULL,NULL,'noc@example.com','24x7',NULL,NULL,NULL,'open','https://www.example.com/','2025-08-30',NULL,1,1,NULL,'1','UNKNOWN',0,0,0,1,'2025-08-30 10:52:21','2025-08-30 10:52:21');
+INSERT INTO `cust` VALUES (1,'INEX',3,'inex',2128,1000,1000,'peering@siep.net','+353 1 123 4567','+353 1 123 4567','+353 1 123 4568','noc@siep.com','24x7','http://www.siep.com/noc/',NULL,'AS-INEX','mandatory','http://www.siep.com/','2014-01-06',NULL,1,1,NULL,'travis',1,1,'AS-INEX','INEX','YES',NULL,0,0,0,1,'2014-01-05 23:00:00',NULL),(2,'HEAnet',1,'heanet',1213,1000,200,'peering@example.com',NULL,NULL,'','noc@example.com','0',NULL,1,'AS-HEANET','open','http://www.example.com/','2014-01-06',NULL,1,1,1,'travis',2,2,NULL,'HEAnet','UNKNOWN',NULL,0,0,0,1,'2014-01-05 23:00:00','2025-09-01 10:30:50'),(3,'PCH DNS',1,'pchdns',42,2000,500,'peering@example.com',NULL,NULL,'','noc@example.com','0',NULL,13,'AS-PCH','open','http://www.example.com/','2014-01-06',NULL,1,1,1,'travis',3,3,NULL,'PCH DNS','YES',NULL,0,0,0,1,'2014-01-05 23:00:00','2025-09-01 14:25:49'),(4,'AS112',4,'as112',112,20,20,'peering@example.com','','','','','0','',2,'','open','http://www.example.com/','2014-01-06',NULL,1,1,NULL,'travis',4,4,NULL,'AS112','NO',NULL,0,0,0,1,'2014-01-05 23:00:00',NULL),(5,'Imagine',1,'imagine',25441,1000,1000,'peering@example.com','','','','','0','',1,'AS-IBIS','open','http://www.example.com/','2014-01-06',NULL,1,1,NULL,'travis',5,5,NULL,'Imagine','YES',NULL,0,0,0,1,'2014-01-05 23:00:00',NULL),(6,'SCIX Route Servers',3,'scixrs',65501,100000,100000,'peering@example.com','+353 1 123 4567',NULL,NULL,'noc@example.com','24x7',NULL,1,NULL,'open','https://www.example.com/','2025-08-30',NULL,1,1,NULL,'1',6,6,NULL,'INEX Route Servers','UNKNOWN',NULL,0,0,0,1,'2025-08-30 10:52:21','2025-08-30 10:52:21');
 /*!40000 ALTER TABLE `cust` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -986,11 +986,11 @@ CREATE TABLE `customer_to_users` (
   `customer_id` int NOT NULL,
   `user_id` int NOT NULL,
   `privs` int NOT NULL,
+  `extra_attributes` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT '(DC2Type:json)',
   `last_login_date` datetime DEFAULT NULL,
   `last_login_from` tinytext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
-  `extra_attributes` json DEFAULT NULL COMMENT '(DC2Type:json)',
   `last_login_via` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `created_at` timestamp NULL DEFAULT NULL,
+  `created_at` timestamp NOT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `customer_user` (`customer_id`,`user_id`),
@@ -1007,7 +1007,7 @@ CREATE TABLE `customer_to_users` (
 
 LOCK TABLES `customer_to_users` WRITE;
 /*!40000 ALTER TABLE `customer_to_users` DISABLE KEYS */;
-INSERT INTO `customer_to_users` VALUES (1,1,1,3,'2025-09-01 14:46:50','127.0.0.1','{\"created_by\": {\"type\": \"migration-script\"}}','Login','2019-05-10 11:40:45','2025-09-01 13:46:50'),(2,5,2,2,'2018-06-20 10:23:22','127.0.0.1','{\"created_by\": {\"type\": \"migration-script\"}}',NULL,'2019-05-10 11:40:45',NULL),(3,5,3,1,'2018-06-20 10:23:58','127.0.0.1','{\"created_by\": {\"type\": \"migration-script\"}}',NULL,'2019-05-10 11:40:45',NULL),(4,2,4,1,'1970-01-01 00:00:00','','{\"created_by\": {\"type\": \"migration-script\"}}',NULL,'2019-05-10 11:40:45',NULL),(5,2,5,2,'2018-06-20 10:24:24','127.0.0.1','{\"created_by\": {\"type\": \"migration-script\"}}',NULL,'2019-05-10 11:40:45',NULL);
+INSERT INTO `customer_to_users` VALUES (1,1,1,3,'{\"created_by\": {\"type\": \"migration-script\"}}','2025-09-01 14:46:50','127.0.0.1','Login','2019-05-10 11:40:45','2025-09-01 13:46:50'),(2,5,2,2,'{\"created_by\": {\"type\": \"migration-script\"}}','2018-06-20 10:23:22','127.0.0.1',NULL,'2019-05-10 11:40:45',NULL),(3,5,3,1,'{\"created_by\": {\"type\": \"migration-script\"}}','2018-06-20 10:23:58','127.0.0.1',NULL,'2019-05-10 11:40:45',NULL),(4,2,4,1,'{\"created_by\": {\"type\": \"migration-script\"}}','1970-01-01 00:00:00','',NULL,'2019-05-10 11:40:45',NULL),(5,2,5,2,'{\"created_by\": {\"type\": \"migration-script\"}}','2018-06-20 10:24:24','127.0.0.1',NULL,'2019-05-10 11:40:45',NULL);
 /*!40000 ALTER TABLE `customer_to_users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1162,6 +1162,7 @@ CREATE TABLE `docstore_logs` (
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `docstore_logs_docstore_file_id_foreign` (`docstore_file_id`),
+  KEY `docstore_logs_created_at_index` (`created_at`),
   CONSTRAINT `docstore_logs_docstore_file_id_foreign` FOREIGN KEY (`docstore_file_id`) REFERENCES `docstore_files` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -1218,11 +1219,11 @@ CREATE TABLE `infrastructure` (
   `ixf_ix_id` bigint DEFAULT NULL,
   `exclude_from_ixf_export` tinyint(1) NOT NULL DEFAULT '0',
   `country` varchar(2) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
-  `notes` longtext CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
+  `notes` longtext COLLATE utf8mb3_unicode_ci,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `unique_shortname` (`shortname`)
+  UNIQUE KEY `IXPSN` (`shortname`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1434,7 +1435,7 @@ CREATE TABLE `l2address` (
   `mac` varchar(12) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
   `firstseen` datetime DEFAULT NULL,
   `lastseen` datetime DEFAULT NULL,
-  `created_at` timestamp NULL DEFAULT NULL,
+  `created_at` timestamp NOT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `mac_vlanint` (`mac`,`vlan_interface_id`),
@@ -1502,10 +1503,10 @@ DROP TABLE IF EXISTS `log`;
 CREATE TABLE `log` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
   `user_id` int DEFAULT NULL,
-  `model` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `model` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
   `model_id` bigint unsigned DEFAULT NULL,
-  `action` varchar(7) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `message` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `action` varchar(7) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `message` text COLLATE utf8mb4_unicode_ci NOT NULL,
   `models` json NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
@@ -1537,15 +1538,16 @@ DROP TABLE IF EXISTS `logos`;
 CREATE TABLE `logos` (
   `id` int NOT NULL AUTO_INCREMENT,
   `customer_id` int DEFAULT NULL,
+  `type` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
   `original_name` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
   `stored_name` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
   `uploaded_by` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
   `width` int NOT NULL,
   `height` int NOT NULL,
-  `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` datetime DEFAULT NULL,
+  `created_at` timestamp NOT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `UNIQ_9F54004F9395C3F3` (`customer_id`),
+  KEY `IDX_9F54004F9395C3F3` (`customer_id`),
   CONSTRAINT `FK_9F54004F9395C3F3` FOREIGN KEY (`customer_id`) REFERENCES `cust` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -1601,7 +1603,7 @@ CREATE TABLE `migrations` (
   `migration` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `batch` int NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=50 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1610,7 +1612,7 @@ CREATE TABLE `migrations` (
 
 LOCK TABLES `migrations` WRITE;
 /*!40000 ALTER TABLE `migrations` DISABLE KEYS */;
-INSERT INTO `migrations` VALUES (1,'2014_10_12_100000_create_password_resets_table',1),(2,'2018_08_08_100000_create_telescope_entries_table',1),(3,'2019_03_25_211956_create_failed_jobs_table',1),(4,'2020_02_06_204556_create_docstore_directories',2),(5,'2020_02_06_204608_create_docstore_files',2),(6,'2020_02_06_204911_create_docstore_logs',2),(7,'2020_03_09_110945_create_docstore_customer_directories',3),(8,'2020_03_09_111505_create_docstore_customer_files',3),(9,'2020_07_21_094354_create_route_server_filters',4),(12,'2020_09_03_153723_add_timestamps',5),(13,'2020_09_18_095136_delete_ixp_table',6),(14,'2020_11_16_102415_database_fixes',7),(15,'2021_03_12_150418_create_log_table',8),(16,'2021_04_14_125742_user_pref',9),(17,'2021_04_14_101948_update_timestamps',10),(18,'2021_05_18_085721_add_note_infrastructure',11),(19,'2021_05_18_114206_update_pp_prefix_size',12),(20,'2020_06_01_143931_database_schema_at_end_v5',13),(21,'2021_03_30_124916_create_atlas_probes',13),(22,'2021_03_30_125238_create_atlas_runs',13),(23,'2021_03_30_125422_create_atlas_measurements',13),(24,'2021_03_30_125723_create_atlas_results',13),(25,'2021_06_11_141137_update_db_doctrine2eloquent',13),(26,'2021_07_20_134716_fix_last_updated_and_timestamps',13),(27,'2021_09_16_195333_add_rate_limit_col_to_physint',13),(28,'2021_09_17_144421_modernise_irrdb_conf_table',13),(29,'2021_09_21_100354_create_route_server_filters_prod',14),(30,'2021_09_21_162700_rs_pairing',15),(31,'2022_02_12_183121_add_colo_pp_type_patch_panel',15),(32,'2023_09_26_191150_add_registration_details',15),(33,'2024_03_18_191322_add_export_to_ixf_vlan',15),(34,'2024_08_10_125003_create_irrdb_update_logs',16),(35,'2024_09_05_111855_create_p2p_daily_stats_table',17),(36,'2024_05_29_102028_reset-views',18),(37,'2025_09_01_102636_add_ipv6_max_prefixes',19),(38,'2025_11_11_085835_add_exclude_from_ixf_export_to_infrastructure',20),(39,'2026_02_16_205211_remove_legacy_columns_from_contacts',21),(40,'2026_04_20_161912_remove_user_privs',22),(42,'2026_04_27_110644_create_asn_table',23),(46,'2026_06_11_102639_create_app_passwords_table',24),(47,'2026_06_11_112737_create_app_passwords_last_logins_table',24),(48,'2026_06_25_133900_set_api_keys_expires_not_nullable',24),(49,'2026_07_15_121559_add_task_last_run_table',25),(50,'2026_08_12_113213_remove_rs_prefixes_table',26);
+INSERT INTO `migrations` VALUES (1,'2020_06_01_143931_database_schema_at_end_v5',1),(2,'2020_07_21_094354_create_route_server_filters',1),(3,'2020_09_03_153723_add_timestamps',1),(4,'2020_09_18_095136_delete_ixp_table',1),(5,'2020_11_16_102415_database_fixes',1),(6,'2021_03_12_150418_create_log_table',1),(7,'2021_03_30_124916_create_atlas_probes',1),(8,'2021_03_30_125238_create_atlas_runs',1),(9,'2021_03_30_125422_create_atlas_measurements',1),(10,'2021_03_30_125723_create_atlas_results',1),(11,'2021_04_14_101948_update_timestamps',1),(12,'2021_04_14_125742_user_pref',1),(13,'2021_05_18_085721_add_note_infrastructure',1),(14,'2021_05_18_114206_update_pp_prefix_size',1),(15,'2021_06_11_141137_update_db_doctrine2eloquent',1),(16,'2021_07_20_134716_fix_last_updated_and_timestamps',1),(17,'2021_09_16_195333_add_rate_limit_col_to_physint',1),(18,'2021_09_17_144421_modernise_irrdb_conf_table',1),(19,'2021_09_21_100354_create_route_server_filters_prod',1),(20,'2021_09_21_162700_rs_pairing',1),(21,'2022_02_12_183121_add_colo_pp_type_patch_panel',1),(22,'2023_09_26_191150_add_registration_details',1),(23,'2024_03_18_191322_add_export_to_ixf_vlan',1),(24,'2024_05_29_102028_reset-views',1),(25,'2024_08_10_125003_create_irrdb_update_logs',1),(26,'2024_09_05_111855_create_p2p_daily_stats_table',1),(27,'2025_09_01_102636_add_ipv6_max_prefixes',1),(28,'2025_11_11_085835_add_exclude_from_ixf_export_to_infrastructure',1),(29,'2026_02_16_205211_remove_legacy_columns_from_contacts',1),(30,'2026_04_20_161912_remove_user_privs',1),(31,'2026_04_27_110644_create_asn_table',1),(32,'2026_06_11_102639_create_app_passwords_table',1),(33,'2026_06_11_112737_create_app_passwords_last_logins_table',1),(34,'2026_06_25_133900_set_api_keys_expires_not_nullable',1),(35,'2026_07_15_121559_add_task_last_run_table',1),(36,'2026_08_12_113213_remove_rs_prefixes_table',1);
 /*!40000 ALTER TABLE `migrations` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1717,14 +1719,14 @@ CREATE TABLE `p2p_daily_stats` (
   `day` date NOT NULL,
   `cust_id` int NOT NULL,
   `peer_id` int NOT NULL,
-  `ipv4_total_in` double DEFAULT NULL,
-  `ipv4_total_out` double DEFAULT NULL,
-  `ipv6_total_in` double DEFAULT NULL,
-  `ipv6_total_out` double DEFAULT NULL,
-  `ipv4_max_in` double DEFAULT NULL,
-  `ipv4_max_out` double DEFAULT NULL,
-  `ipv6_max_in` double DEFAULT NULL,
-  `ipv6_max_out` double DEFAULT NULL,
+  `ipv4_total_in` bigint unsigned DEFAULT NULL,
+  `ipv4_total_out` bigint unsigned DEFAULT NULL,
+  `ipv6_total_in` bigint unsigned DEFAULT NULL,
+  `ipv6_total_out` bigint unsigned DEFAULT NULL,
+  `ipv4_max_in` bigint unsigned DEFAULT NULL,
+  `ipv4_max_out` bigint unsigned DEFAULT NULL,
+  `ipv6_max_in` bigint unsigned DEFAULT NULL,
+  `ipv6_max_out` bigint unsigned DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -1754,7 +1756,7 @@ CREATE TABLE `password_resets` (
   `email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `token` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
-  KEY `password_resets_email_index` (`email`)
+  KEY `password_resets_email_index` (`email`(191))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1781,12 +1783,12 @@ CREATE TABLE `patch_panel` (
   `colo_reference` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
   `cable_type` int NOT NULL,
   `connector_type` int NOT NULL,
-  `installation_date` datetime DEFAULT NULL,
-  `port_prefix` varchar(20) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
-  `chargeable` int NOT NULL DEFAULT '0',
-  `location_notes` longtext CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
+  `installation_date` date DEFAULT NULL,
+  `port_prefix` varchar(20) COLLATE utf8mb3_unicode_ci NOT NULL,
   `active` tinyint(1) NOT NULL DEFAULT '1',
   `colo_pp_type` tinyint NOT NULL DEFAULT '1',
+  `chargeable` int NOT NULL DEFAULT '0',
+  `location_notes` longtext CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
   `u_position` int DEFAULT NULL,
   `mounted_at` smallint DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
@@ -1991,7 +1993,7 @@ CREATE TABLE `peering_manager` (
   `peered` tinyint(1) DEFAULT NULL,
   `rejected` tinyint(1) DEFAULT NULL,
   `notes` longtext CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
-  `created_at` timestamp NULL DEFAULT NULL,
+  `created_at` timestamp NOT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `IDX_35A72597DA0209B9` (`custid`),
@@ -2053,13 +2055,13 @@ DROP TABLE IF EXISTS `physicalinterface`;
 CREATE TABLE `physicalinterface` (
   `id` int NOT NULL AUTO_INCREMENT,
   `switchportid` int DEFAULT NULL,
-  `fanout_physical_interface_id` int DEFAULT NULL,
   `virtualinterfaceid` int DEFAULT NULL,
   `status` int DEFAULT NULL,
   `speed` int DEFAULT NULL,
   `duplex` varchar(16) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
   `rate_limit` int unsigned DEFAULT NULL,
   `notes` longtext CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
+  `fanout_physical_interface_id` int DEFAULT NULL,
   `autoneg` tinyint(1) NOT NULL DEFAULT '1',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
@@ -2079,7 +2081,7 @@ CREATE TABLE `physicalinterface` (
 
 LOCK TABLES `physicalinterface` WRITE;
 /*!40000 ALTER TABLE `physicalinterface` DISABLE KEYS */;
-INSERT INTO `physicalinterface` VALUES (1,3,NULL,1,1,1000,'full',NULL,'',1,NULL,NULL),(2,4,NULL,1,1,1000,'full',NULL,'',1,NULL,NULL),(3,25,NULL,2,1,1000,'full',NULL,NULL,1,NULL,NULL),(4,8,NULL,3,1,100,'full',NULL,NULL,1,NULL,NULL),(5,6,NULL,4,1,10,'full',NULL,NULL,1,NULL,NULL),(6,30,NULL,5,1,10,'full',NULL,NULL,1,NULL,NULL),(7,9,NULL,6,1,1000,'full',NULL,NULL,1,NULL,NULL),(8,32,NULL,7,1,10000,'full',NULL,NULL,1,NULL,NULL),(9,18,NULL,8,1,1000,'full',NULL,NULL,1,NULL,NULL),(10,42,NULL,9,1,1000,'full',NULL,NULL,1,NULL,NULL),(11,19,NULL,8,1,1000,'full',NULL,NULL,1,NULL,NULL),(12,43,NULL,9,1,1000,'full',NULL,NULL,1,NULL,NULL),(13,27,NULL,10,4,1000,'full',NULL,NULL,1,NULL,NULL),(14,1,NULL,11,1,1000,'full',NULL,NULL,1,'2025-08-30 10:54:46','2025-08-30 10:54:46');
+INSERT INTO `physicalinterface` VALUES (1,3,1,1,1000,'full',NULL,'',NULL,1,NULL,NULL),(2,4,1,1,1000,'full',NULL,'',NULL,1,NULL,NULL),(3,25,2,1,1000,'full',NULL,NULL,NULL,1,NULL,NULL),(4,8,3,1,100,'full',NULL,NULL,NULL,1,NULL,NULL),(5,6,4,1,10,'full',NULL,NULL,NULL,1,NULL,NULL),(6,30,5,1,10,'full',NULL,NULL,NULL,1,NULL,NULL),(7,9,6,1,1000,'full',NULL,NULL,NULL,1,NULL,NULL),(8,32,7,1,10000,'full',NULL,NULL,NULL,1,NULL,NULL),(9,18,8,1,1000,'full',NULL,NULL,NULL,1,NULL,NULL),(10,42,9,1,1000,'full',NULL,NULL,NULL,1,NULL,NULL),(11,19,8,1,1000,'full',NULL,NULL,NULL,1,NULL,NULL),(12,43,9,1,1000,'full',NULL,NULL,NULL,1,NULL,NULL),(13,27,10,4,1000,'full',NULL,NULL,NULL,1,NULL,NULL),(14,1,11,1,1000,'full',NULL,NULL,NULL,1,'2025-08-30 10:54:46','2025-08-30 10:54:46');
 /*!40000 ALTER TABLE `physicalinterface` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2095,14 +2097,14 @@ CREATE TABLE `route_server_filters` (
   `customer_id` int DEFAULT NULL,
   `peer_id` int DEFAULT NULL,
   `vlan_id` int DEFAULT NULL,
-  `received_prefix` varchar(43) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `advertised_prefix` varchar(43) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `received_prefix` varchar(43) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `advertised_prefix` varchar(43) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `protocol` smallint DEFAULT NULL,
-  `action_advertise` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `action_receive` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `action_advertise` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `action_receive` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `enabled` tinyint(1) NOT NULL DEFAULT '1',
   `order_by` int NOT NULL,
-  `live` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `live` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -2137,14 +2139,14 @@ CREATE TABLE `route_server_filters_prod` (
   `customer_id` int DEFAULT NULL,
   `peer_id` int DEFAULT NULL,
   `vlan_id` int DEFAULT NULL,
-  `received_prefix` varchar(43) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `advertised_prefix` varchar(43) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `received_prefix` varchar(43) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `advertised_prefix` varchar(43) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `protocol` smallint DEFAULT NULL,
-  `action_advertise` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `action_receive` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `action_advertise` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `action_receive` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `enabled` tinyint(1) NOT NULL DEFAULT '1',
   `order_by` int NOT NULL,
-  `live` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `live` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -2196,6 +2198,8 @@ CREATE TABLE `routers` (
   `template` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
   `skip_md5` tinyint(1) NOT NULL,
   `last_update_started` datetime DEFAULT NULL,
+  `last_updated` datetime DEFAULT NULL,
+  `pause_updates` tinyint(1) NOT NULL DEFAULT '0',
   `rpki` tinyint(1) NOT NULL DEFAULT '0',
   `software_version` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
   `operating_system` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
@@ -2203,8 +2207,6 @@ CREATE TABLE `routers` (
   `rfc1997_passthru` tinyint(1) NOT NULL DEFAULT '0',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
-  `last_updated` datetime DEFAULT NULL,
-  `pause_updates` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `UNIQ_504FC9BE918020D9` (`handle`),
   KEY `IDX_504FC9BE8B4937A1` (`vlan_id`),
@@ -2220,7 +2222,7 @@ CREATE TABLE `routers` (
 
 LOCK TABLES `routers` WRITE;
 /*!40000 ALTER TABLE `routers` DISABLE KEYS */;
-INSERT INTO `routers` VALUES (1,NULL,1,'rc1-lan1-ipv4',4,2,'INEX LAN1 - Route Collector - IPv4','RC1 - LAN1 - IPv4','192.0.2.8','192.0.2.8',65500,'1','203.0.113.8','http://rc1-lan1-ipv4.mgmt.example.com/api',1,0,0,0,'api/v4/router/collector/bird/standard',0,NULL,0,NULL,NULL,NULL,0,NULL,NULL,NULL,0),(2,NULL,1,'rc1-lan1-ipv6',6,2,'INEX LAN1 - Route Collector - IPv6','RC1 - LAN1 - IPv6','192.0.2.8','2001:db8::8',65500,'1','2001:db8:0:0:2::8','http://rc1-lan1-ipv6.mgmt.example.com/api',1,0,0,0,'api/v4/router/collector/bird/standard',0,NULL,0,NULL,NULL,NULL,0,NULL,NULL,NULL,0),(3,NULL,2,'rc1-lan2-ipv4',4,2,'INEX LAN2 - Route Collector - IPv4','RC1 - LAN2 - IPv4','192.0.2.9','192.0.2.9',65500,'1','203.0.113.9','http://rc1-lan2-ipv4.mgmt.example.com/api',1,0,0,0,'api/v4/router/collector/bird/standard',0,NULL,0,NULL,NULL,NULL,0,NULL,NULL,NULL,0),(4,NULL,2,'rc1-lan2-ipv6',6,2,'INEX LAN2 - Route Collector - IPv6','RC1 - LAN2 - IPv6','192.0.2.9','2001:db8::9',65500,'1','2001:db8:0:0:2::9','http://rc1-lan2-ipv6.mgmt.example.com/api',1,0,0,0,'api/v4/router/collector/bird/standard',0,NULL,0,NULL,NULL,NULL,0,NULL,NULL,NULL,0),(5,NULL,1,'rs1-lan1-ipv4',4,1,'INEX LAN1 - Route Server - IPv4','RS1 - LAN1 - IPv4','192.0.2.18','192.0.2.18',65501,'1','203.0.113.18','http://rs1-lan1-ipv4.mgmt.example.com/api',0,0,0,0,'api/v4/router/server/bird/standard',0,NULL,0,NULL,NULL,NULL,0,NULL,NULL,NULL,0),(6,NULL,1,'rs1-lan1-ipv6',6,1,'INEX LAN1 - Route Server - IPv6','RS1 - LAN1 - IPv6','192.0.2.18','2001:db8::18',65501,'1','2001:db8:0:0:2::18','http://rs1-lan1-ipv6.mgmt.example.com/api',1,0,0,0,'api/v4/router/server/bird/standard',0,NULL,0,NULL,NULL,NULL,0,NULL,NULL,NULL,0),(7,NULL,2,'rs1-lan2-ipv4',4,1,'INEX LAN2 - Route Server - IPv4','RS1 - LAN2 - IPv4','192.0.2.19','192.0.2.19',65501,'1','203.0.113.19','http://rs1-lan2-ipv4.mgmt.example.com/api',1,0,0,1,'api/v4/router/server/bird/standard',0,NULL,0,NULL,NULL,NULL,0,NULL,NULL,NULL,0),(8,NULL,2,'rs1-lan2-ipv6',6,1,'INEX LAN2 - Route Server - IPv6','RS1 - LAN2 - IPv6','192.0.2.19','2001:db8::19',65501,'1','2001:db8:0:0:2::19','http://rs1-lan2-ipv6.mgmt.example.com/api',1,0,0,0,'api/v4/router/server/bird/standard',0,NULL,0,NULL,NULL,NULL,0,NULL,NULL,NULL,0),(9,NULL,1,'as112-lan1-ipv4',4,3,'INEX LAN1 - AS112 Service - IPv4','AS112 - LAN1 - IPv4','192.0.2.6','192.0.2.6',112,'1','203.0.113.6','http://as112-lan1-ipv4.mgmt.example.com/api',1,0,0,0,'api/v4/router/as112/bird/standard',1,NULL,0,NULL,NULL,NULL,0,NULL,NULL,NULL,0),(10,NULL,1,'as112-lan1-ipv6',6,3,'INEX LAN1 - AS112 Service - IPv6','AS112 - LAN1 - IPv6','192.0.2.6','2001:db8:0:0:2::6',112,'1','203.0.113.6','http://as112-lan1-ipv6.mgmt.example.com/api',1,0,0,0,'api/v4/router/as112/bird/standard',1,NULL,0,NULL,NULL,NULL,0,NULL,NULL,NULL,0),(11,NULL,2,'as112-lan2-ipv4',4,3,'INEX LAN2 - AS112 Service - IPv4','AS112 - LAN2 - IPv4','192.0.2.16','192.0.2.16',112,'1','203.0.113.16','http://as112-lan2-ipv4.mgmt.example.com/api',1,0,0,0,'api/v4/router/as112/bird/standard',0,NULL,0,NULL,NULL,NULL,0,NULL,NULL,NULL,0),(12,NULL,2,'as112-lan2-ipv6',6,3,'INEX LAN2 - AS112 Service - IPv6','AS112 - LAN2 - IPv6','192.0.2.16','2001:db8:0:0:2::16',112,'1','203.0.113.16','http://as112-lan2-ipv6.mgmt.example.com/api',1,0,0,0,'api/v4/router/as112/bird/standard',0,NULL,0,NULL,NULL,NULL,0,NULL,NULL,NULL,0),(13,NULL,1,'unknown-template',6,2,'INEX LAN2 - Route Collector - IPv6','RC1 - LAN2 - IPv6','192.0.2.9','2001:db8::9',65500,'1','2001:db8:0:0:2::9','http://rc1-lan2-ipv6.mgmt.example.com/api',1,0,0,0,'api/v4/router/does-not-exist',0,NULL,0,NULL,NULL,NULL,0,NULL,NULL,NULL,0),(29,NULL,1,'b2-rs1-lan1-ipv4',4,1,'Bird2 - INEX LAN1 - Route Server - IPv4','B2 RS1 - LAN1 - IPv4','192.0.2.18','192.0.2.18',65501,'6','203.0.113.18',NULL,0,0,0,1,'api/v4/router/server/bird2/standard',0,NULL,1,NULL,NULL,NULL,0,NULL,NULL,NULL,0),(30,NULL,1,'b2-rs1-lan1-ipv6',6,1,'Bird2 - INEX LAN1 - Route Server - IPv6','B2 RS1 - LAN1 - IPv6','192.0.2.18','2001:db8::8',65501,'6','203.0.113.18',NULL,0,0,0,1,'api/v4/router/server/bird2/standard',0,NULL,1,NULL,NULL,NULL,1,NULL,NULL,NULL,0),(31,NULL,1,'b2-rc1-lan1-ipv4',4,2,'Bird2 - INEX LAN1 - Route Collector - IPv4','B2 RC1 - LAN1 - IPv4','192.0.2.8','192.0.2.8',65500,'1','203.0.113.8','http://rc1-lan1-ipv4.mgmt.example.com/api',1,0,0,1,'api/v4/router/collector/bird2/standard',0,NULL,1,NULL,NULL,NULL,0,NULL,NULL,NULL,0),(32,NULL,1,'b2-rc1-lan1-ipv6',6,2,'Bird2 - INEX LAN1 - Route Collector - IPv6','B2 RC1 - LAN1 - IPv6','192.0.2.8','2001:db8::8',65500,'1','2001:db8:0:0:2::8','http://rc1-lan1-ipv6.mgmt.example.com/api',1,0,0,1,'api/v4/router/collector/bird2/standard',0,NULL,1,NULL,NULL,NULL,0,NULL,NULL,NULL,0),(33,NULL,1,'b2-as112-lan1-ipv4',4,3,'INEX LAN1 - AS112 BIRD2 - IPv4','AS112 - LAN1 - IPv4','192.0.2.6','192.0.2.6',112,'6','203.0.113.6','http://as112-lan1-ipv4.mgmt.example.com/api',1,0,0,0,'api/v4/router/as112/bird2/standard',1,NULL,1,NULL,NULL,NULL,0,NULL,NULL,NULL,0),(34,NULL,1,'b2-as112-lan1-ipv6',6,3,'INEX LAN1 - AS112 BIRD2 - IPv6','AS112 - LAN1 - IPv6','192.0.2.6','2001:db8:0:0:2::6',112,'6','203.0.113.6','http://as112-lan1-ipv6.mgmt.example.com/api',1,0,0,0,'api/v4/router/as112/bird2/standard',1,NULL,1,NULL,NULL,NULL,0,NULL,NULL,NULL,0),(35,NULL,2,'b2-as112-lan2-ipv4',4,3,'INEX LAN2 - AS112 BIRD2 - IPv4','AS112 - LAN2 - IPv4','192.0.2.16','192.0.2.16',112,'6','203.0.113.16','http://as112-lan2-ipv4.mgmt.example.com/api',1,0,0,0,'api/v4/router/as112/bird2/standard',0,NULL,0,NULL,NULL,NULL,0,NULL,NULL,NULL,0),(36,NULL,2,'b2-as112-lan2-ipv6',6,3,'INEX LAN2 - AS112 BIRD2 - IPv6','AS112 - LAN2 - IPv6','192.0.2.16','2001:db8:0:0:2::16',112,'6','203.0.113.16','http://as112-lan2-ipv6.mgmt.example.com/api',1,0,0,0,'api/v4/router/as112/bird2/standard',0,NULL,0,NULL,NULL,NULL,0,NULL,NULL,NULL,0);
+INSERT INTO `routers` VALUES (1,NULL,1,'rc1-lan1-ipv4',4,2,'INEX LAN1 - Route Collector - IPv4','RC1 - LAN1 - IPv4','192.0.2.8','192.0.2.8',65500,'1','203.0.113.8','http://rc1-lan1-ipv4.mgmt.example.com/api',1,0,0,0,'api/v4/router/collector/bird/standard',0,NULL,NULL,0,0,NULL,NULL,NULL,0,NULL,NULL),(2,NULL,1,'rc1-lan1-ipv6',6,2,'INEX LAN1 - Route Collector - IPv6','RC1 - LAN1 - IPv6','192.0.2.8','2001:db8::8',65500,'1','2001:db8:0:0:2::8','http://rc1-lan1-ipv6.mgmt.example.com/api',1,0,0,0,'api/v4/router/collector/bird/standard',0,NULL,NULL,0,0,NULL,NULL,NULL,0,NULL,NULL),(3,NULL,2,'rc1-lan2-ipv4',4,2,'INEX LAN2 - Route Collector - IPv4','RC1 - LAN2 - IPv4','192.0.2.9','192.0.2.9',65500,'1','203.0.113.9','http://rc1-lan2-ipv4.mgmt.example.com/api',1,0,0,0,'api/v4/router/collector/bird/standard',0,NULL,NULL,0,0,NULL,NULL,NULL,0,NULL,NULL),(4,NULL,2,'rc1-lan2-ipv6',6,2,'INEX LAN2 - Route Collector - IPv6','RC1 - LAN2 - IPv6','192.0.2.9','2001:db8::9',65500,'1','2001:db8:0:0:2::9','http://rc1-lan2-ipv6.mgmt.example.com/api',1,0,0,0,'api/v4/router/collector/bird/standard',0,NULL,NULL,0,0,NULL,NULL,NULL,0,NULL,NULL),(5,NULL,1,'rs1-lan1-ipv4',4,1,'INEX LAN1 - Route Server - IPv4','RS1 - LAN1 - IPv4','192.0.2.18','192.0.2.18',65501,'1','203.0.113.18','http://rs1-lan1-ipv4.mgmt.example.com/api',0,0,0,0,'api/v4/router/server/bird/standard',0,NULL,NULL,0,0,NULL,NULL,NULL,0,NULL,NULL),(6,NULL,1,'rs1-lan1-ipv6',6,1,'INEX LAN1 - Route Server - IPv6','RS1 - LAN1 - IPv6','192.0.2.18','2001:db8::18',65501,'1','2001:db8:0:0:2::18','http://rs1-lan1-ipv6.mgmt.example.com/api',1,0,0,0,'api/v4/router/server/bird/standard',0,NULL,NULL,0,0,NULL,NULL,NULL,0,NULL,NULL),(7,NULL,2,'rs1-lan2-ipv4',4,1,'INEX LAN2 - Route Server - IPv4','RS1 - LAN2 - IPv4','192.0.2.19','192.0.2.19',65501,'1','203.0.113.19','http://rs1-lan2-ipv4.mgmt.example.com/api',1,0,0,1,'api/v4/router/server/bird/standard',0,NULL,NULL,0,0,NULL,NULL,NULL,0,NULL,NULL),(8,NULL,2,'rs1-lan2-ipv6',6,1,'INEX LAN2 - Route Server - IPv6','RS1 - LAN2 - IPv6','192.0.2.19','2001:db8::19',65501,'1','2001:db8:0:0:2::19','http://rs1-lan2-ipv6.mgmt.example.com/api',1,0,0,0,'api/v4/router/server/bird/standard',0,NULL,NULL,0,0,NULL,NULL,NULL,0,NULL,NULL),(9,NULL,1,'as112-lan1-ipv4',4,3,'INEX LAN1 - AS112 Service - IPv4','AS112 - LAN1 - IPv4','192.0.2.6','192.0.2.6',112,'1','203.0.113.6','http://as112-lan1-ipv4.mgmt.example.com/api',1,0,0,0,'api/v4/router/as112/bird/standard',1,NULL,NULL,0,0,NULL,NULL,NULL,0,NULL,NULL),(10,NULL,1,'as112-lan1-ipv6',6,3,'INEX LAN1 - AS112 Service - IPv6','AS112 - LAN1 - IPv6','192.0.2.6','2001:db8:0:0:2::6',112,'1','203.0.113.6','http://as112-lan1-ipv6.mgmt.example.com/api',1,0,0,0,'api/v4/router/as112/bird/standard',1,NULL,NULL,0,0,NULL,NULL,NULL,0,NULL,NULL),(11,NULL,2,'as112-lan2-ipv4',4,3,'INEX LAN2 - AS112 Service - IPv4','AS112 - LAN2 - IPv4','192.0.2.16','192.0.2.16',112,'1','203.0.113.16','http://as112-lan2-ipv4.mgmt.example.com/api',1,0,0,0,'api/v4/router/as112/bird/standard',0,NULL,NULL,0,0,NULL,NULL,NULL,0,NULL,NULL),(12,NULL,2,'as112-lan2-ipv6',6,3,'INEX LAN2 - AS112 Service - IPv6','AS112 - LAN2 - IPv6','192.0.2.16','2001:db8:0:0:2::16',112,'1','203.0.113.16','http://as112-lan2-ipv6.mgmt.example.com/api',1,0,0,0,'api/v4/router/as112/bird/standard',0,NULL,NULL,0,0,NULL,NULL,NULL,0,NULL,NULL),(13,NULL,1,'unknown-template',6,2,'INEX LAN2 - Route Collector - IPv6','RC1 - LAN2 - IPv6','192.0.2.9','2001:db8::9',65500,'1','2001:db8:0:0:2::9','http://rc1-lan2-ipv6.mgmt.example.com/api',1,0,0,0,'api/v4/router/does-not-exist',0,NULL,NULL,0,0,NULL,NULL,NULL,0,NULL,NULL),(29,NULL,1,'b2-rs1-lan1-ipv4',4,1,'Bird2 - INEX LAN1 - Route Server - IPv4','B2 RS1 - LAN1 - IPv4','192.0.2.18','192.0.2.18',65501,'6','203.0.113.18',NULL,0,0,0,1,'api/v4/router/server/bird2/standard',0,NULL,NULL,0,1,NULL,NULL,NULL,0,NULL,NULL),(30,NULL,1,'b2-rs1-lan1-ipv6',6,1,'Bird2 - INEX LAN1 - Route Server - IPv6','B2 RS1 - LAN1 - IPv6','192.0.2.18','2001:db8::8',65501,'6','203.0.113.18',NULL,0,0,0,1,'api/v4/router/server/bird2/standard',0,NULL,NULL,0,1,NULL,NULL,NULL,1,NULL,NULL),(31,NULL,1,'b2-rc1-lan1-ipv4',4,2,'Bird2 - INEX LAN1 - Route Collector - IPv4','B2 RC1 - LAN1 - IPv4','192.0.2.8','192.0.2.8',65500,'1','203.0.113.8','http://rc1-lan1-ipv4.mgmt.example.com/api',1,0,0,1,'api/v4/router/collector/bird2/standard',0,NULL,NULL,0,1,NULL,NULL,NULL,0,NULL,NULL),(32,NULL,1,'b2-rc1-lan1-ipv6',6,2,'Bird2 - INEX LAN1 - Route Collector - IPv6','B2 RC1 - LAN1 - IPv6','192.0.2.8','2001:db8::8',65500,'1','2001:db8:0:0:2::8','http://rc1-lan1-ipv6.mgmt.example.com/api',1,0,0,1,'api/v4/router/collector/bird2/standard',0,NULL,NULL,0,1,NULL,NULL,NULL,0,NULL,NULL),(33,NULL,1,'b2-as112-lan1-ipv4',4,3,'INEX LAN1 - AS112 BIRD2 - IPv4','AS112 - LAN1 - IPv4','192.0.2.6','192.0.2.6',112,'6','203.0.113.6','http://as112-lan1-ipv4.mgmt.example.com/api',1,0,0,0,'api/v4/router/as112/bird2/standard',1,NULL,NULL,0,1,NULL,NULL,NULL,0,NULL,NULL),(34,NULL,1,'b2-as112-lan1-ipv6',6,3,'INEX LAN1 - AS112 BIRD2 - IPv6','AS112 - LAN1 - IPv6','192.0.2.6','2001:db8:0:0:2::6',112,'6','203.0.113.6','http://as112-lan1-ipv6.mgmt.example.com/api',1,0,0,0,'api/v4/router/as112/bird2/standard',1,NULL,NULL,0,1,NULL,NULL,NULL,0,NULL,NULL),(35,NULL,2,'b2-as112-lan2-ipv4',4,3,'INEX LAN2 - AS112 BIRD2 - IPv4','AS112 - LAN2 - IPv4','192.0.2.16','192.0.2.16',112,'6','203.0.113.16','http://as112-lan2-ipv4.mgmt.example.com/api',1,0,0,0,'api/v4/router/as112/bird2/standard',0,NULL,NULL,0,0,NULL,NULL,NULL,0,NULL,NULL),(36,NULL,2,'b2-as112-lan2-ipv6',6,3,'INEX LAN2 - AS112 BIRD2 - IPv6','AS112 - LAN2 - IPv6','192.0.2.16','2001:db8:0:0:2::16',112,'6','203.0.113.16','http://as112-lan2-ipv6.mgmt.example.com/api',1,0,0,0,'api/v4/router/as112/bird2/standard',0,NULL,NULL,0,0,NULL,NULL,NULL,0,NULL,NULL);
 /*!40000 ALTER TABLE `routers` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2235,8 +2237,8 @@ CREATE TABLE `sessions` (
   `id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `user_id` bigint DEFAULT NULL,
   `ip_address` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `user_agent` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
-  `payload` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `user_agent` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `payload` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `last_activity` int NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `sessions_id_unique` (`id`)
@@ -2291,22 +2293,22 @@ DROP TABLE IF EXISTS `switch`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `switch` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `infrastructure` int DEFAULT NULL,
   `cabinetid` int DEFAULT NULL,
   `vendorid` int DEFAULT NULL,
   `name` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
-  `hostname` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
   `ipv4addr` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
   `ipv6addr` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
   `snmppasswd` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
+  `infrastructure` int DEFAULT NULL,
   `model` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
   `active` tinyint(1) DEFAULT '1',
+  `notes` longtext CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
+  `hostname` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
   `os` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
   `osDate` datetime DEFAULT NULL,
   `osVersion` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
-  `lastPolled` datetime DEFAULT NULL,
-  `notes` longtext CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
   `serialNumber` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
+  `lastPolled` datetime DEFAULT NULL,
   `mauSupported` tinyint(1) DEFAULT NULL,
   `asn` int unsigned DEFAULT NULL,
   `loopback_ip` varchar(39) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
@@ -2321,9 +2323,9 @@ CREATE TABLE `switch` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `UNIQ_6FE94B185E237E06` (`name`),
   UNIQUE KEY `UNIQ_6FE94B1850C101F8` (`loopback_ip`),
-  KEY `IDX_6FE94B18D129B190` (`infrastructure`),
   KEY `IDX_6FE94B182B96718A` (`cabinetid`),
   KEY `IDX_6FE94B18420FB55F` (`vendorid`),
+  KEY `IDX_6FE94B18D129B190` (`infrastructure`),
   CONSTRAINT `FK_6FE94B182B96718A` FOREIGN KEY (`cabinetid`) REFERENCES `cabinet` (`id`),
   CONSTRAINT `FK_6FE94B18420FB55F` FOREIGN KEY (`vendorid`) REFERENCES `vendor` (`id`),
   CONSTRAINT `FK_6FE94B18D129B190` FOREIGN KEY (`infrastructure`) REFERENCES `infrastructure` (`id`)
@@ -2336,7 +2338,7 @@ CREATE TABLE `switch` (
 
 LOCK TABLES `switch` WRITE;
 /*!40000 ALTER TABLE `switch` DISABLE KEYS */;
-INSERT INTO `switch` VALUES (1,1,1,12,'switch1','s1','10.0.0.1','','public','FESX624',1,NULL,NULL,NULL,NULL,'',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1,NULL,NULL),(2,2,1,12,'switch2','s2','10.0.0.2','','public','FESX624',1,NULL,NULL,NULL,NULL,'',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1,NULL,NULL);
+INSERT INTO `switch` VALUES (1,1,12,'switch1','10.0.0.1','','public',1,'FESX624',1,'','s1',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1,NULL,NULL),(2,1,12,'switch2','10.0.0.2','','public',2,'FESX624',1,'','s2',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1,NULL,NULL);
 /*!40000 ALTER TABLE `switch` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2352,8 +2354,6 @@ CREATE TABLE `switchport` (
   `switchid` int DEFAULT NULL,
   `type` int DEFAULT NULL,
   `name` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
-  `active` tinyint(1) NOT NULL DEFAULT '1',
-  `ifIndex` int DEFAULT NULL,
   `ifName` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
   `ifAlias` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
   `ifHighSpeed` int DEFAULT NULL,
@@ -2363,6 +2363,8 @@ CREATE TABLE `switchport` (
   `ifOperStatus` int DEFAULT NULL,
   `ifLastChange` int DEFAULT NULL,
   `lastSnmpPoll` datetime DEFAULT NULL,
+  `ifIndex` int DEFAULT NULL,
+  `active` tinyint(1) NOT NULL DEFAULT '1',
   `lagIfIndex` int DEFAULT NULL,
   `mauType` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
   `mauState` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
@@ -2384,7 +2386,7 @@ CREATE TABLE `switchport` (
 
 LOCK TABLES `switchport` WRITE;
 /*!40000 ALTER TABLE `switchport` DISABLE KEYS */;
-INSERT INTO `switchport` VALUES (1,1,1,'GigabitEthernet1',1,1,'GigabitEthernet1','GigabitEthernet1',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(2,1,1,'GigabitEthernet2',1,2,'GigabitEthernet2','GigabitEthernet2',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(3,1,1,'GigabitEthernet3',1,3,'GigabitEthernet3','GigabitEthernet3',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(4,1,1,'GigabitEthernet4',1,4,'GigabitEthernet4','GigabitEthernet4',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(5,1,1,'GigabitEthernet5',1,5,'GigabitEthernet5','GigabitEthernet5',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(6,1,1,'GigabitEthernet6',1,6,'GigabitEthernet6','GigabitEthernet6',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(7,1,1,'GigabitEthernet7',1,7,'GigabitEthernet7','GigabitEthernet7',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(8,1,1,'GigabitEthernet8',1,8,'GigabitEthernet8','GigabitEthernet8',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(9,1,1,'GigabitEthernet9',1,9,'GigabitEthernet9','GigabitEthernet9',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(10,1,1,'GigabitEthernet10',1,10,'GigabitEthernet10','GigabitEthernet10',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(11,1,1,'GigabitEthernet11',1,11,'GigabitEthernet11','GigabitEthernet11',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(12,1,1,'GigabitEthernet12',1,12,'GigabitEthernet12','GigabitEthernet12',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(13,1,1,'GigabitEthernet13',1,13,'GigabitEthernet13','GigabitEthernet13',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(14,1,1,'GigabitEthernet14',1,14,'GigabitEthernet14','GigabitEthernet14',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(15,1,1,'GigabitEthernet15',1,15,'GigabitEthernet15','GigabitEthernet15',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(16,1,1,'GigabitEthernet16',1,16,'GigabitEthernet16','GigabitEthernet16',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(17,1,1,'GigabitEthernet17',1,17,'GigabitEthernet17','GigabitEthernet17',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(18,1,3,'GigabitEthernet18',1,18,'GigabitEthernet18','GigabitEthernet18',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(19,1,3,'GigabitEthernet19',1,19,'GigabitEthernet19','GigabitEthernet19',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(20,1,1,'GigabitEthernet20',1,20,'GigabitEthernet20','GigabitEthernet20',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(21,1,1,'GigabitEthernet21',1,21,'GigabitEthernet21','GigabitEthernet21',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(22,1,1,'GigabitEthernet22',1,22,'GigabitEthernet22','GigabitEthernet22',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(23,1,1,'GigabitEthernet23',1,23,'GigabitEthernet23','GigabitEthernet23',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(24,1,1,'GigabitEthernet24',1,24,'GigabitEthernet24','GigabitEthernet24',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(25,2,1,'GigabitEthernet1',1,25,'GigabitEthernet1','GigabitEthernet1',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(26,2,1,'GigabitEthernet2',1,26,'GigabitEthernet2','GigabitEthernet2',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(27,2,1,'GigabitEthernet3',1,27,'GigabitEthernet3','GigabitEthernet3',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(28,2,1,'GigabitEthernet4',1,28,'GigabitEthernet4','GigabitEthernet4',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(29,2,1,'GigabitEthernet5',1,29,'GigabitEthernet5','GigabitEthernet5',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(30,2,1,'GigabitEthernet6',1,30,'GigabitEthernet6','GigabitEthernet6',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(31,2,1,'GigabitEthernet7',1,31,'GigabitEthernet7','GigabitEthernet7',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(32,2,1,'GigabitEthernet8',1,32,'GigabitEthernet8','GigabitEthernet8',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(33,2,1,'GigabitEthernet9',1,33,'GigabitEthernet9','GigabitEthernet9',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(34,2,1,'GigabitEthernet10',1,34,'GigabitEthernet10','GigabitEthernet10',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(35,2,1,'GigabitEthernet11',1,35,'GigabitEthernet11','GigabitEthernet11',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(36,2,1,'GigabitEthernet12',1,36,'GigabitEthernet12','GigabitEthernet12',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(37,2,1,'GigabitEthernet13',1,37,'GigabitEthernet13','GigabitEthernet13',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(38,2,1,'GigabitEthernet14',1,38,'GigabitEthernet14','GigabitEthernet14',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(39,2,1,'GigabitEthernet15',1,39,'GigabitEthernet15','GigabitEthernet15',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(40,2,1,'GigabitEthernet16',1,40,'GigabitEthernet16','GigabitEthernet16',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(41,2,1,'GigabitEthernet17',1,41,'GigabitEthernet17','GigabitEthernet17',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(42,2,3,'GigabitEthernet18',1,42,'GigabitEthernet18','GigabitEthernet18',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(43,2,3,'GigabitEthernet19',1,43,'GigabitEthernet19','GigabitEthernet19',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(44,2,1,'GigabitEthernet20',1,44,'GigabitEthernet20','GigabitEthernet20',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(45,2,1,'GigabitEthernet21',1,45,'GigabitEthernet21','GigabitEthernet21',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(46,2,1,'GigabitEthernet22',1,46,'GigabitEthernet22','GigabitEthernet22',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(47,2,1,'GigabitEthernet23',1,47,'GigabitEthernet23','GigabitEthernet23',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(48,2,1,'GigabitEthernet24',1,48,'GigabitEthernet24','GigabitEthernet24',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(49,1,3,'GigabitEthernet25',1,49,'GigabitEthernet25','GigabitEthernet25',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(50,1,3,'GigabitEthernet26',1,50,'GigabitEthernet26','GigabitEthernet26',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(51,1,3,'GigabitEthernet27',1,51,'GigabitEthernet27','GigabitEthernet27',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(52,1,3,'GigabitEthernet28',1,52,'GigabitEthernet28','GigabitEthernet28',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(53,2,3,'GigabitEthernet29',1,53,'GigabitEthernet29','GigabitEthernet29',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(54,2,3,'GigabitEthernet30',1,54,'GigabitEthernet30','GigabitEthernet30',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(55,2,3,'GigabitEthernet31',1,55,'GigabitEthernet31','GigabitEthernet31',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(56,2,3,'GigabitEthernet32',1,56,'GigabitEthernet32','GigabitEthernet32',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `switchport` VALUES (1,1,1,'GigabitEthernet1','GigabitEthernet1','GigabitEthernet1',NULL,NULL,NULL,NULL,NULL,NULL,NULL,1,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(2,1,1,'GigabitEthernet2','GigabitEthernet2','GigabitEthernet2',NULL,NULL,NULL,NULL,NULL,NULL,NULL,2,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(3,1,1,'GigabitEthernet3','GigabitEthernet3','GigabitEthernet3',NULL,NULL,NULL,NULL,NULL,NULL,NULL,3,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(4,1,1,'GigabitEthernet4','GigabitEthernet4','GigabitEthernet4',NULL,NULL,NULL,NULL,NULL,NULL,NULL,4,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(5,1,1,'GigabitEthernet5','GigabitEthernet5','GigabitEthernet5',NULL,NULL,NULL,NULL,NULL,NULL,NULL,5,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(6,1,1,'GigabitEthernet6','GigabitEthernet6','GigabitEthernet6',NULL,NULL,NULL,NULL,NULL,NULL,NULL,6,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(7,1,1,'GigabitEthernet7','GigabitEthernet7','GigabitEthernet7',NULL,NULL,NULL,NULL,NULL,NULL,NULL,7,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(8,1,1,'GigabitEthernet8','GigabitEthernet8','GigabitEthernet8',NULL,NULL,NULL,NULL,NULL,NULL,NULL,8,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(9,1,1,'GigabitEthernet9','GigabitEthernet9','GigabitEthernet9',NULL,NULL,NULL,NULL,NULL,NULL,NULL,9,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(10,1,1,'GigabitEthernet10','GigabitEthernet10','GigabitEthernet10',NULL,NULL,NULL,NULL,NULL,NULL,NULL,10,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(11,1,1,'GigabitEthernet11','GigabitEthernet11','GigabitEthernet11',NULL,NULL,NULL,NULL,NULL,NULL,NULL,11,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(12,1,1,'GigabitEthernet12','GigabitEthernet12','GigabitEthernet12',NULL,NULL,NULL,NULL,NULL,NULL,NULL,12,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(13,1,1,'GigabitEthernet13','GigabitEthernet13','GigabitEthernet13',NULL,NULL,NULL,NULL,NULL,NULL,NULL,13,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(14,1,1,'GigabitEthernet14','GigabitEthernet14','GigabitEthernet14',NULL,NULL,NULL,NULL,NULL,NULL,NULL,14,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(15,1,1,'GigabitEthernet15','GigabitEthernet15','GigabitEthernet15',NULL,NULL,NULL,NULL,NULL,NULL,NULL,15,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(16,1,1,'GigabitEthernet16','GigabitEthernet16','GigabitEthernet16',NULL,NULL,NULL,NULL,NULL,NULL,NULL,16,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(17,1,1,'GigabitEthernet17','GigabitEthernet17','GigabitEthernet17',NULL,NULL,NULL,NULL,NULL,NULL,NULL,17,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(18,1,3,'GigabitEthernet18','GigabitEthernet18','GigabitEthernet18',NULL,NULL,NULL,NULL,NULL,NULL,NULL,18,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(19,1,3,'GigabitEthernet19','GigabitEthernet19','GigabitEthernet19',NULL,NULL,NULL,NULL,NULL,NULL,NULL,19,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(20,1,1,'GigabitEthernet20','GigabitEthernet20','GigabitEthernet20',NULL,NULL,NULL,NULL,NULL,NULL,NULL,20,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(21,1,1,'GigabitEthernet21','GigabitEthernet21','GigabitEthernet21',NULL,NULL,NULL,NULL,NULL,NULL,NULL,21,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(22,1,1,'GigabitEthernet22','GigabitEthernet22','GigabitEthernet22',NULL,NULL,NULL,NULL,NULL,NULL,NULL,22,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(23,1,1,'GigabitEthernet23','GigabitEthernet23','GigabitEthernet23',NULL,NULL,NULL,NULL,NULL,NULL,NULL,23,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(24,1,1,'GigabitEthernet24','GigabitEthernet24','GigabitEthernet24',NULL,NULL,NULL,NULL,NULL,NULL,NULL,24,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(25,2,1,'GigabitEthernet1','GigabitEthernet1','GigabitEthernet1',NULL,NULL,NULL,NULL,NULL,NULL,NULL,25,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(26,2,1,'GigabitEthernet2','GigabitEthernet2','GigabitEthernet2',NULL,NULL,NULL,NULL,NULL,NULL,NULL,26,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(27,2,1,'GigabitEthernet3','GigabitEthernet3','GigabitEthernet3',NULL,NULL,NULL,NULL,NULL,NULL,NULL,27,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(28,2,1,'GigabitEthernet4','GigabitEthernet4','GigabitEthernet4',NULL,NULL,NULL,NULL,NULL,NULL,NULL,28,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(29,2,1,'GigabitEthernet5','GigabitEthernet5','GigabitEthernet5',NULL,NULL,NULL,NULL,NULL,NULL,NULL,29,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(30,2,1,'GigabitEthernet6','GigabitEthernet6','GigabitEthernet6',NULL,NULL,NULL,NULL,NULL,NULL,NULL,30,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(31,2,1,'GigabitEthernet7','GigabitEthernet7','GigabitEthernet7',NULL,NULL,NULL,NULL,NULL,NULL,NULL,31,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(32,2,1,'GigabitEthernet8','GigabitEthernet8','GigabitEthernet8',NULL,NULL,NULL,NULL,NULL,NULL,NULL,32,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(33,2,1,'GigabitEthernet9','GigabitEthernet9','GigabitEthernet9',NULL,NULL,NULL,NULL,NULL,NULL,NULL,33,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(34,2,1,'GigabitEthernet10','GigabitEthernet10','GigabitEthernet10',NULL,NULL,NULL,NULL,NULL,NULL,NULL,34,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(35,2,1,'GigabitEthernet11','GigabitEthernet11','GigabitEthernet11',NULL,NULL,NULL,NULL,NULL,NULL,NULL,35,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(36,2,1,'GigabitEthernet12','GigabitEthernet12','GigabitEthernet12',NULL,NULL,NULL,NULL,NULL,NULL,NULL,36,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(37,2,1,'GigabitEthernet13','GigabitEthernet13','GigabitEthernet13',NULL,NULL,NULL,NULL,NULL,NULL,NULL,37,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(38,2,1,'GigabitEthernet14','GigabitEthernet14','GigabitEthernet14',NULL,NULL,NULL,NULL,NULL,NULL,NULL,38,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(39,2,1,'GigabitEthernet15','GigabitEthernet15','GigabitEthernet15',NULL,NULL,NULL,NULL,NULL,NULL,NULL,39,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(40,2,1,'GigabitEthernet16','GigabitEthernet16','GigabitEthernet16',NULL,NULL,NULL,NULL,NULL,NULL,NULL,40,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(41,2,1,'GigabitEthernet17','GigabitEthernet17','GigabitEthernet17',NULL,NULL,NULL,NULL,NULL,NULL,NULL,41,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(42,2,3,'GigabitEthernet18','GigabitEthernet18','GigabitEthernet18',NULL,NULL,NULL,NULL,NULL,NULL,NULL,42,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(43,2,3,'GigabitEthernet19','GigabitEthernet19','GigabitEthernet19',NULL,NULL,NULL,NULL,NULL,NULL,NULL,43,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(44,2,1,'GigabitEthernet20','GigabitEthernet20','GigabitEthernet20',NULL,NULL,NULL,NULL,NULL,NULL,NULL,44,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(45,2,1,'GigabitEthernet21','GigabitEthernet21','GigabitEthernet21',NULL,NULL,NULL,NULL,NULL,NULL,NULL,45,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(46,2,1,'GigabitEthernet22','GigabitEthernet22','GigabitEthernet22',NULL,NULL,NULL,NULL,NULL,NULL,NULL,46,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(47,2,1,'GigabitEthernet23','GigabitEthernet23','GigabitEthernet23',NULL,NULL,NULL,NULL,NULL,NULL,NULL,47,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(48,2,1,'GigabitEthernet24','GigabitEthernet24','GigabitEthernet24',NULL,NULL,NULL,NULL,NULL,NULL,NULL,48,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(49,1,3,'GigabitEthernet25','GigabitEthernet25','GigabitEthernet25',NULL,NULL,NULL,NULL,NULL,NULL,NULL,49,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(50,1,3,'GigabitEthernet26','GigabitEthernet26','GigabitEthernet26',NULL,NULL,NULL,NULL,NULL,NULL,NULL,50,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(51,1,3,'GigabitEthernet27','GigabitEthernet27','GigabitEthernet27',NULL,NULL,NULL,NULL,NULL,NULL,NULL,51,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(52,1,3,'GigabitEthernet28','GigabitEthernet28','GigabitEthernet28',NULL,NULL,NULL,NULL,NULL,NULL,NULL,52,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(53,2,3,'GigabitEthernet29','GigabitEthernet29','GigabitEthernet29',NULL,NULL,NULL,NULL,NULL,NULL,NULL,53,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(54,2,3,'GigabitEthernet30','GigabitEthernet30','GigabitEthernet30',NULL,NULL,NULL,NULL,NULL,NULL,NULL,54,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(55,2,3,'GigabitEthernet31','GigabitEthernet31','GigabitEthernet31',NULL,NULL,NULL,NULL,NULL,NULL,NULL,55,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(56,2,3,'GigabitEthernet32','GigabitEthernet32','GigabitEthernet32',NULL,NULL,NULL,NULL,NULL,NULL,NULL,56,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `switchport` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2432,8 +2434,8 @@ CREATE TABLE `telescope_entries` (
   UNIQUE KEY `telescope_entries_uuid_unique` (`uuid`),
   KEY `telescope_entries_batch_id_index` (`batch_id`),
   KEY `telescope_entries_type_should_display_on_index_index` (`type`,`should_display_on_index`),
-  KEY `telescope_entries_family_hash_index` (`family_hash`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  KEY `telescope_entries_family_hash_index` (`family_hash`(191))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2455,8 +2457,8 @@ DROP TABLE IF EXISTS `telescope_entries_tags`;
 CREATE TABLE `telescope_entries_tags` (
   `entry_uuid` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `tag` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  KEY `telescope_entries_tags_entry_uuid_tag_index` (`entry_uuid`,`tag`),
-  KEY `telescope_entries_tags_tag_index` (`tag`),
+  KEY `telescope_entries_tags_entry_uuid_tag_index` (`entry_uuid`,`tag`(191)),
+  KEY `telescope_entries_tags_tag_index` (`tag`(191)),
   CONSTRAINT `telescope_entries_tags_entry_uuid_foreign` FOREIGN KEY (`entry_uuid`) REFERENCES `telescope_entries` (`uuid`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -2681,9 +2683,9 @@ CREATE TABLE `user` (
   `name` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
   `peeringdb_id` bigint DEFAULT NULL,
   `extra_attributes` json DEFAULT NULL COMMENT '(DC2Type:json)',
-  `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL,
   `prefs` json DEFAULT NULL,
+  `created_at` timestamp NOT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `UNIQ_8D93D649F85E0677` (`username`),
   UNIQUE KEY `UNIQ_8D93D649F2C6186B` (`peeringdb_id`),
@@ -2698,7 +2700,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,1,'travis','$2y$10$FNzPyTKm64oSKeUUCwm1buLQp7h80nBj2suqdjsWH2aajVS1xz/ce','joe@siep.com',NULL,NULL,0,1,'travis',NULL,NULL,NULL,'2014-01-06 12:54:22','2014-01-06 12:54:22',NULL),(2,5,'imcustadmin','$2y$10$VlJG/42TCK7VQz1Wwy7yreP73Eq/1VKn55B4vJfXy4U7fIGK/9YWC','imagine-custadmin@example.com',NULL,NULL,0,2,'travis','Test Test',NULL,NULL,'2018-05-15 13:36:12','2019-01-16 14:37:24',NULL),(3,5,'imcustuser','$2y$10$sIUXAklQmQwalBF0nGgCLenCYYUMXWdqSESRjw6faXfiyymfmpk3y','imagine-custuser@example.com',NULL,NULL,0,3,'travis','Joe Bloggs',NULL,NULL,'2018-05-15 13:36:54','2019-01-16 14:44:30',NULL),(4,2,'hecustuser','$2y$10$sIUXAklQmQwalBF0nGgCLenCYYUMXWdqSESRjw6faXfiyymfmpk3y','heanet-custuser@example.com',NULL,NULL,0,1,'travis',NULL,NULL,NULL,'2018-05-15 13:36:54','2018-05-15 13:36:54',NULL),(5,2,'hecustadmin','$2y$10$sIUXAklQmQwalBF0nGgCLenCYYUMXWdqSESRjw6faXfiyymfmpk3y','heanet-custadmin@example.com',NULL,NULL,0,1,'travis',NULL,NULL,NULL,'2018-05-15 13:36:54','2018-05-15 13:36:54',NULL);
+INSERT INTO `user` VALUES (1,1,'travis','$2y$10$FNzPyTKm64oSKeUUCwm1buLQp7h80nBj2suqdjsWH2aajVS1xz/ce','joe@siep.com',NULL,NULL,0,1,'travis',NULL,NULL,NULL,NULL,'2014-01-06 12:54:22','2014-01-06 12:54:22'),(2,5,'imcustadmin','$2y$10$VlJG/42TCK7VQz1Wwy7yreP73Eq/1VKn55B4vJfXy4U7fIGK/9YWC','imagine-custadmin@example.com',NULL,NULL,0,2,'travis','Test Test',NULL,NULL,NULL,'2018-05-15 13:36:12','2019-01-16 14:37:24'),(3,5,'imcustuser','$2y$10$sIUXAklQmQwalBF0nGgCLenCYYUMXWdqSESRjw6faXfiyymfmpk3y','imagine-custuser@example.com',NULL,NULL,0,3,'travis','Joe Bloggs',NULL,NULL,NULL,'2018-05-15 13:36:54','2019-01-16 14:44:30'),(4,2,'hecustuser','$2y$10$sIUXAklQmQwalBF0nGgCLenCYYUMXWdqSESRjw6faXfiyymfmpk3y','heanet-custuser@example.com',NULL,NULL,0,1,'travis',NULL,NULL,NULL,NULL,'2018-05-15 13:36:54','2018-05-15 13:36:54'),(5,2,'hecustadmin','$2y$10$sIUXAklQmQwalBF0nGgCLenCYYUMXWdqSESRjw6faXfiyymfmpk3y','heanet-custadmin@example.com',NULL,NULL,0,1,'travis',NULL,NULL,NULL,NULL,'2018-05-15 13:36:54','2018-05-15 13:36:54');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2714,7 +2716,7 @@ CREATE TABLE `user_2fa` (
   `user_id` int NOT NULL,
   `enabled` tinyint(1) NOT NULL DEFAULT '0',
   `secret` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `created_at` timestamp NULL DEFAULT NULL,
+  `created_at` timestamp NOT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `UNIQ_3AAA1488A76ED395` (`user_id`),
@@ -2748,9 +2750,9 @@ CREATE TABLE `user_logins` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `user_id_idx` (`user_id`),
   KEY `IDX_6341CC99D43FEAE2` (`customer_to_user_id`),
   KEY `at_idx` (`at`),
+  KEY `user_id_idx` (`user_id`),
   CONSTRAINT `FK_6341CC99D43FEAE2` FOREIGN KEY (`customer_to_user_id`) REFERENCES `customer_to_users` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=62 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -2812,13 +2814,13 @@ CREATE TABLE `user_remember_tokens` (
   `ip` varchar(39) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `expires` datetime NOT NULL,
   `is_2fa_complete` tinyint(1) NOT NULL DEFAULT '0',
-  `created_at` timestamp NULL DEFAULT NULL,
+  `created_at` timestamp NOT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `user_token` (`user_id`,`token`),
   KEY `IDX_E253302EA76ED395` (`user_id`),
   CONSTRAINT `FK_E253302EA76ED395` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2869,14 +2871,9 @@ SET @saved_cs_client     = @@character_set_client;
 /*!50503 SET character_set_client = utf8mb4 */;
 /*!50001 CREATE VIEW `view_cust_current_active` AS SELECT 
  1 AS `id`,
- 1 AS `irrdb`,
- 1 AS `company_registered_detail_id`,
- 1 AS `company_billing_details_id`,
- 1 AS `reseller`,
  1 AS `name`,
  1 AS `type`,
  1 AS `shortname`,
- 1 AS `abbreviatedName`,
  1 AS `autsys`,
  1 AS `maxprefixes`,
  1 AS `peeringemail`,
@@ -2886,8 +2883,8 @@ SET @saved_cs_client     = @@character_set_client;
  1 AS `nocemail`,
  1 AS `nochours`,
  1 AS `nocwww`,
+ 1 AS `irrdb`,
  1 AS `peeringmacro`,
- 1 AS `peeringmacrov6`,
  1 AS `peeringpolicy`,
  1 AS `corpwww`,
  1 AS `datejoin`,
@@ -2896,7 +2893,12 @@ SET @saved_cs_client     = @@character_set_client;
  1 AS `activepeeringmatrix`,
  1 AS `lastupdatedby`,
  1 AS `creator`,
+ 1 AS `company_registered_detail_id`,
+ 1 AS `company_billing_details_id`,
+ 1 AS `peeringmacrov6`,
+ 1 AS `abbreviatedName`,
  1 AS `MD5Support`,
+ 1 AS `reseller`,
  1 AS `isReseller`,
  1 AS `in_manrs`,
  1 AS `in_peeringdb`,
@@ -3019,11 +3021,11 @@ DROP TABLE IF EXISTS `vlan`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `vlan` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `infrastructureid` int NOT NULL,
   `name` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
   `number` int DEFAULT NULL,
-  `private` tinyint(1) NOT NULL DEFAULT '0',
   `notes` longtext CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
+  `private` tinyint(1) NOT NULL DEFAULT '0',
+  `infrastructureid` int NOT NULL,
   `peering_matrix` tinyint(1) NOT NULL DEFAULT '0',
   `peering_manager` tinyint(1) NOT NULL DEFAULT '0',
   `export_to_ixf` tinyint NOT NULL DEFAULT '1',
@@ -3043,7 +3045,7 @@ CREATE TABLE `vlan` (
 
 LOCK TABLES `vlan` WRITE;
 /*!40000 ALTER TABLE `vlan` DISABLE KEYS */;
-INSERT INTO `vlan` VALUES (1,1,'Peering LAN 1',1,0,'',1,1,1,NULL,NULL,NULL),(2,2,'Peering LAN 2',2,0,'',1,1,1,NULL,NULL,NULL),(3,1,'Quarantine LAN 1',3,0,'',1,1,0,NULL,NULL,NULL);
+INSERT INTO `vlan` VALUES (1,'Peering LAN 1',1,'',0,1,1,1,1,NULL,NULL,NULL),(2,'Peering LAN 2',2,'',0,2,1,1,1,NULL,NULL,NULL),(3,'Quarantine LAN 1',3,'',0,1,1,1,0,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `vlan` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -3117,7 +3119,7 @@ UNLOCK TABLES;
 /*!50001 SET collation_connection      = utf8mb4_unicode_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `view_cust_current_active` AS select `cu`.`id` AS `id`,`cu`.`irrdb` AS `irrdb`,`cu`.`company_registered_detail_id` AS `company_registered_detail_id`,`cu`.`company_billing_details_id` AS `company_billing_details_id`,`cu`.`reseller` AS `reseller`,`cu`.`name` AS `name`,`cu`.`type` AS `type`,`cu`.`shortname` AS `shortname`,`cu`.`abbreviatedName` AS `abbreviatedName`,`cu`.`autsys` AS `autsys`,`cu`.`maxprefixes` AS `maxprefixes`,`cu`.`peeringemail` AS `peeringemail`,`cu`.`nocphone` AS `nocphone`,`cu`.`noc24hphone` AS `noc24hphone`,`cu`.`nocfax` AS `nocfax`,`cu`.`nocemail` AS `nocemail`,`cu`.`nochours` AS `nochours`,`cu`.`nocwww` AS `nocwww`,`cu`.`peeringmacro` AS `peeringmacro`,`cu`.`peeringmacrov6` AS `peeringmacrov6`,`cu`.`peeringpolicy` AS `peeringpolicy`,`cu`.`corpwww` AS `corpwww`,`cu`.`datejoin` AS `datejoin`,`cu`.`dateleave` AS `dateleave`,`cu`.`status` AS `status`,`cu`.`activepeeringmatrix` AS `activepeeringmatrix`,`cu`.`lastupdatedby` AS `lastupdatedby`,`cu`.`creator` AS `creator`,`cu`.`MD5Support` AS `MD5Support`,`cu`.`isReseller` AS `isReseller`,`cu`.`in_manrs` AS `in_manrs`,`cu`.`in_peeringdb` AS `in_peeringdb`,`cu`.`peeringdb_oauth` AS `peeringdb_oauth`,`cu`.`created_at` AS `created_at`,`cu`.`updated_at` AS `updated_at` from `cust` `cu` where ((`cu`.`datejoin` <= curdate()) and ((`cu`.`dateleave` is null) or (`cu`.`dateleave` < '1970-01-01') or (`cu`.`dateleave` >= curdate())) and ((`cu`.`status` = 1) or (`cu`.`status` = 2))) */;
+/*!50001 VIEW `view_cust_current_active` AS select `cu`.`id` AS `id`,`cu`.`name` AS `name`,`cu`.`type` AS `type`,`cu`.`shortname` AS `shortname`,`cu`.`autsys` AS `autsys`,`cu`.`maxprefixes` AS `maxprefixes`,`cu`.`peeringemail` AS `peeringemail`,`cu`.`nocphone` AS `nocphone`,`cu`.`noc24hphone` AS `noc24hphone`,`cu`.`nocfax` AS `nocfax`,`cu`.`nocemail` AS `nocemail`,`cu`.`nochours` AS `nochours`,`cu`.`nocwww` AS `nocwww`,`cu`.`irrdb` AS `irrdb`,`cu`.`peeringmacro` AS `peeringmacro`,`cu`.`peeringpolicy` AS `peeringpolicy`,`cu`.`corpwww` AS `corpwww`,`cu`.`datejoin` AS `datejoin`,`cu`.`dateleave` AS `dateleave`,`cu`.`status` AS `status`,`cu`.`activepeeringmatrix` AS `activepeeringmatrix`,`cu`.`lastupdatedby` AS `lastupdatedby`,`cu`.`creator` AS `creator`,`cu`.`company_registered_detail_id` AS `company_registered_detail_id`,`cu`.`company_billing_details_id` AS `company_billing_details_id`,`cu`.`peeringmacrov6` AS `peeringmacrov6`,`cu`.`abbreviatedName` AS `abbreviatedName`,`cu`.`MD5Support` AS `MD5Support`,`cu`.`reseller` AS `reseller`,`cu`.`isReseller` AS `isReseller`,`cu`.`in_manrs` AS `in_manrs`,`cu`.`in_peeringdb` AS `in_peeringdb`,`cu`.`peeringdb_oauth` AS `peeringdb_oauth`,`cu`.`created_at` AS `created_at`,`cu`.`updated_at` AS `updated_at` from `cust` `cu` where ((`cu`.`datejoin` <= curdate()) and ((`cu`.`dateleave` is null) or (`cu`.`dateleave` < '1970-01-01') or (`cu`.`dateleave` >= curdate())) and ((`cu`.`status` = 1) or (`cu`.`status` = 2))) */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
@@ -3167,4 +3169,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-08-12 11:45:29
+-- Dump completed on 2026-08-18 15:17:33
