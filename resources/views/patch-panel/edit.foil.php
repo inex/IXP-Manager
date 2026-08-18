@@ -10,7 +10,11 @@
 <?php $this->section( 'page-header-preamble' ) ?>
     Patch Panels
     /
-    <?= $t->pp ? 'Edit: ' . $t->ee( $t->pp->name ) : 'Create' ?>
+    <?php if ($t->pp): ?>
+    Edit: <?= $t->ee( $t->pp->name ) ?> <?php if( !$t->pp->active ): ?>[Inactive]<?php endif; ?>
+    <?php else: ?>
+    Create
+    <?php endif; ?>
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
