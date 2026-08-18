@@ -5,7 +5,7 @@
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-    Patch Panels / View : <?= $pp->id.' '. $t->ee( $pp->name )?>
+    Patch Panels / View : <?= $pp->id.' '. $t->ee( $pp->name )?> <?php if( !$pp->active ): ?>[Inactive]<?php endif; ?>
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
