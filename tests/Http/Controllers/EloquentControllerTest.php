@@ -22,26 +22,17 @@
 
 declare(strict_types=1);
 
-namespace IXP\Console\QaCommands;
+namespace Tests\Http\Controllers;
 
 use Illuminate\Routing\RouteCollectionInterface;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use IXP\Console\Commands\Command;
 use IXP\Models\User;
 use IXP\Utils\Http\Controllers\Frontend\EloquentController;
-use RecursiveDirectoryIterator;
-use RecursiveIteratorIterator;
-use ReflectionClass;
+use Tests\TestCase;
 
-/**
- * Artisan command to check configured links within EloquentController classes
- */
-class CheckEloquent2FrontendLinks extends  Command
+class EloquentControllerTest extends TestCase
 {
-    protected $signature = 'qa:check-e2f-links';
-
-    protected $description = "This QA command inspects EloquentControllers feParams, looking for listColumns or viewColumns column definitions with invalid routes to the respective models (just hasOne so far). As controllers may vary the columns based on user privileges, we test each controller at each privilege level.";
 
     /**
      * controllers to skip during analysis
@@ -50,7 +41,7 @@ class CheckEloquent2FrontendLinks extends  Command
         "\IXP\Http\Controllers\RipeAtlas\MeasurementController",
     ];
 
-    public function handle(): int
+    public function testRoutes(): void
     {
         $pathRoot = app_path("/Http/Controllers/");
 
@@ -63,22 +54,16 @@ class CheckEloquent2FrontendLinks extends  Command
             $class = "\\IXP\\Http\\Controllers\\" . basename(str_replace("/", "\\", substr($file, strlen($pathRoot) )), ".php");
 
             if (in_array($class, $this->ignoredControllers)) {
-                if ($this->isVerbosityVerbose()) {
-                    $this->warn("Ignoring class $class");
-                }
                 continue;
             }
 
-            $reflectionClass = new ReflectionClass($class);
+            $reflectionClass = new \ReflectionClass($class);
             if (!$reflectionClass->isSubclassOf(EloquentController::class)) {
                 continue;
             }
 
             // Only interested in eloquent controllers, they have the frontend stuff. Load feParams.
             foreach (array_keys(User::$PRIVILEGES) as $privs) {
-                if ($this->isVerbosityVerbose()) {
-                    $this->info("Checking controller $class with privs $privs");
-                }
                 // Some controllers, eg ContactController, modify their columns based on the current users permissions.
                 Auth::login(User::byPrivs($privs)->firstOrFail());
 
@@ -108,11 +93,7 @@ class CheckEloquent2FrontendLinks extends  Command
             }
         }
 
-        foreach ($errors as $error) {
-            $this->warn($error);
-        }
-
-        return count($errors) > 0 ? 1 : 0;
+        $this->assertCount(0, $errors, "Found EloquentController with improperly configured viewColumns / listColumns:\n" . implode("\n", $errors));
     }
 
     private function getFeParamsForController(string $class): \stdClass
@@ -173,7 +154,7 @@ class CheckEloquent2FrontendLinks extends  Command
     private function recursiveSearch( string $rootDirectory, string $pattern): array
     {
         $matches = [];
-        foreach( new RecursiveIteratorIterator( new RecursiveDirectoryIterator( $rootDirectory ) ) as $file) {
+        foreach( new \RecursiveIteratorIterator( new \RecursiveDirectoryIterator( $rootDirectory ) ) as $file) {
             /** @var \SplFileInfo $file */
             if( str_contains( $file->getFilename(), $pattern ) ) {
                 $matches[] = $file->getRealPath();
