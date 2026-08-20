@@ -67,7 +67,7 @@
                     const fragment = $(document.importNode(template[0].content, true));
                     fragment.find('#meta-filename').text(data.file_name);
                     if (data.created_by != null) {
-                        fragment.find('#meta-created-by').text(data.created_by.username + " (" + data.created_by.name + ")");
+                        fragment.find('#meta-created-by').text(data.created_by);
                     } else {
                         fragment.find('#meta-created-by').html(
                             $('em').text('User no longer exists in database.')
