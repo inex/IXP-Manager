@@ -47,11 +47,12 @@ class FileController
     {
         Gate::authorize( 'info', $file );
 
-        $createdBy = User::find( $file->created_by );
+        $createdByUser = User::find( $file->created_by );
+        $createdBy = $createdByUser ? ($createdByUser->username . " (" . $createdByUser->name . ")") : null;
 
         return response()->json( [
             'file_name'     => $file->name,
-            'created_by'    => $createdBy ? ['username' => $createdBy->username, 'name' => $createdBy->name] : null,
+            'created_by'    => $createdBy,
             'dspath'        => config( 'filesystems.disks.' . $file->disk . '.root', '*** UNKNOWN LOCATION ***' ) . '/' . $file->path,
             'created_at'    => $file->created_at,
             'last_modified' => \Carbon\Carbon::parse( Storage::disk( $file->disk )->lastModified( $file->path ) )->format( 'Y-m-d H:i:s',  ),

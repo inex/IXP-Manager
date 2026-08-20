@@ -6,7 +6,7 @@
 
             event.preventDefault();
 
-            let url = '<?= url('') ?>/2fa/delete/' + $( "#" + this.id ).attr( "data-object-id" );
+            let url = '<?= url('') ?>/2fa/delete/' + $( this ).attr( "data-object-id" );
 
             let html = `<p>Do you really want to delete the 2FA for this user?</p>
                                 <form id="d2f-form-delete" method="POST" action="` + url + `">
