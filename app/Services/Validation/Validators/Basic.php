@@ -247,7 +247,7 @@ final class Basic implements Validator
             if ($isWritable) {
                 $writeOk[] = $directory;
             } else {
-                $writeFail[] = $directory;
+                $writeFail[] = base_path($directory);
             }
         }
 
@@ -258,9 +258,15 @@ final class Basic implements Validator
                 } );
         } else {
             $backend->error( "Missing " . $type . " write permission for some storage directories:" )
+                ->withDocsPath("install/upgrading/#instructions")
                 ->each( $writeFail, function( Result $result, string $directory ) use ($type) {
                     $result->addAdditionalInfoText( " - Failed to create test " . $type . " in " . $directory );
-                });
+                })
+                ->addAdditionalInfoText( "The following commands are taken from the IXP Manager documentation on Upgrading and should fix the problem.  If your web server does not run as user www-data, replace www-data with the actual webserver user on your system." )
+                ->addAdditionalInfoText( "" )
+                ->addAdditionalInfoText( "sudo chown -R www-data: " . base_path() . "/{bootstrap/cache,composer.lock,storage,vendor}" )
+                ->addAdditionalInfoText( "sudo chmod -R ug+rwX " . base_path() . "/{bootstrap/cache,composer.lock,storage,vendor}" )
+            ;
             if (count($writeOk) > 0) {
                 $backend->info( "Had " . $type . " write permission for some storage directories:" )
                     ->each( $writeOk, function( Result $result, string $directory ) {
