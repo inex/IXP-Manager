@@ -86,9 +86,9 @@ System Validation
             <div class="result-badge badgeDot tw-rounded-full tw-border-2 tw-w-5 tw-h-5 tw-mr-1" title=""></div>
             <div class="severity tw-min-w-24 tw-ml-1 tw-text-center"></div>
             <div class="validation-content-container tw-relative tw-w-[calc(100%-6.5rem)]  tw-border tw-border-transparent tw-text-[0.9rem] tw-transition-[height] tw-duration-250">
-                <div>
+                <div class="validation-header">
                     <span class="validation-content"></span>
-                    <i class="tw-hidden fa fa-caret-down expandable-caret"></i> &nbsp;
+                    <i class="tw-hidden fa fa-caret-down validation-extra-content-icon"></i>
                 </div>
 
                 <div class="validation-extra-content tw-hidden tw-relative tw-font-size-xs"></div>
@@ -154,17 +154,17 @@ System Validation
         /**
          * Flip dropdown caret icon upside down if clicked
          */
-        validationContainer.on('click', ".validation-content-container", function() {
-            if ( $(this).find(".validation-extra-content").text() ) {
-                $(this).find("i.expandable-caret").toggleClass("tw-rotate-180");
+        validationContainer.on('click', ".validation-header", function() {
+            if ( $(this).closest('.validation-content-container').find(".validation-extra-content").text() ) {
+                $(this).find("i.validation-extra-content-icon").toggleClass("tw-rotate-180");
             }
         });
 
         /**
          * Show/hide extra content when clicked
          */
-        validationContainer.on('click','.validation-result', function() {
-            $(this).find('.validation-extra-content').toggleClass('tw-hidden');
+        validationContainer.on('click','.validation-header', function() {
+            $(this).closest('.validation-content-container').find('.validation-extra-content').toggleClass('tw-hidden');
         });
 
         /**
@@ -297,7 +297,7 @@ System Validation
                 }
             });
 
-            resultClone.find('i.expandable-caret')
+            resultClone.find('i.validation-extra-content-icon')
                 .removeClass("tw-hidden");
         }
 
