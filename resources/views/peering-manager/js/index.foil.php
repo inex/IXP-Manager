@@ -129,7 +129,7 @@
             if (data.error ) {
                 bootbox.dialog({
                     title: "<i class='fa fa-cross'></i> Error",
-                    message: htmlEntities(data.message),
+                    message: $('<div>').text(data.message),
                     buttons: {
                         ok: {
                             label: "Ok",
@@ -145,7 +145,7 @@
                 $( "#peering-notes-icon-" + $( "#peerid" ).val() ).css( "color", "black" );
                 bootbox.alert({
                     title: "<i class='fa fa-check'></i> Success",
-                    message: htmlEntities(data.message),
+                    message: $('<div>').text(data.message),
                     buttons: {
                         ok: {
                             label: "Close"
@@ -201,7 +201,10 @@
                     let currentdiv = $( "#" + index ).parent().closest('div');
 
                     currentdiv.parent().closest('div').addClass( "has-error" );
-                    currentdiv.append( "<span class='help-block' style='display: inline;'> " + value + "</span>" );
+                    currentdiv.append( $('<span>')
+                        .addClass('help-block')
+                        .css('display', 'inline')
+                        .text(' ' + value) );
                     $( ".btn-footer-modal" ).removeAttr( 'disabled', 'disabled' ).removeClass( 'disabled' );
                     $("#modal-peering-request-content .readonlyChange"   ).attr( "readonly", false);
                 });
@@ -211,7 +214,7 @@
                 if( data.error ){
                     bootbox.dialog({
                         title: "<i class='fa fa-cross'></i> Error",
-                        message: htmlEntities(data.message),
+                        message: $('<div>').text(data.message),
                         buttons: {
                             ok: {
                                 label: "Close",
@@ -234,7 +237,7 @@
 
                     bootbox.alert({
                         title: "<i class='fa fa-check'></i> Success",
-                        message: htmlEntities(data.message),
+                        message: $('<div>').text(data.message),
                         buttons: {
                             ok: {
                                 label: "Close"
