@@ -636,7 +636,7 @@ class FileControllerTest extends TestCase
         $response->assertStatus( 200 )
             ->assertJson( [
                     'file_name' => self::testInfo[ 'fileName2' ],
-                    'created_by' => ['username' => $user->username, 'name' => $user->name],
+                    'created_by' => $user->username . " (" . $user->name . ")",
                     'customer' => $file->customer->name,
             ] );
     }
