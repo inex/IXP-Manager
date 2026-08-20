@@ -469,7 +469,7 @@ function do_laravel_required_extension_checks( array $requiredByLaravel): array
 
 function do_laravel_writable_directory_checks(): array
 {
-    $storageDirectories = ["bootstrap", "storage/app/", "storage/docstore/", "storage/docstore_customers/", "storage/files/",
+    $storageDirectories = ["bootstrap/cache/", "storage/app/", "storage/docstore/", "storage/docstore_customers/", "storage/files/",
             "storage/framework/cache/", "storage/framework/sessions/", "storage/framework/views/",
             "storage/logs/", "storage/tmp/", "storage/"];
 
