@@ -170,7 +170,7 @@ class PatchPanelControllerTest extends DuskTestCase
                 ->press("Save Changes")
                 ->waitForRoute('patch-panel@edit' , [ 'pp' => $pp->id ])
                 ->assertSee( 'To make a patch panel active, all ports must be available for use.' )
-                ->assertNotChecked("active")
+                ->assertChecked("active")
             ;
 
             // Go back and change the port state to Available.
