@@ -123,13 +123,13 @@ class PhysicalInterface extends Model
         $this->attributes['rate_limit'] = $value ?: null;
     }
 
-    public const STATUS_CONNECTED       = 1;
-    public const STATUS_DISABLED        = 2;
-    public const STATUS_NOTCONNECTED    = 3;
-    public const STATUS_XCONNECT        = 4;
-    public const STATUS_QUARANTINE      = 5;
+    public const int STATUS_CONNECTED       = 1;
+    public const int STATUS_DISABLED        = 2;
+    public const int STATUS_NOTCONNECTED    = 3;
+    public const int STATUS_XCONNECT        = 4;
+    public const int STATUS_QUARANTINE      = 5;
 
-    public static $STATES = [
+    public static array $STATES = [
         self::STATUS_CONNECTED    => 'Connected',
         self::STATUS_DISABLED     => 'Disabled',
         self::STATUS_NOTCONNECTED => 'Not Connected',
@@ -137,7 +137,7 @@ class PhysicalInterface extends Model
         self::STATUS_QUARANTINE   => 'Quarantine'
     ];
 
-    public static $APISTATES = [
+    public static array $APISTATES = [
         self::STATUS_CONNECTED    => 'connected',
         self::STATUS_DISABLED     => 'disabled',
         self::STATUS_NOTCONNECTED => 'notconnected',
@@ -145,7 +145,7 @@ class PhysicalInterface extends Model
         self::STATUS_QUARANTINE   => 'quarantine'
     ];
 
-    public static $SPEED = [
+    public static array $SPEED = [
         10    => '10 Mbps',
         100   => '100 Mbps',
         1000  => '1 Gbps',
@@ -156,7 +156,7 @@ class PhysicalInterface extends Model
         400000 => '400 Gbps'
     ];
 
-    public static $DUPLEX = [
+    public static array $DUPLEX = [
         'full'   => 'full',
         'half'   => 'half'
     ];

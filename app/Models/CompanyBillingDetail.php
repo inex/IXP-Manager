@@ -113,22 +113,22 @@ class CompanyBillingDetail extends Model
         'notes',
     ];
 
-    public const INVOICE_METHOD_EMAIL = 'EMAIL';
-    public const INVOICE_METHOD_POST  = 'POST';
+    public const string INVOICE_METHOD_EMAIL = 'EMAIL';
+    public const string INVOICE_METHOD_POST  = 'POST';
 
-    public static $INVOICE_METHODS = [
+    public static array $INVOICE_METHODS = [
         self::INVOICE_METHOD_EMAIL => 'Email',
         self::INVOICE_METHOD_POST  => 'Post'
     ];
 
-    public const BILLING_FREQUENCY_MONTHLY    = 'MONTHLY';
-    public const BILLING_FREQUENCY_2MONTHLY   = '2MONTHLY';
-    public const BILLING_FREQUENCY_QUARTERLY  = 'QUARTERLY';
-    public const BILLING_FREQUENCY_HALFYEARLY = 'HALFYEARLY';
-    public const BILLING_FREQUENCY_ANNUALLY   = 'ANNUALLY';
-    public const BILLING_FREQUENCY_NOBILLING  = 'NOBILLING';
+    public const string BILLING_FREQUENCY_MONTHLY    = 'MONTHLY';
+    public const string BILLING_FREQUENCY_2MONTHLY   = '2MONTHLY';
+    public const string BILLING_FREQUENCY_QUARTERLY  = 'QUARTERLY';
+    public const string BILLING_FREQUENCY_HALFYEARLY = 'HALFYEARLY';
+    public const string BILLING_FREQUENCY_ANNUALLY   = 'ANNUALLY';
+    public const string BILLING_FREQUENCY_NOBILLING  = 'NOBILLING';
 
-    public static $BILLING_FREQUENCIES = [
+    public static array $BILLING_FREQUENCIES = [
         self::BILLING_FREQUENCY_MONTHLY    => 'Monthly',
         self::BILLING_FREQUENCY_2MONTHLY   => 'Every 2 Months',
         self::BILLING_FREQUENCY_QUARTERLY  => 'Quarterly',

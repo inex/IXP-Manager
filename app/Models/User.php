@@ -135,46 +135,46 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         'prefs'             => '{}',
     ];
 
-    public const AUTH_PUBLIC    = 0;
-    public const AUTH_CUSTUSER  = 1;
-    public const AUTH_CUSTADMIN = 2;
-    public const AUTH_SUPERUSER = 3;
+    public const int AUTH_PUBLIC    = 0;
+    public const int AUTH_CUSTUSER  = 1;
+    public const int AUTH_CUSTADMIN = 2;
+    public const int AUTH_SUPERUSER = 3;
 
     /**
      * @var array<int, string>
      */
-    public static $PRIVILEGES = [
+    public static array $PRIVILEGES = [
         self::AUTH_CUSTUSER  => 'CUSTUSER',
         self::AUTH_CUSTADMIN => 'CUSTADMIN',
         self::AUTH_SUPERUSER => 'SUPERUSER',
     ];
 
-    public static $PRIVILEGES_ALL = [
+    public static array $PRIVILEGES_ALL = [
         self::AUTH_PUBLIC    => 'PUBLIC',
         self::AUTH_CUSTUSER  => 'CUSTUSER',
         self::AUTH_CUSTADMIN => 'CUSTADMIN',
         self::AUTH_SUPERUSER => 'SUPERUSER',
     ];
 
-    public static $PRIVILEGES_TEXT = [
+    public static array $PRIVILEGES_TEXT = [
         self::AUTH_CUSTUSER  => 'Customer User',
         self::AUTH_CUSTADMIN => 'Customer Administrator',
         self::AUTH_SUPERUSER => 'Superuser',
     ];
 
-    public static $PRIVILEGES_TEXT_ALL = [
+    public static array $PRIVILEGES_TEXT_ALL = [
         self::AUTH_PUBLIC    => 'Public / Non-User',
         self::AUTH_CUSTUSER  => 'Customer User',
         self::AUTH_CUSTADMIN => 'Customer Administrator',
         self::AUTH_SUPERUSER => 'Superuser',
     ];
 
-    public static $PRIVILEGES_TEXT_NONSUPERUSER = [
+    public static array $PRIVILEGES_TEXT_NONSUPERUSER = [
         self::AUTH_CUSTUSER  => 'Customer User',
         self::AUTH_CUSTADMIN => 'Customer Administrator',
     ];
 
-    public static $PRIVILEGES_TEXT_VSHORT = [
+    public static array $PRIVILEGES_TEXT_VSHORT = [
         self::AUTH_CUSTUSER  => 'CU',
         self::AUTH_CUSTADMIN => 'CA',
         self::AUTH_SUPERUSER => 'SU',

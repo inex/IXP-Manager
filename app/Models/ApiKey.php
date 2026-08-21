@@ -64,7 +64,7 @@ use Illuminate\Support\Carbon;
  */
 class ApiKey extends Model
 {
-    const PREFIX = 'ixpm_';
+    const string PREFIX = 'ixpm_';
 
 
     /**
