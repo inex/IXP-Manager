@@ -143,12 +143,6 @@ class RsFilterControllerTest extends DuskTestCase
         // CustomerPolicy::revertRsFilters
         $browser->click( "#form-revert #submit-revert" )
             ->waitFor('.bootbox.modal')
-            ->waitFor('#submit-revert-cancel')
-            ->waitForText( 'Are you sure you want to revert your changes?' )
-            ->click('#submit-revert-cancel') // can cancel the dialog!
-            ->waitUntilMissing( '.bootbox.modal' );
-
-        $browser->click( '#form-revert #submit-revert' )
             ->waitForText( 'Are you sure you want to revert your changes?' )
             ->click( "#submit-revert-confirm" )
             ->waitForLocation( "/rs-filtering/" . $customer->id )
@@ -175,12 +169,6 @@ class RsFilterControllerTest extends DuskTestCase
         // CustomerPolicy::commitRsFilter
         $browser->press( '#form-commit #submit-commit' )
             ->waitFor( '.bootbox.modal' )
-            ->waitFor( '#submit-commit-cancel' )
-            ->waitForText( 'Are you sure you want to commit your changes to production?' )
-            ->click( '#submit-commit-cancel' ) // can cancel the dialog!
-            ->waitUntilMissing( '.bootbox.modal' );
-
-        $browser->press( '#form-commit #submit-commit' )
             ->waitForText( 'Are you sure you want to commit your changes to production?' )
             ->click( '#submit-commit-confirm' )
             ->waitForLocation( '/rs-filtering/' . $customer->id )
@@ -200,13 +188,7 @@ class RsFilterControllerTest extends DuskTestCase
         // First test we can dismiss the dialog
         $browser->press( '#delete-rsf-' . $rsFilter->id )
             ->waitFor( '.bootbox.modal' )
-            ->waitFor( '#delete-rsf-cancel' )
             ->waitForText( 'Do you want to delete this route server filter?' )
-            ->click( '#delete-rsf-cancel' ) // can cancel the dialog!
-            ->waitUntilMissing( '.bootbox.modal' );
-
-        $browser->click( '#delete-rsf-' . $rsFilter->id )
-            ->waitForText( "Do you want to delete this route server filter?" )
             ->press( "#delete-rsf-confirm" )
             ->waitForLocation( "/rs-filtering/" . $customer->id )
             ->assertSee( "Route server filter deleted." )
