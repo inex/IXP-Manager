@@ -58,9 +58,9 @@ use Illuminate\Database\Eloquent\{
  */
 class ContactGroup extends Model
 {
-    public const TYPE_ROLE = 'ROLE';
+    public const string TYPE_ROLE = 'ROLE';
 
-    public static $TYPES = [
+    public static array $TYPES = [
         self::TYPE_ROLE => 'Role'
     ];
 

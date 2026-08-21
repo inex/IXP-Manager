@@ -92,13 +92,13 @@ class RouteServerFilter extends Model
         'live',
     ];
 
-    public const AS_IS             = "AS_IS";
-    public const NO_ADVERTISE      = "NO_ADVERTISE";
-    public const PREPEND_ONCE      = "PREPEND_ONCE";
-    public const PREPEND_TWICE     = "PREPEND_TWICE";
-    public const PREPEND_THRICE    = "PREPEND_THRICE";
+    public const string AS_IS             = "AS_IS";
+    public const string NO_ADVERTISE      = "NO_ADVERTISE";
+    public const string PREPEND_ONCE      = "PREPEND_ONCE";
+    public const string PREPEND_TWICE     = "PREPEND_TWICE";
+    public const string PREPEND_THRICE    = "PREPEND_THRICE";
 
-    public static $ADVERTISE_ACTION_TEXT = [
+    public static array $ADVERTISE_ACTION_TEXT = [
         self::AS_IS             => 'Advertise As Is',
         self::NO_ADVERTISE      => 'Do Not Advertise',
         self::PREPEND_ONCE      => 'Prepend My ASN x1',
@@ -106,7 +106,7 @@ class RouteServerFilter extends Model
         self::PREPEND_THRICE    => 'Prepend My ASN x3',
     ];
 
-    public static $RECEIVE_ACTION_TEXT = [
+    public static array $RECEIVE_ACTION_TEXT = [
         self::AS_IS             => 'Receive As Is',
         self::NO_ADVERTISE      => "Do Not Receive (Drop)",
         self::PREPEND_ONCE      => "Prepend Peer's ASN x1",

@@ -112,14 +112,14 @@ class CoreBundle extends Model
     /**
      * CONST TYPES
      */
-    public const TYPE_ECMP              = 1;
-    public const TYPE_L2_LAG            = 2;
-    public const TYPE_L3_LAG            = 3;
+    public const int TYPE_ECMP              = 1;
+    public const int TYPE_L2_LAG            = 2;
+    public const int TYPE_L3_LAG            = 3;
 
     /**
      * Array STATES
      */
-    public static $TYPES = [
+    public static array $TYPES = [
         self::TYPE_ECMP          => "ECMP",
         self::TYPE_L2_LAG        => "L2-LAG (e.g. LACP)",
         self::TYPE_L3_LAG        => "L3-LAG",

@@ -164,8 +164,8 @@ class Router extends Model
     /**
      * CONST PROTOCOL
      */
-    public const string PROTOCOL_IPV4                 = '4';
-    public const string PROTOCOL_IPV6                 = '6';
+    public const string PROTOCOL_IPV4 = '4';
+    public const string PROTOCOL_IPV6 = '6';
 
     /**
      * @var array Router Protocols

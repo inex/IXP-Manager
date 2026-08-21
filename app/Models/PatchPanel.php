@@ -116,15 +116,15 @@ class PatchPanel extends Model
     /**
      * CONST Cable types
      */
-    public const CABLE_TYPE_UTP                = 1;
-    public const CABLE_TYPE_SMF                = 2;
-    public const CABLE_TYPE_MMF                = 3;
-    public const CABLE_TYPE_OTHER              = 999;
+    public const int CABLE_TYPE_UTP                = 1;
+    public const int CABLE_TYPE_SMF                = 2;
+    public const int CABLE_TYPE_MMF                = 3;
+    public const int CABLE_TYPE_OTHER              = 999;
 
     /**
      * Array Cable types
      */
-    public static $CABLE_TYPES = [
+    public static array $CABLE_TYPES = [
         self::CABLE_TYPE_UTP            => 'UTP',
         self::CABLE_TYPE_SMF            => 'SMF',
         self::CABLE_TYPE_MMF            => 'MMF',
@@ -134,7 +134,7 @@ class PatchPanel extends Model
     /**
      * Array 'Fibre' Cable types
      */
-    public static $FIBRE_CABLE_TYPES = [
+    public static array $FIBRE_CABLE_TYPES = [
         self::CABLE_TYPE_SMF,
         self::CABLE_TYPE_MMF,
     ];
@@ -142,13 +142,13 @@ class PatchPanel extends Model
     /**
      * CONST Co-lo simplex/duplex specification
      */
-    public const COLO_PP_TYPE_SIMPLEX   = 0;
-    public const COLO_PP_TYPE_DUPLEX    = 1;
+    public const int COLO_PP_TYPE_SIMPLEX   = 0;
+    public const int COLO_PP_TYPE_DUPLEX    = 1;
 
     /**
      * Array Co-lo simplex/duplex specification
      */
-    public static $COLO_PP_TYPES = [
+    public static array $COLO_PP_TYPES = [
         self::COLO_PP_TYPE_SIMPLEX      => 'Simplex',
         self::COLO_PP_TYPE_DUPLEX       => 'Duplex',
     ];
@@ -156,16 +156,16 @@ class PatchPanel extends Model
     /**
      * CONST Connector types
      */
-    public const CONNECTOR_TYPE_RJ45           = 1;
-    public const CONNECTOR_TYPE_SC             = 2;
-    public const CONNECTOR_TYPE_LC             = 3;
-    public const CONNECTOR_TYPE_MU             = 4;
-    public const CONNECTOR_TYPE_OTHER          = 999;
+    public const int CONNECTOR_TYPE_RJ45           = 1;
+    public const int CONNECTOR_TYPE_SC             = 2;
+    public const int CONNECTOR_TYPE_LC             = 3;
+    public const int CONNECTOR_TYPE_MU             = 4;
+    public const int CONNECTOR_TYPE_OTHER          = 999;
 
     /**
      * Array Connector types
      */
-    public static $CONNECTOR_TYPES = [
+    public static array $CONNECTOR_TYPES = [
         self::CONNECTOR_TYPE_RJ45      => 'RJ45',
         self::CONNECTOR_TYPE_SC        => 'SC',
         self::CONNECTOR_TYPE_LC        => 'LC',
@@ -176,13 +176,13 @@ class PatchPanel extends Model
     /**
      * Counts from patch panel mount position
      */
-    public const MOUNTED_AT_FRONT = 1;
-    public const MOUNTED_AT_REAR  = 2;
+    public const int MOUNTED_AT_FRONT = 1;
+    public const int MOUNTED_AT_REAR  = 2;
 
     /**
      * Mounted at textual representations
      */
-    public static $MOUNTED_AT = [
+    public static array $MOUNTED_AT = [
         self::MOUNTED_AT_FRONT => 'Front',
         self::MOUNTED_AT_REAR  => 'Rear',
     ];

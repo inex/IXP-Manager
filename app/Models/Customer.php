@@ -286,47 +286,47 @@ class Customer extends Model
     public const SQL_CUST_CONNECTED = "cust.status = 1";
 
 
-    public const TYPE_FULL        = 1;
-    public const TYPE_ASSOCIATE   = 2;
-    public const TYPE_INTERNAL    = 3;
-    public const TYPE_PROBONO     = 4;
+    public const int TYPE_FULL        = 1;
+    public const int TYPE_ASSOCIATE   = 2;
+    public const int TYPE_INTERNAL    = 3;
+    public const int TYPE_PROBONO     = 4;
 
-    public static $CUST_TYPES_TEXT = [
+    public static array $CUST_TYPES_TEXT = [
         self::TYPE_FULL          => 'Full',
         self::TYPE_ASSOCIATE     => 'Associate',
         self::TYPE_INTERNAL      => 'Internal',
         self::TYPE_PROBONO       => 'Pro-bono',
     ];
 
-    public const STATUS_NORMAL       = 1;
-    public const STATUS_NOTCONNECTED = 2;
-    public const STATUS_SUSPENDED    = 3;
+    public const int STATUS_NORMAL       = 1;
+    public const int STATUS_NOTCONNECTED = 2;
+    public const int STATUS_SUSPENDED    = 3;
 
-    public static $CUST_STATUS_TEXT = [
+    public static array $CUST_STATUS_TEXT = [
         self::STATUS_NORMAL           => 'Normal',
         self::STATUS_NOTCONNECTED     => 'Not Connected',
         self::STATUS_SUSPENDED        => 'Suspended',
     ];
 
-    public const PEERING_POLICY_OPEN       = 'open';
-    public const PEERING_POLICY_SELECTIVE  = 'selective';
-    public const PEERING_POLICY_MANDATORY  = 'mandatory';
-    public const PEERING_POLICY_CLOSED     = 'closed';
+    public const string PEERING_POLICY_OPEN       = 'open';
+    public const string PEERING_POLICY_SELECTIVE  = 'selective';
+    public const string PEERING_POLICY_MANDATORY  = 'mandatory';
+    public const string PEERING_POLICY_CLOSED     = 'closed';
 
-    public static $PEERING_POLICIES = [
+    public static array $PEERING_POLICIES = [
         self::PEERING_POLICY_OPEN       => 'open',
         self::PEERING_POLICY_SELECTIVE  => 'selective',
         self::PEERING_POLICY_MANDATORY  => 'mandatory',
         self::PEERING_POLICY_CLOSED     => 'closed'
     ];
 
-    public const NOC_HOURS_24x7 = '24x7';
-    public const NOC_HOURS_8x5  = '8x5';
-    public const NOC_HOURS_8x7  = '8x7';
-    public const NOC_HOURS_12x5 = '12x5';
-    public const NOC_HOURS_12x7 = '12x7';
+    public const string NOC_HOURS_24x7 = '24x7';
+    public const string NOC_HOURS_8x5  = '8x5';
+    public const string NOC_HOURS_8x7  = '8x7';
+    public const string NOC_HOURS_12x5 = '12x5';
+    public const string NOC_HOURS_12x7 = '12x7';
 
-    public static $NOC_HOURS = [
+    public static array $NOC_HOURS = [
         self::NOC_HOURS_24x7 => '24x7',
         self::NOC_HOURS_8x5  => '8x5',
         self::NOC_HOURS_8x7  => '8x7',
@@ -334,13 +334,13 @@ class Customer extends Model
         self::NOC_HOURS_12x7 => '12x7'
     ];
 
-    public const MD5_SUPPORT_UNKNOWN   = 'UNKNOWN';
-    public const MD5_SUPPORT_YES       = 'YES';
-    public const MD5_SUPPORT_MANDATORY = 'MANDATORY';
-    public const MD5_SUPPORT_PREFERRED = 'PREFERRED';
-    public const MD5_SUPPORT_NO        = 'NO';
+    public const string MD5_SUPPORT_UNKNOWN   = 'UNKNOWN';
+    public const string MD5_SUPPORT_YES       = 'YES';
+    public const string MD5_SUPPORT_MANDATORY = 'MANDATORY';
+    public const string MD5_SUPPORT_PREFERRED = 'PREFERRED';
+    public const string MD5_SUPPORT_NO        = 'NO';
 
-    public static $MD5_SUPPORT = [
+    public static array $MD5_SUPPORT = [
         self::MD5_SUPPORT_UNKNOWN   => 'Unknown',
         self::MD5_SUPPORT_YES       => 'Yes',
         self::MD5_SUPPORT_MANDATORY => 'Yes - Mandatory',

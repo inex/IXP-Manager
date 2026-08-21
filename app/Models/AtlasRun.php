@@ -89,13 +89,13 @@ class AtlasRun extends Model
     /**
      * CONST SCHEDULED
      */
-    public const SCHEDULED_AT_NOW         = 1;
-    public const SCHEDULED_AT_DATETIME    = 2;
+    public const int SCHEDULED_AT_NOW         = 1;
+    public const int SCHEDULED_AT_DATETIME    = 2;
 
     /**
      * @var array Email ids to classes
      */
-    public static $SCHEDULED_AT = [
+    public static array $SCHEDULED_AT = [
         self::SCHEDULED_AT_NOW         =>      'Run immediately',
         self::SCHEDULED_AT_DATETIME    =>      'Run scheduled at'
     ];

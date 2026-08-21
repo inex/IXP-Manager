@@ -171,14 +171,14 @@ class Switcher extends Model
     /**
      * Constants for the list mode dropdown in the swtiches list
      */
-    public const VIEW_MODE_DEFAULT     = 'view_mode_default';
-    public const VIEW_MODE_OS          = 'view_mode_os';
-    public const VIEW_MODE_L3          = 'view_mode_l3';
+    public const string VIEW_MODE_DEFAULT     = 'view_mode_default';
+    public const string VIEW_MODE_OS          = 'view_mode_os';
+    public const string VIEW_MODE_L3          = 'view_mode_l3';
 
     /**
      * @var array Textual representations of the list mode
      */
-    public static $VIEW_MODES = [
+    public static array $VIEW_MODES = [
         self::VIEW_MODE_DEFAULT     => 'Default',
         self::VIEW_MODE_OS          => 'OS View',
         self::VIEW_MODE_L3          => 'L3 View',
@@ -192,7 +192,7 @@ class Switcher extends Model
      * @see snmpPoll() below
      * @var array Elements for SNMP polling via the OSS_SNMP library
      */
-    public static $SNMP_SWITCH_ELEMENTS = [
+    public static array $SNMP_SWITCH_ELEMENTS = [
         'Model'         => [ 'fn' => 'model' ],
         'Os'            => [ 'fn' => 'os' ],
         'OsDate'        => [ 'fn' => 'osDate' ],
