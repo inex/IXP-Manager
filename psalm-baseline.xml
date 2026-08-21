@@ -74,25 +74,16 @@
     </RedundantCondition>
   </file>
   <file src="app/Console/Commands/RipeAtlas/CompleteRequests.php">
-    <InvalidArgument>
-      <code><![CDATA[$ar]]></code>
-    </InvalidArgument>
     <MissingDocblockType>
       <code><![CDATA[public function handle(): int]]></code>
     </MissingDocblockType>
   </file>
   <file src="app/Console/Commands/RipeAtlas/CreateMeasurements.php">
-    <InvalidArgument>
-      <code><![CDATA[$ar]]></code>
-    </InvalidArgument>
     <MissingDocblockType>
       <code><![CDATA[public function handle(): int]]></code>
     </MissingDocblockType>
   </file>
   <file src="app/Console/Commands/RipeAtlas/RunMeasurements.php">
-    <InvalidArgument>
-      <code><![CDATA[$am]]></code>
-    </InvalidArgument>
     <MissingDocblockType>
       <code><![CDATA[public function handle(): int]]></code>
     </MissingDocblockType>
@@ -103,9 +94,6 @@
     </MissingDocblockType>
   </file>
   <file src="app/Console/Commands/RipeAtlas/UpdateMeasurements.php">
-    <InvalidArgument>
-      <code><![CDATA[$am]]></code>
-    </InvalidArgument>
     <MissingDocblockType>
       <code><![CDATA[public function handle(): int]]></code>
     </MissingDocblockType>
@@ -325,12 +313,6 @@
       <code><![CDATA[User::AUTH_CUSTADMIN]]></code>
       <code><![CDATA[User::AUTH_CUSTUSER]]></code>
     </RedundantCondition>
-    <TypeDoesNotContainType>
-      <code><![CDATA[config('contact_group.types.ROLE')]]></code>
-      <code><![CDATA[config('contact_group.types.ROLE')]]></code>
-      <code><![CDATA[config('contact_group.types.ROLE')]]></code>
-      <code><![CDATA[config('contact_group.types.ROLE')]]></code>
-    </TypeDoesNotContainType>
   </file>
   <file src="app/Http/Controllers/Contact/ContactGroupController.php">
     <ImplementedReturnTypeMismatch>
@@ -349,9 +331,6 @@
       <code><![CDATA[#[\Override]]]></code>
       <code><![CDATA[#[\Override]]]></code>
     </MissingDocblockType>
-    <NullArgument>
-      <code><![CDATA[config( 'contact_group.types' )]]></code>
-    </NullArgument>
   </file>
   <file src="app/Http/Controllers/Controller.php">
     <MissingDocblockType>
@@ -1207,9 +1186,6 @@
     </MissingDocblockType>
   </file>
   <file src="app/Models/IrrdbUpdateLog.php">
-    <InvalidDocblock>
-      <code><![CDATA[IrrdbUpdateLog]]></code>
-    </InvalidDocblock>
     <RedundantCondition>
       <code><![CDATA[!$oldest]]></code>
       <code><![CDATA[!$oldest]]></code>
