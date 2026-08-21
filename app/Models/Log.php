@@ -57,11 +57,11 @@ use Illuminate\Database\Eloquent\Builder;
  */
 class Log extends Model
 {
-    public const ACTION_CREATED  = 'CREATED';
-    public const ACTION_UPDATED  = 'UPDATED';
-    public const ACTION_DELETED  = 'DELETED';
+    public const string ACTION_CREATED  = 'CREATED';
+    public const string ACTION_UPDATED  = 'UPDATED';
+    public const string ACTION_DELETED  = 'DELETED';
 
-    public static $ACTIONS = [
+    public static array $ACTIONS = [
         self::ACTION_CREATED => self::ACTION_CREATED,
         self::ACTION_UPDATED => self::ACTION_UPDATED,
         self::ACTION_DELETED => self::ACTION_DELETED,

@@ -138,12 +138,12 @@ class SwitchPort extends Model
         'mauAutoNegAdminState',
     ];
 
-    public const TYPE_UNSET          = 0;
-    public const TYPE_PEERING        = 1;
-    public const TYPE_MONITOR        = 2;
-    public const TYPE_CORE           = 3;
-    public const TYPE_OTHER          = 4;
-    public const TYPE_MANAGEMENT     = 5;
+    public const int TYPE_UNSET          = 0;
+    public const int TYPE_PEERING        = 1;
+    public const int TYPE_MONITOR        = 2;
+    public const int TYPE_CORE           = 3;
+    public const int TYPE_OTHER          = 4;
+    public const int TYPE_MANAGEMENT     = 5;
 
     /**
      * For resellers, we need to enforce the one port - one mac - one address rule
@@ -156,7 +156,7 @@ class SwitchPort extends Model
      *
      * @var int
      */
-    public const TYPE_FANOUT         = 6;
+    public const int TYPE_FANOUT         = 6;
 
     /**
      * For resellers, we need an uplink port(s) through which they deliver reseller
@@ -164,9 +164,9 @@ class SwitchPort extends Model
      *
      * @var int
      */
-    public const TYPE_RESELLER       = 7;
+    public const int TYPE_RESELLER       = 7;
 
-    public static $TYPES = [
+    public static array $TYPES = [
         self::TYPE_UNSET      => 'Unset / Unknown',
         self::TYPE_PEERING    => 'Peering',
         self::TYPE_MONITOR    => 'Monitor',
@@ -179,7 +179,7 @@ class SwitchPort extends Model
 
     // This array is for matching data from OSS_SNMP to the switchport database table.
     // See snmpUpdate() below
-    public static $SNMP_MAP = [
+    public static array $SNMP_MAP = [
         'descriptions'    => 'name',
         'names'           => 'ifName',
         'aliases'         => 'ifAlias',
@@ -194,7 +194,7 @@ class SwitchPort extends Model
     /**
      * Mappings for OSS_SNMP functions to SwitchPort members
      */
-    public static $OSS_SNMP_MAU_MAP = [
+    public static array $OSS_SNMP_MAU_MAP = [
         'types'             => [ 'fn' => 'mauType',         'xlate' => false ],
         'states'            => [ 'fn' => 'mauState',        'xlate' => true ],
         'mediaAvailable'    => [ 'fn' => 'mauAvailability', 'xlate' => true ],

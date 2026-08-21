@@ -111,14 +111,14 @@ class DocstoreFile extends Model
      *
      * @var array
      */
-    public static $extensionViewable = [ '.txt', '.md' ];
+    public static array $extensionViewable = [ '.txt', '.md' ];
 
     /**
      * File extension allowed to be edited
      *
      * @var array
      */
-    public static $extensionEditable = [ '.txt', '.md' ];
+    public static array $extensionEditable = [ '.txt', '.md' ];
 
     /**
      * Get the directory that owns the file.

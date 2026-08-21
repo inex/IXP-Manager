@@ -77,13 +77,13 @@ class Cabinet extends Model
     /**
      * Constants to indicate whether 'u' positions count from top or bottom
      */
-    public const U_COUNTS_FROM_TOP    = 1;
-    public const U_COUNTS_FROM_BOTTOM = 2;
+    public const int U_COUNTS_FROM_TOP    = 1;
+    public const int U_COUNTS_FROM_BOTTOM = 2;
 
     /**
      * @var array Textual representations of where u's count from
      */
-    public static $U_COUNTS_FROM = [
+    public static array $U_COUNTS_FROM = [
         self::U_COUNTS_FROM_TOP     => 'Top',
         self::U_COUNTS_FROM_BOTTOM  => 'Bottom',
     ];

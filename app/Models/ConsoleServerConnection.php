@@ -71,7 +71,7 @@ class ConsoleServerConnection extends Model
 {
     use Observable;
 
-    public static $SPEED = [
+    public static array $SPEED = [
         300     => 300,
         600     => 600,
         1200    => 1200,
@@ -87,27 +87,27 @@ class ConsoleServerConnection extends Model
         230400  => 230400
     ];
 
-    public const PARITY_EVEN       = 1;
-    public const PARITY_ODD        = 2;
-    public const PARITY_NONE       = 3;
+    public const int PARITY_EVEN       = 1;
+    public const int PARITY_ODD        = 2;
+    public const int PARITY_NONE       = 3;
 
-    public static $PARITY = [
+    public static array $PARITY = [
         self::PARITY_EVEN   => "even",
         self::PARITY_ODD    => "odd",
         self::PARITY_NONE   => "none"
     ];
 
-    public const FLOW_CONTROL_NONE         = 1;
-    public const FLOW_CONTROL_RTS_CTS      = 2;
-    public const FLOW_CONTROL_XON_XOFF     = 3;
+    public const int FLOW_CONTROL_NONE         = 1;
+    public const int FLOW_CONTROL_RTS_CTS      = 2;
+    public const int FLOW_CONTROL_XON_XOFF     = 3;
 
-    public static $FLOW_CONTROL = [
+    public static array $FLOW_CONTROL = [
         self::FLOW_CONTROL_NONE         => "none",
         self::FLOW_CONTROL_RTS_CTS      => "rts/cts",
         self::FLOW_CONTROL_XON_XOFF     => "xon/xoff"
     ];
 
-    public static $STOP_BITS = [
+    public static array $STOP_BITS = [
         1 => 1,
         2 => 2,
     ];

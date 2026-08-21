@@ -92,7 +92,7 @@ class PatchPanelPortFile extends Model
         'storage_location',
     ];
 
-    PUBLIC CONST UPLOAD_PATH = 'ppp';
+    public const string UPLOAD_PATH = 'ppp';
 
     /**
      * Get the Patch Panel Port that owns this patch panel port file
