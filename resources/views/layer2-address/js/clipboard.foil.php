@@ -1,4 +1,4 @@
-<script>
+<script type="module">
     /**
      * initialisation of the Clipboard even on the class in parameter
      */

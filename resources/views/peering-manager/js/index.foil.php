@@ -1,4 +1,4 @@
-<script>
+<script type="module">
     //////////////////////////////////////////////////////////////////////////////////////
     // we'll need these handles to html elements in a few places:
     const btn_marksent          = $( "#modal-peering-request-marksent" );
@@ -231,7 +231,7 @@
 
                     if ( $( '#input-sendtome' ).val() === '0' ) {
                         $('#peering-request-'       + custid    ).attr( 'data-days', 0 );
-                        $('#peering-request-icon-'  + custid    ).attr( 'class', 'fa fa-repeat'    );
+                        $('#peering-request-icon-'  + custid    ).attr( 'class', 'fa fa-rotate-right'    );
                         $('#peering-notes-icon-'    + custid    ).attr( 'class', 'fa fa-star'      );
                     }
 

@@ -11,7 +11,7 @@
 <?php $this->section( 'page-header-postamble' ) ?>
     <div class="btn-group btn-group-sm" role="group">
         <a class="btn btn-white" href="<?= route('patch-panel@list' ) ?>" title="Patch panel list">
-            <i class="fa fa-th-list"></i>
+            <i class="fa fa-table-list"></i>
         </a>
         <a class="btn btn-white" href="<?= route ('patch-panel@edit' , [ 'pp' => $pp->id ] ) ?>" title="Edit">
             <i class="fa fa-pencil"></i>

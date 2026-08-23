@@ -1,4 +1,4 @@
-<script>
+<script type="module">
     $( document ).ready(function() {
         $('[data-toggle="tooltip"]').tooltip();
 

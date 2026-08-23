@@ -200,7 +200,7 @@
                                             </a>
                                         <?php else: ?>
                                             <a class="btn btn-white btn-change-status" id='list-reactivate-<?= $pp->id ?>' href="<?= route( 'patch-panel@change-status' , [ 'pp' => $pp->id ] ) ?>" data-active="1" title="Reactivate">
-                                                <i class="fa fa-repeat"></i>
+                                                <i class="fa fa-rotate-right"></i>
                                             </a>
                                             <a class="btn btn-danger" id='list-expunge-<?= $pp->id ?>' href="<?= route( 'patch-panel@expunge' , [ 'pp' => $pp->id ] ) ?>" title="Expunge">
                                                 <i class="fa fa-trash"></i>

@@ -63,7 +63,7 @@
                             </td>
                             <td>
                                 <?php if( !$cb->enabled ):?>
-                                    <i class="fa fa-remove"></i>
+                                    <i class="fa fa-xmark"></i>
                                 <?php elseif( $cb->enabled && $cb->allCoreLinksEnabled() ): ?>
                                     <i class="fa fa-check"></i>
                                 <?php else:?>

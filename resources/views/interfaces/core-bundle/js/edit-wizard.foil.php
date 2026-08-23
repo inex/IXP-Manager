@@ -1,4 +1,4 @@
-<script>
+<script type="module">
 
     //////////////////////////////////////////////////////////////////////////////////////
     // we'll need these handles to html elements in a few places:
@@ -77,7 +77,7 @@
      * Check if the subnet is valid before submitting the Core Bundle settings form
      */
     $('#core-bundle-form').submit(function( e ) {
-        if( subnet_input.val() !== '' ){
+        if( subnet_input.val() && subnet_input.val() !== '' ){
             if( !validSubnet( subnet_input.val() ) ){
                 $("#message-cb").html("<div class='alert alert-danger' role='alert'> The subnet " + $( this ).val() + " is not valid! </div>");
                 e.preventDefault();

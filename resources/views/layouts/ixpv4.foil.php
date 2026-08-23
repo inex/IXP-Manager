@@ -15,7 +15,7 @@
         <meta name="author" content="">
         <meta name="csrf-token" content="<?=  csrf_token() ?>">
 
-        <link rel="stylesheet" type="text/css" href="<?= url ('') . mix('css/ixp-pack.css') ?>" />
+        <?= app(\Illuminate\Foundation\Vite::class)(['resources/scss/ixp-pack.scss', 'resources/js/ixp-pack.js']) ?>
 
         <link rel="shortcut icon" type="image/ico" href="<?= file_exists( base_path( 'public/favicon.ico' ) ) ? asset( "favicon.ico" ) : asset( "favicon.ico.dist" ) ?>" />
 
@@ -92,66 +92,68 @@
             const MARKDOWN_URL              = "<?= route( "utils@markdown" )   ?>";
             const DATATABLE_STATE_DURATION  = 0;
         </script>
-        <script type="text/javascript" src="<?= url ('') . mix('js/ixp-pack.js') ?>"></script>
-        <script>
-            // Focus on search input when opening dropdown
-            $( document ).on('select2:open', () => {
-                document.querySelector( '.select2-search__field' ).focus();
-            });
+        
+        <script type="module">
 
-            $( ".chzn-select" ).select2( { width: '100%', placeholder: function() {
-                $( this ).data( 'placeholder' );
-            }});
-
-            $( ".chzn-select-tag" ).select2( { width: '100%', tags: true, placeholder: function() {
-                $( this ).data( 'placeholder' );
-            }});
-
-            $( ".chzn-select-deselect" ).select2( { width: '100%', allowClear: true, placeholder: function() {
-                $( this ).data('placeholder' );
-            }});
-
-            $( ".chzn-select-deselect-tag" ).select2( { width: '100%', allowClear: true, tags: true, placeholder: function() {
-                $( this ).data( 'placeholder' );
-            }});
-
-            <?php if( $authCheck && $privs === User::AUTH_SUPERUSER ): ?>
-                $( "#menu-select-customer" ).select2({ width: '100%',placeholder: "Jump to <?= config( 'ixp_fe.lang.customer.one' ) ?>...", allowClear: true }).change( function(){
-                    document.location.href = '<?= url( "/admin/customer/overview" ) ?>/' + $( "#menu-select-customer" ).val();
+            $( document ).ready( function() {
+                // Focus on search input when opening dropdown
+                $( document ).on('select2:open', () => {
+                    document.querySelector( '.select2-search__field' ).focus();
                 });
 
-                $('#sidebarCollapse').click( function () {
-                    sidebar();
-                });
+                $( ".chzn-select" ).select2( { width: '100%', placeholder: function() {
+                    $( this ).data( 'placeholder' );
+                }});
 
-                $( '#navbar-ixp' ).click( function () {
-                    if ($('#side-navbar').hasClass( 'active' ) ) {
+                $( ".chzn-select-tag" ).select2( { width: '100%', tags: true, placeholder: function() {
+                    $( this ).data( 'placeholder' );
+                }});
+
+                $( ".chzn-select-deselect" ).select2( { width: '100%', allowClear: true, placeholder: function() {
+                    $( this ).data('placeholder' );
+                }});
+
+                $( ".chzn-select-deselect-tag" ).select2( { width: '100%', allowClear: true, tags: true, placeholder: function() {
+                    $( this ).data( 'placeholder' );
+                }});
+
+                <?php if( $authCheck && $privs === User::AUTH_SUPERUSER ): ?>
+                    $( "#menu-select-customer" ).select2({ width: '100%',placeholder: "Jump to <?= config( 'ixp_fe.lang.customer.one' ) ?>...", allowClear: true }).change( function(){
+                        document.location.href = '<?= url( "/admin/customer/overview" ) ?>/' + $( "#menu-select-customer" ).val();
+                    });
+
+                    $('#sidebarCollapse').click( function () {
                         sidebar();
-                    }
-                });
+                    });
 
-                $(document).on('keyup',function( evt ) {
-                    if (evt.keyCode === 27) {
+                    $( '#navbar-ixp' ).click( function () {
                         if ($('#side-navbar').hasClass( 'active' ) ) {
                             sidebar();
                         }
+                    });
+
+                    $(document).on('keyup',function( evt ) {
+                        if (evt.keyCode === 27) {
+                            if ($('#side-navbar').hasClass( 'active' ) ) {
+                                sidebar();
+                            }
+                        }
+                    });
+
+                    function sidebar(){
+                        if( $( '#navbar-ixp' ).attr( 'aria-expanded' ) == 'true' ) {
+                            $('#navbar-ixp').click();
+                        }
+
+                        $('#menu-icon').toggleClass('fa-bars').toggleClass('fa-times');
+                        $('#side-navbar').toggleClass('active');
+                        $('#slide-reveal-overlay').toggleClass('collapse');
+                        $('body').toggleClass('overflow-hidden');
                     }
-                });
+                <?php endif; ?>
 
-                function sidebar(){
-                    if( $( '#navbar-ixp' ).attr( 'aria-expanded' ) == 'true' ) {
-                        $('#navbar-ixp').click();
-                    }
-
-                    $('#menu-icon').toggleClass('fa-bars').toggleClass('fa-times');
-                    $('#side-navbar').toggleClass('active');
-                    $('#slide-reveal-overlay').toggleClass('collapse');
-                    $('body').toggleClass('overflow-hidden');
-                }
-            <?php endif; ?>
-
-            $('[data-toggle="tooltip"]').tooltip();
-
+                $('[data-toggle="tooltip"]').tooltip();
+            });
         </script>
 
         <?php $this->section('scripts') ?>

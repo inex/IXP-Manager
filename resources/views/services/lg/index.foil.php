@@ -28,7 +28,7 @@
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>
-    <script>
+    <script type="module">
         $(".table-router tbody tr").click(function() {
             window.document.location = $( this ).data( "href");
         });

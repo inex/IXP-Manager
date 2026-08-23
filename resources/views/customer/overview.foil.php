@@ -103,7 +103,7 @@
         </a>
 
         <a class="btn btn-white" href="<?= route( "customer@overview", [ 'cust' => $c->id ] ) ?>">
-            <span class="fa fa-refresh"></span>
+            <span class="fa fa-arrows-rotate"></span>
         </a>
 
         <a class="btn btn-white" href="<?= route( "customer@overview", [ 'cust' => $cidnext ] ) ?>">
@@ -378,7 +378,7 @@
     <?= $t->insert( 'customer/js/overview/contacts' ); ?>
     <?= $t->insert( 'customer/js/overview/notes', [ 'isSuperUser' => $isSuperUser ] ); ?>
 
-    <script>
+    <script type="module">
         $(document).ready( function() {
             $('.table-responsive-ixp').dataTable( {
                 responsive: true,

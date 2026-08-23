@@ -1,4 +1,4 @@
-<script>
+<script type="module">
     let vlan_protocols = {
         <?php foreach( $t->srcVlis as $svli ): /** @var \IXP\Models\VlanInterface $svli */ ?>
         "<?= $svli->id ?>": {

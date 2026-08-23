@@ -14,7 +14,7 @@
         </a>
 
         <a id="add-user" class="btn btn-white" href="<?= route('user@list') ?>">
-            <i class="fa fa-th-list"></i>
+            <i class="fa fa-table-list"></i>
         </a>
 
         <a id="add-user" class="btn btn-white" href="<?= route('user@edit' , [ "u" => $t->u[ 'id' ] ] ) ?>">

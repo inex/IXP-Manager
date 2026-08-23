@@ -22,7 +22,7 @@ use IXP\Models\PatchPanelPort;
 <?php $this->section( 'page-header-postamble' ) ?>
     <div class="btn-group btn-group-sm" role="group">
         <a class="btn btn-white" href="<?= route('patch-panel@list' ) ?>" title="Patch panel list">
-            <i class="fa fa-th-list"></i>
+            <i class="fa fa-table-list"></i>
         </a>
         <?php if( $t->pp ): ?>
             <a class="btn btn-white" href="<?= route('patch-panel@view', [ "pp" => $t->pp->id ] ) ?>" title="Patch panel list">

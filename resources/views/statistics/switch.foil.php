@@ -80,7 +80,7 @@
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>
-    <script>
+    <script type="module">
         let base_route   = "<?= route( 'statistics@switch' ) ?>";
         let sel_switchid = $("#form-select-switchid");
         let sel_category = $("#form-select-category");

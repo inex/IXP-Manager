@@ -153,7 +153,7 @@
                                         <?php endif; ?>
 
                                         <a class="dropdown-item btn-reset-ts" id="btn-reset-ts-<?= $router->id ?>" href="<?= route('router@resetUpdateTimestamps' , [ 'router' => $router->id ] )?>" title="Reset">
-                                            <i class="fa fa-clock-o"></i> Reset Update Timestamps
+                                            <i class="fa fa-clock"></i> Reset Update Timestamps
                                         </a>
 
                                     </div>

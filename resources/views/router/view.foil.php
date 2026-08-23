@@ -14,7 +14,7 @@
             Documentation
         </a>
         <a class="btn btn-white" href="<?= route('router@list' ) ?>" title="list">
-            <span class="fa fa-th-list"></span>
+            <span class="fa fa-table-list"></span>
         </a>
         <a class="btn btn-white" href="<?= route ('router@create' ) ?>" title="add">
             <span class="fa fa-plus"></span>

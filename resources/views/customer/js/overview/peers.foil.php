@@ -1,4 +1,4 @@
-<script>
+<script type="module">
     $( '.peers-table').DataTable({
         stateSave: true,
         stateDuration : DATATABLE_STATE_DURATION,

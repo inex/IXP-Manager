@@ -3,7 +3,7 @@
 
 <?php if( Auth::user()->isSuperUser() ):?>
 
-    <script>
+    <script type="module">
         let tableList = $( '#table-list' );
 
         tableList.show();
@@ -23,7 +23,7 @@
 
 <?php else: ?>
 
-    <script>
+    <script type="module">
         let tableList = $( '#table-list' );
 
         tableList.show();

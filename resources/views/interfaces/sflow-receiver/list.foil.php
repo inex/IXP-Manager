@@ -85,7 +85,7 @@
 <?php $this->section( 'scripts' ) ?>
     <?= $t->insert( 'interfaces/virtual/js/interface' ); ?>
 
-    <script>
+    <script type="module">
         /**
          * on click event to to delete a sflow receiver
          */

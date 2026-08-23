@@ -17,7 +17,7 @@
 <?php $this->section( 'page-header-postamble' ) ?>
     <div class="btn-group btn-group-sm" role="group">
         <a class="btn btn-white" href="<?= \Illuminate\Support\Facades\Request::url() ?>" title="Refresh">
-            <span class="fa fa-refresh"></span>
+            <span class="fa fa-arrows-rotate"></span>
         </a>
         <?php if( $t->pp ): ?>
             <a class="btn btn-white" href="<?= route('patch-panel@edit' , [ 'pp' => $pp->id ] ) ?>" title="Edit Patch Panel">

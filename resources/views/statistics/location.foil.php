@@ -82,7 +82,7 @@
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>
-    <script>
+    <script type="module">
         let base_route     = "<?= route( 'statistics@location' ) ?>";
         let sel_locationid = $("#form-select-locationid");
         let sel_category   = $("#form-select-category");

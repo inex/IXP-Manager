@@ -71,7 +71,7 @@
                         <td class="top icon">
                             <?php if( $t->dir ): ?>
                                 <a class="tw-text-black" href="<?= route('docstore-c-dir@list', [ 'cust' => $t->cust ,'dir' => $t->dir->parentDirectory ? $t->dir->parentDirectory->id : null] ) ?>">
-                                    <i class="fa fa-lg fa-caret-square-o-left tw-inline-block tw-w-full"></i>
+                                    <i class="fa fa-lg fa-square-caret-left tw-inline-block tw-w-full"></i>
                                 </a>
                             <?php endif; ?>
                         </td>
@@ -163,7 +163,7 @@
                     <tr class="">
                         <td class="<?= $i ? '' : 'tw-border-t-2' ?> icon"></td>
                         <td class="<?= $i ? '' : 'tw-border-t-2' ?> icon">
-                            <i class="fa fa-lg fa-file-o tw-inline-block tw-w-full"></i>
+                            <i class="fa fa-lg fa-file tw-inline-block tw-w-full"></i>
                         </td>
                         <td class="<?= $i ? '' : 'tw-border-t-2' ?> tw-px-4 tw-w-auto">
                             <a href="<?= route($file->isViewable() ? 'docstore-c-file@view' : 'docstore-c-file@download', [ 'cust' => $t->cust, 'file' => $file->id ] ) ?>"

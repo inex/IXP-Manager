@@ -15,7 +15,7 @@ Diagnostics for <a href="<?= route( 'customer@overview', $t->customer ) ?>"><?= 
 </div>
 <div class="btn-group btn-group-sm tw-ml-2" role="group">
     <a class="btn btn-white" href="<?= route('diagnostics@customer', [ "customer" => $t->customer ] ) ?>">
-        <span class="fa fa-repeat"></span>
+        <span class="fa fa-rotate-right"></span>
     </a>
 </div>
 <?php $this->append() ?>
@@ -40,7 +40,7 @@ Diagnostics for <a href="<?= route( 'customer@overview', $t->customer ) ?>"><?= 
                     <?= $t->ee( $drs->suite->name() ) ?>
 
                     <?php if( $drs->suite->link() ): ?>
-                        &nbsp;&nbsp;&nbsp;&nbsp;<a href="<?= $drs->suite->link() ?>"><i class="ml-2 fa fa-arrow-circle-o-right"></i></a>
+                        &nbsp;&nbsp;&nbsp;&nbsp;<a href="<?= $drs->suite->link() ?>"><i class="ml-2 fa fa-circle-arrow-right"></i></a>
                     <?php endif; ?>
                 </h1>
 

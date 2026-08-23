@@ -153,7 +153,7 @@
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>
-    <script>
+    <script type="module">
         let base_route     = "<?= url( '' ) ?>/statistics/core-bundle";
         let sel_corebundle = $("#form-select-corebundleid");
         let sel_category   = $("#form-select-category");

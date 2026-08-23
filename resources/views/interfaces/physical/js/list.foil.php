@@ -1,5 +1,5 @@
 <?= $t->insert( 'interfaces/virtual/js/interface' ); ?>
-<script>
+<script type="module">
     $(document).ready( function() {
         $( '#table' ).dataTable( {
             stateSave: true,

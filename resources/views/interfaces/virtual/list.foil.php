@@ -117,7 +117,7 @@
 <?php $this->section( 'scripts' ) ?>
     <?= $t->insert( 'interfaces/virtual/js/interface' ); ?>
 
-    <script>
+    <script type="module">
         /**
          * on click even allow to delete a Virtual Interface
          */

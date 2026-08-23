@@ -23,7 +23,7 @@ System Validation
         <span data-severity="debug" class="severity-toggle severity-disabled hover:tw-opacity-80 tw-cursor-pointer tw-inline-flex tw-items-center tw-rounded-md tw-ml-2 tw-px-2 tw-py-1 tw-text-xs tw-font-medium tw-bg-gray-50 tw-text-gray-600 tw-ring-gray-500/10 tw-ring-1 tw-ring-inset">Debug</span>
     </div>
     <a class="btn btn-white" href="<?= route('validation@start' ) ?>">
-        <span class="fa fa-repeat"></span>
+        <span class="fa fa-rotate-right"></span>
     </a>
 </div>
 <?php $this->append() ?>

@@ -103,7 +103,7 @@
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>
-    <script>
+    <script type="module">
         $( document ).ready( function() {
             $('#table-logs').dataTable( {
                 stateSave: true,

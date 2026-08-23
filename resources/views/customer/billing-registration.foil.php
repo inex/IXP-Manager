@@ -306,7 +306,7 @@
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>
-    <script>
+    <script type="module">
         $( document ).ready( function() {
             /**
              * set the address information to the billing address info

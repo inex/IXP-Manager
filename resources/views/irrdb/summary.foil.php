@@ -90,7 +90,7 @@
                                                     'cust' => $c,
                                                     'type' => str_starts_with( $type, 'prefix' ) ? 'prefix' : 'asn',
                                                     'protocol' => str_ends_with( $type, '4' ) ? '4' : '6',
-                                                ] ) ?>"> <i class="ml-2 fa fa-arrow-circle-o-right"></i></a>
+                                                ] ) ?>"> <i class="ml-2 fa fa-circle-arrow-right"></i></a>
 
                                             <?php endif; ?>
 

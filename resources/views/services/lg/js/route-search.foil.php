@@ -1,4 +1,4 @@
-<script>
+<script type="module">
     const dd_source   = $( '#source' );
     const btn_submit  = $( '#submit' );
 

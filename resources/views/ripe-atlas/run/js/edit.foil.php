@@ -1,4 +1,4 @@
-<script>
+<script type="module">
 
     /**
      * Check or uncheck all the checkboxes

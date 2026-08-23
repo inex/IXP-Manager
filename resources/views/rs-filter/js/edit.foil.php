@@ -1,4 +1,4 @@
-<script>
+<script type="module">
     /////////////////////////////////////////////////////////////////////////////////////
     // we'll need these handles to html elements in a few places:
     const dd_peer                   = $( "#peer_id" );

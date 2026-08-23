@@ -1,4 +1,4 @@
-<script>
+<script type="module">
     let fanoutEnabled = <?= $t->enableFanout ? 'true' : 'false' ?>;
 
     const cb_fanout         = $('#fanout');

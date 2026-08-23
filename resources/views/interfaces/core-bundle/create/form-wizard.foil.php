@@ -19,7 +19,7 @@
         </a>
 
         <a class="btn btn-white" href="<?= route( 'core-bundle@list' )?>" title="list">
-            <span class="fa fa-th-list"></span>
+            <span class="fa fa-table-list"></span>
         </a>
     </div>
 

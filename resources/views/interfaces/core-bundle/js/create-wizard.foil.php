@@ -1,5 +1,14 @@
 <script>
 
+    // Some global variable
+    let excludedSwitchPortSideA  = [];
+    let excludedSwitchPortSideB  = [];
+
+    let switchArray             = <?php echo json_encode( $t->switches ) ; ?>
+
+</script>
+<script type="module">
+
     //////////////////////////////////////////////////////////////////////////////////////
     // we'll need these handles to html elements in a few places:
 
@@ -18,11 +27,6 @@
     const div_l3_lag            = $( '#l3-lag-area' );
     const class_lag_area        = $( '.lag-area' );
 
-    // Some global variable
-    let excludedSwitchPortSideA  = [];
-    let excludedSwitchPortSideB  = [];
-
-    let switchArray             = <?php echo json_encode( $t->switches ) ; ?>
 
     $( document ).ready( function() {
         $( 'label.col-lg-2' ).removeClass( 'col-lg-2' );

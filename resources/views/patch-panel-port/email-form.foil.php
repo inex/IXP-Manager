@@ -92,7 +92,7 @@ $this->layout( 'layouts/ixpv4' );
 
 <?php $this->section( 'scripts' ) ?>
 
-    <script>
+    <script type="module">
 
         /**
          * allow the value to be display as a tag

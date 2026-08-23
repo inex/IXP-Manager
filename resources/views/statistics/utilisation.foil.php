@@ -132,7 +132,7 @@
                             <td>
                                 <div class="btn-group btn-group-sm">
                                     <a class="btn btn-white" href="<?= route( 'statistics@member-drilldown', [ 'type' => 'vi', 'typeid' => $td[ 'viid' ] ] ) ?>" title="Graphs">
-                                        <i class="fa fa-xs fa-area-chart"></i>
+                                        <i class="fa fa-xs fa-chart-area"></i>
                                     </a>
                                 </div>
                             </td>

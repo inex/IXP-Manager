@@ -12,7 +12,7 @@
 <?php $this->section( 'page-header-postamble' ) ?>
     <div class="btn-group btn-group-sm" role="group">
         <a class="btn btn-white" href="<?= route( 'physical-interface@list' ) ?>" title="list">
-            <span class="fa fa-th-list"></span>
+            <span class="fa fa-table-list"></span>
         </a>
         <a class="btn btn-white" href="<?= route('physical-interface@edit' , [ 'pi' => $pi->id ]) ?>" title="edit">
             <span class="fa fa-pencil"></span>

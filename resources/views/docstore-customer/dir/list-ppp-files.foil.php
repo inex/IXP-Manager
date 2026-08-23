@@ -42,7 +42,7 @@
                     <tr class="">
                         <td class="<?= $i ? '' : 'tw-border-t-2' ?> icon"></td>
                         <td class="<?= $i ? '' : 'tw-border-t-2' ?> icon">
-                            <i class="fa fa-lg fa-file-o tw-inline-block tw-w-full"></i>
+                            <i class="fa fa-lg fa-file tw-inline-block tw-w-full"></i>
                         </td>
                         <td class="<?= $i ? '' : 'tw-border-t-2' ?> tw-px-4 tw-w-auto">
                             <?php if( $t->history ): ?>
