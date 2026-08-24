@@ -92,7 +92,6 @@ class SwitchPortController extends EloquentController
             'viewFolderName'            => 'switch-port',
             'route_action'              => 'list',
             'route_prefix_page_title'   => 'switch',
-            'pagetitlepostamble'        => 'Switch Port',
             'listColumns'               => [
                 'switchname'  => [
                     'title'      => 'Switch',
