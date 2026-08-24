@@ -78,7 +78,7 @@ class ConsoleServerConnectionController extends EloquentController
             'model'             => ConsoleServerConnection::class,
             'pagetitle'         => 'Console Server Connections',
             'titleSingular'     => 'Console Server Connection',
-            'nameSingular'      => 'a console server connection',
+            'nameSingular'      => 'console server connection',
             'listOrderBy'       => [ 'c.name', 'csc.port' ],
             'listOrderByDir'    => 'ASC',
             'viewFolderName'    => 'console-server-connection',

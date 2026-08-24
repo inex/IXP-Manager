@@ -74,7 +74,7 @@ class IrrdbConfigController extends EloquentController
             'model'             => IrrdbConfig::class,
             'pagetitle'         => 'IRRDB Sources',
             'titleSingular'     => 'IRRDB Source',
-            'nameSingular'      => 'an IRRDB Sources',
+            'nameSingular'      => 'IRRDB Source',
             'listOrderBy'       => 'host',
             'listOrderByDir'    => 'ASC',
             'viewFolderName'    => 'irrdb-config',

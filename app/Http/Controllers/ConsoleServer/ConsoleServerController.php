@@ -75,7 +75,7 @@ class ConsoleServerController extends EloquentController
             'model'             => ConsoleServer::class,
             'pagetitle'         => 'Console Servers',
             'titleSingular'     => 'Console Server',
-            'nameSingular'      => 'a console server',
+            'nameSingular'      => 'console server',
             'listOrderBy'       => 'id',
             'listOrderByDir'    => 'ASC',
             'viewFolderName'    => 'console-server',
