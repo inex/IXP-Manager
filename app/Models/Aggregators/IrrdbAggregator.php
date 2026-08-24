@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace IXP\Models\Aggregators;
 
 /*
@@ -23,15 +25,10 @@ namespace IXP\Models\Aggregators;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\DB;
 use IXP\Models\Customer;
-use IXP\Models\IPv4Address;
-use IXP\Models\IPv6Address;
 use IXP\Models\IrrdbAsn;
 use IXP\Models\IrrdbPrefix;
-use IXP\Models\Vlan;
 
 final class IrrdbAggregator
 {
@@ -93,11 +90,11 @@ final class IrrdbAggregator
         }
 
         if( $resetCache ) {
-            Cache::store()->forget( 'irrdb:prefix:ipv' . $protocol . ':' . $cust->asMacro( $protocol ) );
+            Cache::store()->forget( self::getPrefixCacheKey( $cust, $protocol ) );
         }
 
         // Pull these out of the cache if possible, otherwise the database.
-        return Cache::store()->rememberForever( 'irrdb:prefix:ipv' . $protocol . ':' . $cust->asMacro( $protocol ), function() use ($cust,$protocol) {
+        return Cache::store()->rememberForever( self::getPrefixCacheKey( $cust, $protocol ), function() use ($cust,$protocol) {
             return IrrdbPrefix::select('prefix')
                 ->where( 'customer_id', $cust->id )
                 ->where('protocol', $protocol )
@@ -128,11 +125,11 @@ final class IrrdbAggregator
         }
 
         if( $resetCache ) {
-            Cache::store()->forget( 'irrdb:asn:ipv' . $protocol . ':' . $cust->asMacro( $protocol ) );
+            Cache::store()->forget( self::getAsnCacheKey( $cust, $protocol ) );
         }
 
         // Pull these out of the cache if possible, otherwise the database.
-        return Cache::store()->rememberForever( 'irrdb:asn:ipv' . $protocol . ':' . $cust->asMacro( $protocol ), function() use ($cust,$protocol) {
+        return Cache::store()->rememberForever( self::getAsnCacheKey( $cust, $protocol ), function() use ($cust,$protocol) {
             return IrrdbAsn::select('asn')
                 ->where( 'customer_id', $cust->id )
                 ->where('protocol', $protocol )
@@ -141,5 +138,37 @@ final class IrrdbAggregator
                 ->pluck('asn')
                 ->toArray();
         });
+    }
+
+    /**
+     * Delete customer ASNs from cahce
+     */
+    public static function deleteCustomerAsnsCache( Customer $cust, int $protocol ): void
+    {
+        Cache::store()->forget( self::getAsnCacheKey( $cust, $protocol ) );
+    }
+
+    /**
+     * Delete customer prefixes from cache
+     */
+    public static function deleteCustomerPrefixCache( Customer $cust, int $protocol ): void
+    {
+        Cache::store()->forget( self::getPrefixCacheKey( $cust, $protocol ) );
+    }
+
+    /**
+     * Defines how the customer ASN cache key is generated
+     */
+    public static function getAsnCacheKey( Customer $cust, int $protocol ): string
+    {
+        return 'irrdb:asn:ipv' . $protocol . ':' . $cust->asMacro( $protocol );
+    }
+
+    /**
+     * Defines how the customer prefix cache key is generated
+     */
+    public static function getPrefixCacheKey( Customer $cust, int $protocol ): string
+    {
+        return 'irrdb:prefix:ipv' . $protocol . ':' . $cust->asMacro( $protocol );
     }
 }

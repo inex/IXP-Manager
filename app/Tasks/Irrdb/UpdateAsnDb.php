@@ -24,7 +24,7 @@
 declare(strict_types=1);
 namespace IXP\Tasks\Irrdb;
 
-use Illuminate\Support\Facades\Cache;
+use IXP\Models\Aggregators\IrrdbAggregator;
 use IXP\Models\IrrdbAsn;
 use Log;
 
@@ -68,7 +68,7 @@ class UpdateAsnDb extends UpdateDb
                 // Delete any pre-existing entries just in case this has changed recently:
                 $this->startTimer();
 
-                Cache::store()->forget( 'irrdb:asn:ipv' . $protocol . ':' . $this->customer()->asMacro( $protocol ) );
+                IrrdbAggregator::deleteCustomerAsnsCache( $this->customer(), $protocol );
 
                 IrrdbAsn::whereCustomerId( $this->customer()->id )
                     ->whereProtocol( $protocol )->delete();

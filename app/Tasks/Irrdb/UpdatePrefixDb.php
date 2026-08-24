@@ -25,6 +25,7 @@ namespace IXP\Tasks\Irrdb;
  */
 
 use Illuminate\Support\Facades\Cache;
+use IXP\Models\Aggregators\IrrdbAggregator;
 use Log;
 
 use IXP\Models\IrrdbPrefix;
@@ -74,7 +75,7 @@ class UpdatePrefixDb extends UpdateDb
                 // Delete any pre-existing entries just in case this has changed recently:
                 $this->startTimer();
 
-                Cache::store()->forget( 'irrdb:prefix:ipv' . $protocol . ':' . $this->customer()->asMacro( $protocol ) );
+                IrrdbAggregator::deleteCustomerPrefixCache( $this->customer(), $protocol );
 
                 IrrdbPrefix::whereCustomerId( $this->customer()->id )
                     ->whereProtocol( $protocol )->delete();
