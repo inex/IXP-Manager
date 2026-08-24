@@ -79,7 +79,7 @@ class ProbesController extends Eloquent2Frontend
             'model'             => AtlasProbe::class,
             'pagetitle'         => 'Ripe Atlas :: Probes',
             'titleSingular'     => 'Probe',
-            'nameSingular'      => 'a probe',
+            'nameSingular'      => 'probe',
             'listOrderBy'       => 'updated_at',
             'listOrderByDir'    => 'ASC',
             'viewFolderName'    => 'atlas-probes',

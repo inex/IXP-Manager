@@ -72,7 +72,7 @@ class LoginHistoryController extends EloquentController
             'model'             => UserLoginHistory::class,
             'pagetitle'         => 'Login History',
             'titleSingular'     => 'Login History',
-            'nameSingular'      => 'a Login History',
+            'nameSingular'      => 'login history',
             'listOrderBy'       => 'last_login_date',
             'listOrderByDir'    => 'DESC',
             'readonly'          => 'true',

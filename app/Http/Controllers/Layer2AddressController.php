@@ -90,7 +90,7 @@ class Layer2AddressController extends EloquentController
             'model'             => Layer2Address::class,
             'pagetitle'         => 'Configured MAC Addresses',
             'titleSingular'     => 'Configured MAC Address',
-            'nameSingular'      => 'a configured MAC address',
+            'nameSingular'      => 'configured MAC address',
             'listOrderBy'       => 'abbreviatedName',
             'listOrderByDir'    => 'ASC',
             'viewFolderName'    => 'layer2-address',
