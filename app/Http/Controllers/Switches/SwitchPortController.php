@@ -86,7 +86,7 @@ class SwitchPortController extends EloquentController
             'model'                     => SwitchPort::class,
             'pagetitle'                 => 'Switch Ports',
             'titleSingular'             => 'Switch Port',
-            'nameSingular'              => 'a switch port',
+            'nameSingular'              => 'switch port',
             'listOrderBy'               => 'name',
             'listOrderByDir'            => 'ASC',
             'viewFolderName'            => 'switch-port',
