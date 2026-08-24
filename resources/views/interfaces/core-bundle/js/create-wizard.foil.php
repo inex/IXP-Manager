@@ -1,7 +1,4 @@
 <script type="module">
-    window.excludedSwitchPortSideA = window.excludedSwitchPortSideA || [];
-    window.excludedSwitchPortSideB = window.excludedSwitchPortSideB || [];
-
     const switchArray = <?php echo json_encode( $t->switches ); ?>;
 
     //////////////////////////////////////////////////////////////////////////////////////
@@ -21,7 +18,6 @@
     const div_message_cl        = $( "#message-cl" );
     const div_l3_lag            = $( '#l3-lag-area' );
     const class_lag_area        = $( '.lag-area' );
-
 
     $( document ).ready( function() {
         $( 'label.col-lg-2' ).removeClass( 'col-lg-2' );
@@ -120,13 +116,6 @@
 
         setDropDownSwitchSideX( sside );
 
-        // Reset the list of excluded port depending on the side
-        if( sside === 'a' ) {
-            window.excludedSwitchPortSideA = [];
-        } else {
-            window.excludedSwitchPortSideB = [];
-        }
-
         $( `#hidden-switch-${sside}` ).val( $( this ).val() );
     });
 
@@ -141,9 +130,6 @@
 
         // set the switch port dropdown value the hidden input
         hidden_sp.val( $( this ).val() );
-
-        // update the list of switch port that have already been select in order to exclude them
-        excludedSwitchPort( sside );
     });
 
     /**

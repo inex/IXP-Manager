@@ -1,7 +1,4 @@
 <script type="module">
-    window.excludedSwitchPortSideA = window.excludedSwitchPortSideA || [];
-    window.excludedSwitchPortSideB = window.excludedSwitchPortSideB || [];
-
     /**
      * set data to the switch port dropdown when we select a switcher
      */
@@ -14,18 +11,19 @@
             let dd_switch_port = core_link_form.find( `.sp-${ sside }` );
             dd_switch_port.html( `<option value="">Loading please wait</option>\n` ).trigger( 'change.select2' );
 
-            if( !edit ) {
-                excludedSwitchPort( sside );
-            }
-
             if( switchId != null && switchId !== '' ) {
                 let url = "<?= url( '/admin/api/v4/switch' )?>/" + switchId + "/ports";
+
+                // query for switch ports used on this side so they can be excluded from results
+                let selectedSps = $(`[id=sp-${sside}] :selected`).map(function () {
+                    return this.value;
+                }).get().filter(function (v) { return v !== ''; });
 
                 datas = {
                     types : [ <?= \IXP\Models\SwitchPort::TYPE_UNSET ?>, <?= \IXP\Models\SwitchPort::TYPE_CORE ?> ],
                     notAssignToPI: true,
                     piNull: true,
-                    spIdsExcluded : !edit ? (window.excludedSwitchPortSideA || []).concat( window.excludedSwitchPortSideB || [] ) : []
+                    spIdsExcluded : !edit ? selectedSps : []
                 };
 
                 $.ajax( url , {
@@ -56,22 +54,6 @@
                 });
             }
         }
-    }
-
-    /**
-     * Insert in array all the switch port selected from the switch ports dropdown for each side (A/B)
-     * in order the exclude them from the new switch port dropdown that could be added
-     */
-    function excludedSwitchPort( sside ) {
-        $( "[id|='sp'] :selected" ).each( function() {
-            if( this.value !== '' ) {
-                if( sside === 'a' ) {
-                    window.excludedSwitchPortSideA.push( this.value );
-                } else {
-                    window.excludedSwitchPortSideB.push( this.value );
-                }
-            }
-        });
     }
 
     /**
@@ -121,7 +103,6 @@
 
     // Expose helpers globally for core bundle wizard scripts
     window.setSwitchPort         = setSwitchPort;
-    window.excludedSwitchPort    = excludedSwitchPort;
     window.selectNextSwitchPort  = selectNextSwitchPort;
     window.checkSubnet           = checkSubnet;
     window.validSubnet           = validSubnet;
