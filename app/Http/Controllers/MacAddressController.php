@@ -69,7 +69,7 @@ class MacAddressController extends EloquentController
             'model'             => MacAddress::class,
             'pagetitle'         => 'Discovered MAC Addresses',
             'titleSingular'     => 'MAC Address',
-            'nameSingular'      => 'a MAC address',
+            'nameSingular'      => 'MAC address',
             'listOrderBy'       => 'abbreviatedName',
             'listOrderByDir'    => 'ASC',
             'viewFolderName'    => 'mac-address',

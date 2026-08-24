@@ -75,7 +75,7 @@ class ResultController extends Eloquent2Frontend
             'model'             => AtlasResult::class,
             'pagetitle'         => 'Ripe Atlas :: Results',
             'titleSingular'     => 'Result',
-            'nameSingular'      => 'an atlas result',
+            'nameSingular'      => 'atlas result',
             'listOrderBy'       => 'id',
             'listOrderByDir'    => 'DESC',
             'viewFolderName'    => 'atlas-result',
