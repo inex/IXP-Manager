@@ -86,13 +86,14 @@
     <?= $t->insert( 'interfaces/virtual/js/interface' ); ?>
 
     <script type="module">
-        /**
-         * on click event to to delete a sflow receiver
-         */
-        $( ".btn-delete" ).click( function(e) {
-            e.preventDefault();
-            deletePopup( $( this ), 'sflr' );
+        $(document).ready(function() {
+            /**
+             * on click event to delete a sflow receiver
+             */
+            $( ".btn-delete" ).click( function(e) {
+                e.preventDefault();
+                deletePopup( $( this ), 'sflr' );
+            });
         });
     </script>
-
 <?php $this->append() ?>

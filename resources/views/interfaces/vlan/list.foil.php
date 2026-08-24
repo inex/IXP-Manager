@@ -86,13 +86,14 @@
     <?= $t->insert( 'interfaces/virtual/js/interface' ); ?>
 
     <script type="module">
-        /**
-         * on click even allow to delete a Virtual Interface
-         */
-        $( ".btn-delete" ).click( function(e) {
-            e.preventDefault();
-            deletePopup( $( this ), 'vli');
+        $(document).ready(function() {
+            /**
+             * on click event to delete a VLAN Interface
+             */
+            $( ".btn-delete" ).click( function(e) {
+                e.preventDefault();
+                deletePopup( $( this ), 'vli');
+            });
         });
-
     </script>
 <?php $this->append() ?>

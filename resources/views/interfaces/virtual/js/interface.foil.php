@@ -127,4 +127,7 @@
             });
         }
     }
+
+    // Expose deletePopup globally so list and edit views can invoke it
+    window.deletePopup = deletePopup;
 </script>

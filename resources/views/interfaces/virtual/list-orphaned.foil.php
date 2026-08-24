@@ -136,12 +136,14 @@
     <?= $t->insert( 'interfaces/virtual/js/interface' ); ?>
 
     <script type="module">
-        /**
-         * on click even allow to delete a Virtual Interface
-         */
-        $( '.btn-delete' ).click( function( e ){
-            e.preventDefault();
-            deletePopup( $( this ), 'vi');
+        $(document).ready(function() {
+            /**
+             * on click event to delete a Virtual Interface
+             */
+            $( '.btn-delete' ).click( function( e ){
+                e.preventDefault();
+                deletePopup( $( this ), 'vi');
+            });
         });
     </script>
 <?php $this->append() ?>

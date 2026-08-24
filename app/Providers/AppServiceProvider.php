@@ -69,10 +69,6 @@ class AppServiceProvider extends ServiceProvider
         DocstoreCustomerDirectory::observe( DocstoreCustomerDirectoryObserver::class );
 
         Paginator::useBootstrap();
-
-        Vite::useScriptTagAttributes( fn () => [
-            'type' => app( \Illuminate\Foundation\Vite::class )->isRunningHot() ? 'module' : false,
-        ] );
     }
 
     /**

@@ -1,42 +1,40 @@
 <script type="module">
+    $(document).ready(function() {
+        //////////////////////////////////////////////////////////////////////////////////////
+        // Element handles:
+        const cb_ipv6_enabled     = $( '#ipv6enabled' );
+        const cb_ipv4_enabled     = $( '#ipv4enabled' );
+        const cb_irrdbfilter      = $( '#irrdbfilter' );
+        const dd_ipv6             = $( "#ipv6address" );
+        const dd_ipv4             = $( "#ipv4address" );
+        const dd_vlan             = $( "#vlanid" );
+        const div_ipv6            = $( "#ipv6-area" );
+        const div_ipv4            = $( "#ipv4-area" );
+        const div_rsmorespecifics = $( "#div-rsmorespecifics" );
 
-    //////////////////////////////////////////////////////////////////////////////////////
-    // we'll need these handles to html elements in a few places:
+        // Array of AJAX requests so we can execute other code when() they complete
+        window.ajaxRequests = window.ajaxRequests || [];
 
-    const cb_ipv6_enabled     = $( '#ipv6enabled' );
-    const cb_ipv4_enabled     = $( '#ipv4enabled' );
-    const cb_irrdbfilter      = $( '#irrdbfilter' );
-    const dd_ipv6             = $( "#ipv6address" );
-    const dd_ipv4             = $( "#ipv4address" );
-    const dd_vlan             = $( "#vlanid" );
-    const div_ipv6            = $( "#ipv6-area" );
-    const div_ipv4            = $( "#ipv4-area" );
-    const div_rsmorespecifics = $( "#div-rsmorespecifics" );
+        //////////////////////////////////////////////////////////////////////////////////////
+        // Action bindings:
+        dd_ipv6.on( 'change', usedAcrossVlans );
+        dd_ipv4.on( 'change', usedAcrossVlans );
 
-    // array of AJAX requests for we can execute other code when() then complete
-    let ajaxRequests = [];
+        cb_ipv6_enabled.change( () => { cb_ipv6_enabled.is(":checked") ? div_ipv6.slideDown()            : div_ipv6.slideUp();            } );
+        cb_ipv4_enabled.change( () => { cb_ipv4_enabled.is(":checked") ? div_ipv4.slideDown()            : div_ipv4.slideUp();            } );
+        cb_irrdbfilter.change(  () => { cb_irrdbfilter.is(":checked")  ? div_rsmorespecifics.slideDown() : div_rsmorespecifics.slideUp(); } );
 
-    //////////////////////////////////////////////////////////////////////////////////////
-    // action bindings:
+        dd_vlan.on( 'change', updateIpAddresses );
 
-    dd_ipv6.on( 'change', usedAcrossVlans );
-    dd_ipv4.on( 'change', usedAcrossVlans );
+        $( ".glyphicon-generator-ipv6" ).parent().click( updateMD5 );
+        $( ".glyphicon-generator-ipv4" ).parent().click( updateMD5 );
 
-    cb_ipv6_enabled.change( () => { cb_ipv6_enabled.is(":checked") ? div_ipv6.slideDown()            : div_ipv6.slideUp()            } );
-    cb_ipv4_enabled.change( () => { cb_ipv4_enabled.is(":checked") ? div_ipv4.slideDown()            : div_ipv4.slideUp()            } );
-    cb_irrdbfilter.change(  () => { cb_irrdbfilter.is(":checked")  ? div_rsmorespecifics.slideDown() : div_rsmorespecifics.slideUp() } );
+        //////////////////////////////////////////////////////////////////////////////////////
+        // Initial states:
+        if( dd_vlan.val() !== null && dd_vlan.val() !== '' ) {
+            updateIpAddresses();
+        }
 
-    dd_vlan.on( 'change', updateIpAddresses );
-
-    $( ".glyphicon-generator-ipv6" ).parent().click( updateMD5 );
-    $( ".glyphicon-generator-ipv4" ).parent().click( updateMD5 );
-
-    //////////////////////////////////////////////////////////////////////////////////////
-    // initial states:
-
-    // populate IP addresses if VLAN is already set
-    if( dd_vlan.val() !== null ) { updateIpAddresses() }
-
-    cb_irrdbfilter.trigger( 'change' );
-
+        cb_irrdbfilter.trigger( 'change' );
+    });
 </script>

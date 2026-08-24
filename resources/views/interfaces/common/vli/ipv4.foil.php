@@ -29,7 +29,7 @@
             ->append( '<button class="btn-white btn glyphicon-generator glyphicon-generator-ipv4" id="generator-ipv4" type="button"><i class="fa fa-arrows-rotate"> </i></button>' )
             ->blockHelp( 'MD5 secret for route server / collector / AS112 BGP sessions. If supported by your browser, it can be generated in a cryptographically secure manner by clicking the <em>refresh</em> button.' );
         ?>
-
+        
         <?php if( config('ixp_fe.vlaninterfaces.max_prefix_enabled') || ( $t->vli && $t->vli->ipv4maxbgpprefix ) ): ?>
             <?= Former::number( 'ipv4maxbgpprefix' )
                     ->label( 'Max BGP Prefixes' )

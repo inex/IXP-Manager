@@ -241,8 +241,8 @@ $this->layout( 'layouts/ixpv4' );
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>
+    <?= $t->insert( 'interfaces/common/js/interface-functions' ); ?>
     <?= $t->insert( 'interfaces/common/js/pi-form-logic' ); ?>
     <?= $t->insert( 'interfaces/common/js/vli-form-logic' ); ?>
     <?= $t->insert( 'interfaces/virtual/js/wizard' ); ?>
-    <?= $t->insert( 'interfaces/common/js/interface-functions' ); ?>
 <?php $this->append() ?>

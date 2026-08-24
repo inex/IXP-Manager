@@ -1,10 +1,14 @@
-<script>
+<script type="module">
 
 /**
- * Takes the currently selected VLAN from the dd_vlan dropdown and calls an
+ * Takes the currently selected VLAN from the #vlanid dropdown and calls an
  * AJAX API endpoint to get the available IP addresses.
  */
 function updateIpAddresses() {
+    const dd_vlan = $( "#vlanid" );
+    const dd_ipv6 = $( "#ipv6address" );
+    const dd_ipv4 = $( "#ipv4address" );
+
     if( dd_vlan.val() ) {
 
         // This function may be called on a form submission error where IPs are already chosen.
@@ -12,8 +16,8 @@ function updateIpAddresses() {
         let selectedIPv6 = $( "#original-ipv6address" ).val();
         let selectedIPv4 = $( "#original-ipv4address" ).val();
 
-        $( dd_ipv6 ).html( `<option value="">Loading, please wait...</option>` ).trigger('change.select2');
-        $( dd_ipv4 ).html( `<option value="">Loading, please wait...</option>` ).trigger('change.select2');
+        dd_ipv6.html( `<option value="">Loading, please wait...</option>` ).trigger('change.select2');
+        dd_ipv4.html( `<option value="">Loading, please wait...</option>` ).trigger('change.select2');
 
         // Hide and clear the 'already used in another VLAN' warning (if it is displayed):
         $( '.ip-is-used-alert' ).html( '' ).hide();
@@ -21,7 +25,8 @@ function updateIpAddresses() {
         let vlanid = dd_vlan.val();
         let url    = "<?= url( '/admin/api/v4/vlan' )?>/" + vlanid + "/ip-addresses";
 
-        ajaxRequests.push( $.ajax( url )
+        window.ajaxRequests = window.ajaxRequests || [];
+        window.ajaxRequests.push( $.ajax( url )
             .done( function( data ) {
                 // IPv6
                 let options = `<option value="">Choose an IPv6 Address</option>`;
@@ -74,23 +79,14 @@ function updateIpAddresses() {
 /**
  * Function to 'smartly' update the MD5 input fields with a cryptographically secure
  * PRNG'd string.
- *
- * The excess logic allows for:
- *
- * 1. if both v4 and v6 md5 are empty, populate the selected one
- * 2. if the selected one is empty but the other is not, copy the value
- * 3. repeated clicks cycle values
- * 4. after repeated clicks, clicking the other will copy the value
- *
- * Such it and see - I think it makes sense ;-)   (barryo)
  */
 function updateMD5( e ) {
     const element         = $(this).children();
     const in_ipv6_md5     = $( "#ipv6bgpmd5secret" );
     const in_ipv4_md5     = $( "#ipv4bgpmd5secret" );
 
-    const v6                = in_ipv6_md5.val().trim();
-    const v4                = in_ipv4_md5.val().trim();
+    const v6              = in_ipv6_md5.val().trim();
+    const v4              = in_ipv4_md5.val().trim();
 
     const target  = element.hasClass( 'glyphicon-generator-ipv6' ) || element.find( '.glyphicon-generator-ipv6' ).length !== 0 ? in_ipv6_md5 : in_ipv4_md5;
     const other   = target === in_ipv6_md5 ? in_ipv4_md5 : in_ipv6_md5;
@@ -122,7 +118,6 @@ function updateMD5( e ) {
     }
 }
 
-
 /**
  * Fn to perform an API query to see if a select IP address is in use across
  * any VLAN and, if it is, add a warning message.
@@ -136,10 +131,14 @@ function usedAcrossVlans() {
     if( ipAddress ) {
         let html = "<ul>";
 
-        ajaxRequests.push( $.ajax({
+        window.ajaxRequests = window.ajaxRequests || [];
+        window.ajaxRequests.push( $.ajax({
                 url: "<?= route( 'vlan@used-across-vlans' )?>",
                 method: "POST",
-                data: { ip: ipAddress }
+                data: {
+                    ip: ipAddress,
+                    _token: "<?= csrf_token() ?>"
+                }
             })
             .done( function( data ) {
                 $.each( data, function( key, vli ){
@@ -149,12 +148,11 @@ function usedAcrossVlans() {
                 });
             })
             .fail( function() {
-                html += "<li>Error running ajax query for " + url + "</li>";
-                throw new Error( "Error running ajax query for " + url );
+                html += "<li>Error running ajax query for " + ipAddress + "</li>";
+                throw new Error( "Error running ajax query" );
             })
             .always( function() {
                 if( html !== "<ul>" ) {
-                    console.log( html );
                     $('#alert-' + inputName ).html( html + '</ul>' ).show();
                 }
             })
@@ -171,18 +169,18 @@ function updateSwitchPort( e ) {
     let sw = $( e.target );
 
     if( $( this ).attr( 'data-value' ) === "fanout" ) {
-        dd_sp     = $( "#switch-port-fanout" );
-        arrayType = [ <?= \IXP\Models\SwitchPort::TYPE_UNSET ?>, <?= \IXP\Models\SwitchPort::TYPE_FANOUT ?> ];
+        dd_sp        = $( "#switch-port-fanout" );
+        arrayType    = [ <?= \IXP\Models\SwitchPort::TYPE_UNSET ?>, <?= \IXP\Models\SwitchPort::TYPE_FANOUT ?> ];
         selectedPort = $( "#original-switch-port-fanout" ).val();
     } else {
-        dd_sp     = $( "#switchportid" );
-        arrayType = [ <?= \IXP\Models\SwitchPort::TYPE_UNSET ?>, <?= \IXP\Models\SwitchPort::TYPE_RESELLER ?>, <?= \IXP\Models\SwitchPort::TYPE_PEERING ?>, <?= \IXP\Models\SwitchPort::TYPE_CORE ?> ];
+        dd_sp        = $( "#switchportid" );
+        arrayType    = [ <?= \IXP\Models\SwitchPort::TYPE_UNSET ?>, <?= \IXP\Models\SwitchPort::TYPE_RESELLER ?>, <?= \IXP\Models\SwitchPort::TYPE_PEERING ?>, <?= \IXP\Models\SwitchPort::TYPE_CORE ?> ];
         selectedPort = $( "#original-switch-port" ).val();
     }
 
     let url = "<?= url( '/admin/api/v4/switch' )?>/" + sw.val() + "/ports";
 
-    datas = {
+    let datas = {
         types : arrayType,
         notAssignToPI: 1,
         piNull: 0,
@@ -221,4 +219,10 @@ function updateSwitchPort( e ) {
         dd_sp.trigger('change.select2');
     });
 }
+
+// Expose functions globally so other ES module scripts can call them
+window.updateIpAddresses = updateIpAddresses;
+window.updateMD5         = updateMD5;
+window.usedAcrossVlans   = usedAcrossVlans;
+window.updateSwitchPort  = updateSwitchPort;
 </script>

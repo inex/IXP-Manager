@@ -1,13 +1,8 @@
-<script>
-
-    // Some global variable
-    let excludedSwitchPortSideA  = [];
-    let excludedSwitchPortSideB  = [];
-
-    let switchArray             = <?php echo json_encode( $t->switches ) ; ?>
-
-</script>
 <script type="module">
+    window.excludedSwitchPortSideA = window.excludedSwitchPortSideA || [];
+    window.excludedSwitchPortSideB = window.excludedSwitchPortSideB || [];
+
+    const switchArray = <?php echo json_encode( $t->switches ); ?>;
 
     //////////////////////////////////////////////////////////////////////////////////////
     // we'll need these handles to html elements in a few places:
@@ -127,9 +122,9 @@
 
         // Reset the list of excluded port depending on the side
         if( sside === 'a' ) {
-            excludedSwitchPortSideA = []
+            window.excludedSwitchPortSideA = [];
         } else {
-            excludedSwitchPortSideB = []
+            window.excludedSwitchPortSideB = [];
         }
 
         $( `#hidden-switch-${sside}` ).val( $( this ).val() );
