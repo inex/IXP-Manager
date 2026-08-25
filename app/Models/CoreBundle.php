@@ -347,19 +347,12 @@ class CoreBundle extends Model
     {
         try {
             DB::beginTransaction();
-            $vis = [];
+
+            // Take virtual interfaces before we delete relations in between
+            $vis = $this->virtualInterfaces();
+
             foreach( $this->corelinks as $cl ){
-                $cl->delete();
-                foreach( $cl->coreInterfaces() as $ci ){
-                    /** @var CoreInterface  $ci */
-                    $pi = $ci->physicalInterface;
-                    $pi->switchPort->update( [ 'type' => SwitchPort::TYPE_UNSET ] );
-
-                    $vis[] = $pi->virtualInterface;
-
-                    $ci->delete();
-                    $pi->delete();
-                }
+                $cl->deleteObject();
             }
 
             foreach( $vis as $vi ){

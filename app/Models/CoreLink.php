@@ -105,6 +105,7 @@ class CoreLink extends Model
     {
         return [ $this->coreInterfaceSideA, $this->coreInterfaceSideB ];
     }
+
     /**
      * Get the corebundle that own the corelink
      *
@@ -122,10 +123,25 @@ class CoreLink extends Model
      *
      * @return Builder
      */
-
     public function scopeActive( Builder $query ): Builder
     {
         return $query->where( 'enabled' , true );
+    }
+
+    /**
+     * Deletes the core link and associated physical and core interfaces
+     */
+    public function deleteObject(): void
+    {
+        $this->delete();
+        foreach( $this->coreInterfaces() as $ci ){
+            /** @var CoreInterface  $ci */
+            $pi = $ci->physicalInterface;
+            $pi->switchPort->update( [ 'type' => SwitchPort::TYPE_UNSET ] );
+
+            $ci->delete();
+            $pi->delete();
+        }
     }
 
     /**
