@@ -67,8 +67,10 @@ class CoreLinkController extends Common
      */
     public function store( StoreCoreLink $r, CoreBundle $cb ): RedirectResponse
     {
-        // Creating all the elements linked to the new core link (core interfaces, physical interfaces)
-        $this->buildCorelink( $cb, $r, $cb->virtualInterfaces(), true );
+        DB::transaction( function () use ( $cb, $r ) {
+            // Creating all the elements linked to the new core link (core interfaces, physical interfaces)
+            $this->buildCorelink( $cb, $r, $cb->virtualInterfaces(), true );
+        } );
 
         Log::notice( $r->user()->username . ' created a core link for the core bundle with (id: ' . $cb->id . ')' );
         AlertContainer::push( 'Core link created.', Alert::SUCCESS );
@@ -85,15 +87,17 @@ class CoreLinkController extends Common
      */
     public function update( Request $r, CoreBundle $cb ): RedirectResponse
     {
-        foreach( $cb->corelinks as $cl ){
-            $cl->enabled = $r->input( 'enabled-' . $cl->id ) ?? false;
+        DB::transaction( function () use ( $cb, $r ) {
+            foreach( $cb->corelinks as $cl ) {
+                $cl->enabled = $r->input( 'enabled-' . $cl->id ) ?? false;
 
-            if( $cb->typeECMP() ){
-                $cl->bfd            =  $r->input( 'bfd-' . $cl->id ) ?? false;
-                $cl->ipv4_subnet    = $r->input( 'subnet-' . $cl->id );
+                if( $cb->typeECMP() ) {
+                    $cl->bfd = $r->input( 'bfd-' . $cl->id ) ?? false;
+                    $cl->ipv4_subnet = $r->input( 'subnet-' . $cl->id );
+                }
+                $cl->save();
             }
-            $cl->save();
-        }
+        } );
 
         Log::notice( $r->user()->username . ' updated the core links from the core bundle with (id: ' . $cb->id . ')' );
         AlertContainer::push( 'Core links updated.', Alert::SUCCESS );
