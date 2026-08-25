@@ -24,6 +24,7 @@ namespace IXP\Http\Controllers\Interfaces;
  */
 use Exception, Former, Log, Redirect;
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\{
     RedirectResponse,
     Request
@@ -220,7 +221,9 @@ class CoreBundleController extends Common
      */
     public function delete( Request $r, CoreBundle $cb ): RedirectResponse
     {
-        $cb->deleteObject();
+        DB::transaction( function() use ( $cb ) {
+            $cb->deleteObject();
+        } );
         Log::notice( $r->user()->username." deleted a core bundle (id: " . $cb->id . ')' );
         AlertContainer::push( 'Core bundle deleted.', Alert::SUCCESS );
         return redirect( route( "core-bundle@list" ) );
