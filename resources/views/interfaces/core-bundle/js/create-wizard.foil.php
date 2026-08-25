@@ -19,9 +19,6 @@
     const class_lag_area        = $( '.lag-area' );
 
     // Some global variable
-    let excludedSwitchPortSideA  = [];
-    let excludedSwitchPortSideB  = [];
-
     let switchArray             = <?php echo json_encode( $t->switches ) ; ?>
 
     $( document ).ready( function() {
@@ -121,13 +118,6 @@
 
         setDropDownSwitchSideX( sside );
 
-        // Reset the list of excluded port depending on the side
-        if( sside === 'a' ) {
-            excludedSwitchPortSideA = []
-        } else {
-            excludedSwitchPortSideB = []
-        }
-
         $( `#hidden-switch-${sside}` ).val( $( this ).val() );
     });
 
@@ -142,9 +132,6 @@
 
         // set the switch port dropdown value the hidden input
         hidden_sp.val( $( this ).val() );
-
-        // update the list of switch port that have already been select in order to exclude them
-        excludedSwitchPort( sside );
     });
 
     /**

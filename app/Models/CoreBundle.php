@@ -316,7 +316,7 @@ class CoreBundle extends Model
     }
 
 
-        /**
+    /**
      * Check if the switch is the same for the Physical interfaces of the core links associated to the core bundle
      *
      * @param bool $sideA if true get the side A if false Side B
