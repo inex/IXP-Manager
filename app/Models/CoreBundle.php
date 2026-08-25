@@ -352,9 +352,13 @@ class CoreBundle extends Model
                 $cl->delete();
                 foreach( $cl->coreInterfaces() as $ci ){
                     /** @var CoreInterface  $ci */
+                    $pi = $ci->physicalInterface;
+                    $pi->switchPort->update( [ 'type' => SwitchPort::TYPE_UNSET ] );
+
+                    $vis[] = $pi->virtualInterface;
+
                     $ci->delete();
-                    $vis[] = $ci->physicalInterface->virtualInterface;
-                    $ci->physicalInterface->delete();
+                    $pi->delete();
                 }
             }
 
