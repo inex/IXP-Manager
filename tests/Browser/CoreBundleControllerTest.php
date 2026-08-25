@@ -521,7 +521,10 @@ class CoreBundleControllerTest extends DuskTestCase
                 $this->assertEquals( 3, $cb->corelinks->count() );
 
                 /** @var $cl3 CoreLink */
+                /** @var SwitchPort $cl3SwitchPort */
                 $this->assertInstanceOf( CoreLink::class, $cl3 = $cb->corelinks->last() );
+                $cl3SwitchPort = $cl3->coreInterfaceSideA->physicalInterface->switchPort;
+
                 $this->assertEquals( $coreBundle[ 'switch-port-a-3-name' ], $cl3->coreInterfaceSideA->physicalInterface->switchPort->name );
                 $this->assertEquals( $coreBundle[ 'switch-port-b-3-name' ], $cl3->coreInterfaceSideB->physicalInterface->switchPort->name );
                 $this->assertEquals( $coreBundle[ 'bfd-cl-3' ], $cl3->bfd );
@@ -538,6 +541,8 @@ class CoreBundleControllerTest extends DuskTestCase
                     ->pause(500);
 
                 $this->assertEquals( null, CoreLink::find( $cl3id ) );
+                $cl3SwitchPort->refresh();
+                $this->assertEquals( SwitchPort::TYPE_UNSET, $cl3SwitchPort->type );
 
                 $cbid = $cb->id;
 
