@@ -99,33 +99,37 @@ class CoreBundleController extends Common
      */
     public function storeWizard( Store $r ): RedirectResponse
     {
-        $cb = CoreBundle::create( $r->all() );
+        $cb = DB::transaction( function () use ( $r ): CoreBundle {
+            $cb = CoreBundle::create( $r->all() );
 
-        $via = new VirtualInterface;
-        $vib = new VirtualInterface;
+            $via = new VirtualInterface;
+            $vib = new VirtualInterface;
 
-        // Set values to the Virtual Interface side A and B
-        foreach( [ 'a' => $via , 'b' => $vib ] as $side => $vi ){
-            $vi->custid         =   $r->custid;
-            $vi->mtu            =   $r->mtu;
-            $vi->trunk          =   $r->framing ?? false;
-            $vi->fastlacp       =   $r->input( 'fast-lacp'  ) ?? false;
+            // Set values to the Virtual Interface side A and B
+            foreach( [ 'a' => $via , 'b' => $vib ] as $side => $vi ){
+                $vi->custid         =   $r->custid;
+                $vi->mtu            =   $r->mtu;
+                $vi->trunk          =   $r->framing ?? false;
+                $vi->fastlacp       =   $r->input( 'fast-lacp'  ) ?? false;
 
-            if( (int)$r->type === CoreBundle::TYPE_L2_LAG ) {
-                $vi->lag_framing = true;
+                if( (int)$r->type === CoreBundle::TYPE_L2_LAG ) {
+                    $vi->lag_framing = true;
+                }
+
+                if( (int)$r->type !== CoreBundle::TYPE_ECMP ) {
+                    $r->merge( [ "vi-name-$side" => trim( $r->input( "vi-name-$side" ) , '"') ] );
+                    $vi->name           =   $r->input( "vi-name-$side"            );
+                    $vi->channelgroup   =   $r->input( "vi-channel-number-$side"  );
+                }
+
+                $vi->save();
             }
 
-            if( (int)$r->type !== CoreBundle::TYPE_ECMP ) {
-                $r->merge( [ "vi-name-$side" => trim( $r->input( "vi-name-$side" ) , '"') ] );
-                $vi->name           =   $r->input( "vi-name-$side"            );
-                $vi->channelgroup   =   $r->input( "vi-channel-number-$side"  );
-            }
+            // Creating all the elements linked to the new core bundle (core links, core interfaces, physical interfaces)
+            $this->buildCorelink( $cb, $r, [ 'a' => $via , 'b' => $vib ] , false );
 
-            $vi->save();
-        }
-
-        // Creating all the elements linked to the new core bundle (core links, core interfaces, physical interfaces)
-        $this->buildCorelink( $cb, $r, [ 'a' => $via , 'b' => $vib ] , false );
+            return $cb;
+        } );
 
         Log::notice( $r->user()->username . ' created a core bundle with (id: ' . $cb->id . ')' );
         AlertContainer::push( 'Core bundle created', Alert::SUCCESS );
@@ -187,16 +191,18 @@ class CoreBundleController extends Common
      */
     public function updateWizard( Store $r, CoreBundle $cb): RedirectResponse
     {
-        // Getting the virtual inferfaces (side A/B)
-        $vis = $cb->virtualInterfaces();
+        DB::transaction( function () use ( $cb, $r ) {
+            // Getting the virtual interfaces (side A/B)
+            $vis = $cb->virtualInterfaces();
 
-        // Set the customer to the Virtual interface for each side
-        $vis[ 'a' ]->custid = $r->custid;
-        $vis[ 'a' ]->save();
-        $vis[ 'b' ]->custid = $r->custid;
-        $vis[ 'b' ]->save();
+            // Set the customer to the Virtual interface for each side
+            $vis[ 'a' ]->custid = $r->custid;
+            $vis[ 'a' ]->save();
+            $vis[ 'b' ]->custid = $r->custid;
+            $vis[ 'b' ]->save();
 
-        $cb->update( $r->all() );
+            $cb->update( $r->all() );
+        } );
 
         Log::notice( $r->user()->username . ' updated a core bundle with (id: ' . $cb->id . ')' );
         AlertContainer::push( 'Core bundle updated.', Alert::SUCCESS );
