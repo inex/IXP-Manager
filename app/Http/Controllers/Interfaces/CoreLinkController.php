@@ -24,6 +24,7 @@ namespace IXP\Http\Controllers\Interfaces;
  */
 use Exception, Log;
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\{
     RedirectResponse,
     Request
@@ -115,15 +116,14 @@ class CoreLinkController extends Common
      */
     public function delete( Request $r, CoreBundle $cb, CoreLink $cl ) : RedirectResponse
     {
-        $cl->delete();
-        foreach( $cl->coreInterfaces() as $ci ) {
-            /** @var CoreInterface $ci */
-            $pi = $ci->physicalInterface;
-            $pi->switchPort->update( [ 'type' => SwitchPort::TYPE_UNSET ] );
-
-            $ci->delete();
-            $pi->delete();
+        if ($cl->coreBundle->coreLinks()->count() === 1) {
+            AlertContainer::push( 'Cannot delete the last core link in a core bundle', Alert::DANGER );
+            return redirect( route( "core-bundle@edit", [ "cb" => $cb->id ] ) );
         }
+
+        DB::transaction( function () use ( $cl ) {
+            $cl->deleteObject();
+        });
 
         Log::notice( $r->user()->username." deleted a core link (id: " . $cl->id . ')' );
         AlertContainer::push( 'Core link deleted.', Alert::SUCCESS );

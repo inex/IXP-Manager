@@ -543,8 +543,12 @@ class CoreBundleControllerTest extends DuskTestCase
                 $this->assertEquals( null, CoreLink::find( $cl3id ) );
                 $cl3SwitchPort->refresh();
                 $this->assertEquals( SwitchPort::TYPE_UNSET, $cl3SwitchPort->type );
+                $this->assertEquals(2, $cb->coreLinks()->count());
 
                 $cbid = $cb->id;
+
+                $cbVis = $cb->virtualInterfaces();
+                $this->assertCount(2, $cbVis);
 
                 $browser->visit( route( 'core-bundle@edit', $cb->id ) )
                     ->waitForLocation( route( 'core-bundle@edit', $cb->id ) );
@@ -555,6 +559,15 @@ class CoreBundleControllerTest extends DuskTestCase
                     ->pause(500);
 
                 $this->assertEquals( null, CoreBundle::find( $cbid ) );
+                $this->assertEquals(0, CoreLink::whereCoreBundleId($cbid)->count() );
+
+                // VI's get deleted too
+                foreach ($cbVis as $oldVi) {
+                    $this->assertNull(VirtualInterface::find($oldVi->id));
+                    // and physical interfaces
+                    $this->assertNull(PhysicalInterface::whereVirtualinterfaceid($oldVi->id)->first());
+                }
+
             }
         } );
     }
