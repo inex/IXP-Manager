@@ -345,26 +345,18 @@ class CoreBundle extends Model
      */
     public function deleteObject(): bool
     {
-        try {
-            DB::beginTransaction();
+        // Take virtual interfaces before we delete relations in between
+        $vis = $this->virtualInterfaces();
 
-            // Take virtual interfaces before we delete relations in between
-            $vis = $this->virtualInterfaces();
-
-            foreach( $this->corelinks as $cl ){
-                $cl->deleteObject();
-            }
-
-            foreach( $vis as $vi ){
-                $vi->delete();
-            }
-
-            $this->delete();
-            DB::commit();
-        } catch( Exception $e ) {
-            DB::rollBack();
-            throw $e;
+        foreach( $this->corelinks as $cl ){
+            $cl->deleteObject();
         }
+
+        foreach( $vis as $vi ){
+            $vi->delete();
+        }
+
+        $this->delete();
         return true;
     }
 
