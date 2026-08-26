@@ -24,6 +24,8 @@ declare(strict_types=1);
 
 namespace Tests;
 
+use Database\Seeders\Tests\CiTestDataSeeder;
+use Illuminate\Foundation\Testing\DatabaseTruncation;
 use Laravel\Dusk\TestCase as BaseTestCase;
 
 use Facebook\WebDriver\Chrome\ChromeOptions;
@@ -37,8 +39,16 @@ use PHPUnit\Framework\Attributes\BeforeClass;
 /**
  * DuskTestCase
  *
+ * These tests are isolated from eachother using the DatabaseTruncation trait which
+ * truncates all tables after each test, and then re-seeding with the CiTestDataSeeder.
+ *
+ * DatabaseTruncation is used over RefreshDatabase as in these tests Laravel is run by
+ * the artisan serve command and is not managed by the test suite directly. Hence we are
+ * not in a position to wrap calls in a database transaction.
+ *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @author     Thomas Kerin <thomas@islandbridgenetworks.ie>
  * @category   IXP
  * @package    IXP\Tests
  * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
@@ -47,6 +57,10 @@ use PHPUnit\Framework\Attributes\BeforeClass;
 abstract class DuskTestCase extends BaseTestCase
 {
     use CreatesApplication;
+    use DatabaseTruncation;
+
+    protected $seed = true;
+    protected $seeder = CiTestDataSeeder::class;
 
     /**
      * Prepare for Dusk test execution.
