@@ -754,7 +754,7 @@ cat >/etc/apache2/sites-available/000-default.conf <<END_APACHE
     DocumentRoot ${IXPROOT}/public
 
     <Directory ${IXPROOT}/public>
-        Header Set X-Frame-Options "DENY"
+        Header Set X-Frame-Options "SAMEORIGIN"
         Options FollowSymLinks
         AllowOverride None
         Require all granted
