@@ -81,7 +81,7 @@ $this->layout( 'layouts/ixpv4' );
                             <tr>
                                 <td>
                                     <?= Former::radios( 'user-' . $user->id )
-                                        ->class( 'radio-button tw-ml-4' )
+                                        ->class( 'radio-button tw:ml-4' )
                                         ->label( '' )
                                         ->value( $user->id )
                                         ->id( 'user-' . $user->id );

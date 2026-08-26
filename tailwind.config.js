@@ -2,7 +2,7 @@ import colors from 'tailwindcss/colors';
 
 /** @type {import('tailwindcss').Config} */
 export default {
-    prefix: 'tw-',
+    prefix: 'tw',
     content: [
         './resources/**/*.blade.php',
         './resources/**/*.foil.php',

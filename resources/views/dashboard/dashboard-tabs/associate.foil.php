@@ -1,6 +1,6 @@
 <div class="col-12">
     <h4>Recent Members</h4>
-    <div class="mb-4 tw-text-sm">
+    <div class="mb-4 tw:text-sm">
         Our five most recent members are listed below.
 
         <?php if( !$t->c->typeAssociate() ): ?>
@@ -14,7 +14,7 @@
                 <th>
                     Name
                 </th>
-                <th class="tw-text-right">
+                <th class="tw:text-right">
                     AS Number
                 </th>
                 <th>
@@ -30,7 +30,7 @@
                             <?= $t->ee( $recent->name ) ?>
                         </a>
                     </td>
-                    <td class="tw-text-right tw-font-mono">
+                    <td class="tw:text-right tw:font-mono">
                         <?= $t->asNumber( $recent->autsys ) ?>
                     </td>
                     <td>

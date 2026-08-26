@@ -132,7 +132,7 @@
                                 <tr>
                                     <td><?= $s->peer_id ?></td>
                                     <td><?= $t->ee( $s->peer->abbreviatedName ) ?></td>
-                                    <td class="tw-text-center tw-align-middle">
+                                    <td class="tw:text-center tw:align-middle">
                                         <a href="<?= route( "statistics@p2p-totals",
                                                 ['srcCust' => $c->id,
                                                  'dstCust' => $s->peer->id,
@@ -142,19 +142,19 @@
                                         </a>
                                     </td>
                                     <?php if( $c->isIPvXEnabled(4) && $c->isIPvXEnabled(6) ): ?>
-                                    <td class="tw-slashed-zero tw-lining-nums tw-tabular-nums" align="right"><?= $s->ipv4_total_in  + $s->ipv6_total_in + $s->ipv4_total_out + $s->ipv6_total_out ?></td>
-                                    <td class="tw-slashed-zero tw-lining-nums tw-tabular-nums" align="right"><?= $s->ipv4_total_in  + $s->ipv6_total_in  ?></td>
-                                    <td class="tw-slashed-zero tw-lining-nums tw-tabular-nums" align="right"><?= $s->ipv4_total_out + $s->ipv6_total_out ?></td>
+                                    <td class="tw:slashed-zero tw:lining-nums tw:tabular-nums" align="right"><?= $s->ipv4_total_in  + $s->ipv6_total_in + $s->ipv4_total_out + $s->ipv6_total_out ?></td>
+                                    <td class="tw:slashed-zero tw:lining-nums tw:tabular-nums" align="right"><?= $s->ipv4_total_in  + $s->ipv6_total_in  ?></td>
+                                    <td class="tw:slashed-zero tw:lining-nums tw:tabular-nums" align="right"><?= $s->ipv4_total_out + $s->ipv6_total_out ?></td>
                                     <?php endif; ?>
                                     <?php if( $c->isIPvXEnabled(4) ): ?>
-                                    <td class="tw-slashed-zero tw-lining-nums tw-tabular-nums" align="right"><?= $s->ipv4_total_in + $s->ipv4_total_out ?></td>
-                                    <td class="tw-slashed-zero tw-lining-nums tw-tabular-nums" align="right"><?= $s->ipv4_total_in ?></td>
-                                    <td class="tw-slashed-zero tw-lining-nums tw-tabular-nums" align="right"><?= $s->ipv4_total_out ?></td>
+                                    <td class="tw:slashed-zero tw:lining-nums tw:tabular-nums" align="right"><?= $s->ipv4_total_in + $s->ipv4_total_out ?></td>
+                                    <td class="tw:slashed-zero tw:lining-nums tw:tabular-nums" align="right"><?= $s->ipv4_total_in ?></td>
+                                    <td class="tw:slashed-zero tw:lining-nums tw:tabular-nums" align="right"><?= $s->ipv4_total_out ?></td>
                                     <?php endif; ?>
                                     <?php if( $c->isIPvXEnabled(6) ): ?>
-                                    <td class="tw-slashed-zero tw-lining-nums tw-tabular-nums" align="right"><?= $s->ipv6_total_in + $s->ipv6_total_out ?></td>
-                                    <td class="tw-slashed-zero tw-lining-nums tw-tabular-nums" align="right"><?= $s->ipv6_total_in ?></td>
-                                    <td class="tw-slashed-zero tw-lining-nums tw-tabular-nums" align="right"><?= $s->ipv6_total_out ?></td>
+                                    <td class="tw:slashed-zero tw:lining-nums tw:tabular-nums" align="right"><?= $s->ipv6_total_in + $s->ipv6_total_out ?></td>
+                                    <td class="tw:slashed-zero tw:lining-nums tw:tabular-nums" align="right"><?= $s->ipv6_total_in ?></td>
+                                    <td class="tw:slashed-zero tw:lining-nums tw:tabular-nums" align="right"><?= $s->ipv6_total_out ?></td>
                                     <?php endif; ?>
                                 </tr>
                             <?php endforeach; ?>

@@ -5,8 +5,8 @@
 
 <div class="d-flex row">
     <div class="col-md-6">
-        <div class="tw-rounded-sm tw-p-4 tw-shadow-md tw-border-1 tw-border-grey-light">
-            <header class="tw-pb-2 tw-pl-2 d-flex tw-border-b-1 tw-border-gray-300">
+        <div class="tw:rounded-sm tw:p-4 tw:shadow-md tw:border-1 tw:border-grey-light">
+            <header class="tw:pb-2 tw:pl-2 d-flex tw:border-b-1 tw:border-gray-300">
                 <div class="mr-auto">
                     <h3>
                         Registration Details
@@ -74,8 +74,8 @@
         </div>
 
         <?php if( $rdetails->notes ): ?>
-            <div class="tw-mt-8 tw-rounded-sm tw-p-4 tw-shadow-md tw-border-1 tw-border-grey-light">
-                <header class="tw-pb-2 tw-pl-2 tw-flex tw-border-b-1 tw-border-gray-300">
+            <div class="tw:mt-8 tw:rounded-sm tw:p-4 tw:shadow-md tw:border-1 tw:border-grey-light">
+                <header class="tw:pb-2 tw:pl-2 tw:flex tw:border-b-1 tw:border-gray-300">
                     <div class="mr-auto">
                         <h3>
                             Registration Details - Notes
@@ -96,8 +96,8 @@
         <?php if( !config('ixp.reseller.no_billing') && !$c->reseller ): ?>
             <?php $bdetails = $c->companyBillingDetail /** @var $bdetails \IXP\Models\CompanyBillingDetail  */ ?>
 
-            <div class="tw-rounded-sm tw-p-4 tw-shadow-md tw-border-1 tw-border-grey-light">
-                <header class="tw-pb-2 tw-pl-2 tw-flex tw-border-b-1 tw-border-gray-300">
+            <div class="tw:rounded-sm tw:p-4 tw:shadow-md tw:border-1 tw:border-grey-light">
+                <header class="tw:pb-2 tw:pl-2 tw:flex tw:border-b-1 tw:border-gray-300">
                     <div class="mr-auto">
                         <h3>
                             Billing Details
@@ -221,8 +221,8 @@
             </div>
 
             <?php if( $bdetails->notes ): ?>
-                <div class="tw-mt-8 tw-rounded-sm tw-p-4 tw-shadow-md tw-border-1 tw-border-grey-light">
-                    <header class="tw-pb-2 tw-pl-2 tw-flex tw-border-b-1 tw-border-gray-300">
+                <div class="tw:mt-8 tw:rounded-sm tw:p-4 tw:shadow-md tw:border-1 tw:border-grey-light">
+                    <header class="tw:pb-2 tw:pl-2 tw:flex tw:border-b-1 tw:border-gray-300">
                         <div class="mr-auto">
                             <h3>
                                 Billing Details - Notes

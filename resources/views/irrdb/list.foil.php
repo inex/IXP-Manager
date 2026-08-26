@@ -112,7 +112,7 @@
           </table>
 
           <?php if( $t->updatedIrrdb ): ?>
-              <div class="alert alert-info tw-mt-16">
+              <div class="alert alert-info tw:mt-16">
                   <p>
                       Note that we cache this information for 15 minutes. The above prefix(es) were found at
                       <?= $t->updatedIrrdb['found_at']->format('Y-m-d H:i:s') ?> and will not be refreshed until <?= $t->updatedIrrdb['found_at']->copy()->addMinutes(15)->format('H:i:s') ?>.

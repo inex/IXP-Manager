@@ -1,4 +1,4 @@
-<div class="alert alert-success tw-my-8" role="alert">
+<div class="alert alert-success tw:my-8" role="alert">
     You have two factor authentication enabled.
 </div>
 
@@ -6,15 +6,15 @@
     You can use the QR image or the code below to (re)configure your current or a new 2fa code generator.
 </p>
 
-<div class="tw-mx-auto">
+<div class="tw:mx-auto">
     <?= $t->qrcode ?>
 </div>
 
 <p>
-    Code: <b class="tw-font-mono"><?= $t->ee( $t->user->user2FA->secret ) ?></b>
+    Code: <b class="tw:font-mono"><?= $t->ee( $t->user->user2FA->secret ) ?></b>
 </p>
 
-<hr class="tw-my-8">
+<hr class="tw:my-8">
 
 <p>
     If you wish to disable two-factor authentication, please enter your password below.

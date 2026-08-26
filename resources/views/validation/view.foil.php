@@ -10,17 +10,17 @@ System Validation
 
 
 <?php $this->section( 'page-header-postamble' ) ?>
-<div class="btn-group btn-group-sm tw-ml-2" role="group">
+<div class="btn-group btn-group-sm tw:ml-2" role="group">
     <span id="loading-spinner" class="loading-results-indicator">
-        <i class="fa fa-spinner fa-spin tw-pt-2"></i> &nbsp;
+        <i class="fa fa-spinner fa-spin tw:pt-2"></i> &nbsp;
         <span class="text-muted">Performing system validation checks.. &nbsp;&nbsp;</span>
     </span>
     <div>
-        <span data-severity="error" class="severity-toggle hover:tw-opacity-80 tw-cursor-pointer tw-inline-flex tw-items-center tw-rounded-md tw-ml-2 tw-px-2 tw-py-1 tw-text-xs tw-font-medium tw-bg-pink-50 tw-text-red-600 tw-ring-pink-700/10 tw-ring-1 tw-ring-inset">Error</span>
-        <span data-severity="warning" class="severity-toggle hover:tw-opacity-80 tw-cursor-pointer tw-inline-flex tw-items-center tw-rounded-md tw-ml-2 tw-px-2 tw-py-1 tw-text-xs tw-font-medium tw-bg-orange-50 tw-text-orange-500 tw-ring-orange-600/20 tw-ring-1 tw-ring-inset">Warning</span>
-        <span data-severity="suggestion" class="severity-toggle hover:tw-opacity-80 tw-cursor-pointer tw-inline-flex tw-items-center tw-rounded-md tw-ml-2 tw-px-2 tw-py-1 tw-text-xs tw-font-medium tw-bg-yellow-50 tw-text-yellow-300 tw-ring-yellow-600/20 tw-ring-1 tw-ring-inset">Suggestion</span>
-        <span data-severity="info" class="severity-toggle severity-disabled hover:tw-opacity-80 tw-cursor-pointer tw-inline-flex tw-items-center tw-rounded-md tw-ml-2 tw-px-2 tw-py-1 tw-text-xs tw-font-medium tw-bg-white-50 tw-text-grey-200 tw-ring-blue-700/10 tw-ring-1 tw-ring-inset">Info</span>
-        <span data-severity="debug" class="severity-toggle severity-disabled hover:tw-opacity-80 tw-cursor-pointer tw-inline-flex tw-items-center tw-rounded-md tw-ml-2 tw-px-2 tw-py-1 tw-text-xs tw-font-medium tw-bg-gray-50 tw-text-gray-600 tw-ring-gray-500/10 tw-ring-1 tw-ring-inset">Debug</span>
+        <span data-severity="error" class="severity-toggle tw:hover:opacity-80 tw:cursor-pointer tw:inline-flex tw:items-center tw:rounded-md tw:ml-2 tw:px-2 tw:py-1 tw:text-xs tw:font-medium tw:bg-pink-50 tw:text-red-600 tw:ring-pink-700/10 tw:ring-1 tw:ring-inset">Error</span>
+        <span data-severity="warning" class="severity-toggle tw:hover:opacity-80 tw:cursor-pointer tw:inline-flex tw:items-center tw:rounded-md tw:ml-2 tw:px-2 tw:py-1 tw:text-xs tw:font-medium tw:bg-orange-50 tw:text-orange-500 tw:ring-orange-600/20 tw:ring-1 tw:ring-inset">Warning</span>
+        <span data-severity="suggestion" class="severity-toggle tw:hover:opacity-80 tw:cursor-pointer tw:inline-flex tw:items-center tw:rounded-md tw:ml-2 tw:px-2 tw:py-1 tw:text-xs tw:font-medium tw:bg-yellow-50 tw:text-yellow-300 tw:ring-yellow-600/20 tw:ring-1 tw:ring-inset">Suggestion</span>
+        <span data-severity="info" class="severity-toggle severity-disabled tw:hover:opacity-80 tw:cursor-pointer tw:inline-flex tw:items-center tw:rounded-md tw:ml-2 tw:px-2 tw:py-1 tw:text-xs tw:font-medium tw:bg-white-50 tw:text-grey-200 tw:ring-blue-700/10 tw:ring-1 tw:ring-inset">Info</span>
+        <span data-severity="debug" class="severity-toggle severity-disabled tw:hover:opacity-80 tw:cursor-pointer tw:inline-flex tw:items-center tw:rounded-md tw:ml-2 tw:px-2 tw:py-1 tw:text-xs tw:font-medium tw:bg-gray-50 tw:text-gray-600 tw:ring-gray-500/10 tw:ring-1 tw:ring-inset">Debug</span>
     </div>
     <a class="btn btn-white" href="<?= route('validation@start' ) ?>">
         <span class="fa fa-rotate-right"></span>
@@ -33,7 +33,7 @@ System Validation
 
     <?= $t->alerts() ?>
 
-    <div id="software-table-list" class="row tw-p-4 m-1 tw-shadow-md tw-border-1 tw-border-grey-light tw-rounded-sm">
+    <div id="software-table-list" class="row tw:p-4 m-1 tw:shadow-md tw:border-1 tw:border-grey-light tw:rounded-sm">
     </div>
 
     <div id="validation-container" class="row">
@@ -54,19 +54,19 @@ System Validation
         <!-- validation-title -->
         <!-- validation-link -->
 
-        <div class="validation-wrapper col-12 tw-mb-4">
-            <h1 class="head-set tw-font-semibold tw-text-base tw-border-b-1 tw-h-8 tw-leading-8 tw-text-gray-900 tw-mb-0 tw-mt-3 tw-border-gray-600 tw-overflow-hidden">
-                <button type="button" class="validation-info-button tw-mr-1 tw-rounded tw-bg-white tw-text-gray-700 hover:tw-bg-gray-50 hover:tw-border-gray-800 tw-border-2 tw-border-gray-600 tw-w-6 tw-h-6 tw-leading-5"
+        <div class="validation-wrapper col-12 tw:mb-4">
+            <h1 class="head-set tw:font-semibold tw:text-base tw:border-b-1 tw:h-8 tw:leading-8 tw:text-gray-900 tw:mb-0 tw:mt-3 tw:border-gray-600 tw:overflow-hidden">
+                <button type="button" class="validation-info-button tw:mr-1 tw:rounded tw:bg-white tw:text-gray-700 tw:hover:bg-gray-50 tw:hover:border-gray-800 tw:border-2 tw:border-gray-600 tw:w-6 tw:h-6 tw:leading-5"
                         data-toggle="popover" title="" data-content="" tabIndex="0"
                 >
                     <i class="fa fa-info" aria-hidden="true"></i>
                 </button>
-                <button type="button" class="validation-failure-button tw-hidden tw-mr-1 tw-rounded tw-bg-red-500 tw-text-gray-300 hover:tw-bg-red-300 hover:tw-border-gray-800 tw-border-2 tw-border-gray-600 tw-w-6 tw-h-6 tw-leading-5"
+                <button type="button" class="validation-failure-button tw:hidden tw:mr-1 tw:rounded tw:bg-red-500 tw:text-gray-300 tw:hover:bg-red-300 tw:hover:border-gray-800 tw:border-2 tw:border-gray-600 tw:w-6 tw:h-6 tw:leading-5"
                         data-toggle="popover" title="" data-content="" tabIndex="0"
                 >
                     <i class="fa fa-exclamation" aria-hidden="true"></i>
                 </button>
-                <button type="button" class="validation-timeout-button tw-hidden tw-mr-1 tw-rounded tw-bg-orange-500 tw-text-gray-300 hover:tw-bg-orange-300 hover:tw-border-gray-800 tw-border-2 tw-border-gray-600 tw-w-6 tw-h-6 tw-leading-5"
+                <button type="button" class="validation-timeout-button tw:hidden tw:mr-1 tw:rounded tw:bg-orange-500 tw:text-gray-300 tw:hover:bg-orange-300 tw:hover:border-gray-800 tw:border-2 tw:border-gray-600 tw:w-6 tw:h-6 tw:leading-5"
                         data-toggle="popover" title="Validation timed out" data-content="The timeout was reached before results could be reported" tabIndex="0"
                 >
                     <!-- if updating font awesome this could become fa-clock-rotate-left -->
@@ -82,24 +82,24 @@ System Validation
         <!-- validation-result attr data-severity -->
         <!-- result-badge  -->
         <!-- severity  -->
-        <div class="validation-result tw-relative tw-h-fit !tw-important tw-text-xs tw-border-b-1 tw-leading-6 tw-text-gray-900 tw-pl-4 tw-mt-2 tw-flex tw-justify-start tw-align-middle" data-severity="">
-            <div class="result-badge badgeDot tw-rounded-full tw-border-2 tw-w-5 tw-h-5 tw-mr-1" title=""></div>
-            <div class="severity tw-min-w-24 tw-ml-1 tw-text-center"></div>
-            <div class="validation-content-container tw-relative tw-w-[calc(100%-6.5rem)]  tw-border tw-border-transparent tw-text-[0.9rem] tw-transition-[height] tw-duration-250">
+        <div class="validation-result tw:relative tw:h-fit !tw:important tw:text-xs tw:border-b-1 tw:leading-6 tw:text-gray-900 tw:pl-4 tw:mt-2 tw:flex tw:justify-start tw:align-middle" data-severity="">
+            <div class="result-badge badgeDot tw:rounded-full tw:border-2 tw:w-5 tw:h-5 tw:mr-1" title=""></div>
+            <div class="severity tw:min-w-24 tw:ml-1 tw:text-center"></div>
+            <div class="validation-content-container tw:relative tw:w-[calc(100%-6.5rem)]  tw:border tw:border-transparent tw:text-[0.9rem] tw:transition-[height] tw:duration-250">
                 <div class="validation-header">
                     <span class="validation-content"></span>
-                    <i class="tw-hidden fa fa-caret-down validation-extra-content-icon"></i>
+                    <i class="tw:hidden fa fa-caret-down validation-extra-content-icon"></i>
                 </div>
 
-                <div class="validation-extra-content tw-hidden tw-relative tw-font-size-xs"></div>
+                <div class="validation-extra-content tw:hidden tw:relative tw:font-size-xs"></div>
             </div>
 
-            <div class="result-icon tw-ml-auto tw-flex tw-items-center tw-pr-4">
-                <a href="#" target="_blank" class="validation-call-to-action tw-hidden tw-ml-auto tw-flex tw-items-center tw-pr-4 tw-text-gray-500 hover:tw-text-gray-900">&nbsp</a>
-                <a href="#" target="_blank" class="validation-docs-link tw-hidden tw-ml-auto tw-flex tw-items-center tw-pr-4 tw-text-gray-500 hover:tw-text-gray-900">
+            <div class="result-icon tw:ml-auto tw:flex tw:items-center tw:pr-4">
+                <a href="#" target="_blank" class="validation-call-to-action tw:hidden tw:ml-auto tw:flex tw:items-center tw:pr-4 tw:text-gray-500 tw:hover:text-gray-900">&nbsp</a>
+                <a href="#" target="_blank" class="validation-docs-link tw:hidden tw:ml-auto tw:flex tw:items-center tw:pr-4 tw:text-gray-500 tw:hover:text-gray-900">
                     <i class="fa fa-book"></i> &nbsp;
                 </a>
-                <a href="#" target="_blank" class="validation-settings-link tw-hidden tw-ml-auto tw-flex tw-items-center tw-pr-4 tw-text-gray-500 hover:tw-text-gray-900">
+                <a href="#" target="_blank" class="validation-settings-link tw:hidden tw:ml-auto tw:flex tw:items-center tw:pr-4 tw:text-gray-500 tw:hover:text-gray-900">
                     <i class="fa fa-gear"></i> &nbsp;
                 </a>
             </div>
@@ -107,9 +107,9 @@ System Validation
     </template>
 
     <template id="no-output-template">
-        <div class="tw-relative tw-h-fit !tw-important tw-text-xs tw-border-b-1 tw-leading-6 tw-text-gray-900 tw-pl-4 tw-mt-2 tw-flex tw-justify-start tw-align-middle">
-            <div class="tw-min-w-24 tw-ml-1"></div>
-            <div class="tw-relative tw-w-[calc(100%-6.5rem)] tw-border tw-border-transparent tw-text-[0.9rem]">
+        <div class="tw:relative tw:h-fit !tw:important tw:text-xs tw:border-b-1 tw:leading-6 tw:text-gray-900 tw:pl-4 tw:mt-2 tw:flex tw:justify-start tw:align-middle">
+            <div class="tw:min-w-24 tw:ml-1"></div>
+            <div class="tw:relative tw:w-[calc(100%-6.5rem)] tw:border tw:border-transparent tw:text-[0.9rem]">
                 <em>This validator did not produce any output</em>
             </div>
         </div>
@@ -124,11 +124,11 @@ System Validation
 
     // Currently relying on these increasing in severity
     let severityBadgeClass = {
-        'debug': 'tw-border-gray-300 tw-bg-gray-300',
-        'info': 'tw-border-white-1000 tw-bg-white-1000',
-        'suggestion': 'tw-border-yellow-300 tw-bg-yellow-300',
-        'warning': 'tw-border-orange-400 tw-bg-orange-400',
-        'error': 'tw-border-red-600 tw-bg-red-600',
+        'debug': 'tw:border-gray-300 tw:bg-gray-300',
+        'info': 'tw:border-white-1000 tw:bg-white-1000',
+        'suggestion': 'tw:border-yellow-300 tw:bg-yellow-300',
+        'warning': 'tw:border-orange-400 tw:bg-orange-400',
+        'error': 'tw:border-red-600 tw:bg-red-600',
     };
 
     let loadingSpinner = $('.loading-results-indicator');
@@ -156,7 +156,7 @@ System Validation
          */
         validationContainer.on('click', ".validation-header", function() {
             if ( $(this).closest('.validation-content-container').find(".validation-extra-content").text() ) {
-                $(this).find("i.validation-extra-content-icon").toggleClass("tw-rotate-180");
+                $(this).find("i.validation-extra-content-icon").toggleClass("tw:rotate-180");
             }
         });
 
@@ -164,7 +164,7 @@ System Validation
          * Show/hide extra content when clicked
          */
         validationContainer.on('click','.validation-header', function() {
-            $(this).closest('.validation-content-container').find('.validation-extra-content').toggleClass('tw-hidden');
+            $(this).closest('.validation-content-container').find('.validation-extra-content').toggleClass('tw:hidden');
         });
 
         /**
@@ -252,12 +252,12 @@ System Validation
 
         if (validationData.is_failed) {
             validationClone.find(".validation-failure-button")
-                .removeClass("tw-hidden")
+                .removeClass("tw:hidden")
                 .attr("title", "An exception occurred while running the validation")
                 .attr("data-content", "Uncaught " + validationData['failure']['exception'] + ' at ' + validationData['failure']['file'] + ':' + validationData['failure']['line'] + ": " + validationData['failure']['message']);
         }
         if (validationData.is_timedout) {
-            validationClone.find(".validation-timeout-button").removeClass("tw-hidden");
+            validationClone.find(".validation-timeout-button").removeClass("tw:hidden");
         }
 
         return validationClone;
@@ -298,24 +298,24 @@ System Validation
             });
 
             resultClone.find('i.validation-extra-content-icon')
-                .removeClass("tw-hidden");
+                .removeClass("tw:hidden");
         }
 
         if (resultData.docs_url != null) {
             resultClone.find('.validation-docs-link')
                 .attr('href', resultData.docs_url)
-                .removeClass("tw-hidden");
+                .removeClass("tw:hidden");
         }
         if (resultData.call_to_action != null) {
             resultClone.find('.validation-call-to-action')
                 .attr('href', resultData.call_to_action.url)
                 .text(resultData.call_to_action.text)
-                .removeClass("tw-hidden");
+                .removeClass("tw:hidden");
         }
         if (resultData.settings_url != null) {
             resultClone.find('.validation-settings-link')
                 .attr('href', resultData.settings_url)
-                .removeClass("tw-hidden");
+                .removeClass("tw:hidden");
         }
 
         return resultClone;
@@ -341,8 +341,8 @@ System Validation
             let resultType = $(this).data("severity");
             let isDisabled = $(this).hasClass('severity-disabled');
 
-            // Toggle tw-hidden on validation-results of type resultType based on button state
-            $(".validation-result[data-severity='" + resultType + "']").toggleClass('tw-hidden', isDisabled);
+            // Toggle tw:hidden on validation-results of type resultType based on button state
+            $(".validation-result[data-severity='" + resultType + "']").toggleClass('tw:hidden', isDisabled);
         });
 
         $('.validation-wrapper').each(function() {
@@ -354,14 +354,14 @@ System Validation
                 return $(`.severity-toggle[data-severity="${type}"]:not(.severity-disabled)`).length > 0;
             });
 
-            // Only toggle tw-hidden on the validation-wrapper if the validation didn't fail or timeout,
+            // Only toggle tw:hidden on the validation-wrapper if the validation didn't fail or timeout,
             // once there are actual validation-results
-            const isFailed = !wrapper.find('.validation-failure-button').hasClass('tw-hidden');
-            const isTimedOut = !wrapper.find('.validation-timeout-button').hasClass('tw-hidden');
+            const isFailed = !wrapper.find('.validation-failure-button').hasClass('tw:hidden');
+            const isTimedOut = !wrapper.find('.validation-timeout-button').hasClass('tw:hidden');
             const hasAnyResults = wrapper.find('.validation-result').length > 0;
 
             if (hasAnyResults && !isFailed && !isTimedOut) {
-                wrapper.toggleClass('tw-hidden', !hasDisplayedResults);
+                wrapper.toggleClass('tw:hidden', !hasDisplayedResults);
             }
         });
     }

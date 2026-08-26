@@ -8,8 +8,8 @@
   },
   "devDependencies": {
     "@fortawesome/fontawesome-free": "^7.3.1",
+    "@tailwindcss/postcss": "^4.3.3",
     "alpinejs": "^3.14.1",
-    "autoprefixer": "^10.4.19",
     "axios": "^1.6.4",
     "blueimp-file-upload": "^10.32.0",
     "bootbox": "^6.0.0",
@@ -26,7 +26,7 @@
     "postcss": "^8.4.38",
     "sass": "^1.26.10",
     "select2": "^4.0.13",
-    "tailwindcss": "^3.4.7",
+    "tailwindcss": "^4.3.3",
     "vite": "^8.2.2"
   }
 }

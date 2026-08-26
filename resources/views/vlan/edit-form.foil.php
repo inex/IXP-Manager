@@ -113,7 +113,7 @@
 
         <?= Former::close() ?>
 
-        <div class="alert alert-info tw-mt-8" role="alert">
+        <div class="alert alert-info tw:mt-8" role="alert">
             When choosing a VLAN / 802.1q tag, note that while it is technically possible to use the same VLAN tag across different infrastructures,
             this is a bad idea in IXP Manager. Some components expect unique tags for peering LANs.
             See <a href="https://github.com/inex/IXP-Manager/issues/517" target="_blank">this GitHub issue as one example for this</a>.

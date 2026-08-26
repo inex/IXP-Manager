@@ -163,7 +163,7 @@
             <?= $t->insert( 'interfaces/core-bundle/edit/core-link/form' ); ?>
 
             <!-- Delete Core Bundle area -->
-            <div class="alert alert-warning tw-mt-8" role="alert">
+            <div class="alert alert-warning tw:mt-8" role="alert">
                 <div class="d-flex align-items-center">
                     <div class="text-center">
                         <i class="fa fa-exclamation-triangle"></i>

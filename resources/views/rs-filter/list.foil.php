@@ -125,7 +125,7 @@
                     <tbody>
                         <?php foreach( $t->rsFilters as $index => $rsf ):
                             /** @var $rsf \IXP\Models\RouteServerFilter */?>
-                            <tr class="<?= $rsf->enabled ?: 'tw-italic tw-line-through' ?>">
+                            <tr class="<?= $rsf->enabled ?: 'tw:italic tw:line-through' ?>">
                                 <td>
                                     <?php if( $isSuperUser ): ?>
                                         <?php if( $rsf->peer ): ?>
@@ -269,7 +269,7 @@
                         <tbody>
                         <?php foreach( $t->rsFiltersProd as $index => $rsf ):
                             /** @var $rsf \IXP\Models\RouteServerFilter */?>
-                            <tr class="<?= $rsf->enabled ?: 'tw-italic' ?>">
+                            <tr class="<?= $rsf->enabled ?: 'tw:italic' ?>">
                                 <td>
                                     <?php if( $isSuperUser ): ?>
                                         <?php if( $rsf->peer ): ?>

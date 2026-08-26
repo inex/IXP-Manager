@@ -40,7 +40,7 @@
             ?>
                 <div class="card col-sm-12">
                     <div class="card-body row">
-                        <div class="col-lg-6 col-md-12 tw-mt-4">
+                        <div class="col-lg-6 col-md-12 tw:mt-4">
                             <h4>
                                 General Core Bundle Settings:
                             </h4>
@@ -114,7 +114,7 @@
                             ?>
                         </div>
 
-                        <div class="col-lg-6 col-md-12 tw-mt-4">
+                        <div class="col-lg-6 col-md-12 tw:mt-4">
                             <h4>
                                 Virtual Interface Settings:
                             </h4>

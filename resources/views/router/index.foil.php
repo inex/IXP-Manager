@@ -78,7 +78,7 @@
                             <td>
 
                                 <?php if( $router->pause_updates ): ?>
-                                    <a class="badge badge-warning tw-mr-2 btn-resume" id="btn-resume-<?= $router->id ?>" href="<?= route('router@resume' , [ 'router' => $router->id ] )?>"">
+                                    <a class="badge badge-warning tw:mr-2 btn-resume" id="btn-resume-<?= $router->id ?>" href="<?= route('router@resume' , [ 'router' => $router->id ] )?>"">
                                         <i class="fa fa-pause"></i>
                                     </a>
                                 <?php endif; ?>

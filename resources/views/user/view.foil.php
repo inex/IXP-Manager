@@ -31,7 +31,7 @@
     <div class="row">
         <div class="col-sm-12">
             <div class="card">
-                <div class="card-header tw-flex">
+                <div class="card-header tw:flex">
                     <div class="mr-auto">
                         Details for User (DB ID: <?= $t->u[ 'id' ] ?>
                     </div>

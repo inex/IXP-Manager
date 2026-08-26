@@ -117,7 +117,7 @@
                                                     </b>
                                                 </td>
                                                 <?php if( $new ): ?>
-                                                    <td class="<?= isset( $changed[ $key ] ) ? 'tw-bg-gray-500': '' ?> ">
+                                                    <td class="<?= isset( $changed[ $key ] ) ? 'tw:bg-gray-500': '' ?> ">
                                                         <?= $t->ee( $new[ $key ] ) ?>
                                                     </td>
                                                 <?php endif; ?>

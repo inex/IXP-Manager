@@ -36,10 +36,10 @@ IXP Manager Settings
     function showAlert(classes, message, hide = false) {
         $("html, body").animate({ scrollTop: 0 }, "slow");
         $('#alertBlock .alertText').html(message);
-        $('#alertBlock').addClass(classes).removeClass("tw-hidden");
+        $('#alertBlock').addClass(classes).removeClass("tw:hidden");
         if(hide) {
             setTimeout(function(e) {
-                $('#alertBlock').addClass("tw-hidden");
+                $('#alertBlock').addClass("tw:hidden");
             }, 3000);
         }
     }
@@ -50,10 +50,10 @@ IXP Manager Settings
         const data = envForm.serialize();
         axios.post(url,data)
             .then(function(response) {
-                showAlert("tw-bg-green-100 tw-border-green-500 tw-text-green-700",response.data.message);
+                showAlert("tw:bg-green-100 tw:border-green-500 tw:text-green-700",response.data.message);
             })
             .catch(function (error) {
-                showAlert("tw-bg-red-100 tw-border-red-500 tw-text-red-700",error.message);
+                showAlert("tw:bg-red-100 tw:border-red-500 tw:text-red-700",error.message);
                 console.log(error);
             });
     })

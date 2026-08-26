@@ -5,7 +5,7 @@
 
 <?php $this->section( 'page-header-preamble' ) ?>
     Document Store
-    / <a class="tw-font-normal" href="<?= route( 'docstore-dir@list', [ 'dir' => $t->file->directory ] ) ?>"><?= $t->file->directory ? $t->ee( $t->file->directory->name ) : 'Root Directory' ?></a>
+    / <a class="tw:font-normal" href="<?= route( 'docstore-dir@list', [ 'dir' => $t->file->directory ] ) ?>"><?= $t->file->directory ? $t->ee( $t->file->directory->name ) : 'Root Directory' ?></a>
     / <?= $t->unique ? 'Unique' : 'All' ?> Logs
 <?php $this->append() ?>
 
@@ -23,9 +23,9 @@
     <div class="row">
         <div class="col-md-12">
             <?= $t->alerts() ?>
-            <h3 class="tw-my-4">
+            <h3 class="tw:my-4">
                 <?= $t->unique ? 'Unique' : 'All' ?> Downloads for: <?= $t->ee( $t->file->name ) ?>
-                <small class="tw-ml-8 tw-text-sm">
+                <small class="tw:ml-8 tw:text-sm">
                     [Switch to <?php if( $t->unique ): ?>
                         <a href="<?= route( 'docstore-log@list', [ 'file' => $t->file ] ) ?>">All Downloads</a>]
                     <?php else: ?>
@@ -41,7 +41,7 @@
                 </p>
             <?php endif; ?>
 
-            <div class="tw-mt-8">
+            <div class="tw:mt-8">
                 <table id="table-logs" class="table collapse table-striped">
                     <thead class="thead-dark">
                         <tr>
