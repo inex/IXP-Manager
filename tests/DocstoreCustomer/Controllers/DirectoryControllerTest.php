@@ -1,9 +1,6 @@
 <?php
-
-namespace Tests\DocstoreCustomer\Controllers;
-
 /*
- * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,13 +20,11 @@ namespace Tests\DocstoreCustomer\Controllers;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use DB;
-use Illuminate\Foundation\Testing\WithoutMiddleware;
+declare(strict_types=1);
 
-use IXP\Models\{
-    Customer,
-    DocstoreCustomerDirectory
-};
+namespace Tests\DocstoreCustomer\Controllers;
+
+use IXP\Models\{Customer, DocstoreCustomerDirectory};
 
 use Tests\TestCase;
 
@@ -55,6 +50,28 @@ class DirectoryControllerTest extends TestCase
         'parentDirId2'          => 1,
     ];
 
+    private function insertDocstoreCustomerDirectoryFixture1(): DocstoreCustomerDirectory
+    {
+        $dir = new DocstoreCustomerDirectory();
+        $dir->name = self::testInfo[ 'folderName' ]; // Folder 3
+        $dir->description = self::testInfo[ 'folderDescription' ]; // This is the folder 3
+        $dir->parent_dir_id = self::testInfo[ 'parentDirId' ];  // null
+        $dir->cust_id = self::testInfo[ 'customerId' ];
+        $dir->save();
+        return $dir;
+    }
+
+    private function insertDocstoreCustomerDirectoryFixture2(): DocstoreCustomerDirectory
+    {
+        $dir = new DocstoreCustomerDirectory();
+        $dir->name = self::testInfo[ 'folderName2' ]; // Folder 3-1
+        $dir->description = self::testInfo[ 'folderDescription2' ]; // This is the folder 3-1
+        $dir->parent_dir_id = self::testInfo[ 'parentDirId2' ];  // null
+        $dir->cust_id = self::testInfo[ 'customerId' ];
+        $dir->save();
+        return $dir;
+    }
+
     /**
      * Test the access to the list for public user
      *
@@ -62,9 +79,8 @@ class DirectoryControllerTest extends TestCase
      */
     public function testListCustomerForPublicUser(): void
     {
-        $response = $this->get( route('docstore-c-dir@customers', [ 'cust' => self::testInfo[ 'customerId' ] ] ) );
-        $response->assertStatus(302 )
-            ->assertRedirect( route('login@showForm' ) );
+        $this->get( route('docstore-c-dir@customers', [ 'cust' => self::testInfo[ 'customerId' ] ] ) )
+            ->assertRedirectToRoute('login@showForm' );
     }
 
     /**
@@ -75,8 +91,8 @@ class DirectoryControllerTest extends TestCase
     public function testListCustomerForCustUser(): void
     {
         $user = $this->getCustUser( 'hecustuser' );
-        $response = $this->actingAs( $user )->get( route('docstore-c-dir@customers', [ 'cust' => self::testInfo[ 'customerId' ] ] ) );
-        $response->assertStatus(403 );
+        $this->actingAs( $user )->get( route('docstore-c-dir@customers', [ 'cust' => self::testInfo[ 'customerId' ] ] ) )
+            ->assertForbidden();
     }
 
     /**
@@ -87,8 +103,8 @@ class DirectoryControllerTest extends TestCase
     public function testListCustomerForCustAdmin(): void
     {
         $user = $this->getCustAdminUser( 'hecustadmin' );
-        $response = $this->actingAs( $user )->get( route('docstore-c-dir@customers', [ 'cust' => self::testInfo[ 'customerId' ] ] ) );
-        $response->assertStatus(403 );
+        $this->actingAs( $user )->get( route('docstore-c-dir@customers', [ 'cust' => self::testInfo[ 'customerId' ] ] ) )
+            ->assertForbidden();
     }
 
     /**
@@ -99,8 +115,8 @@ class DirectoryControllerTest extends TestCase
     public function testListCustomerFoSuperUser(): void
     {
         $user = $this->getSuperUser( 'travis' );
-        $response = $this->actingAs( $user )->get( route('docstore-c-dir@customers', [ 'cust' => self::testInfo[ 'customerId' ] ] ) );
-        $response->assertStatus(200 )
+        $this->actingAs( $user )->get( route('docstore-c-dir@customers', [ 'cust' => self::testInfo[ 'customerId' ] ] ) )
+            ->assertOk()
             ->assertViewIs( 'docstore-customer.dir.customers' )
             ->assertSee( 'HEAnet' )
             ->assertSee( 'Imagine' )
@@ -114,9 +130,8 @@ class DirectoryControllerTest extends TestCase
      */
     public function testListForPublicUser(): void
     {
-        $response = $this->get( route('docstore-c-dir@list', [ 'cust' => self::testInfo[ 'customerId' ] ] ) );
-        $response->assertStatus(302 )
-                ->assertRedirect( route('login@showForm' ) );
+        $this->get( route('docstore-c-dir@list', [ 'cust' => self::testInfo[ 'customerId' ] ] ) )
+            ->assertRedirectToRoute('login@showForm'  );
     }
 
     /**
@@ -127,9 +142,9 @@ class DirectoryControllerTest extends TestCase
     public function testCreateFormAccessPublicUser(): void
     {
         // public user
-        $response = $this->get( route( 'docstore-c-dir@create', [ 'cust' => self::testInfo[ 'customerId' ] ] ) );
-        $response->assertStatus(302 )
-            ->assertRedirect( route('login@showForm' ) );
+        $this->get( route( 'docstore-c-dir@create', [ 'cust' => self::testInfo[ 'customerId' ] ] ) )
+            ->assertRedirectToRoute('login@showForm' );
+
     }
 
     /**
@@ -141,8 +156,8 @@ class DirectoryControllerTest extends TestCase
     {
         // test custuser
         $user = $this->getCustUser( 'hecustuser' );
-        $response = $this->actingAs( $user )->get( route( 'docstore-c-dir@create', [ 'cust' => self::testInfo[ 'customerId' ] ] ) );
-        $response->assertStatus(403 );
+        $this->actingAs( $user )->get( route( 'docstore-c-dir@create', [ 'cust' => self::testInfo[ 'customerId' ] ] ) )
+           ->assertForbidden();
     }
 
     /**
@@ -154,8 +169,8 @@ class DirectoryControllerTest extends TestCase
     {
         // test custadmin
         $user = $this->getCustAdminUser( 'hecustadmin' );
-        $response = $this->actingAs( $user )->get( route( 'docstore-c-dir@create', [ 'cust' => self::testInfo[ 'customerId' ] ] ) );
-        $response->assertStatus(403 );
+        $this->actingAs( $user )->get( route( 'docstore-c-dir@create', [ 'cust' => self::testInfo[ 'customerId' ] ] ) )
+            ->assertForbidden();
     }
 
     /**
@@ -166,9 +181,8 @@ class DirectoryControllerTest extends TestCase
     public function testCreateFormAccessSuperUser(): void
     {
         // test Superuser
-        $user = $this->getSuperUser( 'travis' );
-        $response = $this->actingAs( $user )->get( route( 'docstore-c-dir@create', [ 'cust' => self::testInfo[ 'customerId' ] ] ) );
-        $response->assertOk()
+        $this->actingAs( $this->getSuperUser( 'travis' ) )->get( route( 'docstore-c-dir@create', [ 'cust' => self::testInfo[ 'customerId' ] ] ) )
+            ->assertOk()
             ->assertViewIs('docstore-customer.dir.create' );
     }
 
@@ -180,9 +194,9 @@ class DirectoryControllerTest extends TestCase
     public function testStorePublicUser(): void
     {
         // public user
-        $response = $this->post( route( 'docstore-c-dir@store', [ 'cust' => self::testInfo[ 'customerId' ] ] ), [  'cust_id' => self::testInfo[ 'customerId' ], 'name' =>  self::testInfo[ 'folderName' ], 'description' => self::testInfo[ 'folderDescription' ], 'parent_dir' => self::testInfo[ 'parentDirId' ] ] );
-        $response->assertStatus(302 )
-            ->assertRedirect( route('login@showForm' ) );
+        $this->post( route( 'docstore-c-dir@store', [ 'cust' => self::testInfo[ 'customerId' ] ] ), [  'cust_id' => self::testInfo[ 'customerId' ], 'name' =>  self::testInfo[ 'folderName' ], 'description' => self::testInfo[ 'folderDescription' ], 'parent_dir' => self::testInfo[ 'parentDirId' ] ] )
+            ->assertRedirectToRoute('login@showForm' );
+
         $this->assertDatabaseMissing( 'docstore_customer_directories', [ 'cust_id' => self::testInfo[ 'customerId' ], 'name' =>  self::testInfo[ 'folderName' ], 'description' => self::testInfo[ 'folderDescription' ], 'parent_dir_id' => self::testInfo[ 'parentDirId' ] ] );
     }
 
@@ -194,9 +208,9 @@ class DirectoryControllerTest extends TestCase
     public function testStoreCustUser(): void
     {
         // test custuser
-        $user = $this->getCustUser( 'hecustuser' );
-        $response = $this->actingAs( $user )->post( route( 'docstore-c-dir@store', [ 'cust' => self::testInfo[ 'customerId' ] ] ), [  'cust_id' => self::testInfo[ 'customerId' ], 'name' =>  self::testInfo[ 'folderName' ], 'description' => self::testInfo[ 'folderDescription' ], 'parent_dir' => self::testInfo[ 'parentDirId' ] ] );
-        $response->assertStatus(403 );
+        $this->actingAs( $this->getCustUser( 'hecustuser' ) )->post( route( 'docstore-c-dir@store', [ 'cust' => self::testInfo[ 'customerId' ] ] ), [  'cust_id' => self::testInfo[ 'customerId' ], 'name' =>  self::testInfo[ 'folderName' ], 'description' => self::testInfo[ 'folderDescription' ], 'parent_dir' => self::testInfo[ 'parentDirId' ] ] )
+            ->assertForbidden();
+
         $this->assertDatabaseMissing( 'docstore_customer_directories', [ 'cust_id' => self::testInfo[ 'customerId' ], 'name' =>  self::testInfo[ 'folderName' ], 'description' => self::testInfo[ 'folderDescription' ], 'parent_dir_id' => self::testInfo[ 'parentDirId' ] ] );
     }
 
@@ -208,9 +222,8 @@ class DirectoryControllerTest extends TestCase
     public function testStoreCustAdmin(): void
     {
         // test custadmin
-        $user = $this->getCustAdminUser( 'hecustadmin' );
-        $response = $this->actingAs( $user )->post( route( 'docstore-c-dir@store', [ 'cust' => self::testInfo[ 'customerId' ] ] ), [  'cust_id' => self::testInfo[ 'customerId' ], 'name' =>  self::testInfo[ 'folderName' ], 'description' => self::testInfo[ 'folderDescription' ], 'parent_dir' => self::testInfo[ 'parentDirId' ] ] );
-        $response->assertStatus(403 );
+        $this->actingAs( $this->getCustAdminUser( 'hecustadmin' ) )->post( route( 'docstore-c-dir@store', [ 'cust' => self::testInfo[ 'customerId' ] ] ), [  'cust_id' => self::testInfo[ 'customerId' ], 'name' =>  self::testInfo[ 'folderName' ], 'description' => self::testInfo[ 'folderDescription' ], 'parent_dir' => self::testInfo[ 'parentDirId' ] ] )
+            ->assertForbidden();
         $this->assertDatabaseMissing( 'docstore_customer_directories', [ 'cust_id' => self::testInfo[ 'customerId' ], 'name' =>  self::testInfo[ 'folderName' ], 'description' => self::testInfo[ 'folderDescription' ], 'parent_dir_id' => self::testInfo[ 'parentDirId' ] ] );
     }
 
@@ -222,8 +235,11 @@ class DirectoryControllerTest extends TestCase
     public function testStoreSuperUser(): void
     {
         // test Superuser
-        $user = $this->getSuperUser( 'travis' );
-        $this->actingAs( $user )->post( route( 'docstore-c-dir@store', [ 'cust' => self::testInfo[ 'customerId' ] ] ), [  'cust_id' => self::testInfo[ 'customerId' ], 'name' =>  self::testInfo[ 'folderName' ], 'description' => self::testInfo[ 'folderDescription' ], 'parent_dir' => self::testInfo[ 'parentDirId' ] ] );
+        $response = $this->actingAs( $this->getSuperUser( 'travis' ) )
+            ->post( route( 'docstore-c-dir@store', [ 'cust' => self::testInfo[ 'customerId' ] ] ), [  'cust_id' => self::testInfo[ 'customerId' ], 'name' =>  self::testInfo[ 'folderName' ], 'description' => self::testInfo[ 'folderDescription' ], 'parent_dir' => self::testInfo[ 'parentDirId' ] ] );
+        $newDir = DocstoreCustomerDirectory::latest()->first();
+        $response->assertRedirectToRoute('docstore-c-dir@list', [ 'cust' => self::testInfo[ 'customerId' ], 'dir' => $newDir->id ]);
+
         $this->assertDatabaseHas( 'docstore_customer_directories', [ 'cust_id' => self::testInfo[ 'customerId' ], 'name' =>  self::testInfo[ 'folderName' ], 'description' => self::testInfo[ 'folderDescription' ], 'parent_dir_id' => self::testInfo[ 'parentDirId' ] ] );
     }
 
@@ -234,12 +250,12 @@ class DirectoryControllerTest extends TestCase
      */
     public function testEditFormAccessPublicUser(): void
     {
-        $dir = DocstoreCustomerDirectory::withoutGlobalScope( 'privs' )->where( 'name', self::testInfo[ 'folderName' ] )->first();
+        $dir = $this->insertDocstoreCustomerDirectoryFixture1();
 
         // public user
-        $response = $this->get( route( 'docstore-c-dir@edit', [ 'cust' => $dir->cust_id  , 'dir' => $dir ] ) );
-        $response->assertStatus(302 )
-            ->assertRedirect( route('login@showForm' ) );
+        $this->get( route( 'docstore-c-dir@edit', [ 'cust' => $dir->cust_id  , 'dir' => $dir ] ) )
+            ->assertRedirectToRoute('login@showForm' );
+
     }
 
     /**
@@ -249,12 +265,12 @@ class DirectoryControllerTest extends TestCase
      */
     public function testEditFormAccessCustUser(): void
     {
-        $dir = DocstoreCustomerDirectory::withoutGlobalScope( 'privs' )->where( 'name', self::testInfo[ 'folderName' ] )->first();
+        $dir = $this->insertDocstoreCustomerDirectoryFixture1();
 
         // test custuser
-        $user = $this->getCustUser( 'hecustuser' );
-        $response = $this->actingAs( $user )->get( route( 'docstore-c-dir@edit', [ 'cust' => $dir->cust_id  ,'dir' => $dir ] ) );
-        $response->assertStatus(404 );
+        $this->actingAs( $this->getCustUser( 'hecustuser' ) )
+            ->get( route( 'docstore-c-dir@edit', [ 'cust' => $dir->cust_id  ,'dir' => $dir ] ) )
+            ->assertNotFound();
     }
 
     /**
@@ -264,12 +280,12 @@ class DirectoryControllerTest extends TestCase
      */
     public function testEditFormAccessCustAdmin(): void
     {
-        $dir = DocstoreCustomerDirectory::withoutGlobalScope( 'privs' )->where( 'name', self::testInfo[ 'folderName' ] )->first();
+        $dir = $this->insertDocstoreCustomerDirectoryFixture1();
 
         // test custadmin
-        $user = $this->getCustAdminUser( 'hecustadmin' );
-        $response = $this->actingAs( $user )->get( route( 'docstore-c-dir@edit', [ 'cust' => $dir->cust_id  , 'dir' => $dir ] ) );
-        $response->assertStatus(404 );
+        $this->actingAs( $this->getCustAdminUser( 'hecustadmin' ) )
+            ->get( route( 'docstore-c-dir@edit', [ 'cust' => $dir->cust_id  , 'dir' => $dir ] ) )
+            ->assertNotFound();
     }
 
     /**
@@ -279,27 +295,27 @@ class DirectoryControllerTest extends TestCase
      */
     public function testEditFormAccessSuperUser(): void
     {
-        $dir = DocstoreCustomerDirectory::withoutGlobalScope( 'privs' )->where( 'name', self::testInfo[ 'folderName' ] )->first();
+        $dir = $this->insertDocstoreCustomerDirectoryFixture1();
 
         // test Superuser
-        $user = $this->getSuperUser( 'travis' );
-        $response = $this->actingAs( $user )->get( route( 'docstore-c-dir@edit', [ 'cust' => $dir->cust_id  , 'dir' => $dir ] ) );
-        $response->assertOk()
+        $this->actingAs( $this->getSuperUser( 'travis' ) )
+            ->get( route( 'docstore-c-dir@edit', [ 'cust' => $dir->cust_id  , 'dir' => $dir ] ) )
+            ->assertOk()
             ->assertViewIs('docstore-customer.dir.create' );
     }
 
     /**
-     * Test update an object with a post method
+     * Test update an object with a post method when the route is defined as PUT
      *
      * @return void
      */
-    public function testUpdateWithPostMethod(): void
+    public function testUpdateWithPostMethodNotPut(): void
     {
-        $dir = DocstoreCustomerDirectory::withoutGlobalScope( 'privs' )->where( [ 'name' => self::testInfo[ 'folderName' ] ] )->first();
+        $dir = $this->insertDocstoreCustomerDirectoryFixture1();
 
         // public user
-        $response = $this->post( route( 'docstore-c-dir@update', [ 'cust' => $dir->cust_id, 'dir' => $dir ] ), [ 'name' =>  self::testInfo[ 'folderName2' ], 'description' => self::testInfo[ 'folderDescription2' ], 'parent_dir' => self::testInfo[ 'parentDirId2' ] ] );
-        $response->assertStatus(405 );
+        $this->post( route( 'docstore-c-dir@update', [ 'cust' => $dir->cust_id, 'dir' => $dir ] ), [ 'name' =>  self::testInfo[ 'folderName2' ], 'description' => self::testInfo[ 'folderDescription2' ], 'parent_dir' => self::testInfo[ 'parentDirId2' ] ] )
+            ->assertMethodNotAllowed();
     }
 
     /**
@@ -309,12 +325,11 @@ class DirectoryControllerTest extends TestCase
      */
     public function testUpdatePublicUser(): void
     {
-        $dir = DocstoreCustomerDirectory::withoutGlobalScope( 'privs' )->where( [ 'name' => self::testInfo[ 'folderName' ] ] )->first();
+        $dir = $this->insertDocstoreCustomerDirectoryFixture1();
 
         // public user
-        $response = $this->put( route( 'docstore-c-dir@update', [ 'cust' => $dir->cust_id, 'dir' => $dir ] ), [ 'name' =>  self::testInfo[ 'folderName2' ], 'description' => self::testInfo[ 'folderDescription2' ], 'parent_dir' => self::testInfo[ 'parentDirId2' ] ] );
-        $response->assertStatus(302 )
-            ->assertRedirect( route('login@showForm' ) );
+        $this->put( route( 'docstore-c-dir@update', [ 'cust' => $dir->cust_id, 'dir' => $dir ] ), [ 'name' =>  self::testInfo[ 'folderName2' ], 'description' => self::testInfo[ 'folderDescription2' ], 'parent_dir' => self::testInfo[ 'parentDirId2' ] ] )
+            ->assertRedirectToRoute('login@showForm' );
         $this->assertDatabaseHas(       'docstore_customer_directories', [ 'cust_id' => $dir->cust_id, 'name' => self::testInfo[ 'folderName' ],     'description' => self::testInfo[ 'folderDescription' ],     'parent_dir_id' => self::testInfo[ 'parentDirId' ] ] );
         $this->assertDatabaseMissing(   'docstore_customer_directories', [ 'cust_id' => $dir->cust_id, 'name' => self::testInfo[ 'folderName2' ],    'description' => self::testInfo[ 'folderDescription2' ],    'parent_dir_id' => self::testInfo[ 'parentDirId2' ] ] );
     }
@@ -324,14 +339,14 @@ class DirectoryControllerTest extends TestCase
      *
      * @return void
      */
-    public function testUpdateCustUser()
+    public function testUpdateCustUser(): void
     {
-        $dir = DocstoreCustomerDirectory::withoutGlobalScope( 'privs' )->where( [ 'name' => self::testInfo[ 'folderName' ] ] )->first();
+        $dir = $this->insertDocstoreCustomerDirectoryFixture1();
 
         // cust user
-        $user = $this->getCustUser( 'hecustuser' );
-        $response = $this->actingAs( $user )->put( route( 'docstore-c-dir@update', [ 'cust' => $dir->cust_id, 'dir' => $dir ] ), [ 'name' =>  self::testInfo[ 'folderName2' ], 'description' => self::testInfo[ 'folderDescription2' ], 'parent_dir' => self::testInfo[ 'parentDirId2' ] ] );
-        $response->assertStatus(404 );
+        $this->actingAs( $this->getCustUser( 'hecustuser' ) )
+            ->put( route( 'docstore-c-dir@update', [ 'cust' => $dir->cust_id, 'dir' => $dir ] ), [ 'name' =>  self::testInfo[ 'folderName2' ], 'description' => self::testInfo[ 'folderDescription2' ], 'parent_dir' => self::testInfo[ 'parentDirId2' ] ] )
+            ->assertNotFound();
         $this->assertDatabaseHas(       'docstore_customer_directories', [ 'cust_id' => $dir->cust_id, 'name' => self::testInfo[ 'folderName' ],     'description' => self::testInfo[ 'folderDescription' ],     'parent_dir_id' => self::testInfo[ 'parentDirId' ]  ] );
         $this->assertDatabaseMissing(   'docstore_customer_directories', [ 'cust_id' => $dir->cust_id, 'name' => self::testInfo[ 'folderName2' ],    'description' => self::testInfo[ 'folderDescription2' ],    'parent_dir_id' => self::testInfo[ 'parentDirId2' ] ] );
     }
@@ -343,12 +358,12 @@ class DirectoryControllerTest extends TestCase
      */
     public function testUpdateCustAdmin(): void
     {
-        $dir = DocstoreCustomerDirectory::withoutGlobalScope( 'privs' )->where( [ 'name' => self::testInfo[ 'folderName' ] ] )->first();
+        $dir = $this->insertDocstoreCustomerDirectoryFixture1();
 
         // cust admin
-        $user = $this->getCustAdminUser( 'hecustadmin' );
-        $response = $this->actingAs( $user )->put( route( 'docstore-c-dir@update', [  'cust' => $dir->cust_id, 'dir' => $dir ] ), [ 'name' =>  self::testInfo[ 'folderName2' ], 'description' => self::testInfo[ 'folderDescription2' ], 'parent_dir' => self::testInfo[ 'parentDirId2' ] ] );
-        $response->assertStatus(404 );
+        $this->actingAs( $this->getCustAdminUser( 'hecustadmin' ) )
+            ->put( route( 'docstore-c-dir@update', [  'cust' => $dir->cust_id, 'dir' => $dir ] ), [ 'name' =>  self::testInfo[ 'folderName2' ], 'description' => self::testInfo[ 'folderDescription2' ], 'parent_dir' => self::testInfo[ 'parentDirId2' ] ] )
+            ->assertNotFound();
         $this->assertDatabaseHas(       'docstore_customer_directories', [ 'cust_id' => $dir->cust_id, 'name' => self::testInfo[ 'folderName' ],     'description' => self::testInfo[ 'folderDescription' ],     'parent_dir_id' => self::testInfo[ 'parentDirId' ]  ] );
         $this->assertDatabaseMissing(   'docstore_customer_directories', [ 'cust_id' => $dir->cust_id, 'name' => self::testInfo[ 'folderName2' ],    'description' => self::testInfo[ 'folderDescription2' ],    'parent_dir_id' => self::testInfo[ 'parentDirId2' ] ] );
     }
@@ -360,18 +375,16 @@ class DirectoryControllerTest extends TestCase
      */
     public function testUpdateSuperUser(): void
     {
-        $dir = DocstoreCustomerDirectory::withoutGlobalScope( 'privs' )->where( [ 'name' => self::testInfo[ 'folderName' ] ] )->first();
+        $dir = $this->insertDocstoreCustomerDirectoryFixture1();
+
+        $this->assertDatabaseHas(       'docstore_customer_directories', [ 'name' => self::testInfo[ 'folderName' ],     'description' => self::testInfo[ 'folderDescription' ],     'parent_dir_id' => self::testInfo[ 'parentDirId' ] ] );
 
         // superuser
-        $user = $this->getSuperUser( 'travis' );
-        $this->actingAs( $user )->put( route( 'docstore-c-dir@update', [ 'cust' => $dir->cust_id , 'dir' => $dir ] ), [ 'cust_id' => $dir->cust_id , 'name' =>  self::testInfo[ 'folderName2' ], 'description' => self::testInfo[ 'folderDescription2' ], 'parent_dir_id' => self::testInfo[ 'parentDirId2' ] ] );
-        $exist = DB::table('docstore_customer_directories')
-            ->where('name', self::testInfo[ 'folderName' ])
-            ->where('description', self::testInfo[ 'folderDescription' ])
-            ->where('parent_dir_id', self::testInfo[ 'parentDirId' ])
-            ->exists();
-        $this->assertFalse( $exist );
+        $this->actingAs( $this->getSuperUser( 'travis' ) )
+            ->put( route( 'docstore-c-dir@update', [ 'cust' => $dir->cust_id , 'dir' => $dir ] ), [ 'cust_id' => $dir->cust_id , 'name' =>  self::testInfo[ 'folderName2' ], 'description' => self::testInfo[ 'folderDescription2' ], 'parent_dir_id' => self::testInfo[ 'parentDirId2' ] ] )
+            ->assertRedirectToRoute('docstore-c-dir@list', [ 'cust' => $dir->cust_id, 'dir' => self::testInfo[ 'parentDirId2' ] ]);
 
+        $this->assertDatabaseMissing(   'docstore_customer_directories', [ 'name' => self::testInfo[ 'folderName' ],     'description' => self::testInfo[ 'folderDescription' ],     'parent_dir_id' => self::testInfo[ 'parentDirId' ] ] );
         $this->assertDatabaseHas(       'docstore_customer_directories', [ 'name' => self::testInfo[ 'folderName2' ],    'description' => self::testInfo[ 'folderDescription2' ],    'parent_dir_id' => self::testInfo[ 'parentDirId2' ] ] );
     }
 
@@ -382,11 +395,11 @@ class DirectoryControllerTest extends TestCase
      */
     public function testDeleteWithPostMethod(): void
     {
-        $dir = DocstoreCustomerDirectory::withoutGlobalScope( 'privs' )->where( [ 'name' => self::testInfo[ 'folderName2' ] ] )->first();
+        $dir = $this->insertDocstoreCustomerDirectoryFixture2();
 
         // public user
-        $response = $this->post( route( 'docstore-c-dir@delete', [ 'dir' => $dir ] ) );
-        $response->assertStatus(405 );
+        $this->post( route( 'docstore-c-dir@delete', [ 'dir' => $dir ] ) )
+            ->assertMethodNotAllowed();
     }
 
     /**
@@ -396,12 +409,11 @@ class DirectoryControllerTest extends TestCase
      */
     public function testDeleteForPublicUser(): void
     {
-        $dir = DocstoreCustomerDirectory::withoutGlobalScope( 'privs' )->where( [ 'name' => self::testInfo[ 'folderName2' ] ] )->first();
+        $dir = $this->insertDocstoreCustomerDirectoryFixture2();
 
         // public user
-        $response = $this->delete( route( 'docstore-c-dir@delete', [ 'dir' => $dir ] ) );
-        $response->assertStatus(302 )
-            ->assertRedirect( route('login@showForm' ) );
+        $this->delete( route( 'docstore-c-dir@delete', [ 'dir' => $dir ] ) )
+            ->assertRedirectToRoute('login@showForm');
         $this->assertDatabaseHas( 'docstore_customer_directories', [ 'name' => self::testInfo[ 'folderName2' ],    'description' => self::testInfo[ 'folderDescription2' ], 'parent_dir_id' => self::testInfo[ 'parentDirId2' ] ] );
     }
 
@@ -410,14 +422,14 @@ class DirectoryControllerTest extends TestCase
      *
      * @return void
      */
-    public function testDeleteCustUser()
+    public function testDeleteCustUser(): void
     {
-        $dir = DocstoreCustomerDirectory::withoutGlobalScope( 'privs' )->where( [ 'name' => self::testInfo[ 'folderName2' ] ] )->first();
+        $dir = $this->insertDocstoreCustomerDirectoryFixture2();
 
         // cust user
-        $user = $this->getCustUser( 'hecustuser' );
-        $response = $this->actingAs( $user )->delete( route( 'docstore-c-dir@delete', [ 'dir' => $dir ] ) );
-        $response->assertStatus(404 );
+        $this->actingAs( $this->getCustUser( 'hecustuser' ) )
+            ->delete( route( 'docstore-c-dir@delete', [ 'dir' => $dir ] ) )
+            ->assertNotFound();
         $this->assertDatabaseHas( 'docstore_customer_directories', [ 'name' => self::testInfo[ 'folderName2' ],    'description' => self::testInfo[ 'folderDescription2' ], 'parent_dir_id' => self::testInfo[ 'parentDirId2' ] ] );
     }
 
@@ -428,12 +440,12 @@ class DirectoryControllerTest extends TestCase
      */
     public function testDeleteCustAdmin(): void
     {
-        $dir = DocstoreCustomerDirectory::withoutGlobalScope( 'privs' )->where( [ 'name' => self::testInfo[ 'folderName2' ] ] )->first();
+        $dir = $this->insertDocstoreCustomerDirectoryFixture2();
 
         // cust user
-        $user = $this->getCustAdminUser( 'hecustadmin' );
-        $response = $this->actingAs( $user )->delete( route( 'docstore-c-dir@delete', [ 'dir' => $dir ] ) );
-        $response->assertStatus(404 );
+        $this->actingAs( $this->getCustAdminUser( 'hecustadmin' ) )
+            ->delete( route( 'docstore-c-dir@delete', [ 'dir' => $dir ] ) )
+            ->assertNotFound();
         $this->assertDatabaseHas( 'docstore_customer_directories', [ 'name' => self::testInfo[ 'folderName2' ],    'description' => self::testInfo[ 'folderDescription2' ], 'parent_dir_id' => self::testInfo[ 'parentDirId2' ] ] );
     }
 
@@ -442,14 +454,16 @@ class DirectoryControllerTest extends TestCase
      *
      * @return void
      */
-    public function testDeleteSuperUser()
+    public function testDeleteSuperUser(): void
     {
-        $dir = DocstoreCustomerDirectory::withoutGlobalScope( 'privs' )->where( [ 'name' => self::testInfo[ 'folderName2' ] ] )->first();
+        $dir = $this->insertDocstoreCustomerDirectoryFixture2();
 
         info("dir\n".var_export($dir, true));
         // superuser
-        $user = $this->getSuperUser( 'travis' );
-        $this->actingAs( $user )->delete( route( 'docstore-c-dir@delete', [ 'dir' => $dir ] ) );
+        $this->actingAs( $this->getSuperUser( 'travis' ) )
+            ->delete( route( 'docstore-c-dir@delete', [ 'dir' => $dir ] ) )
+            ->assertRedirectToRoute('docstore-c-dir@list', [ 'cust' => $dir->customer , 'dir' => $dir->parent_dir_id ]);
+
         $this->assertDatabaseMissing( 'docstore_customer_directories', [ 'name' => self::testInfo[ 'folderName2' ],    'description' => self::testInfo[ 'folderDescription2' ], 'parent_dir_id' => self::testInfo[ 'parentDirId2' ] ] );
     }
 
@@ -462,11 +476,10 @@ class DirectoryControllerTest extends TestCase
     {
         $cust = Customer::whereId( self::testInfo[ 'customerId' ] )->first();
 
-        $dir = DocstoreCustomerDirectory::withoutGlobalScope( 'privs' )->where( 'cust_id', $cust->id )->get()->last();
+        $dir = $this->insertDocstoreCustomerDirectoryFixture2();
         // public user
-        $response = $this->delete( route( 'docstore-c-dir@delete-for-customer', [ 'cust' => $cust ] ) );
-        $response->assertStatus(302 )
-            ->assertRedirect( route('login@showForm' ) );
+        $this->delete( route( 'docstore-c-dir@delete-for-customer', [ 'cust' => $cust ] ) )
+            ->assertRedirectToRoute('login@showForm');
         $this->assertDatabaseHas( 'docstore_customer_directories', [ 'name' => $dir->name,    'description' => $dir->description ] );
     }
 
@@ -479,12 +492,12 @@ class DirectoryControllerTest extends TestCase
     {
         $cust = Customer::whereId( self::testInfo[ 'customerId' ] )->first();
 
-        $dir = DocstoreCustomerDirectory::withoutGlobalScope( 'privs' )->where( 'cust_id', $cust->id )->get()->last();
+        $dir = $this->insertDocstoreCustomerDirectoryFixture2();
 
         // cust user
-        $user = $this->getCustUser( 'hecustuser' );
-        $response = $this->actingAs( $user )->delete( route( 'docstore-c-dir@delete-for-customer', [ 'cust' => $cust ] ) );
-        $response->assertStatus(403 );
+        $this->actingAs( $this->getCustUser( 'hecustuser' ) )
+            ->delete( route( 'docstore-c-dir@delete-for-customer', [ 'cust' => $cust ] ) )
+            ->assertForbidden();
         $this->assertDatabaseHas( 'docstore_customer_directories', [ 'name' => $dir->name,    'description' => $dir->description ] );
     }
 
@@ -493,15 +506,14 @@ class DirectoryControllerTest extends TestCase
      *
      * @return void
      */
-    public function testDeleteAllForCustAdmin()
+    public function testDeleteAllForCustAdmin(): void
     {
         $cust = Customer::whereId( self::testInfo[ 'customerId' ] )->first();
+        $dir = $this->insertDocstoreCustomerDirectoryFixture2();
 
-        $dir = DocstoreCustomerDirectory::withoutGlobalScope( 'privs' )->where( 'cust_id', $cust->id )->get()->last();
-        // cust admin
-        $user = $this->getCustAdminUser( 'hecustadmin' );
-        $response = $this->actingAs( $user )->delete( route( 'docstore-c-dir@delete-for-customer', [ 'cust' => $cust ] ) );
-        $response->assertStatus(403 );
+        $this->actingAs( $this->getCustAdminUser( 'hecustadmin' ) )
+            ->delete( route( 'docstore-c-dir@delete-for-customer', [ 'cust' => $cust ] ) )
+            ->assertForbidden();
         $this->assertDatabaseHas( 'docstore_customer_directories', [ 'name' => $dir->name,    'description' => $dir->description ] );
     }
 
@@ -513,17 +525,11 @@ class DirectoryControllerTest extends TestCase
     public function testDeleteAllForSuperUser(): void
     {
         $cust = Customer::whereId( self::testInfo[ 'customerId' ] )->first();
+        $dir = $this->insertDocstoreCustomerDirectoryFixture2();
 
-        $dir = DocstoreCustomerDirectory::withoutGlobalScope( 'privs' )->where( 'cust_id', self::testInfo[ 'customerId' ] )->get()->last();
-        // superuser
-        $user = $this->getSuperUser( 'travis' );
-        $this->actingAs( $user )->delete( route( 'docstore-c-dir@delete-for-customer', [ 'cust' => $cust ] ) );
-        $exist = DB::table('docstore_customer_directories')
-            ->where( 'name', $dir->name )
-            ->where( 'description', $dir->description )
-            ->where( 'parent_dir_id', $dir->parent_dir_id )
-            ->where('id', '!=', 1)
-            ->exists();
-        $this->assertFalse( $exist );
+        $this->actingAs( $this->getSuperUser( 'travis' ) )
+            ->delete( route( 'docstore-c-dir@delete-for-customer', [ 'cust' => $cust ] ) )
+            ->assertRedirectToRoute( 'docstore-c-dir@customers' );
+        $this->assertDatabaseMissing( 'docstore_customer_directories', [ 'name' => $dir->name,     'description' => $dir->description,     'parent_dir_id' => $dir->parent_dir_id, ] );
     }
 }
