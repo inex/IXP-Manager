@@ -1,0 +1,65 @@
+{
+  "_jquery-Cn2bjOG6.js": {
+    "file": "assets/jquery-Cn2bjOG6.js",
+    "name": "jquery"
+  },
+  "node_modules/@fortawesome/fontawesome-free/webfonts/fa-brands-400.woff2": {
+    "file": "assets/fa-brands-400-Bs6tcqqs.woff2",
+    "src": "node_modules/@fortawesome/fontawesome-free/webfonts/fa-brands-400.woff2"
+  },
+  "node_modules/@fortawesome/fontawesome-free/webfonts/fa-regular-400.woff2": {
+    "file": "assets/fa-regular-400-DRN8N0d1.woff2",
+    "src": "node_modules/@fortawesome/fontawesome-free/webfonts/fa-regular-400.woff2"
+  },
+  "node_modules/@fortawesome/fontawesome-free/webfonts/fa-solid-900.woff2": {
+    "file": "assets/fa-solid-900-IAB4Droh.woff2",
+    "src": "node_modules/@fortawesome/fontawesome-free/webfonts/fa-solid-900.woff2"
+  },
+  "node_modules/@fortawesome/fontawesome-free/webfonts/fa-v4compatibility.woff2": {
+    "file": "assets/fa-v4compatibility-CErXDOsT.woff2",
+    "src": "node_modules/@fortawesome/fontawesome-free/webfonts/fa-v4compatibility.woff2"
+  },
+  "node_modules/blueimp-file-upload/js/jquery.fileupload.js": {
+    "file": "assets/jquery.fileupload-HrXyum_h.js",
+    "name": "jquery.fileupload",
+    "src": "node_modules/blueimp-file-upload/js/jquery.fileupload.js",
+    "isDynamicEntry": true,
+    "imports": [
+      "_jquery-Cn2bjOG6.js"
+    ]
+  },
+  "resources/js/ixp-manager.js": {
+    "file": "assets/ixp-manager-DhxHPWxZ.js",
+    "name": "ixp-manager",
+    "src": "resources/js/ixp-manager.js",
+    "isDynamicEntry": true
+  },
+  "resources/js/ixp-pack.js": {
+    "file": "assets/ixp-pack-B8_OkXsj.js",
+    "name": "ixp-pack",
+    "src": "resources/js/ixp-pack.js",
+    "isEntry": true,
+    "imports": [
+      "_jquery-Cn2bjOG6.js"
+    ],
+    "dynamicImports": [
+      "node_modules/blueimp-file-upload/js/jquery.fileupload.js",
+      "resources/js/ixp-manager.js"
+    ]
+  },
+  "resources/scss/ixp-pack.scss": {
+    "file": "assets/ixp-pack-D9KDuwH6.css",
+    "name": "ixp-pack",
+    "names": [
+      "ixp-pack.css"
+    ],
+    "src": "resources/scss/ixp-pack.scss",
+    "isEntry": true,
+    "assets": [
+      "assets/fa-brands-400-Bs6tcqqs.woff2",
+      "assets/fa-regular-400-DRN8N0d1.woff2",
+      "assets/fa-solid-900-IAB4Droh.woff2",
+      "assets/fa-v4compatibility-CErXDOsT.woff2"
+    ]
+  }
+}
