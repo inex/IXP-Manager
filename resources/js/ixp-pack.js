@@ -36,7 +36,7 @@ import 'datatables.net-responsive';
 import 'datatables.net-responsive-bs4';
 
 // Blueimp File Upload
-await 'blueimp-file-upload/js/jquery.fileupload.js';
+import 'blueimp-file-upload/js/jquery.fileupload.js';
 
 // Moment
 import moment from 'moment';
