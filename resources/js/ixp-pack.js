@@ -36,7 +36,7 @@ import 'datatables.net-responsive';
 import 'datatables.net-responsive-bs4';
 
 // Blueimp File Upload
-await import( 'blueimp-file-upload/js/jquery.fileupload.js' );
+await 'blueimp-file-upload/js/jquery.fileupload.js';
 
 // Moment
 import moment from 'moment';
@@ -53,4 +53,4 @@ Alpine.start();
 
 // IXP Manager custom logic
 import './ixp-functions.js';
-await import( './ixp-manager.js' );
+import './ixp-manager.js';
