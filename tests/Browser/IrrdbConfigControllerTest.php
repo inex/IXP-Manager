@@ -154,7 +154,7 @@ class IrrdbConfigControllerTest extends DuskTestCase
             // 13. delete the router in the UI and verify via success message text and location
             $browser->visit( route( 'irrdb-config@list' ) )
                 ->click( '#e2f-list-delete-' . $irrdbConfig->id )
-                ->waitForText( 'Do you really want to delete this an IRRDB Sources?' )
+                ->waitForText( 'Do you really want to delete this IRRDB Source?' )
                 ->press( 'Delete' );
 
             $browser->waitForText( 'IRRDB Source deleted.' );
