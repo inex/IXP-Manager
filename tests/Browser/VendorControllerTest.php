@@ -144,7 +144,7 @@ class VendorControllerTest extends DuskTestCase
             // 10. delete the router in the UI and verify via success message text and location
             $browser->visit( route( 'vendor@list' ) )
                 ->click( '#e2f-list-delete-' . $vendor->id )
-                ->waitForText( 'Do you really want to delete this a vendor?' )
+                ->waitForText( 'Do you really want to delete this vendor?' )
                 ->press( 'Delete' );
 
             $browser->waitForText( 'Vendor deleted.' );
