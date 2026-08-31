@@ -109,7 +109,7 @@
 <?php $this->section('scripts') ?>
 
 
-    <script type="text/javascript">
+    <script type="module">
         // http://stackoverflow.com/questions/12449890/reload-content-in-modal-twitter-bootstrap
         $(document).on('hidden.bs.modal', function (e) {
             $(e.target).removeData('bs.modal');

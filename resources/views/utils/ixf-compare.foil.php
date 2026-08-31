@@ -142,6 +142,6 @@
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>
-    <script type="text/javascript">
+    <script type="module">
     </script>
 <?php $this->append() ?>
