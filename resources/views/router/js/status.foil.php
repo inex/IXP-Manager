@@ -1,3 +1,4 @@
+<?= app(\Illuminate\Foundation\Vite::class)(['resources/js/moment.js']) ?>
 <script type="module">
     const lgEnabled = <?= $t->lgEnabled ? 'true' : 'false' ?>;
 

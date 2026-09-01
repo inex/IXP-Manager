@@ -18,6 +18,7 @@ export default defineConfig({
                 'resources/js/ixp-pack.js',
                 'resources/js/jquery-fileuploader.js',
                 'resources/js/clipboard.js',
+                'resources/js/moment.js',
             ],
             refresh: true,
         }),

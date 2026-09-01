@@ -25,24 +25,11 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import bootbox from 'bootbox';
 window.bootbox = bootbox;
 
-// Axios
-import axios from 'axios';
-window.axios = axios;
-
 // DataTables
 import 'datatables.net';
 import 'datatables.net-bs4';
 import 'datatables.net-responsive';
 import 'datatables.net-responsive-bs4';
-
-// Moment
-import moment from 'moment';
-window.moment = moment;
-
-// Alpine.js
-import Alpine from 'alpinejs';
-window.Alpine = Alpine;
-Alpine.start();
 
 // IXP Manager custom logic
 import './ixp-functions.js';
