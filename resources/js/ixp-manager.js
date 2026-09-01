@@ -44,11 +44,6 @@ $( document ).ready( function(){
         $( "#instructions-alert").toggle();
     });
 
-    $( ".help-btn" ).click( function() {
-        $( ".former-help-text" ).toggle();
-        $( "#instructions-alert").toggle();
-    });
-
     $('.tab-link-body-note').on( 'click', function(e) {
         e.preventDefault();
         $(this).tab('show');
