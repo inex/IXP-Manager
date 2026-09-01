@@ -5,4 +5,12 @@
 @use '@fortawesome/fontawesome-free/css/v4-shims.css';
 @use 'datatables.net-responsive-bs4/css/responsive.bootstrap4.css';
 @use './ixp-manager.css';
+
+
+// Tailwind v4 uses CSS layers, so pull the layers in directly for now:
+@use "tailwindcss/theme.css";
+@use "tailwindcss/preflight";
 @use './tailwind.scss';
+@use "tailwindcss/utilities";
+
+@config "../../tailwind.config.js";
