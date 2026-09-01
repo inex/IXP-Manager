@@ -1,3 +1,4 @@
+<?= app(\Illuminate\Foundation\Vite::class)(['resources/js/clipboard.js']) ?>
 <script type="module">
     /**
      * initialisation of the Clipboard even on the class in parameter

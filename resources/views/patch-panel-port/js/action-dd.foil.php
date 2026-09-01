@@ -1,3 +1,4 @@
+<?= app(\Illuminate\Foundation\Vite::class)(['resources/js/jquery-fileuploader.js']) ?>
 <script type="module">
 
     //////////////////////////////////////////////////////////////////////////////////////

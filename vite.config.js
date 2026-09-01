@@ -16,6 +16,8 @@ export default defineConfig({
             input: [
                 'resources/scss/ixp-pack.scss',
                 'resources/js/ixp-pack.js',
+                'resources/js/jquery-fileuploader.js',
+                'resources/js/clipboard.js',
             ],
             refresh: true,
         }),

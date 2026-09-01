@@ -35,16 +35,9 @@ import 'datatables.net-bs4';
 import 'datatables.net-responsive';
 import 'datatables.net-responsive-bs4';
 
-// Blueimp File Upload
-import 'blueimp-file-upload/js/jquery.fileupload.js';
-
 // Moment
 import moment from 'moment';
 window.moment = moment;
-
-// ClipboardJS
-import ClipboardJS from 'clipboard';
-window.ClipboardJS = ClipboardJS;
 
 // Alpine.js
 import Alpine from 'alpinejs';
