@@ -34,6 +34,7 @@ use IXP\Models\{
 };
 
 use Exception;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Http\{
     RedirectResponse,
     JsonResponse
@@ -195,6 +196,7 @@ class PeeringManagerController extends Controller
 
         if( !$marksent ) {
             Mail::send( $mailable );
+            Log::notice( sprintf("%s sent peering request email from customer [%d|%s] to peer [%d|%s]", Auth::getUser()->username, $cust->id, $cust->name, $peer->id, $peer->name ) );
         }
 
         if( !$sendtome ) {
