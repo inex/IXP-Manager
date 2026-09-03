@@ -30,6 +30,8 @@ use Exception;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use IXP\Exceptions\Utils\DotEnvParserException;
 use IXP\Utils\DotEnv\DotEnvContainer;
 use IXP\Utils\DotEnv\DotEnvParser;
@@ -49,8 +51,8 @@ use IXP\Utils\View\Alert\Container as AlertContainer;
 class SettingsController extends Controller
 {
     protected array $fe_settings;
-    
-    
+
+
     public function __construct()
     {
         $this->fe_settings = config( 'ixp_fe_settings' );
@@ -65,7 +67,7 @@ class SettingsController extends Controller
     private function gatherRules(): array
     {
         $rules = [];
-        
+
         foreach( $this->fe_settings[ "panels" ] as $panel ) {
             foreach( $panel[ "fields" ] as $label => $field ) {
                 if( isset( $field[ "rules" ] ) && $field[ "rules" ] !== '' ) {
@@ -73,11 +75,11 @@ class SettingsController extends Controller
                 }
             }
         }
-        
+
         return $rules;
     }
-    
-    
+
+
     /**
      * Display the form to edit an object
      */
@@ -87,9 +89,9 @@ class SettingsController extends Controller
             $this->checkIfDotEnvIsCompatible();
             $readOnly = !$this->isDotEnvWritable();
         } catch( Exception $e ) {
-            
+
             AlertContainer::push( $e->getMessage(), Alert::DANGER );
-            
+
             return view( 'settings.compatibility' )->with( [
                 'exception' => $e,
             ] );
@@ -98,7 +100,7 @@ class SettingsController extends Controller
         if( $readOnly ) {
             AlertContainer::push( 'Server has no write permissions for .env file. Changes disabled.', Alert::WARNING );
         }
-        
+
         return view( 'settings.index' )->with( [
             'tab'          => $tab ?? false, // hack to work around foils isset support..
             'settings'     => $this->fe_settings,
@@ -107,8 +109,8 @@ class SettingsController extends Controller
             'lastModified' => date( 'Y-m-d H:i:s T', filemtime( base_path( '.env' ) ) ),
         ] );
     }
-    
-    
+
+
     /**
      * @throws DotEnvParserException
      * @throws Exception
@@ -118,11 +120,11 @@ class SettingsController extends Controller
         if( !file_exists( base_path( '.env' ) ) ) {
             throw new Exception( "The .env file is missing. Please create it and try again." );
         }
-        
+
         if( !( $env = file_get_contents( base_path( '.env' ) ) ) ) {
             throw new Exception( "The .env file is empty. Please add some settings and try again." );
         }
-        
+
         new DotEnvParser( $env )->parse();
     }
 
@@ -143,12 +145,12 @@ class SettingsController extends Controller
         if( !file_exists( base_path( '.env' ) ) ) {
             throw new Exception( "The .env file is missing. Please create it and try again." );
         }
-        
+
         if( !( $env = file_get_contents( base_path( '.env' ) ) ) ) {
             throw new Exception( "The .env file is empty. Please add some settings and try again." );
         }
-        
-        
+
+
         return new DotEnvContainer( new DotEnvParser( $env )->parse()->settings() );
     }
     
@@ -160,11 +162,11 @@ class SettingsController extends Controller
         if( !file_exists( base_path( '.env' ) ) ) {
             throw new Exception( "The .env file is missing. Please create it and try again." );
         }
-        
+
         if( !is_writable( base_path( '.env' ) ) ) {
             throw new Exception( "The .env file cannot be written to. Please check the file permissions and try again." );
         }
-        
+
         if( !( file_put_contents( base_path( '.env' ), $dotEnv ) ) ) {
             throw new Exception( "Could not write to the .env file. Please check the file permissions and try again." );
         }
@@ -179,20 +181,20 @@ class SettingsController extends Controller
     public function update( Request $request ): RedirectResponse
     {
         $validated = $request->validate( $this->gatherRules() );
-        
+
         try {
             // only interested in saving settings where the value has changed
             $dotenv = $this->loadDotEnv();
-            
+
             foreach( $this->fe_settings[ "panels" ] as $panel ) {
                 foreach( $panel[ "fields" ] as $fname => $fconfig ) {
 
                     $orig = config( $fconfig[ "config_key" ] );
-                    
+
                     if( isset( $fconfig[ "invert" ] ) && $fconfig[ "invert" ] ) {
                         $validated[ $fname ] = $validated[ $fname ] === "1" ? "0" : "1";
                     }
-                    
+
                     if( !isset( $validated[ $fname ] ) ) {
                         continue;
                     }
@@ -217,19 +219,19 @@ class SettingsController extends Controller
                         $dotenv->set( null, null, null );
                         $dotenv->set( $fconfig[ 'dotenv_key' ], $validated[ $fname ] );
                     }
-                    
                 }
             }
 
             $this->saveDotEnv( new DotEnvWriter( $dotenv->settings() )->generateContent() );
-            
+
         } catch( DotEnvParserException|Exception $e ) {
             AlertContainer::push( $e->getMessage(), Alert::DANGER );
             return redirect()->back();
         }
-        
+
         AlertContainer::push( 'Settings have been successfully updated', Alert::SUCCESS );
+        Log::notice( Auth::user()->username . ' updated .env file' );
         return redirect( route( 'settings@index') );
     }
-    
+
 }
