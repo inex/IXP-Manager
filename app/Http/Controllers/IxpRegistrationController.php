@@ -29,6 +29,8 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use IXP\Services\Infrastructure\Registration\RegistrationChecker;
 use IXP\Http\Requests\RegisterInfrastructureRequest;
 use IXP\Models\Infrastructure;
@@ -126,6 +128,8 @@ class IxpRegistrationController
             Container::push("You must register at least one infrastructure", Alert::INFO);
             return redirect()->back()->withInput();
         }
+
+        Log::notice( Auth::getUser()->username . " sending registration request to ixpmanager.org" );
 
         try {
             $response = \Http::withHeaders(['Accept' => 'application/json'])
