@@ -458,7 +458,6 @@ class DirectoryControllerTest extends TestCase
     {
         $dir = $this->insertDocstoreCustomerDirectoryFixture2();
 
-        info("dir\n".var_export($dir, true));
         // superuser
         $this->actingAs( $this->getSuperUser( 'travis' ) )
             ->delete( route( 'docstore-c-dir@delete', [ 'dir' => $dir ] ) )
