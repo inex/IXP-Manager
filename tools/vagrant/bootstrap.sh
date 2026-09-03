@@ -154,15 +154,6 @@ else
     echo "No full schema dumps (vagrant) to import"
 fi
 
-SEEDED_CI=0
-if [[ -f /vagrant/data/ci/ci_test_db.sql ]]; then
-    echo "Importing ci_test_db.sql. Full database dump expected."
-    cat /vagrant/data/ci/ci_test_db.sql  | mysql --defaults-extra-file=/etc/mysql/root-client.cnf ixp_ci
-    SEEDED_CI=1
-else
-    echo "No full schema dumps (CI) to import"
-fi
-
 
 ####################################################################################
 #######
@@ -185,16 +176,10 @@ su - vagrant -c "cd /vagrant && COMPOSER_ALLOW_SUPERUSER=1 composer install" &>/
 
 echo "Installing / migrating database..."
 php /vagrant/artisan migrate --force &>/dev/null
-DB_DATABASE=ixp_ci DB_USERNAME=ixp_ci DB_PASSWORD=ixp_ci php /vagrant/artisan migrate --force &>/dev/null
 
 if [ "$SEEDED" == "0" ]; then
     echo "Importing vagrant sample data"
     cat /vagrant/tools/vagrant/vagrant-base-data.sql  | mysql --defaults-extra-file=/etc/mysql/root-client.cnf ixp
-fi
-
-if [ "$SEEDED_CI" == "0" ]; then
-    echo "Importing CI sample data"
-    cat /vagrant/data/ci/ci_test_db_data.sql  | mysql --defaults-extra-file=/etc/mysql/root-client.cnf ixp_ci
 fi
 
 
