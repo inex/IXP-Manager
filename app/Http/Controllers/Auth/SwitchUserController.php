@@ -64,9 +64,9 @@ class SwitchUserController extends Controller
      */
     public function switch( CustomerToUser $c2u ): RedirectResponse
     {
-        /** @var User $us */
-        $us = Auth::getUser();
-        if( !$us->isSuperUser() ) {
+        /** @var User $originalUser */
+        $originalUser = Auth::getUser();
+        if( !$originalUser->isSuperUser() ) {
             AlertContainer::push( "You are not allowed to switch users!", Alert::DANGER );
             return redirect()->to( "/" );
         }
@@ -76,26 +76,26 @@ class SwitchUserController extends Controller
             return redirect()->to( "/" );
         }
 
-        $user = $c2u->user;
+        $changeToUser = $c2u->user;
 
-        if( $user->disabled ){
+        if( $changeToUser->disabled ){
             AlertContainer::push( "You cannot login as this user", Alert::DANGER );
             return redirect( '/' );
         }
 
         session()->put( 'switched_user_from', Auth::id() );
         session()->put( 'switched_c2u_to', $c2u->id );
-        session()->put( 'switched_customer_from', $user->custid );
+        session()->put( 'switched_customer_from', $changeToUser->custid );
         session()->put( 'redirect_after_switch_back', request()->headers->get('referer', "" ) );
 
         // Temporary change the default customer for the user
-        $user->custid = $c2u->customer_id;
-        $user->save();
+        $changeToUser->custid = $c2u->customer_id;
+        $changeToUser->save();
 
-        Auth::login( $user );
+        Auth::login( $changeToUser );
 
-        Log::notice( Auth::getUser()->username . '(' . Auth::getUser()->name . ') logged as the user ' . $user->username . '(' . $user->name . ')' . ' for the customer ' . $user->customer->name  );
-        AlertContainer::push( "You are now logged in as {$user->username} " . " (" . Auth::getUser()->name . ") for the " . config( 'ixp_fe.lang.customer.one' ) . ' ' . $user->customer->name, Alert::SUCCESS );
+        Log::notice( $originalUser->username . '(' . $originalUser->name . ') logged as the user ' . $changeToUser->username . '(' . $changeToUser->name . ')' . ' for the customer ' . $changeToUser->customer->name  );
+        AlertContainer::push( "You are now logged in as {$changeToUser->username} " . " (" . $changeToUser->name . ") for the " . config( 'ixp_fe.lang.customer.one' ) . ' ' . $changeToUser->customer->name, Alert::SUCCESS );
         return redirect( '/' );
     }
 
@@ -113,7 +113,7 @@ class SwitchUserController extends Controller
 
         $redirect = "/";
 
-        if( !( $user = User::find( session()->get( "switched_user_from" ) ) ) ) {
+        if( !( $switchBackToUser = User::find( session()->get( "switched_user_from" ) ) ) ) {
             $this->logout( request() );
             return redirect()->to( "/" );
         }
@@ -129,13 +129,14 @@ class SwitchUserController extends Controller
             $switchedTo->save();
         }
 
-        Auth::login( $user );
+        Auth::login( $switchBackToUser );
 
         session()->remove( "switched_user_from" );
         session()->remove( "switched_c2u_to" );
         session()->remove( "switched_customer_from" );
 
-        AlertContainer::push( "You are now logged in as {$user->username} " . "(" . Auth::getUser()->name . ") for the " . config( 'ixp_fe.lang.customer.one' ) . ' ' . $user->customer->name, Alert::SUCCESS );
+        Log::notice( $switchBackToUser->username . '(' . $switchBackToUser->name . ') switched back from user ' . $switchedTo->username . '(' . $switchedTo->name . ')' . ' for the customer ' . $cust->name  );
+        AlertContainer::push( "You are now logged in as {$switchBackToUser->username} " . "(" . Auth::getUser()->name . ") for the " . config( 'ixp_fe.lang.customer.one' ) . ' ' . $switchBackToUser->customer->name, Alert::SUCCESS );
 
         if( session()->exists( "redirect_after_switch_back" ) ) {
             $redirect = session()->get( "redirect_after_switch_back" );
