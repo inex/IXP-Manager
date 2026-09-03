@@ -232,7 +232,7 @@
             type: 'POST'
         })
         .done( function( data ) {
-            options = `<option value="">Choose a switch port</option>`;
+            let options = `<option value="">Choose a switch port</option>`;
 
             $.each( data.listPorts, function( key, value ) {
                 // if we have a switch port for the ppp and we did not already insert the option ( let spOption ) in the select
@@ -290,7 +290,7 @@
             dd_switch_port.html( options );
         })
         .fail( function() {
-            options = `<option value=''>ERROR</option>`;
+            let options = `<option value=''>ERROR</option>`;
             dd_switch_port.html( options );
             dd_customer.html('').trigger('change.select2');
             alert( "Error running ajax query for " + url );
