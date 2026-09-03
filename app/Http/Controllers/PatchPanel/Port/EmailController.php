@@ -27,6 +27,8 @@ use Former, Mail, Redirect;
 
 use Barryvdh\DomPDF\PDF;
 
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use IXP\Models\PatchPanelPort;
 
 use Illuminate\Http\{
@@ -127,6 +129,7 @@ class EmailController extends Common
 
         Mail::send( $mailable );
 
+        Log::notice( Auth::getUser()->username . ' sent a/an ' . PatchPanelPort::$EMAIL_CLASSES[ $type ] . ' email for patch panel port ' . $ppp->name() );
         AlertContainer::push( "Email sent.", Alert::SUCCESS );
 
         return Redirect::to( route( 'patch-panel-port@list-for-patch-panel', [ "pp" => $ppp->patch_panel_id ] ) );
