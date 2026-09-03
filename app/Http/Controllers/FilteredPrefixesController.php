@@ -27,6 +27,7 @@ use Auth, Cache;
 
 use Illuminate\Http\Request;
 
+use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
 
 use IXP\Jobs\FetchFilteredPrefixesForCustomer;
@@ -72,6 +73,7 @@ class FilteredPrefixesController extends Controller
         $filteredPrefixes = Cache::get( 'filtered-prefixes-' . $cust->id, false );
 
         if( $filteredPrefixes === false ) {
+            Log::info( Auth::getUser()->username . ' triggered filtered prefix fetch task for customer with ID {customer}', ['customer' => $cust->id] );
             // no cached result so schedule a job to gather them:
             FetchFilteredPrefixesForCustomer::dispatchAfterResponse( $cust );
 
