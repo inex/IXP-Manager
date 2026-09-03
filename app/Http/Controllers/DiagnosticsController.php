@@ -24,6 +24,8 @@ namespace IXP\Http\Controllers;
  */
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
 use IXP\Exceptions\GeneralException;
 use IXP\Models\Customer;
@@ -100,6 +102,9 @@ class DiagnosticsController extends Controller
      */
     public function customer( Customer $customer, Diagnostics $diagnostics ): View
     {
+        Log::notice( Auth::getUser()->username . ' ran customer diagnostics for ' .
+            'customer with ID ' . $customer->id);
+
         $resultSets = [];
 
         $resultSets[] = $diagnostics->getCustomerDiagnostics($customer);
@@ -150,6 +155,9 @@ class DiagnosticsController extends Controller
      */
     public function irrdb( Customer $customer, Diagnostics $diagnostics ): View
     {
+        Log::notice( Auth::getUser()->username . ' ran IRRDB diagnostics for ' .
+            'customer with ID ' . $customer->id );
+
         $resultSets = [];
 
         $resultSets[] = $diagnostics->getCustomerIrrdbDiagnostics($customer);
