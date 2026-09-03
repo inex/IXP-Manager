@@ -26,6 +26,7 @@ namespace IXP\Http\Controllers;
 
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use IXP\Contracts\Validation\ValidationRunner;
@@ -52,7 +53,7 @@ class ValidationController
     public function startSubmit( ValidationRunnerFactory $validation, ConcurrentJobRunner $runner ): RedirectResponse
     {
         $jobState = JobState::create( Uuid::uuid4()->toString(), $validation->getRunners() );
-        Log::info( "Initialised validation job", [ 'job_id' => $jobState->jobId ] );
+        Log::info( Auth::user()->username . " initialised validation job {job_id}", [ 'job_id' => $jobState->jobId ] );
 
         $this->persistJobState( $jobState );
         defer( fn() => $this->runValidations( $runner, $jobState ) );
