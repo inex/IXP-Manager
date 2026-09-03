@@ -25,8 +25,11 @@ declare(strict_types=1);
 namespace Tests\Docstore\Controllers;
 
 
+use Illuminate\Http\UploadedFile;
 use IXP\Models\DocstoreDirectory;
 
+use IXP\Models\DocstoreFile;
+use IXP\Models\User;
 use Tests\TestCase;
 
 /**
@@ -71,7 +74,7 @@ class DirectoryControllerTest extends TestCase
     }
 
     /**
-     * Test the access to the list
+     * Test public access to the list
      *
      * @return void
      */
@@ -82,6 +85,64 @@ class DirectoryControllerTest extends TestCase
             ->assertViewIs( 'docstore.dir.list' )
             ->assertSeeText('Document Store');
     }
+
+    /**
+     * Test public access to the directory list when everything there is for a logged in user
+     *
+     * @return void
+     */
+    public function testListAndAllFilesRequireLogin(): void
+    {
+        $uploadedFile = UploadedFile::fake()->create( "cats.png", '2000' );
+
+        $dir = $this->insertDocstoreDirectoryFixture1();
+
+        $file = new DocstoreFile();
+        $file->name = "cats.png";
+        $file->disk = "docstore";
+        $file->docstore_directory_id = $dir->id;
+        $file->description = "File with higher privileges than public";
+        $file->path = $uploadedFile->store( '', 'docstore' );
+        $file->sha256 = hash_file('sha256', $uploadedFile->getPathname());
+        $file->min_privs = User::AUTH_SUPERUSER;
+        $file->created_by = $this->getSuperUser( 'travis' )->id;
+        $file->file_last_updated = now();
+        $file->save();
+
+        $this->get( route('docstore-dir@list', [ 'dir' => $dir->id ] ) )
+            ->assertRedirectToRoute( 'login@showForm' );
+    }
+
+    /**
+     * Test logged in access to the directory list when everything there is for a higher privilege
+     *
+     * @return void
+     */
+    public function testListAndAllFilesHaveHigherPrivilege(): void
+    {
+        $uploadedFile = UploadedFile::fake()->create( "cats.png", '2000' );
+
+        $dir = $this->insertDocstoreDirectoryFixture1();
+
+        $file = new DocstoreFile();
+        $file->name = "cats.png";
+        $file->disk = "docstore";
+        $file->docstore_directory_id = $dir->id;
+        $file->description = "File with higher privileges than public";
+        $file->path = $uploadedFile->store( '', 'docstore' );
+        $file->sha256 = hash_file('sha256', $uploadedFile->getPathname());
+        $file->min_privs = User::AUTH_SUPERUSER;
+        $file->created_by = $this->getSuperUser( 'travis' )->id;
+        $file->file_last_updated = now();
+        $file->save();
+
+        $this
+            ->actingAs( $this->getCustAdminUser() )
+            ->get( route('docstore-dir@list', [ 'dir' => $dir->id ] ) )
+            ->assertUnauthorized()
+        ;
+    }
+
 
     /**
      * Test the access to the create form for a public user
