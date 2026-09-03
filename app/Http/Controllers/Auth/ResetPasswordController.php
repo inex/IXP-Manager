@@ -27,7 +27,6 @@ use Former, Hash;
 
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Http\{
-    JsonResponse,
     RedirectResponse
 };
 
