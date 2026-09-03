@@ -22,6 +22,8 @@ namespace IXP\Listeners\Auth;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+
+use Illuminate\Support\Facades\Log;
 use Mail;
 
 use IXP\Events\Auth\PasswordReset as PasswordResetEvent;
@@ -55,5 +57,6 @@ class PasswordReset
     public function handle( PasswordResetEvent $e ): void
     {
         Mail::to( $e->user->email )->send( new PasswordResetMailable( $e->user ) );
+        Log::notice( $e->user->username . '(' . $e->user->name . ') reset their password' );
     }
 }
