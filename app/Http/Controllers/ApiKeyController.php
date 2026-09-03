@@ -23,23 +23,20 @@ namespace IXP\Http\Controllers;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Auth, Former, Hash, Redirect, Route, Str;
+use Auth, Former, Redirect, Str;
 
 use IXP\Utils\View\Alert\{
     Alert,
     Container as AlertContainer
 };
 
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\{
     Request,
     RedirectResponse
 };
 
-use Illuminate\View\View;
-
-use IXP\Models\{ApiKey, AppPassword, User};
+use IXP\Models\{ApiKey, User};
 
 use IXP\Utils\Http\Controllers\Frontend\EloquentController;
 
@@ -297,7 +294,7 @@ class ApiKeyController extends EloquentController
     /**
      * Check if the form is valid
      *
-     * @param $r
+     * @param Request $r
      *
      * @return void
      */
