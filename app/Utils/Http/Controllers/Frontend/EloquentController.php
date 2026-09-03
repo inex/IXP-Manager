@@ -594,6 +594,10 @@ abstract class EloquentController extends Controller
         if( $this->preDelete() ) {
             $this->object->delete();
             $this->postFlush( 'delete' );
+
+            Log::notice( ( Auth::check() ? Auth::getUser()->username : 'A public user' ) . ' deleted'
+                . ' ' . $this->feParams->nameSingular . ' with ID ' . $this->object->id );
+
             AlertContainer::push( $this->feParams->titleSingular . " deleted.", Alert::SUCCESS );
         }
 
