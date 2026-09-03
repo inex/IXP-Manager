@@ -30,9 +30,6 @@ jobs:
         php artisan dusk:chrome-driver 138
     - name: Directory Permissions
       run: chmod -R 777 storage bootstrap/cache
-    - name: Create Database
-      run: |
-        cat data/ci/ci_test_db.sql  | mysql --default-character-set=utf8mb4 -h 127.0.0.1 -u root myapp_test
     - name: Set up Dusk and php serve
       run: |
         php ./artisan serve  &>php-built-in.log &
