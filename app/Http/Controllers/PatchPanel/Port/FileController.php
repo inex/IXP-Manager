@@ -135,6 +135,8 @@ class FileController extends Controller
                 'storage_location'      => $hash
             ] );
 
+            Log::info( sprintf( "File [%d|%s] uploaded by %s for the patch panel port [%d|%s]", $pppf->id, $pppf->name, $r->user()->username, $ppp->id, $ppp->name() ) );
+
             return response()->json( [ 'success' => true, 'message' => 'File uploaded.', 'id' => $pppf->id ] );
         }
 
