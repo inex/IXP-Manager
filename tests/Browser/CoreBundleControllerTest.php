@@ -28,7 +28,6 @@ use IXP\Models\{
     CoreInterface,
     CoreLink,
     PhysicalInterface,
-    Switcher,
     SwitchPort,
     VirtualInterface
 };

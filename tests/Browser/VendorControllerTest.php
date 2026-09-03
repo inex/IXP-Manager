@@ -23,8 +23,6 @@ namespace Tests\Browser;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use IXP\Models\Cabinet;
-
 use IXP\Models\Vendor;
 use Laravel\Dusk\Browser;
 
