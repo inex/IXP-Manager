@@ -25,7 +25,6 @@ namespace Tests\Browser;
 
 use Illuminate\Support\Facades\Hash;
 use IXP\Models\AppPassword;
-use Str;
 
 use Laravel\Dusk\Browser;
 

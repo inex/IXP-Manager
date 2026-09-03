@@ -24,7 +24,6 @@ declare(strict_types=1);
 namespace Tests\Browser;
 
 use Illuminate\Support\Facades\Cache;
-use IXP\Contracts\Validation\ValidationRunner;
 use IXP\Services\Validation\Dto\JobState;
 use IXP\Services\Validation\ValidationRunnerFactory;
 use Laravel\Dusk\Browser;
