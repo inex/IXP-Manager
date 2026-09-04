@@ -1,9 +1,6 @@
 <?php
-
-namespace IXP\Listeners\Auth;
-
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,6 +19,11 @@ namespace IXP\Listeners\Auth;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+
+declare(strict_types=1);
+
+namespace IXP\Listeners\Auth;
+
 use Auth;
 
 use Illuminate\Auth\Recaller;
@@ -38,7 +40,7 @@ use PragmaRX\Google2FALaravel\Events\LoginSucceeded;
  * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class Google2FALoginSucceeded
+final class Google2FALoginSucceeded
 {
     /**
      * Handle a Google2FA login event.
@@ -58,7 +60,7 @@ class Google2FALoginSucceeded
             $urt = UserRememberToken::where( 'token',  $recaller->token() )->first();
 
             if( $urt && !$urt->is_2fa_complete ) {
-                $urt->update( [ 'is_2fa_complete' => true ] );
+                $urt->record2faIsComplete();
             }
         }
     }

@@ -26,6 +26,7 @@ namespace IXP\Console\Commands\Grapher;
 use Carbon\Carbon;
 use Grapher;
 
+use Illuminate\Support\Facades\Log;
 use IXP\Mail\Grapher\TrafficDeltas as TrafficDeltasMailable;
 use IXP\Models\Customer;
 use IXP\Models\TrafficDaily;
@@ -79,6 +80,7 @@ class EmailTrafficDeltas extends GrapherCommand
 
         if( count( $ports ) ) {
             Mail::to( explode( ',', $this->argument( 'email' ) ) )->send( new TrafficDeltasMailable( $ports, (float)$this->option( 'stddev' ), $day ) );
+            Log::notice("Sent email as " . count($ports) . " ports found traffic outside standard deviation");
         } else if( $this->isVerbosityVerbose() ) {
             $this->info("No ports have a traffic delta within the requested deviation");
         }

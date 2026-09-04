@@ -1,9 +1,6 @@
 <?php
-
-namespace IXP\Listeners\Auth;
-
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,40 +20,30 @@ namespace IXP\Listeners\Auth;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+declare(strict_types=1);
+
+namespace IXP\Listeners\Auth;
+
 use Illuminate\Support\Facades\Log;
-use Mail;
+use Illuminate\Support\Facades\Mail;
 
 use IXP\Events\Auth\ForgotPassword as ForgotPasswordEvent;
-
 use IXP\Mail\Auth\ForgotPassword as ForgotPasswordMailable;
 
 /**
  * ForgotPassword Listener
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
- * @category   Listeners
+ * @category   Listeners\Auth
  * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class ForgotPassword
+final class ForgotPassword
 {
-    /**
-     * Create the event listener.
-     *
-     * @return void
-     */
-    public function __construct(){}
-
-    /**
-     * Handle the event.
-     *
-     * @param  ForgotPasswordEvent  $e
-     *
-     * @return void
-     */
     public function handle( ForgotPasswordEvent $e ): void
     {
-        Mail::to( $e->user->email )->send( new ForgotPasswordMailable( $e->token, $e->user ) );
-        Log::notice( 'Password reset email sent to ' . $e->user->email );
+        Mail::to( $e->user->email )
+            ->send( new ForgotPasswordMailable( $e->token, $e->user ) );
+        Log::notice( $e->user->username . " has forgot their password - sending email with password reset link" );
     }
 }

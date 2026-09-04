@@ -1,9 +1,6 @@
 <?php
-
-namespace IXP\Mail\Layer2Address;
-
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,6 +20,10 @@ namespace IXP\Mail\Layer2Address;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+declare(strict_types=1);
+
+namespace IXP\Mail\Layer2Address;
+
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
@@ -36,30 +37,18 @@ use IXP\Events\Layer2Address\{
  * Mailable for Layer2Address
  *
  * @author     Barry O'Donovan  <barry@islandbridgenetworks.ie>
- * @author     Yanm Robin       <yann@islandbridgenetworks.ie>
+ * @author     Yann Robin       <yann@islandbridgenetworks.ie>
  * @category   Customer
  * @package    IXP\Mail\Customer
  * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class ChangedMail extends Mailable
+final class ChangedMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    /**
-     * @var Layer2AddressAddedEvent|Layer2AddressDeletedEvent
-     */
-    public $event;
-
-    /**
-     * Create a new message instance.
-     *
-     * @param Layer2AddressAddedEvent|Layer2AddressDeletedEvent $e
-     */
-    public function __construct(  $e )
-    {
-        $this->event = $e;
-    }
+    // todo: review this - likely change for refactoring
+    public function __construct(public readonly Layer2AddressAddedEvent|Layer2AddressDeletedEvent $event ) {}
 
     /**
      * Build the message.

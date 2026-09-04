@@ -1,9 +1,6 @@
 <?php
-
-namespace IXP\Listeners\Auth;
-
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,7 +19,12 @@ namespace IXP\Listeners\Auth;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-use Log;
+
+declare(strict_types=1);
+
+namespace IXP\Listeners\Auth;
+
+use Illuminate\Support\Facades\Log;
 
 use Illuminate\Auth\Events\Failed as FailedEvent;
 
@@ -34,15 +36,8 @@ use Illuminate\Auth\Events\Failed as FailedEvent;
  * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class LoginFailed
+final class LoginFailed
 {
-    /**
-     * Handle a failed login event.
-     *
-     * @param  FailedEvent  $e
-     *
-     * @return void
-     */
     public function handle( FailedEvent $e ): void
     {
         // TODO: Maybe we should persist failed logs into the DB instead and create a view in the backend

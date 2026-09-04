@@ -1,7 +1,4 @@
 <?php
-
-namespace IXP\Mail\PeeringManager;
-
 /*
  * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
@@ -22,6 +19,11 @@ namespace IXP\Mail\PeeringManager;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+
+declare(strict_types=1);
+
+namespace IXP\Mail\PeeringManager;
+
 use Auth;
 
 use Illuminate\Bus\Queueable;
@@ -49,11 +51,9 @@ use IXP\Mail\Trait\MarkdownContent;
  * @copyright  Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class RequestPeeringManager extends Mailable
+final class RequestPeeringManager extends Mailable
 {
     use Queueable, SerializesModels, MarkdownContent;
-
-    public Customer $peer;
 
     /**
      * Create a new message instance.
@@ -62,9 +62,8 @@ class RequestPeeringManager extends Mailable
      * @param PeeringManagerRequest $r
      *
      */
-    public function __construct( Customer $peer, PeeringManagerRequest $r )
+    public function __construct(public readonly Customer $peer, PeeringManagerRequest $r )
     {
-        $this->peer = $peer;
         $this->prepareFromRequest( $r );
         $this->userMarkdown = $r->message;
     }
@@ -79,7 +78,11 @@ class RequestPeeringManager extends Mailable
         if( !$r->sendtome ) {
             // recipients
             foreach( [ "to", "cc", "bcc" ] as $p ) {
-                foreach( explode( ',', $r->input( $p ) ) as $emaddr ) {
+                if ( !( $field = $r->input( $p ) ) ) {
+                    continue;
+                }
+
+                foreach( explode( ',', $field ) as $emaddr ) {
                     $email = trim( $emaddr );
                     if( filter_var( $email, FILTER_VALIDATE_EMAIL ) ) {
                         $this->$p( $email );

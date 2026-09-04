@@ -1,9 +1,6 @@
 <?php
-
-namespace IXP\Listeners\Customer\Note;
-
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,7 +19,13 @@ namespace IXP\Listeners\Customer\Note;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-use Mail;
+
+declare(strict_types=1);
+
+namespace IXP\Listeners\Customer\Note;
+
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 use Illuminate\Events\Dispatcher;
 
@@ -48,40 +51,19 @@ use IXP\Events\Customer\Note\{
  * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class EmailOnChange
+final class EmailOnChange
 {
-    /**
-     * Handle customer note added
-     *
-     * @param $event
-     *
-     * @return void
-     */
-    public function onCreatedNote( $event ) : void
+    public function onCreatedNote( Created $event ) : void
     {
         $this->handle( $event );
     }
 
-    /**
-     * Handle customer note edited
-     *
-     * @param $event
-     *
-     * @return void
-     */
-    public function onEditedNote( $event ): void
+    public function onEditedNote( Edited $event ): void
     {
         $this->handle( $event );
     }
 
-    /**
-     * Handle customer note deleted
-     *
-     * @param $event
-     *
-     * @return void
-     */
-    public function onDeletedNote( $event ): void
+    public function onDeletedNote( Deleted $event ): void
     {
         $this->handle( $event );
     }
@@ -95,27 +77,19 @@ class EmailOnChange
     {
         $events->listen(
             Created::class,
-            'IXP\Listeners\Customer\Note\EmailOnChange@onCreatedNote'
+            $this->onCreatedNote(...)
         );
 
         $events->listen(
             Edited::class,
-            'IXP\Listeners\Customer\Note\EmailOnChange@onEditedNote'
+            $this->onEditedNote(...)
         );
 
         $events->listen(
             Deleted::class,
-            'IXP\Listeners\Customer\Note\EmailOnChange@onDeletedNote'
+            $this->onDeletedNote(...)
         );
     }
-
-
-    /**
-     * Create the event listener.
-     *
-     * @return void
-     */
-    public function __construct(){}
 
     /**
      * Handle the event.
@@ -124,11 +98,12 @@ class EmailOnChange
      *
      * @return void
      */
-    public function handle( $e ): void
+    public function handle(NoteChangedEvent $e ): void
     {
         if( config( 'ixp_fe.customer.notes.only_send_to' ) ) {
             $to = [ config( 'ixp_fe.customer.notes.only_send_to' ) ];
         } else {
+
             // get admin users
             $c2us = CustomerToUser::from( 'customer_to_users AS c2u' )
                 ->leftJoin( 'user AS u', 'u.id', 'c2u.user_id' )
@@ -169,6 +144,8 @@ class EmailOnChange
 
         if( count( $to ) ) {
             Mail::to( $to )->send( new CustomerNoteChangedMailable( $e ) );
+            $eventTypeFromClass = strtolower($e->actionDescription());
+            Log::notice("Sending note " . $eventTypeFromClass . " email for note " . $e->eitherNote()->id);
         }
     }
 }
