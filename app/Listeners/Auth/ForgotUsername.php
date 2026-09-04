@@ -22,6 +22,8 @@ namespace IXP\Listeners\Auth;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+
+use Illuminate\Support\Facades\Log;
 use Mail;
 
 use IXP\Events\Auth\ForgotUsername as ForgotUsernameEvent;
@@ -56,5 +58,6 @@ class ForgotUsername
     {
         Mail::to( $e->email )
             ->send( new ForgotPasswordMailable( $e->users ) );
+        Log::notice( 'Forgot username email sent to ' . $e->email );
     }
 }
