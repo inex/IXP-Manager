@@ -330,8 +330,8 @@ class PhysicalInterfaceController extends Common
             $redirect = route( "virtual-interface@edit", [ "vi" => $pi->virtualinterfaceid ] );
         }
 
-        if( $pi->coreInterface ) {
-            AlertContainer::push( 'You cannot delete this physical interface as there is a core bundle linked with it.', Alert::DANGER );
+        if( $ci = $pi->coreInterface ) {
+            AlertContainer::push( 'This physical interface is member of a core link. You can manage it on <a href="' . route( "core-bundle@edit", [ "cb" => $ci->coreLink()->coreBundle->id ] ) . '">the core bundle page</a>', Alert::DANGER );
             return Redirect::to( $redirect );
         }
 
