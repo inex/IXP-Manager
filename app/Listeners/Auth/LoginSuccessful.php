@@ -1,9 +1,6 @@
 <?php
-
-namespace IXP\Listeners\Auth;
-
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,6 +19,11 @@ namespace IXP\Listeners\Auth;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+
+declare(strict_types=1);
+
+namespace IXP\Listeners\Auth;
+
 use Auth, Log;
 
 use Illuminate\Auth\Events\Login as LoginEvent;
@@ -37,15 +39,8 @@ use IXP\Models\UserLoginHistory;
  * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class LoginSuccessful
+final class LoginSuccessful
 {
-    /**
-     * Handle a login event.
-     *
-     * @param  LoginEvent  $e
-     *
-     * @return void
-     */
     public function handle( LoginEvent $e ): void
     {
         /** @var User $user */

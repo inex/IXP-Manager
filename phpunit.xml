@@ -23,6 +23,7 @@
       <directory suffix="Test.php">./tests/Http</directory>
       <directory suffix="Test.php">./tests/Ixp</directory>
       <directory suffix="Test.php">./tests/Jobs</directory>
+      <directory suffix="Test.php">./tests/Listeners</directory>
       <directory suffix="Test.php">./tests/Models</directory>
       <directory suffix="Test.php">./tests/Rules</directory>
       <directory suffix="Test.php">./tests/Policies</directory>

@@ -27,6 +27,7 @@ use Carbon\Carbon;
 
 use Grapher, Mail;
 
+use Illuminate\Support\Facades\Log;
 use IXP\Mail\Grapher\PortsWithCounts as PortsWithCountsMail;
 
 use IXP\Models\{
@@ -90,6 +91,7 @@ class EmailPortsWithCounts extends GrapherCommand
 
         if( count( $ports ) ) {
             Mail::to( explode( ',', $this->argument( 'email' ) ) )->send( new PortsWithCountsMail( $ports, $category ) );
+            Log::notice("Sent email as " . count($ports) . " ports found with " . Graph::CATEGORY_DESCS[$category]);
         } else if( $this->isVerbosityVerbose() ) {
             $this->info("No ports with packet counts > 0");
         }

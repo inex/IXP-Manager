@@ -1,9 +1,6 @@
 <?php
-
-namespace IXP\Listeners\Layer2Address;
-
 /*
- * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,9 +20,12 @@ namespace IXP\Listeners\Layer2Address;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Mail;
+declare(strict_types=1);
 
-use Illuminate\Contracts\Queue\ShouldQueue;
+namespace IXP\Listeners\Layer2Address;
+
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 use IXP\Events\Layer2Address\{
     Added   as Layer2AddressAddedEvent,
@@ -42,15 +42,8 @@ use IXP\Mail\Layer2Address\ChangedMail as Layer2AddressChangedMail;
  * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class Changed implements ShouldQueue
+final class Changed
 {
-    /**
-     * Create the event listener.
-     *
-     * @return void
-     */
-    public function __construct(){}
-
     /**
      * Handle the event.
      *
@@ -58,7 +51,7 @@ class Changed implements ShouldQueue
      *
      * @return void
      */
-    public function handle( $e ): void
+    public function handle(Layer2AddressAddedEvent|Layer2AddressDeletedEvent $e ): void
     {
         if( !( config( 'ixp_fe.layer2-addresses.email_on_superuser_change' ) || config( 'ixp_fe.layer2-addresses.email_on_customer_change' ) ) ) {
             return;
@@ -69,5 +62,6 @@ class Changed implements ShouldQueue
         }
 
         Mail::to( config( 'ixp_fe.layer2-addresses.email_on_change_dest' ) )->send( new Layer2AddressChangedMail( $e ) );
+        Log::notice("Sending Layer2 Address change email regarding customer [" . $e->user->customer->id . "|" . $e->user->customer->name . "] ");
     }
 }

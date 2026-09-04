@@ -1,9 +1,6 @@
 <?php
-
-namespace IXP\Events\User;
-
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,6 +20,10 @@ namespace IXP\Events\User;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+declare(strict_types=1);
+
+namespace IXP\Events\User;
+
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Foundation\Events\Dispatchable;
 
@@ -38,20 +39,7 @@ use IXP\Models\User;
  */
 class UserCreated
 {
-    use Dispatchable, SerializesModels;
+    use SerializesModels;
 
-    /**
-     * @var User
-     */
-    public $user;
-
-    /**
-     * Create a new event instance.
-     *
-     * @param User    $user
-     */
-    public function __construct(  User $user )
-    {
-        $this->user     = $user;
-    }
+    public function __construct( public readonly User $user ) {}
 }

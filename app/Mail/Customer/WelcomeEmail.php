@@ -1,7 +1,4 @@
 <?php
-
-namespace IXP\Mail\Customer;
-
 /*
  * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
@@ -22,6 +19,10 @@ namespace IXP\Mail\Customer;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+
+declare(strict_types=1);
+
+namespace IXP\Mail\Customer;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
@@ -45,19 +46,9 @@ use IXP\Models\Customer;
  * @copyright  Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class WelcomeEmail extends Mailable
+final class WelcomeEmail extends Mailable
 {
     use Queueable, SerializesModels, MarkdownContent;
-
-    /**
-     * @var Customer
-     */
-    public $c;
-
-    /**
-     * @var WelcomeEmailRequest
-     */
-    public $r;
 
     /**
      * Create a new message instance.
@@ -65,10 +56,10 @@ class WelcomeEmail extends Mailable
      * @param Customer              $c
      * @param WelcomeEmailRequest   $r
      */
-    public function __construct( Customer $c, WelcomeEmailRequest $r )
+    public function __construct(
+        public readonly Customer $c,
+        WelcomeEmailRequest $r )
     {
-        $this->c = $c;
-        $this->r = $r;
         $this->prepareFromRequest($r);
         $this->userMarkdown = $r->message;
     }
@@ -82,7 +73,10 @@ class WelcomeEmail extends Mailable
     {
         // recipients
         foreach( [ 'to', 'cc', 'bcc' ] as $p ) {
-            foreach( explode(',', $r->input( $p ) ) as $emaddr ) {
+            if ( !( $field = $r->input( $p ) ) ) {
+                continue;
+            }
+            foreach( explode(',', $field ) as $emaddr ) {
                 $email = trim( $emaddr );
                 if( filter_var( $email, FILTER_VALIDATE_EMAIL ) ) {
                     $this->$p($email);

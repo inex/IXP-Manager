@@ -22,24 +22,33 @@
 
 declare(strict_types=1);
 
-namespace IXP\Listeners\Customer;
+namespace Tests\Listeners\User;
 
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use IXP\Events\User\UserCreated as UserCreatedEvent;
+use IXP\Listeners\User\SendNewUserWelcomeEmail;
+use IXP\Mail\User\UserCreated as UserCreatedMail;
+use Tests\TestCase;
 
-use IXP\Events\Customer\BillingDetailsChanged as BillingDetailsChangedEvent;
-
-use IXP\Mail\Customer\BillingDetailsChanged as BillingDetailsChangedMailable;
-
-final class BillingDetailsChanged
+class SendNewUserWelcomeEmailTest extends TestCase
 {
-    public function handle( BillingDetailsChangedEvent $e ): void
+    public function testListener()
     {
-        if( !config( 'ixp_fe.customer.billing_updates_notify' ) || $e->ocbd->customer->resellerObject()->exists() ) {
-            return;
-        }
+        Mail::fake();
+        Log::spy();
 
-        Mail::to( config( 'ixp_fe.customer.billing_updates_notify' ) )->send( new BillingDetailsChangedMailable( $e->ocbd, $e->cbd ) );
-        Log::notice("Sending Billing Details Changed email regarding customer [" . $e->ocbd->customer->id . "|" . $e->ocbd->customer->name . "] ");
+        $user = $this->getCustUser();
+
+        new SendNewUserWelcomeEmail()->handle(new UserCreatedEvent($user));
+
+        Log::shouldHaveReceived( 'notice' )
+            ->with( "Sending new user welcome email to " . $user->username . " (" . $user->name . ")" );
+
+        Mail::assertSent(UserCreatedMail::class, function( UserCreatedMail $mail ) use( $user ) {
+            $mail->assertTo($user->email);
+            $this->assertSame($user, $mail->user);
+            return $mail->user->id === $user->id;
+        });
     }
 }
