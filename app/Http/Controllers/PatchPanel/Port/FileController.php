@@ -99,6 +99,7 @@ class FileController extends Controller
         }
 
         AlertContainer::push( $message, $success ? Alert::SUCCESS : Alert::DANGER );
+        Log::info( sprintf( "File %d deleted by %s for the patch panel port [%d|%s]", $file->id, $r->user()->username, $file->patchPanelPort->id, $file->patchPanelPort->name() ) );
         return redirect()->to( route( 'patch-panel-port@view', [ 'ppp' => $file->patch_panel_port_id ] ) );
     }
 
