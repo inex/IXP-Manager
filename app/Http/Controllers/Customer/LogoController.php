@@ -26,6 +26,7 @@ namespace IXP\Http\Controllers\Customer;
 use Auth, Redirect;
 
 use Exception;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Http\{
     RedirectResponse,
 };
@@ -144,6 +145,8 @@ class LogoController extends Controller
         $img->save( $saveTo );
 
         AlertContainer::push( "Logo uploaded.", Alert::SUCCESS );
+        Log::info( sprintf( "Logo: file [%d|%s] uploaded by %s for the customer [%d|%s]", $logo->id, $logo->stored_name, $r->user()->username, $c->id, $c->name ) );
+
         return redirect( $us->isSuperUser() ? route( "customer@overview" , [ 'cust' => $c->id ] ) : route( "dashboard@index" ) );
     }
 
@@ -175,6 +178,7 @@ class LogoController extends Controller
 
         $oldLogo->delete();
         AlertContainer::push( "Logo deleted.", Alert::SUCCESS );
+        Log::info( sprintf("%s deleted logo with ID %d for the customer [%d|%s]", Auth::getUser()->username, $oldLogo->id, $c->id, $c->name ) );
 
         return redirect( $us->isSuperUser() ? route( 'customer@overview', [ 'cust' => $c->id ] ) : route( 'dashboard@index' ) );
     }
