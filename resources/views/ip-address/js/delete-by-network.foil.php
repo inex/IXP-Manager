@@ -1,4 +1,4 @@
-<script>
+<script type="module">
     $( '#delete' ).click( function( e ) {
         e.preventDefault();
         let network = $( "#network" ).val();

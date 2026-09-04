@@ -69,7 +69,7 @@
                 <thead class="thead-dark border-0">
                     <tr>
                         <th class="d-flex border-bottom-0" colspan="3">
-                            <div class="tw-mr-2 tw-mt-1">
+                            <div class="tw:mr-2 tw:mt-1">
                                 <input type="checkbox" name="select-all" id="select-all" value="" <?= old( 'selected_custs' ) && count( old( 'selected_custs' ) ) == count( $t->data[ 'params'][ 'custs'] ) ? "checked" : "" ?>/>
                             </div>
                             <div class="mt-1 label-cust">

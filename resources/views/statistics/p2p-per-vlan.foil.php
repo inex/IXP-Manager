@@ -144,7 +144,7 @@ $isSuperUser = Auth::check() ? Auth::getUser()->isSuperUser() : false;
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>
-    <script>
+    <script type="module">
         let base_route   = "<?= route( 'statistics@p2p-per-vlan', ['srcCust' => $t->srcCustomer->id, 'dstCust' => $t->dstCustomer->id] ) ?>";
         let sel_category = $("#form-select-category");
         let sel_protocol = $("#form-select-protocol");

@@ -78,7 +78,7 @@
 
 <?php $this->section('content') ?>
     <?= $t->alerts() ?>
-        <table id='customer-list' class="table collapse table-striped no-wrap responsive tw-shadow-md w-100" >
+        <table id='customer-list' class="table collapse table-striped no-wrap responsive tw:shadow-md w-100" >
             <thead class="thead-dark">
                 <tr>
                     <th>
@@ -156,7 +156,7 @@
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>
-    <script>
+    <script type="module">
         $(document).ready( function() {
             $('#customer-list').dataTable( {
                 responsive: true,

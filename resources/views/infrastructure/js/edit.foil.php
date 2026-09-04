@@ -1,4 +1,4 @@
-<script>
+<script type="module">
     let dd_ixp = $( '#ixf_ix_id' );
     let dd_pdb = $( '#peeringdb_ix_id' );
 

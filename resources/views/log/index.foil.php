@@ -17,20 +17,20 @@ $this->layout( 'layouts/ixpv4' );
             <div class="collapse navbar-collapse" id="navbarNavDropdown">
                 <?= Former::open()->method( 'get' )
                     ->id( 'form' )
-                    ->class( 'form-inline tw-py-4' )
+                    ->class( 'form-inline tw:py-4' )
                     ->action( route( 'log@list' ) )
                     ->customInputWidthClass( 'col-lg-3 col-md-3 col-sm-3' )
                 ?>
 
                 <?= Former::text( 'model_id' )
                     ->label( '' )
-                    ->class( 'tw-mt-2' )
+                    ->class( 'tw:mt-2' )
                     ->placeholder( 'Model ID' );
                 ?>
 
                 <?= Former::text( 'created_at' )
                     ->label( '' )
-                    ->addClass( 'tw-ml-4 tw-mt-2' )
+                    ->addClass( 'tw:ml-4 tw:mt-2' )
                     ->placeholder( 'yyyy-mm-dd hh' );
                 ?>
 
@@ -38,25 +38,25 @@ $this->layout( 'layouts/ixpv4' );
                     ->label( '' )
                     ->fromQuery( $t->models, fn ($row) => $t->ee( $row->model ) )
                     ->placeholder( 'Model' )
-                    ->addClass( 'tw-ml-4 tw-mt-2' )
+                    ->addClass( 'tw:ml-4 tw:mt-2' )
                 ?>
 
                 <?= Former::select( 'user' )
                     ->label( '' )
                     ->fromQuery( $t->users, fn ($row) => $t->ee( $row->username ) )
                     ->placeholder( 'User' )
-                    ->addClass( 'tw-ml-4 tw-mt-2' )
+                    ->addClass( 'tw:ml-4 tw:mt-2' )
                 ?>
 
                 <?= Former::select( 'action' )
                     ->label( '' )
                     ->fromQuery( \IXP\Models\Log::$ACTIONS )
                     ->placeholder( 'Action' )
-                    ->addClass( 'tw-ml-4 tw-mt-2' )
+                    ->addClass( 'tw:ml-4 tw:mt-2' )
                 ?>
 
-                <?= Former::primary_submit( 'Search' )->id( 'btn-submit' )->class( "tw-ml-4 tw-mt-2" ) ?>
-                <?= Former::secondary_link( 'Reset' )->href( route( 'log@list' ) )->class( "tw-ml-4 tw-mt-2" ) ?>
+                <?= Former::primary_submit( 'Search' )->id( 'btn-submit' )->class( "tw:ml-4 tw:mt-2" ) ?>
+                <?= Former::secondary_link( 'Reset' )->href( route( 'log@list' ) )->class( "tw:ml-4 tw:mt-2" ) ?>
 
                 <?= Former::close() ?>
             </div>

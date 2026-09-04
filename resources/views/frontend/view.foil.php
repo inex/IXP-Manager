@@ -19,7 +19,7 @@ $this->layout( 'layouts/ixpv4' );
         <?php endif; ?>
 
         <a class="btn btn-white" href="<?= route($t->feParams->route_prefix.'@list') ?>">
-            <span class="fa fa-th-list"></span>
+            <span class="fa fa-table-list"></span>
         </a>
 
         <?php if( !isset( $t->feParams->readonly ) || !$t->feParams->readonly ): ?>

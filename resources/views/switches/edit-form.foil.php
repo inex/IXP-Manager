@@ -59,7 +59,7 @@ use IXP\Models\Vendor;
                                 </optgroup>
                             <?php endforeach; ?>
                         </select>
-                        <small class="form-text text-muted former-help-text tw-collapse">
+                        <small class="form-text text-muted former-help-text tw:collapse">
                             The rack / cabinet where this switch is located.
                         </small>
                     </div>

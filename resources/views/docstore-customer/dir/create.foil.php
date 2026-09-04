@@ -101,7 +101,7 @@ $this->layout( 'layouts/ixpv4' );
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>
-    <script>
+    <script type="module">
 
         <?php if( $t->dir ): ?>
             $( document ).ready(function() {

@@ -20,7 +20,7 @@
             </div>
         </div>
         <a class="btn btn-white" href="<?= route ('switch@list' ) ?>" title="list">
-            <span class="fa fa-th-list"></span>
+            <span class="fa fa-table-list"></span>
         </a>
     </div>
 <?php $this->append() ?>
@@ -80,7 +80,7 @@
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>
-    <script>
+    <script type="module">
         $( document ).ready( function() {
 
             $('#list-port').show();

@@ -1,4 +1,4 @@
-<script type="text/javascript">
+<script type="module">
 
 jQuery.extend( jQuery.fn.dataTableExt.oSort, {
     "ip-address-pre": function ( a ) {

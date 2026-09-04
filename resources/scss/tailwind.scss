@@ -1,26 +1,4 @@
 /**
- * This injects Tailwind's base styles, which is a combination of
- * Normalize.css and some additional base styles.
- *
- * You can see the styles here:
- * https://github.com/tailwindcss/tailwindcss/blob/master/css/preflight.css
- *
- * If using `postcss-import`, use this import instead:
- *
- * @import "tailwindcss/preflight";
- */
-@tailwind base;
-
-/**
- * This injects any component classes registered by plugins.
- *
- * If using `postcss-import`, use this import instead:
- *
- * @import "tailwindcss/components";
- */
-@tailwind components;
-
-/**
  * Here you would add any of your custom component classes; stuff that you'd
  * want loaded *before* the utilities so that the utilities could still
  * override them.
@@ -148,22 +126,22 @@ hr {
  ****************************************************************************************/
 
 a {
-  @apply tw-text-blue-500;
+  @apply tw:text-blue-500;
 }
 
 a:hover {
-  @apply tw-underline;
+  @apply tw:underline;
 }
 
-.tw-border-t-1{
+.tw\:border-t-1{
     border-top-width: 1px;
 }
 
-.tw-border-b-1{
+.tw\:border-b-1{
     border-bottom-width: 1px;
 }
 
-.tw-border-1{
+.tw\:border-1{
     border-width: 1px;
 }
 
@@ -176,13 +154,13 @@ a:hover {
  **** LHS Menu in IXP Manager
 
 
-        <div class="tw-bg-white tw-shadow tw-w-64 tw-my-2">
+        <div class="tw:bg-white tw:shadow tw:w-64 tw:my-2">
             <ul class="list-reset">
                 <li >
-                    <a href="#" class="tw-block tw-p-4 tw-text-grey-darker tw-font-bold tw-border-purple hover:tw-bg-grey-lighter tw-border-r-4">Home</a>
+                    <a href="#" class="tw:block tw:p-4 tw:text-grey-darker tw:font-bold tw:border-purple tw:hover:bg-grey-lighter tw:border-r-4">Home</a>
                 </li>
                 <li >
-                    <a href="#" class="tw-block tw-p-4 tw-text-grey-darker tw-font-bold tw-border-grey-lighter hover:tw-border-purple-light hover:tw-bg-grey-lighter tw-border-r-4">About us</a>
+                    <a href="#" class="tw:block tw:p-4 tw:text-grey-darker tw:font-bold tw:border-grey-lighter tw:hover:border-purple-light tw:hover:bg-grey-lighter tw:border-r-4">About us</a>
                 </li>
             </ul>
         </div>
@@ -192,7 +170,7 @@ a:hover {
 
 
 #side-navbar {
-  @apply shadow tw-pr-0 tw-bg-white;
+  @apply tw:shadow tw:pr-0 tw:bg-white;
 }
 
 #side-navbar ul, #side-navbar ol {
@@ -202,41 +180,41 @@ a:hover {
 }
 
 #side-navbar h6 {
-  @apply tw-block tw-p-4 tw-pl-1 tw-text-grey-darker tw-border-grey-lighter tw-border-r-4 tw-m-0;
+  @apply tw:block tw:p-4 tw:pl-1 tw:text-grey-darker tw:border-grey-lighter tw:border-r-4 tw:m-0;
 }
 
 .nav-link {
-  @apply tw-block tw-p-2 tw-pl-3 tw-text-grey-darker tw-no-underline tw-text-sm;
+  @apply tw:block tw:p-2 tw:pl-3 tw:text-grey-darker tw:no-underline tw:text-sm;
 }
 
 .nav-link:hover {
-  @apply tw-text-grey-darker;
+  @apply tw:text-grey-darker;
 }
 
 #side-navbar li {
-  @apply tw-block tw-p-0 tw-text-grey-darker tw-border-grey-lighter tw-border-r-4 tw-font-medium;
+  @apply tw:block tw:p-0 tw:text-grey-darker tw:border-grey-lighter tw:border-r-4 tw:font-medium;
 }
 
 #side-navbar li.active {
-  @apply tw-border-green-600 tw-bg-grey-lighter tw-font-bold;
+  @apply tw:border-green-600 tw:bg-grey-lighter tw:font-bold;
   font-weight: 700 !important;
 }
 
 #side-navbar li:hover {
-  @apply tw-border-green-600 tw-bg-grey-lighter tw-text-grey-darker;
+  @apply tw:border-green-600 tw:bg-grey-lighter tw:text-grey-darker;
 }
 
 .nav-sub-menu-item {
-  @apply tw-ml-8;
+  @apply tw:ml-8;
 }
 
 
 .ixpm-table a {
-  @apply tw-text-blue-dark tw-no-underline;
+  @apply tw:text-blue-dark tw:no-underline;
 }
 
 .ixpm-table a:hover {
-  @apply tw-text-blue-500 tw-underline;
+  @apply tw:text-blue-500 tw:underline;
 }
 
 
@@ -245,59 +223,59 @@ a:hover {
  ****************************************************************************************/
 
 .btn {
-    @apply tw-font-bold tw-rounded-sm tw-border-transparent;
+    @apply tw:font-bold tw:rounded-sm tw:border-transparent;
 }
 
 .btn:hover {
-    @apply tw-border-transparent;
+    @apply tw:border-transparent;
 }
 
 .btn-primary {
-    @apply tw-bg-blue-500 tw-text-white tw-font-bold;
+    @apply tw:bg-blue-500 tw:text-white tw:font-bold;
 }
 
 .btn-primary:hover {
-    @apply tw-bg-blue-dark;
+    @apply tw:bg-blue-dark;
 }
 
 .btn-success {
-    @apply tw-bg-green-500 tw-text-white tw-font-bold;
+    @apply tw:bg-green-500 tw:text-white tw:font-bold;
 }
 
 .btn-success:hover {
-    @apply tw-bg-green-dark;
+    @apply tw:bg-green-dark;
 }
 
 .btn-secondary {
-    @apply tw-bg-grey-dark tw-text-white tw-font-bold;
+    @apply tw:bg-grey-dark tw:text-white tw:font-bold;
 }
 
 .btn-secondary:hover {
-    @apply tw-bg-grey-darker;
+    @apply tw:bg-grey-darker;
 }
 
 .btn-outline-secondary{
-    @apply tw-bg-transparent tw-text-grey tw-font-semibold tw-border-1 tw-border-grey tw-rounded-sm
+    @apply tw:bg-transparent tw:text-grey tw:font-semibold tw:border-1 tw:border-grey tw:rounded-sm
 }
 
 .btn-outline-secondary:hover{
-    @apply tw-bg-grey;
+    @apply tw:bg-grey;
 }
 
 .btn-white{
-    @apply tw-bg-white tw-text-grey-darkest tw-font-semibold tw-border-1 tw-border-grey-light tw-rounded-sm shadow;
+    @apply tw:bg-white tw:text-grey-darkest tw:font-semibold tw:border-1 tw:border-grey-light tw:rounded-sm tw:shadow;
 }
 
 .btn-white:hover{
-    @apply tw-bg-grey-lighter tw-border-1 tw-border-grey-light;
+    @apply tw:bg-grey-lighter tw:border-1 tw:border-grey-light;
 }
 
 .btn-info{
-    @apply tw-bg-white tw-text-teal-500 tw-font-semibold tw-border-1 tw-border-teal-500 tw-rounded-sm shadow;
+    @apply tw:bg-white tw:text-teal-500 tw:font-semibold tw:border-1 tw:border-teal-500 tw:rounded-sm tw:shadow;
 }
 
 .btn-info:hover{
-    @apply tw-bg-teal-500 tw-border-1 tw-border-grey-light;
+    @apply tw:bg-teal-500 tw:border-1 tw:border-grey-light;
 }
 
 /****************************************************************************************ea
@@ -305,19 +283,19 @@ a:hover {
  ****************************************************************************************/
 
 input.form-control{
-    @apply shadow tw-appearance-none tw-border-1 tw-rounded-sm tw-w-full tw-py-2 tw-px-4 tw-text-grey-darker tw-leading-tight;
+    @apply tw:shadow tw:appearance-none tw:border-1 tw:rounded-sm tw:w-full tw:py-2 tw:px-4 tw:text-grey-darker tw:leading-tight;
 }
 
 input.form-control:focus{
-    @apply tw-outline-none tw-ring tw-text-grey-darker tw-leading-tight;
+    @apply tw:outline-none tw:ring tw:text-grey-darker tw:leading-tight;
 }
 
 .input-group-append .btn{
-    @apply shadow; border-color : #ced4da;
+    @apply tw:shadow; border-color : #ced4da;
 }
 
 label.control-label, label.form-check-label{
-    @apply tw-block tw-text-grey-darker tw-text-sm tw-font-bold;
+    @apply tw:block tw:text-grey-darker tw:text-sm tw:font-bold;
 }
 
 
@@ -327,23 +305,23 @@ label.control-label, label.form-check-label{
  ****************************************************************************************/
 
 .badge{
-   @apply tw-text-white tw-font-bold tw-py-1 tw-px-3 tw-rounded-full
+   @apply tw:text-white tw:font-bold tw:py-1 tw:px-3 tw:rounded-full
 }
 
 .badge-info{
-    @apply tw-bg-teal-500;
+    @apply tw:bg-teal-500;
 }
 
 .badge-success{
-    @apply tw-bg-green-500;
+    @apply tw:bg-green-500;
 }
 
 .badge-secondary{
-    @apply tw-bg-grey;
+    @apply tw:bg-grey;
 }
 
 .badge-warning{
-    @apply tw-text-black tw-bg-orange-400;
+    @apply tw:text-black tw:bg-orange-400;
 }
 
 /****************************************************************************************
@@ -352,20 +330,20 @@ label.control-label, label.form-check-label{
 
 .card{
     border-color : #dae1e7;
-    @apply shadow tw-rounded-sm;
+    @apply tw:shadow tw:rounded-sm;
  }
 
  .card .card-header{
-    @apply tw-rounded-tl-sm tw-rounded-tr-sm tw-border-b-0;
+    @apply tw:rounded-tl-sm tw:rounded-tr-sm tw:border-b-0;
  }
 
 
 a{
-    @apply tw-inline-block tw-align-baseline tw-font-bold tw-text-blue-light;
+    @apply tw:inline-block tw:align-baseline tw:font-bold tw:text-blue-light;
 }
 
 a:hover{
-    @apply tw-no-underline tw-text-blue-dark;
+    @apply tw:no-underline tw:text-blue-dark;
 }
 
 /****************************************************************************************
@@ -382,29 +360,29 @@ a:hover{
  ****************************************************************************************/
 
 .docstore table {
-    @apply tw-table-auto tw-w-full;
+    @apply tw:table-auto tw:w-full;
 }
 
 .docstore td {
-    @apply tw-border-t-1 tw-border-gray-300 tw-px-2 tw-py-2;
+    @apply tw:border-t-1 tw:border-gray-300 tw:px-2 tw:py-2;
 }
 
 .docstore td.top {
-  @apply tw-border-t-2 tw-border-gray-300 tw-px-2 tw-py-2;
+  @apply tw:border-t-2 tw:border-gray-300 tw:px-2 tw:py-2;
 }
 
 .docstore td.meta {
-    @apply tw-whitespace-nowrap tw-w-1 tw-hidden;
+    @apply tw:whitespace-nowrap tw:w-1 tw:hidden;
 }
 
-@screen lg {
+@media (min-width: 1024px) {
   .docstore td.meta {
-    @apply tw-whitespace-nowrap tw-w-1 tw-table-cell;
+    @apply tw:whitespace-nowrap tw:w-1 tw:table-cell;
   }
 }
 
 .docstore td.icon {
-  @apply tw-text-center tw-whitespace-nowrap tw-w-1 tw-px-2 tw-py-2 tw-mr-4;
+  @apply tw:text-center tw:whitespace-nowrap tw:w-1 tw:px-2 tw:py-2 tw:mr-4;
 }
 
 /****************************************************************************************
@@ -412,30 +390,5 @@ a:hover{
  ****************************************************************************************/
 
 .severity-disabled {
-  @apply tw-opacity-40;
+  @apply tw:opacity-40;
 }
-
-/**
- * This injects all of Tailwind's utility classes, generated based on your
- * config file.
- *
- * If using `postcss-import`, use this import instead:
- *
- * @import "tailwindcss/utilities";
- */
-@tailwind utilities;
-
-/**
- * Here you would add any custom utilities you need that don't come out of the
- * box with Tailwind.
- *
- * Example :
- *
- * .bg-pattern-graph-paper { ... }
- * .skew-45 { ... }
- *
- * Or if using a preprocessor or `postcss-import`:
- *
- * @import "utilities/background-patterns";
- * @import "utilities/skew-transforms";
- */

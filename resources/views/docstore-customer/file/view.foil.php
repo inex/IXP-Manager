@@ -12,7 +12,7 @@
     <?php endif; ?>
 
     Document Store
-    :: <a class="tw-font-normal" href="<?= route( 'docstore-c-dir@list', [ 'cust' => $t->cust, 'dir' => $t->file->directory ] ) ?>"><?= $t->file->directory ? $t->ee( $t->file->directory->name ) : 'Root Directory' ?></a>
+    :: <a class="tw:font-normal" href="<?= route( 'docstore-c-dir@list', [ 'cust' => $t->cust, 'dir' => $t->file->directory ] ) ?>"><?= $t->file->directory ? $t->ee( $t->file->directory->name ) : 'Root Directory' ?></a>
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
@@ -28,11 +28,11 @@
         <div class="col-md-12">
             <?= $t->alerts() ?>
 
-            <h3 class="tw-mt-4">
+            <h3 class="tw:mt-4">
               Viewing File: <?= $t->ee( $t->file->name ) ?>
             </h3>
 
-            <div class="tw-mt-8 tw-border-1 tw-p-5 tw-rounded-lg tw-border-gray-200 tw-bg-gray-100 tw-text-black">
+            <div class="tw:mt-8 tw:border-1 tw:p-5 tw:rounded-lg tw:border-gray-200 tw:bg-gray-100 tw:text-black">
                 <?php if( strtolower( $t->file->extension() ) === 'md' ): ?>
                     <?= clean( @parsedown( $t->content ) ) ?>
                 <?php else: ?>

@@ -19,12 +19,12 @@
         <div class="col-md-12">
             <div class="row content-center">
                 <?php foreach( $t->customers as $cust ): ?>
-                    <a class="mx-2 col-lg-3 col-sm-6 my-2 tw-bg-white rounded-t-lg border tw-border-gray-400 p-4 justify-center tw-shadow-md hover:tw-bg-grey-lighter text-center" href="<?= route( "logo@manage" , [ "id" => $cust->id ] ) ?>">
+                    <a class="mx-2 col-lg-3 col-sm-6 my-2 tw:bg-white rounded-t-lg border tw:border-gray-400 p-4 justify-center tw:shadow-md tw:hover:bg-grey-lighter text-center" href="<?= route( "logo@manage" , [ "id" => $cust->id ] ) ?>">
                         <div>
-                            <div class="tw-h-24 <?= request('bg') ? 'tw-bg-gray-200' : '' ?>">
+                            <div class="tw:h-24 <?= request('bg') ? 'tw:bg-gray-200' : '' ?>">
                                 <img class="img-fluid mx-auto" src="<?= url( 'logos/'.$cust->logo->shardedPath() ) ?>" />
                             </div>
-                            <hr class="tw-mt-4 tw-mb-2">
+                            <hr class="tw:mt-4 tw:mb-2">
                             <h5>
                                 <?= $t->ee( $cust->name ) ?>
                             </h5>

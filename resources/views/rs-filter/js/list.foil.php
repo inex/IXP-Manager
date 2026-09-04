@@ -1,4 +1,4 @@
-<script>
+<script type="module">
     $( ".delete-rsf" ).click( function( e ) {
         e.preventDefault();
         let url = this.href;

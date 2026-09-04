@@ -122,7 +122,7 @@
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>
-    <script>
+    <script type="module">
         $( '.table' ).dataTable( {
             stateSave: true,
             stateDuration : DATATABLE_STATE_DURATION,

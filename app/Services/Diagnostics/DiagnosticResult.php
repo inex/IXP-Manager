@@ -59,14 +59,14 @@ class DiagnosticResult
     ];
 
     public static array $RESULT_TYPES_ICON_STYLE = [
-        self::TYPE_FATAL   => 'tw-bg-red-50 tw-text-red-700 tw-ring-red-600/10',
-        self::TYPE_ERROR   => 'tw-bg-pink-50 tw-text-pink-700 tw-ring-pink-700/10',
-        self::TYPE_WARN    => 'tw-bg-yellow-50 -text-yellow-800 tw-ring-yellow-600/20',
-        self::TYPE_INFO    => 'tw-bg-blue-50 tw-text-blue-700 tw-ring-blue-700/10',
-        self::TYPE_UNKNOWN => 'tw-bg-gray-700 tw-text-gray-100 tw-ring-gray-800/50',
-        self::TYPE_GOOD    => 'tw-bg-green-50 tw-text-green-700 tw-ring-green-600/20',
-        self::TYPE_DEBUG   => 'tw-bg-gray-50 tw-text-gray-600 tw-ring-gray-500/10',
-        self::TYPE_TRACE   => 'tw-bg-gray-100 tw-text-gray-800 tw-ring-gray-800/10',
+        self::TYPE_FATAL   => 'tw:bg-red-50 tw:text-red-700 tw:ring-red-600/10',
+        self::TYPE_ERROR   => 'tw:bg-pink-50 tw:text-pink-700 tw:ring-pink-700/10',
+        self::TYPE_WARN    => 'tw:bg-yellow-50 -text-yellow-800 tw:ring-yellow-600/20',
+        self::TYPE_INFO    => 'tw:bg-blue-50 tw:text-blue-700 tw:ring-blue-700/10',
+        self::TYPE_UNKNOWN => 'tw:bg-gray-700 tw:text-gray-100 tw:ring-gray-800/50',
+        self::TYPE_GOOD    => 'tw:bg-green-50 tw:text-green-700 tw:ring-green-600/20',
+        self::TYPE_DEBUG   => 'tw:bg-gray-50 tw:text-gray-600 tw:ring-gray-500/10',
+        self::TYPE_TRACE   => 'tw:bg-gray-100 tw:text-gray-800 tw:ring-gray-800/10',
     ];
 
 
@@ -80,9 +80,9 @@ class DiagnosticResult
     ) { }
 
     public function iconStyle(): string {
-        return "tw-inline-flex tw-items-center tw-rounded-md tw-ml-2 tw-px-2 tw-py-1 tw-text-xs tw-font-medium "
+        return "tw:inline-flex tw:items-center tw:rounded-md tw:ml-2 tw:px-2 tw:py-1 tw:text-xs tw:font-medium "
             . self::$RESULT_TYPES_ICON_STYLE[$this->result]
-            . " tw-ring-1 tw-ring-inset";
+            . " tw:ring-1 tw:ring-inset";
     }
 
     public function result(): string {

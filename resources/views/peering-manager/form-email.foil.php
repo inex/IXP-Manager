@@ -93,7 +93,7 @@
 
 <?= Former::close() ?>
 
-<script>
+<script type="module">
 
     /**
      * Adds a prefix when a user goes to add/edit notes (typically name and date).

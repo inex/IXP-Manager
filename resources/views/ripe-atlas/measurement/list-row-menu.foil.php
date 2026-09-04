@@ -5,7 +5,7 @@
 
     <?php if( $t->row[ 'atlas_result_id' ] ): ?>
         <a class="btn btn-white <?= $t->row[ 'atlas_result_id' ] ?: 'disabled' ?>"  href="<?= route( 'ripe-atlas/results@view', [ 'id' => $t->row[ 'atlas_result_id' ] ] ) ?>" title="Show atlas result">
-            <i class="fa fa-file-text"></i>
+            <i class="fa fa-file-lines"></i>
         </a>
     <?php endif; ?>
 </div>

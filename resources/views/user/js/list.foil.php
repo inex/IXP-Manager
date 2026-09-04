@@ -1,7 +1,7 @@
 
 <?= $t->insert( 'user/js/common' ); ?>
 <?php if( !Auth::getUser()->isSuperUser() ):?>
-    <script>
+    <script type="module">
         let tableList = $( '#table-list' );
 
         tableList.show();
@@ -54,7 +54,7 @@
 
 <?php else: ?>
 
-    <script>
+    <script type="module">
         let tableList = $( '#table-list' );
 
         tableList.show();

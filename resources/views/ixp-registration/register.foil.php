@@ -64,7 +64,7 @@ Register on IXP Manager Community
                     <h3>
                         Organization Details
                     </h3>
-                    <hr class="tw-mb-6">
+                    <hr class="tw:mb-6">
 
 
                     <?= Former::text( 'website' )
@@ -114,23 +114,23 @@ Register on IXP Manager Community
 
                 <?php foreach ($t->infrastructures as $infrastructure): ?>
                 <div class="col-lg-12 mt-4 mb-sm-0">
-                    <div class="row tw-flex tw-items-center tw-justify-between">
+                    <div class="row tw:flex tw:items-center tw:justify-between">
                         <h4>
                             Infrastructure: <?= $t->ee($infrastructure->name) ?>
                         </h4>
 
                         <!-- Right-aligned action icons -->
-                        <div class="tw-flex tw-items-center tw-gap-2">
+                        <div class="tw:flex tw:items-center tw:gap-2">
                             <?php if ($infrastructure->peeringdb_ix_id != null): ?>
-                                <a target="_blank" class="tw-inline-block tw-border-1 tw-border-red-lighter tw-p-1 tw-rounded-full tw-text-red-lighter tw-font-semibold tw-uppercase tw-text-sm tw-px-3 tw-py-1 tw-mr-2" href="https://www.peeringdb.com/ix/<?= $infrastructure->peeringdb_ix_id ?>">PDB #<?= $infrastructure->peeringdb_ix_id ?></a>
+                                <a target="_blank" class="tw:inline-block tw:border-1 tw:border-red-lighter tw:p-1 tw:rounded-full tw:text-red-lighter tw:font-semibold tw:uppercase tw:text-sm tw:px-3 tw:py-1 tw:mr-2" href="https://www.peeringdb.com/ix/<?= $infrastructure->peeringdb_ix_id ?>">PDB #<?= $infrastructure->peeringdb_ix_id ?></a>
                             <?php endif; ?>
                             <?php if ($infrastructure->ixf_ix_id != null): ?>
-                                <a target="_blank" class="tw-inline-block tw-border-1 tw-border-red-lighter tw-p-1 tw-rounded-full tw-text-red-lighter tw-font-semibold tw-uppercase tw-text-sm tw-px-3 tw-py-1 tw-mr-2" href="https://ixpdb.euro-ix.net/en/explore/ixp/<?= $infrastructure->ixf_ix_id ?>">IX-F #<?= $infrastructure->ixf_ix_id ?></a>
+                                <a target="_blank" class="tw:inline-block tw:border-1 tw:border-red-lighter tw:p-1 tw:rounded-full tw:text-red-lighter tw:font-semibold tw:uppercase tw:text-sm tw:px-3 tw:py-1 tw:mr-2" href="https://ixpdb.euro-ix.net/en/explore/ixp/<?= $infrastructure->ixf_ix_id ?>">IX-F #<?= $infrastructure->ixf_ix_id ?></a>
                             <?php endif; ?>
                         </div>
                     </div>
 
-                    <hr class="tw-mb-6">
+                    <hr class="tw:mb-6">
 
                     <?= Former::text( 'infrastructure[' . $infrastructure->id . '][fullname]' )
                             ->label( 'Full name of infrastructure <sup>*</sup>' )

@@ -31,10 +31,10 @@
                 <thead class="thead-dark">
                     <tr>
                         <th><?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?></th>
-                        <th class="tw-text-center">V4 Prefixes</th>
-                        <th class="tw-text-center">V6 Prefixes</th>
-                        <th class="tw-text-center">V4 ASNs</th>
-                        <th class="tw-text-center">V6 ASNs</th>
+                        <th class="tw:text-center">V4 Prefixes</th>
+                        <th class="tw:text-center">V6 Prefixes</th>
+                        <th class="tw:text-center">V4 ASNs</th>
+                        <th class="tw:text-center">V6 ASNs</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -49,7 +49,7 @@
 
                             <?php foreach( [ 'prefix_v4', 'prefix_v6', 'asn_v4', 'asn_v6' ] as $type ): ?>
 
-                                <td class="tw-text-center"
+                                <td class="tw:text-center"
                                         data-sort="<?= !$c->isIPvXEnabled( substr( $type, -1 ) ) ? -1000 : $c?->irrdbUpdateLog?->$type?->timestamp ?? 0 ?>">
 
                                     <?php if( !$c->isIPvXEnabled( substr( $type, -1 ) ) ):  ?>
@@ -70,7 +70,7 @@
 
                                         <?php else: ?>
 
-                                            <span class="tw-tabular-nums" title="<?= $c->irrdbUpdateLog->$type->format('Y-m-d H:i') ?>">
+                                            <span class="tw:tabular-nums" title="<?= $c->irrdbUpdateLog->$type->format('Y-m-d H:i') ?>">
                                                 <?= $c->irrdbUpdateLog->$type->diffForHumans() ?>
                                             </span>
 
@@ -90,7 +90,7 @@
                                                     'cust' => $c,
                                                     'type' => str_starts_with( $type, 'prefix' ) ? 'prefix' : 'asn',
                                                     'protocol' => str_ends_with( $type, '4' ) ? '4' : '6',
-                                                ] ) ?>"> <i class="ml-2 fa fa-arrow-circle-o-right"></i></a>
+                                                ] ) ?>"> <i class="ml-2 fa fa-circle-arrow-right"></i></a>
 
                                             <?php endif; ?>
 

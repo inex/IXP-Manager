@@ -96,7 +96,7 @@
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>
-    <script>
+    <script type="module">
         $( document ).ready( function() {
             $('#table-list').dataTable( {
                 stateSave: true,

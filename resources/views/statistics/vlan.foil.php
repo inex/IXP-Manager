@@ -96,7 +96,7 @@
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>
-    <script>
+    <script type="module">
         let base_route   = "<?= route( 'statistics@vlan' ) ?>";
         let sel_vlanid   = $("#form-select-vlanid");
         let sel_protocol = $("#form-select-protocol");

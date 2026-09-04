@@ -1,4 +1,4 @@
-<script>
+<script type="module">
 
     <?php if( config( 'google2fa.enabled' ) ): ?>
     

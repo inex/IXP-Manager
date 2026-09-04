@@ -148,22 +148,22 @@ class PatchPanelPortFile extends Model
     {
         switch ( $this->type ) {
             case 'image/jpeg':
-                $icon = 'fa-file-image-o';
+                $icon = 'fa-file-image';
                 break;
             case 'image/png':
-                $icon = 'fa-file-image-o';
+                $icon = 'fa-file-image';
                 break;
             case 'image/bmp':
-                $icon = 'fa-file-image-o';
+                $icon = 'fa-file-image';
                 break;
             case 'application/pdf':
-                $icon = 'fa-file-pdf-o';
+                $icon = 'fa-file-pdf';
                 break;
             case 'application/zip':
-                $icon = 'fa-file-archive-o';
+                $icon = 'fa-file-zipper';
                 break;
             case 'text/plain':
-                $icon = 'fa-file-text';
+                $icon = 'fa-file-lines';
                 break;
             default:
                 $icon = 'fa-file';

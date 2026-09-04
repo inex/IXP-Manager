@@ -1,4 +1,4 @@
-<script>
+<script type="module">
     $( 'document' ).ready( function(){
 
         $( "#table-am" ).show();

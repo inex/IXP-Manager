@@ -1,4 +1,4 @@
-<script>
+<script type="module">
 
     // from phpjs - MIT license:
     function number_format (number, decimals, dec_point, thousands_sep) {

@@ -111,7 +111,7 @@
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>
-    <script>
+    <script type="module">
         <?php if( $t->file ): ?>
             $( document ).ready( function() {
                 $('#uploadedFile').on( 'input', function( e ) {

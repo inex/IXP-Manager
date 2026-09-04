@@ -1,0 +1,16 @@
+@use 'bootstrap/dist/css/bootstrap.min.css';
+@use 'datatables.net-bs4/css/dataTables.bootstrap4.min.css';
+@use 'select2/dist/css/select2.min.css';
+@use '@fortawesome/fontawesome-free/css/all.css';
+@use '@fortawesome/fontawesome-free/css/v4-shims.css';
+@use 'datatables.net-responsive-bs4/css/responsive.bootstrap4.css';
+@use './ixp-manager.css';
+
+
+// Tailwind v4 uses CSS layers, so pull the layers in directly for now:
+@use "tailwindcss/theme.css";
+@use "tailwindcss/preflight";
+@use './tailwind.scss';
+@use "tailwindcss/utilities";
+
+@config "../../tailwind.config.js";

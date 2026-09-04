@@ -38,12 +38,12 @@
                 <div class="card mb-4 bg-light">
                     <div class="card-body">
                         <div class="form-inline">
-                            <div class="form-group row tw-pl-16">
+                            <div class="form-group row tw:pl-16">
                                 <label for="vlan" class="col-sm-2 col-form-label">
                                     VLAN
                                 </label>
                                 <div class="col-sm-10">
-                                    <select id="vlan" name="vlan" class="form-control tw-min-w-full">
+                                    <select id="vlan" name="vlan" class="form-control tw:min-w-full">
                                         <option></option>
                                         <?php foreach( $t->vlans as $v ): ?>
                                             <option value="<?= $v->id ?>" <?= $t->vlan && $v->id === $t->vlan->id ? 'selected' : '' ?>><?= $t->ee( $v->name ) ?></option>

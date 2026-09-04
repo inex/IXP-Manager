@@ -35,7 +35,7 @@ $this->layout( 'layouts/ixpv4' );
                     </th>
                     <?php foreach( $t->custs as $c ):
                         /** @var $c \IXP\Models\Customer */ ?>
-                        <th id="" class="th-hover cell-hover cell-y-<?= $c->autsys ?> cell-hover-<?= $c->autsys ?> tw-leading-tight tw-text-sm tw-text-center" data-cust-asn="<?= $c->autsys ?>">
+                        <th id="" class="th-hover cell-hover cell-y-<?= $c->autsys ?> cell-hover-<?= $c->autsys ?> tw:leading-tight tw:text-sm tw:text-center" data-cust-asn="<?= $c->autsys ?>">
                             <?php $asn = sprintf( $t->asnStringFormat, $c->autsys ) ?>
                             <?php $len = strlen( $asn ) ?>
                             <?php for( $pos = 0; $pos <= $len; $pos++ ): ?>
@@ -53,17 +53,17 @@ $this->layout( 'layouts/ixpv4' );
                 <?php foreach( $t->custs as $custSource ): ?>
                     <tr class="atlas-matrix-tr">
 
-                        <td id="" class="tw-p-0  tw-whitespace-no-wrap pl-2 pr-2 cell-x-<?= $custSource->autsys ?> cell-hover border-right-0 cell-hover-<?= $custSource->autsys ?>" data-cust-asn="<?= $custSource->autsys ?>">
+                        <td id="" class="tw:p-0  tw:whitespace-no-wrap pl-2 pr-2 cell-x-<?= $custSource->autsys ?> cell-hover border-right-0 cell-hover-<?= $custSource->autsys ?>" data-cust-asn="<?= $custSource->autsys ?>">
                             <?= $t->ee( $custSource[ "abbreviatedName" ] ) ?>
                         </td>
 
-                        <td class="tw-p-0 tw-whitespace-no-wrap text-right cell-x-<?= $custSource->autsys ?> border-left-0 border-left-0 cell-hover cell-hover-<?= $custSource->autsys ?> pr-2" data-cust-asn="<?= $custSource->autsys ?>">
+                        <td class="tw:p-0 tw:whitespace-no-wrap text-right cell-x-<?= $custSource->autsys ?> border-left-0 border-left-0 cell-hover cell-hover-<?= $custSource->autsys ?> pr-2" data-cust-asn="<?= $custSource->autsys ?>">
                             <?= $custSource->autsys ?>
                         </td>
 
                         <?php foreach( $t->custs as $custDest ): ?>
 
-                            <td class="tw-p-0 tw-w-6 tw-whitespace-no-wrap atlas-matrix-td td-hover td-x-<?= $custSource->autsys ?> td-y-<?= $custDest->autsys ?>
+                            <td class="tw:p-0 tw:w-6 tw:whitespace-no-wrap atlas-matrix-td td-hover td-x-<?= $custSource->autsys ?> td-y-<?= $custDest->autsys ?>
                                 <?php if( $custSource->id !== $custDest->id ): ?>
                                     bg-primary
                                 <?php else: ?>

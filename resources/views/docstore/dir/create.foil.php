@@ -88,7 +88,7 @@
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>
-    <script>
+    <script type="module">
         <?php if( $t->dir ): ?>
             $(document).ready(function() {
                 $( "#parent_dir_id option[value=" + <?= $t->dir->id ?> +"]" ).attr( 'disabled','disabled' );

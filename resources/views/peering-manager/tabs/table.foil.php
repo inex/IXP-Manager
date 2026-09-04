@@ -64,7 +64,7 @@
                                             data-days="<?= isset( $t->peers[ $cid ] ) ? $t->peers[ $cid ][ "email_days" ] : -1 ?>"
                                             class="btn btn-white btn-sm peering-request" <?= !$c[ "ispotential" ] ? "disabled" : "" ?>>
                                         <i id="peering-request-icon-<?= $cid ?>"
-                                           class="fa  <?= isset( $t->peers[ $cid ][ "emails_sent"] ) && $t->peers[ $cid ][ "emails_sent" ] ? "fa-repeat" : "fa-envelope" ?>"></i> Request Peering
+                                           class="fa  <?= isset( $t->peers[ $cid ][ "emails_sent"] ) && $t->peers[ $cid ][ "emails_sent" ] ? "fa-rotate-right" : "fa-envelope" ?>"></i> Request Peering
                                     </button>
 
                                     <button id="peering-notes-<?= $cid ?>" class="btn btn-white btn-sm peering-note" data-object-id="<?= $cid ?>">

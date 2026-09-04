@@ -27,7 +27,7 @@ $this->layout( 'layouts/ixpv4' )
                 </div>
             </div>
         <?php endif; ?>
-        <div class=" tw-w-full tw-max-w-md tw-mx-auto">
+        <div class=" tw:w-full tw:max-w-md tw:mx-auto">
             <div class="card">
                 <div class="card-header">
                     <h3>

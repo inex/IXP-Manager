@@ -57,28 +57,28 @@
     <?php endif; ?>
 
     <?php if( $t->dir && $t->dir->description ): ?>
-        <div class="row tw-my-8 tw-p-4 tw-border-2 tw-border-gray-500 tw-rounded-lg tw-bg-gray-200">
+        <div class="row tw:my-8 tw:p-4 tw:border-2 tw:border-gray-500 tw:rounded-lg tw:bg-gray-200">
             <?= clean( @parsedown( $t->dir->description ) ) ?>
         </div>
     <?php endif; ?>
 
 
     <div class="docstore">
-        <table class="tw-mt-8">
+        <table class="tw:mt-8">
             <tbody>
                 <?php if( $t->dir ): ?>
                     <tr>
                         <td class="top icon">
                             <?php if( $t->dir ): ?>
-                                <a class="tw-text-black" href="<?= route('docstore-c-dir@list', [ 'cust' => $t->cust ,'dir' => $t->dir->parentDirectory ? $t->dir->parentDirectory->id : null] ) ?>">
-                                    <i class="fa fa-lg fa-caret-square-o-left tw-inline-block tw-w-full"></i>
+                                <a class="tw:text-black" href="<?= route('docstore-c-dir@list', [ 'cust' => $t->cust ,'dir' => $t->dir->parentDirectory ? $t->dir->parentDirectory->id : null] ) ?>">
+                                    <i class="fa fa-lg fa-square-caret-left tw:inline-block tw:w-full"></i>
                                 </a>
                             <?php endif; ?>
                         </td>
                         <td class="top icon">
-                            <i class="fa fa-lg fa-folder-open tw-inline-block tw-w-full"></i>
+                            <i class="fa fa-lg fa-folder-open tw:inline-block tw:w-full"></i>
                         </td>
-                        <td class="top tw-px-4 tw-w-auto">
+                        <td class="top tw:px-4 tw:w-auto">
                             <?= $t->ee( $t->dir->name ) ?>
                         </td>
                         <td class="top meta">&nbsp;</td>
@@ -92,9 +92,9 @@
                         <tr>
                             <td class="<?= 'top' ?> icon"></td>
                             <td class="<?= 'top' ?> icon">
-                                <i class="fa fa-lg fa-folder tw-inline-block tw-w-full"></i>
+                                <i class="fa fa-lg fa-folder tw:inline-block tw:w-full"></i>
                             </td>
-                            <td class="<?= 'top' ?> tw-px-4 tw-py-2 tw-w-auto">
+                            <td class="<?= 'top' ?> tw:px-4 tw:py-2 tw:w-auto">
                                 <a href="<?= route('docstore-c-dir@list-patch-panel-port-file', [ 'cust' => $t->cust  ] ) ?>">
                                     Patch Panel Port Files
                                 </a>
@@ -110,9 +110,9 @@
                         <tr>
                             <td class="<?= 'top' ?> icon"></td>
                             <td class="<?= 'top' ?> icon">
-                                <i class="fa fa-lg fa-folder tw-inline-block tw-w-full"></i>
+                                <i class="fa fa-lg fa-folder tw:inline-block tw:w-full"></i>
                             </td>
-                            <td class="<?= 'top' ?> tw-px-4 tw-py-2 tw-w-auto">
+                            <td class="<?= 'top' ?> tw:px-4 tw:py-2 tw:w-auto">
                                 <a href="<?= route('docstore-c-dir@list-patch-panel-port-history-file', [ 'cust' => $t->cust  ] ) ?>">
                                     Patch Panel Port Files History
                                 </a>
@@ -130,9 +130,9 @@
                     <tr>
                         <td class="<?= $i ? '' : 'top' ?> icon"></td>
                         <td class="<?= $i ? '' : 'top' ?> icon">
-                            <i class="fa fa-lg fa-folder tw-inline-block tw-w-full"></i>
+                            <i class="fa fa-lg fa-folder tw:inline-block tw:w-full"></i>
                         </td>
-                        <td class="<?= $i ? '' : 'top' ?> tw-px-4 tw-py-2 tw-w-auto">
+                        <td class="<?= $i ? '' : 'top' ?> tw:px-4 tw:py-2 tw:w-auto">
                             <a href="<?= route('docstore-c-dir@list', [ 'cust' => $t->cust , 'dir' => $dir[ 'id' ] ] ) ?>">
                                 <?= $t->ee( $dir['name'] ) ?>
                             </a>
@@ -142,7 +142,7 @@
                         <td class="<?= $i ? '' : 'top' ?> meta">
                             <?php if( $check && $isSuperUser ): ?>
                                 <div class="dropdown">
-                                    <button class="btn btn-light btn-sm tw-my-0 tw-py-0" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <button class="btn btn-light btn-sm tw:my-0 tw:py-0" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         &middot;&middot;&middot;
                                     </button>
                                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
@@ -161,11 +161,11 @@
 
                 <?php foreach( $t->files as $file ): ?>
                     <tr class="">
-                        <td class="<?= $i ? '' : 'tw-border-t-2' ?> icon"></td>
-                        <td class="<?= $i ? '' : 'tw-border-t-2' ?> icon">
-                            <i class="fa fa-lg fa-file-o tw-inline-block tw-w-full"></i>
+                        <td class="<?= $i ? '' : 'tw:border-t-2' ?> icon"></td>
+                        <td class="<?= $i ? '' : 'tw:border-t-2' ?> icon">
+                            <i class="fa fa-lg fa-file tw:inline-block tw:w-full"></i>
                         </td>
-                        <td class="<?= $i ? '' : 'tw-border-t-2' ?> tw-px-4 tw-w-auto">
+                        <td class="<?= $i ? '' : 'tw:border-t-2' ?> tw:px-4 tw:w-auto">
                             <a href="<?= route($file->isViewable() ? 'docstore-c-file@view' : 'docstore-c-file@download', [ 'cust' => $t->cust, 'file' => $file->id ] ) ?>"
                                 <?php if( trim( $file->description ) ): ?>
                                     data-toggle="tooltip" data-placement="top" data-html="true" title="<?= clean( @parsedown( $file->description ) ) ?>"
@@ -173,23 +173,23 @@
                             </a>
                         </td>
 
-                        <td class="<?= $i ? '' : 'tw-border-t-2' ?> meta tw-text-center">
+                        <td class="<?= $i ? '' : 'tw:border-t-2' ?> meta tw:text-center">
                             <?php if( $check && $isSuperUser ): ?>
-                                <span class="tw-w-full tw-inline-block tw-border-gray-200 tw-border-1 tw-rounded-sm tw-bg-gray-200 tw-px-1 tw-text-xs tw-text-gray-700">
+                                <span class="tw:w-full tw:inline-block tw:border-gray-200 tw:border-1 tw:rounded-sm tw:bg-gray-200 tw:px-1 tw:text-xs tw:text-gray-700">
                                     <?= \IXP\Models\User::$PRIVILEGES_ALL[ $file->min_privs ] ?>
                                 </span>
                             <?php endif; ?>
                         </td>
 
-                        <td class="<?= $i ? '' : 'tw-border-t-2' ?> meta">
-                            <span class="tw-text-gray-700 tw-text-sm tw-align-middle tw-border-gray-200 tw-border-1 tw-rounded-sm tw-bg-gray-200 tw-px-1">
+                        <td class="<?= $i ? '' : 'tw:border-t-2' ?> meta">
+                            <span class="tw:text-gray-700 tw:text-sm tw:align-middle tw:border-gray-200 tw:border-1 tw:rounded-sm tw:bg-gray-200 tw:px-1">
                                 <?= \Carbon\Carbon::parse($file->file_last_updated)->toFormattedDateString() ?>
                             </span>
                         </td>
 
-                        <td class="<?= $i ? '' : 'tw-border-t-2' ?> meta">
+                        <td class="<?= $i ? '' : 'tw:border-t-2' ?> meta">
                             <div class="dropdown">
-                                <button class="btn btn-light btn-sm tw-my-0 tw-py-0" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <button class="btn btn-light btn-sm tw:my-0 tw:py-0" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     &middot;&middot;&middot;
                                 </button>
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
@@ -235,52 +235,52 @@
         <div>
             <h4>Metadata for <span id="meta-filename"></span></h4>
 
-            <table class="tw-mt-8">
-                <tr class="tw-border-t-1 tw-border-blue-500">
-                    <td class="tw-text-right tw-font-bold tw-p-2">
+            <table class="tw:mt-8">
+                <tr class="tw:border-t-1 tw:border-blue-500">
+                    <td class="tw:text-right tw:font-bold tw:p-2">
                         Created By
                     </td>
-                    <td class="tw-pl-4 tw-font-mono tw-text-sm tw-p-2">
+                    <td class="tw:pl-4 tw:font-mono tw:text-sm tw:p-2">
                         <span id="meta-created-by"></span>
                     </td>
                 </tr>
-                <tr class="tw-border-t-1 tw-border-blue-500">
-                    <td class="tw-text-right tw-font-bold tw-p-2">
+                <tr class="tw:border-t-1 tw:border-blue-500">
+                    <td class="tw:text-right tw:font-bold tw:p-2">
                         Customer
                     </td>
-                    <td class="tw-pl-4 tw-font-mono tw-text-sm tw-p-2">
+                    <td class="tw:pl-4 tw:font-mono tw:text-sm tw:p-2">
                         <span id="meta-customer"></span>
                     </td>
                 </tr>
-                <tr class="tw-border-t-1 tw-border-blue-500">
-                    <td class="tw-text-right tw-font-bold tw-p-2">
+                <tr class="tw:border-t-1 tw:border-blue-500">
+                    <td class="tw:text-right tw:font-bold tw:p-2">
                         Path
                     </td>
-                    <td class="tw-pl-4 tw-font-mono tw-text-sm tw-p-2">
+                    <td class="tw:pl-4 tw:font-mono tw:text-sm tw:p-2">
                         <span id="meta-dspath"></span>
                     </td>
                 </tr>
-                <tr class="tw-border-t-1 tw-border-blue-500">
-                    <td class="tw-text-right tw-font-bold tw-p-2">
+                <tr class="tw:border-t-1 tw:border-blue-500">
+                    <td class="tw:text-right tw:font-bold tw:p-2">
                         Created
                     </td>
-                    <td class="tw-pl-4 tw-font-mono tw-text-sm tw-p-2">
+                    <td class="tw:pl-4 tw:font-mono tw:text-sm tw:p-2">
                         <span id="meta-created-at"></span>
                     </td>
                 </tr>
-                <tr class="tw-border-t-1 tw-border-blue-500">
-                    <td class="tw-text-right tw-font-bold tw-p-2">
+                <tr class="tw:border-t-1 tw:border-blue-500">
+                    <td class="tw:text-right tw:font-bold tw:p-2">
                         Last Modified
                     </td>
-                    <td class="tw-pl-4 tw-font-mono tw-text-sm tw-p-2">
+                    <td class="tw:pl-4 tw:font-mono tw:text-sm tw:p-2">
                         <span id="meta-last-modified"></span>
                     </td>
                 </tr>
-                <tr class="tw-border-t-1 tw-border-b-1 tw-border-blue-500">
-                    <td class="tw-text-right tw-font-bold tw-p-2">
+                <tr class="tw:border-t-1 tw:border-b-1 tw:border-blue-500">
+                    <td class="tw:text-right tw:font-bold tw:p-2">
                         Size
                     </td>
-                    <td class="tw-pl-4 tw-font-mono tw-text-sm tw-p-2">
+                    <td class="tw:pl-4 tw:font-mono tw:text-sm tw:p-2">
                         <span id="meta-size"></span>
                     </td>
                 </tr>

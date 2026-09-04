@@ -1,49 +1,36 @@
 {
   "private": true,
+  "type": "module",
+  "version": "1.7.1",
   "scripts": {
-    "dev": "npm run development",
-    "development": "NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --config=node_modules/laravel-mix/setup/webpack.config.js",
-    "watch": "npm run development -- --watch",
-    "watch-poll": "npm run watch -- --watch-poll",
-    "hot": "cross-env NODE_ENV=development node_modules/webpack-dev-server/bin/webpack-dev-server.js --inline --hot --config=node_modules/laravel-mix/setup/webpack.config.js",
-    "prod": "npm run production",
-    "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --config=node_modules/laravel-mix/setup/webpack.config.js"
+    "dev": "vite",
+    "build": "vite build"
   },
   "devDependencies": {
-    "autoprefixer": "^10.4.19",
-    "axios": "^1.6.4",
-    "blueimp-file-upload": "^10.32.0",
-    "clipboard": "^2.0.11",
-    "font-awesome": "^4.7.0",
-    "ip-address": "^10.4.0",
-    "laravel-mix": "^6.0.49",
-    "moment": "^2.30.1",
-    "postcss": "^8.4.38",
-    "resolve-url-loader": "^5.0.0",
-    "sass": "^1.26.10",
-    "sass-loader": "^9.0.3",
-    "select2": "^4.0.13",
-    "tailwindcss": "^3.4.7",
-    "webpack": "5.93.0"
-  },
-  "dependencies": {
+    "@fortawesome/fontawesome-free": "^7.3.1",
+    "@tailwindcss/postcss": "^4.3.3",
     "alpinejs": "^3.14.1",
+    "axios": "^1.20.0",
+    "blueimp-file-upload": "^10.32.0",
     "bootbox": "^6.0.0",
     "bootstrap": "^4.6.2",
-    "braces": "^3.0.3",
-    "cross-env": "^7.0.3",
-    "css-loader": "^7.1.2",
-    "datatables-responsive": "^1.0.7",
+    "clipboard": "^2.0.11",
     "datatables.net-bs4": "^1.10.21",
     "datatables.net-responsive-bs4": "^2.2.5",
-    "jquery": "^3.5.1",
+    "ip-address": "^10.4.0",
+    "jquery": "^3.7.1",
     "jquery-knob": "^1.2.11",
     "jquery-ui-dist": "^1.12.1",
-    "postcss-loader": "^8.1.1",
-    "style-loader": "^2.0.0"
+    "laravel-vite-plugin": "^3.2.0",
+    "moment": "^2.30.1",
+    "postcss": "^8.4.38",
+    "sass": "^1.26.10",
+    "select2": "^4.0.13",
+    "tailwindcss": "^4.3.3",
+    "vite": "^8.2.2"
   },
-  "overrides": {
-    "webpackbar": "^7.0.0"
-  },
-  "version": "1.7.1"
+  "allowScripts": {
+    "@parcel/watcher@2.6.0": true,
+    "fsevents@2.3.3": true
+  }
 }

@@ -63,7 +63,7 @@
                             </td>
                             <td>
                                 <?php if( !$cb->enabled ):?>
-                                    <i class="fa fa-remove"></i>
+                                    <i class="fa fa-xmark"></i>
                                 <?php elseif( $cb->enabled && $cb->allCoreLinksEnabled() ): ?>
                                     <i class="fa fa-check"></i>
                                 <?php else:?>
@@ -97,7 +97,7 @@
 
     <div class="row">
         <div class="col-sm-10 offset-sm-1">
-            <p class="tw-italic">
+            <p class="tw:italic">
                 <br><br>
                 <sup>*</sup> Operational means the number of enabled core links for which both sides had a SNMP IFace operational state of 'up' the last time the switch
                 was polled (typically every 5 mins).

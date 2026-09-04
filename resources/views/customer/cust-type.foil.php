@@ -5,7 +5,7 @@
 ?>
 
 <?php if( $c->typeAssociate() ): ?>
-    <span class="badge badge-warning tw-p-1">ASSOCIATE MEMBER</span>
+    <span class="badge badge-warning tw:p-1">ASSOCIATE MEMBER</span>
 <?php elseif( $c->typeProBono() ): ?>
     <span class="badge badge-info">PROBONO MEMBER</span>
 <?php elseif( $c->typeInternal() ): ?>

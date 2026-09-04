@@ -1,4 +1,4 @@
-<script>
+<script type="module">
 
     let dd_pdb = $( '#pdb_facility_id' );
     let errorOption = `<option value="0">AJAX / API Error</option>\n`;

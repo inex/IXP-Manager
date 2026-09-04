@@ -103,7 +103,7 @@ class SettingsControllerTest extends DuskTestCase
             // change some values to check validation
             $browser->press( 'Route Servers' )
                 ->waitForText( 'Minimum IPv4 Subnet Size' )
-                ->type( 'rs_rpki_rtr1_port', 12345 )
+                ->type( 'rs_rpki_rtr1_port', "12345" )
                 ->driver->executeScript( 'window.scrollTo(0, 3000);' );
             
             $browser->press( 'Save Changes' )

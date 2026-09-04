@@ -1,6 +1,6 @@
 <?= $t->insert( 'user/js/common' ); ?>
 
-<script>
+<script type="module">
     $( document ).ready(function() {
         $( "#btnCancel" ).attr( "href", $( "#linkCancel" ).val() );
 

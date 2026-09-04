@@ -36,7 +36,7 @@
                     </form>
                 </div>
 
-                <div class="pull-right tw-text-gray-600">
+                <div class="pull-right tw:text-gray-600">
                     <?= $cb->typeText() ?>,
                     <?= $t->ee( $cb->switchSideX( $t->graph->side() === 'a' )->name )  ?> -
                     <?= $t->ee( $cb->switchSideX( $t->graph->side() !== 'a' )->name )  ?>,
@@ -90,7 +90,7 @@
 
             <div class="row">
                 <?php foreach( IXP\Services\Grapher\Graph::PERIOD_DESCS as $pvalue => $pname ): ?>
-                    <div class="col-sm-12 col-lg-6 tw-mb-8">
+                    <div class="col-sm-12 col-lg-6 tw:mb-8">
                         <div class="card">
                             <div class="card-header d-flex">
                                 <h3 class="mr-auto">
@@ -139,7 +139,7 @@
         </div>
     <?php endif; ?>
 
-    <div class="tw-bg-blue-100 tw-border-l-4 tw-border-blue-500 tw-text-blue-700 p-4 alert-dismissible mb-4 tw-mt-16" role="alert">
+    <div class="tw:bg-blue-100 tw:border-l-4 tw:border-blue-500 tw:text-blue-700 p-4 alert-dismissible mb-4 tw:mt-16" role="alert">
         <div class="d-flex align-items-center">
             <div class="text-center"><i class="fa fa-info-circle fa-2x "></i></div>
             <div class="col-sm-12">
@@ -153,7 +153,7 @@
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>
-    <script>
+    <script type="module">
         let base_route     = "<?= url( '' ) ?>/statistics/core-bundle";
         let sel_corebundle = $("#form-select-corebundleid");
         let sel_category   = $("#form-select-category");

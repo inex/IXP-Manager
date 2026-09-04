@@ -1,0 +1,82 @@
+{
+  "_jquery-CYOa1rmW.js": {
+    "file": "assets/jquery-CYOa1rmW.js",
+    "name": "jquery",
+    "imports": [
+      "_rolldown-runtime-W7wSyTde.js"
+    ]
+  },
+  "_rolldown-runtime-W7wSyTde.js": {
+    "file": "assets/rolldown-runtime-W7wSyTde.js",
+    "name": "rolldown-runtime"
+  },
+  "node_modules/@fortawesome/fontawesome-free/webfonts/fa-brands-400.woff2": {
+    "file": "assets/fa-brands-400-Bs6tcqqs.woff2",
+    "src": "node_modules/@fortawesome/fontawesome-free/webfonts/fa-brands-400.woff2"
+  },
+  "node_modules/@fortawesome/fontawesome-free/webfonts/fa-regular-400.woff2": {
+    "file": "assets/fa-regular-400-DRN8N0d1.woff2",
+    "src": "node_modules/@fortawesome/fontawesome-free/webfonts/fa-regular-400.woff2"
+  },
+  "node_modules/@fortawesome/fontawesome-free/webfonts/fa-solid-900.woff2": {
+    "file": "assets/fa-solid-900-IAB4Droh.woff2",
+    "src": "node_modules/@fortawesome/fontawesome-free/webfonts/fa-solid-900.woff2"
+  },
+  "node_modules/@fortawesome/fontawesome-free/webfonts/fa-v4compatibility.woff2": {
+    "file": "assets/fa-v4compatibility-CErXDOsT.woff2",
+    "src": "node_modules/@fortawesome/fontawesome-free/webfonts/fa-v4compatibility.woff2"
+  },
+  "resources/js/clipboard.js": {
+    "file": "assets/clipboard-DuZpl9t7.js",
+    "name": "clipboard",
+    "src": "resources/js/clipboard.js",
+    "isEntry": true,
+    "imports": [
+      "_rolldown-runtime-W7wSyTde.js"
+    ]
+  },
+  "resources/js/ixp-pack.js": {
+    "file": "assets/ixp-pack-XJcZMBFM.js",
+    "name": "ixp-pack",
+    "src": "resources/js/ixp-pack.js",
+    "isEntry": true,
+    "imports": [
+      "_rolldown-runtime-W7wSyTde.js",
+      "_jquery-CYOa1rmW.js"
+    ]
+  },
+  "resources/js/jquery-fileuploader.js": {
+    "file": "assets/jquery-fileuploader-Bsc69X2K.js",
+    "name": "jquery-fileuploader",
+    "src": "resources/js/jquery-fileuploader.js",
+    "isEntry": true,
+    "imports": [
+      "_rolldown-runtime-W7wSyTde.js",
+      "_jquery-CYOa1rmW.js"
+    ]
+  },
+  "resources/js/moment.js": {
+    "file": "assets/moment-CY7CAE8i.js",
+    "name": "moment",
+    "src": "resources/js/moment.js",
+    "isEntry": true,
+    "imports": [
+      "_rolldown-runtime-W7wSyTde.js"
+    ]
+  },
+  "resources/scss/ixp-pack.scss": {
+    "file": "assets/ixp-pack-CqpHwMT9.css",
+    "name": "ixp-pack",
+    "names": [
+      "ixp-pack.css"
+    ],
+    "src": "resources/scss/ixp-pack.scss",
+    "isEntry": true,
+    "assets": [
+      "assets/fa-brands-400-Bs6tcqqs.woff2",
+      "assets/fa-regular-400-DRN8N0d1.woff2",
+      "assets/fa-solid-900-IAB4Droh.woff2",
+      "assets/fa-v4compatibility-CErXDOsT.woff2"
+    ]
+  }
+}

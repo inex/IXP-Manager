@@ -1,4 +1,4 @@
-<script>
+<script type="module">
     $(document).ready(function() {
         <?php if( !isset( $t->feParams->readonly ) || !$t->feParams->readonly || isset( $t->feParams->readonly ) || $t->feParams->allowDeleteForReadOnly ): ?>
             $( '.btn-2f-list-delete' ).click( function( event ) {

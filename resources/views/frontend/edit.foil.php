@@ -27,7 +27,7 @@
             <?php if( !isset( $t->feParams->readonly ) || !$t->feParams->readonly ): ?>
                 <?php if( Route::has( $t->feParams->route_prefix . '@list' ) ): ?>
                     <a class="btn btn-white" href="<?= route($t->feParams->route_prefix.'@list') ?>">
-                        <span class="fa fa-th-list"></span>
+                        <span class="fa fa-table-list"></span>
                     </a>
                 <?php endif; ?>
             <?php endif;?>

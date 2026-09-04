@@ -24,7 +24,7 @@
                         engineering and password brute force attacks and secures your logins from attackers exploiting weak
                         or stolen credentials.
                     </p>
-                    <p class="tw-pb-8 tw-border-b-2">
+                    <p class="tw:pb-8 tw:border-b-2">
                         <b>IXP Manager</b> supports a Google Authenticator compatible HMAC-Based One-time Password (HOTP)
                         algorithm as specified in <a href="https://tools.ietf.org/html/rfc4226">RFC 4226</a>
                         and the Time-based One-time Password (TOTP) algorithm specified in

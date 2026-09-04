@@ -156,7 +156,7 @@
 
 <?php $this->section( 'scripts' ) ?>
 <?= $t->insert( 'customer/js/overview/notes', [ 'isSuperUser' => $isSuperUser ] ); ?>
-  <script>
+  <script type="module">
       $('.table-responsive-ixp').dataTable( {
           stateSave: true,
           stateDuration : DATATABLE_STATE_DURATION,

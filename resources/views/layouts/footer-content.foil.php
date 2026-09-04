@@ -21,15 +21,15 @@
                 </a>
 
                 <a href="https://www.youtube.com/channel/UCeW2fmMTBtE4fnlmg-2-evA">
-                    <i class="fa fa-youtube-play fa-inverse mx-1" ></i>
+                    <i class="fa-brands fa-youtube fa-inverse mx-1" ></i>
                 </a>
 
                 <a  href="https://www.linkedin.com/company/inex---internet-neutral-exchange/">
-                    <i class="fa fa-linkedin fa-inverse mx-1"></i>
+                    <i class="fa-brands fa-linkedin fa-inverse mx-1"></i>
                 </a>
 
                 <a  href="https://github.com/inex/IXP-Manager">
-                    <i class="fa fa-github fa-inverse mx-1"></i>
+                    <i class="fa-brands fa-github fa-inverse mx-1"></i>
                 </a>
 
                 <a  href="https://docs.ixpmanager.org/latest/">

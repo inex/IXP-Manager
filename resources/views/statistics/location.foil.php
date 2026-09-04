@@ -67,7 +67,7 @@
     </div>
 
 
-    <div class="tw-bg-blue-100 tw-border-l-4 tw-border-blue-500 tw-text-blue-700 p-4 alert-dismissible mb-4 tw-mt-16" role="alert">
+    <div class="tw:bg-blue-100 tw:border-l-4 tw:border-blue-500 tw:text-blue-700 p-4 alert-dismissible mb-4 tw:mt-16" role="alert">
         <div class="d-flex align-items-center">
             <div class="text-center"><i class="fa fa-info-circle fa-2x "></i></div>
             <div class="col-sm-12">
@@ -82,7 +82,7 @@
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>
-    <script>
+    <script type="module">
         let base_route     = "<?= route( 'statistics@location' ) ?>";
         let sel_locationid = $("#form-select-locationid");
         let sel_category   = $("#form-select-category");

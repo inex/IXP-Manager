@@ -52,7 +52,7 @@
                     <b>Bad news!</b> We found <?= count( $t->filteredPrefixes ) ?> prefix(es) that are currently being filtered.
                 </p>
 
-                <p class="tw-my-6">
+                <p class="tw:my-6">
                     These are listed below with the reason for the filtering and the route server where filtering has been applied.
                 </p>
 
@@ -68,7 +68,7 @@
                                 if( !$found_at ) { $found_at = $detail['found_at']; } ?>
                             <tr>
                                 <td>
-                                  <span class="tw-font-mono">
+                                  <span class="tw:font-mono">
                                       <?= $t->whoisPrefix( $network ) ?>
                                   </span>
                                 </td>
@@ -85,7 +85,7 @@
                                 <td>
                                     <?php foreach( $detail['routers'] as $handle => $protocol ): ?>
                                         <a href="<?= route( 'lg::route-protocol', [ 'handle' => $handle, 'protocol' => $protocol ] ) ?>" target="_ixpm_lg">
-                                            <span class="tw-inline-block tw-bg-grey-lighter tw-rounded-full tw-px-3 tw-py-1 tw-text-sm tw-mr-2 tw-my-1">
+                                            <span class="tw:inline-block tw:bg-grey-lighter tw:rounded-full tw:px-3 tw:py-1 tw:text-sm tw:mr-2 tw:my-1">
                                                 <?= $this->ee( $handle ) ?>
                                             </span>
                                         </a>
@@ -96,7 +96,7 @@
                     </tbody>
                 </table>
 
-                <div class="alert alert-info tw-text-xs tw-mt-16">
+                <div class="alert alert-info tw:text-xs tw:mt-16">
                     <p>
                         Note that we cache this information for 15 minutes. The above prefix(es) were found at
                         <?= $found_at->format('H:i:s') ?> and will not be refreshed until <?= $found_at->addMinutes(15)->format('H:i:s') ?>.

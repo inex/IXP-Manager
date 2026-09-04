@@ -1,4 +1,4 @@
-<script>
+<script type="module">
     //////////////////////////////////////////////////////////////////////////////////////
     // we'll need these handles to html elements in a few places:
     const btn_select_all = $( "#select-all"  );
@@ -159,7 +159,8 @@
          */
         $( "#poll-group-delete"  ).on( 'click', function( event ) {
             event.preventDefault();
-            if( id = getSelectedSwitchPorts() ) {
+            let id = getSelectedSwitchPorts();
+            if( id ) {
 
                 let urlAction = '<?= route( "switch-port@delete-snmp-poll" ) ?>';
 
@@ -187,7 +188,8 @@
          * @var    bool   active   the status wanted (active or inactive)
          */
         function changeSwitchPortStatus( active ) {
-            if( id = getSelectedSwitchPorts() ) {
+            let id = getSelectedSwitchPorts();
+            if( id ) {
 
                 let urlAction = '<?= route( "switch-port@change-status" ) ?>';
                 disableInputsAction();

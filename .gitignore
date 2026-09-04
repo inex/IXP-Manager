@@ -10,8 +10,8 @@
 /.phpunit.cache/
 /vendor/
 /public/.htaccess
+public/hot
 /public/logos/*
-/public/build
 /public/favicon.ico
 
 /.junie

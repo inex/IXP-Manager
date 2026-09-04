@@ -5,7 +5,7 @@
             Core Links
 
             <?php if( $t->cb->sameSwitchForEachPIFromCL( true ) && $t->cb->sameSwitchForEachPIFromCL( false ) ): ?>
-                <button id='btn-create-cl' type='button' class='btn-sm btn btn-white tw-float-right' href="#" title="Add Core link">
+                <button id='btn-create-cl' type='button' class='btn-sm btn btn-white tw:float-right' href="#" title="Add Core link">
                     <span class="fa fa-plus"></span>
                 </button>
             <?php endif;?>
@@ -20,12 +20,12 @@
                 ->actionButtonsCustomClass( "grey-box")
             ?>
 
-            <table id="" class="table table-bordered tw-mt-6">
+            <table id="" class="table table-bordered tw:mt-6">
                 <tr class="active">
                     <td>
                         <strong>Switch A:</strong>
                         <?php if( $t->cb->sameSwitchForEachPIFromCL( true ) ): ?>
-                            <span class="tw-font-mono"><?= $this->ee( $t->cb->switchSideX( true )->name ) ?></span>
+                            <span class="tw:font-mono"><?= $this->ee( $t->cb->switchSideX( true )->name ) ?></span>
                             <input type="hidden" value="<?= $t->cb->switchSideX( true )->id ?>" id="switch-a">
                         <?php else: ?>
                             <span class="badge badge-warning">Multiple</span>
@@ -34,7 +34,7 @@
                     <td>
                         <strong>Switch B:</strong>
                         <?php if( $t->cb->sameSwitchForEachPIFromCL( false ) ): ?>
-                            <span class="tw-font-mono"><?= $this->ee( $t->cb->switchSideX( false )->name ) ?></span>
+                            <span class="tw:font-mono"><?= $this->ee( $t->cb->switchSideX( false )->name ) ?></span>
                             <input type="hidden" value="<?= $t->cb->switchSideX( false )->id ?>" id="switch-b">
                         <?php else: ?>
                             <span class="badge badge-warning">Multiple</span>

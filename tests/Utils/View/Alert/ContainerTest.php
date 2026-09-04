@@ -111,36 +111,36 @@ class ContainerTest extends TestCase
         Container::push("First", Alert::INFO);
         $info = Container::html();
         $this->assertStringContainsString('fa-info-circle', $info); // icon
-        $this->assertStringContainsString('tw-bg-blue-100', $info); // colour
-        $this->assertStringContainsString('tw-border-blue-500', $info); // border
-        $this->assertStringContainsString('tw-text-blue-700', $info); // text
+        $this->assertStringContainsString('tw:bg-blue-100', $info); // colour
+        $this->assertStringContainsString('tw:border-blue-500', $info); // border
+        $this->assertStringContainsString('tw:text-blue-700', $info); // text
         $this->assertStringContainsString('First', $info); // alert message
         $this->assertCount(0, session('ixp.utils.view.alerts') ); // html drains all alerts
 
         Container::push("Second", Alert::SUCCESS);
         $success = Container::html();
         $this->assertStringContainsString('fa-check-circle', $success); // icon
-        $this->assertStringContainsString('tw-bg-green-100', $success); // colour
-        $this->assertStringContainsString('tw-border-green-500', $success); // border
-        $this->assertStringContainsString('tw-text-green-700', $success); // text
+        $this->assertStringContainsString('tw:bg-green-100', $success); // colour
+        $this->assertStringContainsString('tw:border-green-500', $success); // border
+        $this->assertStringContainsString('tw:text-green-700', $success); // text
         $this->assertStringContainsString('Second', $success); // alert message
         $this->assertCount(0, session('ixp.utils.view.alerts') ); // html drains all alerts
 
         Container::push("Third", Alert::WARNING);
         $warning = Container::html();
         $this->assertStringContainsString('fa-exclamation-circle', $warning); // icon
-        $this->assertStringContainsString('tw-bg-orange-100', $warning); // colour
-        $this->assertStringContainsString('tw-border-orange-500', $warning); // border
-        $this->assertStringContainsString('tw-text-orange-700', $warning); // text
+        $this->assertStringContainsString('tw:bg-orange-100', $warning); // colour
+        $this->assertStringContainsString('tw:border-orange-500', $warning); // border
+        $this->assertStringContainsString('tw:text-orange-700', $warning); // text
         $this->assertStringContainsString('Third', $warning); // alert message
         $this->assertCount(0, session('ixp.utils.view.alerts') ); // html drains all alerts
 
         Container::push("Fourth", Alert::DANGER);
         $danger = Container::html();
         $this->assertStringContainsString('fa-exclamation-triangle', $danger); // icon
-        $this->assertStringContainsString('tw-bg-red-100', $danger); // colour
-        $this->assertStringContainsString('tw-border-red-500', $danger); // border
-        $this->assertStringContainsString('tw-text-red-700', $danger); // text
+        $this->assertStringContainsString('tw:bg-red-100', $danger); // colour
+        $this->assertStringContainsString('tw:border-red-500', $danger); // border
+        $this->assertStringContainsString('tw:text-red-700', $danger); // text
         $this->assertStringContainsString('Fourth', $danger); // alert message
         $this->assertCount(0, session('ixp.utils.view.alerts') ); // html drains all alerts
 

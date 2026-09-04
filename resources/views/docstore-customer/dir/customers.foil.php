@@ -24,18 +24,18 @@
     <?= $t->alerts() ?>
 
     <div class="docstore">
-        <table class="tw-mt-8">
+        <table class="tw:mt-8">
             <tbody>
                 <?php foreach( $t->files as $file ): ?>
                     <tr>
-                        <td class="tw-px-4 tw-py-2 tw-w-auto">
+                        <td class="tw:px-4 tw:py-2 tw:w-auto">
                             <a href="<?= route('docstore-c-dir@list', [ 'cust' => $file->customer ] ) ?>">
                                 <?= $t->ee( $file->customer->name ) ?>
                             </a>
                         </td>
                         <td class="meta">
                             <div class="dropdown">
-                                <button class="btn btn-light btn-sm tw-my-0 tw-py-0" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <button class="btn btn-light btn-sm tw:my-0 tw:py-0" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     &middot;&middot;&middot;
                                 </button>
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">

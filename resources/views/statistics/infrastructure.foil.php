@@ -71,7 +71,7 @@
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>
-    <script>
+    <script type="module">
         let base_route   = "<?= route( 'statistics@infrastructure' ) ?>";
         let sel_infraid  = $("#form-select-infraid");
         let sel_category = $("#form-select-category");

@@ -13,7 +13,7 @@
 <?php $this->section( 'page-header-postamble' ) ?>
     <div class="btn-group btn-group-sm" role="group">
         <a class="btn btn-white" href="<?= route( 'vlan-interface@list' )?>" title="list">
-            <span class="fa fa-th-list"></span>
+            <span class="fa fa-table-list"></span>
         </a>
         <?php if( $t->vli ): ?>
             <a class="btn btn-white" href="<?= route( 'vlan-interface@view', [ 'vli' => $t->vli->id ] )?>" title="edit">
