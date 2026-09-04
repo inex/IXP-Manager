@@ -184,7 +184,7 @@
                                 <?= $t->ee( $dvli->virtualInterface->customer->getFormattedName() ) ?>
                             </a>
                             <?php if( $t->orderBy === 'traffic' && $dvli->total_traffic ): ?>
-                                <span class="tw-tabular-nums">(<?= \IXP\IXP::scaleBytes( $dvli->total_traffic, 1 ) ?>)</span>
+                                <span class="tw:tabular-nums">(<?= \IXP\IXP::scaleBytes( $dvli->total_traffic, 1 ) ?>)</span>
                             <?php endif; ?>
                         </li>
 

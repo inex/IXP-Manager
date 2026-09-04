@@ -1,4 +1,4 @@
-<script>
+<script type="module">
     //////////////////////////////////////////////////////////////////////////////////////
     // we'll need these handles to html elements in a few places:
     sessions  = <?= json_encode( $t->sessions, JSON_THROW_ON_ERROR ) ?>;

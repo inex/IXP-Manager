@@ -1,4 +1,4 @@
-<script>
+<script type="module">
     let cabinets        = JSON.parse( '<?= json_encode( $t->cabinets ) ?>' );
     let locations_dd    = $('#adv-search-select-locations');
 

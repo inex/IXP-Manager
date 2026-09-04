@@ -14,7 +14,7 @@ $this->layout( 'layouts/ixpv4' );
 <?php $this->section( 'page-header-postamble' ) ?>
     <div class="btn-group btn-group-sm" role="group">
         <a class="btn btn-white" href="<?= route('patch-panel-port@list-for-patch-panel' ,  [ 'pp' => $ppp->patch_panel_id ]  ) ?>" title="list">
-            <span class="fa fa-th-list"></span>
+            <span class="fa fa-table-list"></span>
         </a>
     </div>
 <?php $this->append() ?>

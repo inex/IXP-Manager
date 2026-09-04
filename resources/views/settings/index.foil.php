@@ -24,7 +24,7 @@ IXP Manager Settings
         <?= $t->alerts() ?>
 
         <?php if( count( $t->errors ) ): ?>
-            <div class="tw-bg-red-100 tw-border-l-4 tw-border-red-500 tw-text-red-700 p-4 alert-dismissible mb-4" role="alert">
+            <div class="tw:bg-red-100 tw:border-l-4 tw:border-red-500 tw:text-red-700 p-4 alert-dismissible mb-4" role="alert">
                 <div class="d-flex align-items-center">
                     <div class="text-center"><i class="fa fa-exclamation-triangle fa-2x "></i></div>
                     <div class="col-sm-12">
@@ -139,7 +139,7 @@ IXP Manager Settings
                                     } // switch type
 
                                     if( isset( $param["help"] ) && $param["help"] !== ''): ?>
-                                        <div class="small"><i class="fa fa-info-circle tw-text-blue-600"></i> <?= $param["help"] ?></div>
+                                        <div class="small"><i class="fa fa-info-circle tw:text-blue-600"></i> <?= $param["help"] ?></div>
                                     <?php endif;
 
                                 echo "</div>\n";

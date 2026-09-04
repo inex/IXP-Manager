@@ -1,4 +1,4 @@
-<script>
+<script type="module">
 
 
     let tableList = $( '#ixpDataTable' );

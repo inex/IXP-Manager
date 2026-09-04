@@ -1,4 +1,4 @@
-<script>
+<script type="module">
     $( '#btn-delete' ).click( function( e ) {
         e.preventDefault();
         let url = this.href;

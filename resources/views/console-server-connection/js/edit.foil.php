@@ -1,4 +1,4 @@
-<script>
+<script type="module">
     //////////////////////////////////////////////////////////////////////////////////////
     // we'll need these handles to html elements in a few places:
     const cb_autobaud         = $( "#autobaud" );

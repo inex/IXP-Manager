@@ -140,7 +140,7 @@
 <?php $this->append() ?>
 
 <?php $this->section('scripts') ?>
-    <script type="text/javascript">
+    <script type="module">
         $('#routes').removeClass( 'display' ).addClass( 'table' );
 
         $(document).ready(function() {

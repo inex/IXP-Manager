@@ -1,4 +1,4 @@
-<div class="card tw-my-6">
+<div class="card tw:my-6">
     <div class="card-body">
         <h3>
             Virtual Interfaces

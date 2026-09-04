@@ -43,7 +43,7 @@
                                     </select>
                                 </div>
                             </li>
-                            <li class="nav-item tw-ml-12">
+                            <li class="nav-item tw:ml-12">
                                 <div class="nav-link d-flex ">
                                     <label for="period" class="col-sm-4 col-lg-5">Period:</label>
                                     <select id="period" class="form-control" name="period">
@@ -63,7 +63,7 @@
                                     </select>
                                 </div>
                             </li>
-                            <li class="nav-item  tw-ml-8">
+                            <li class="nav-item  tw:ml-8">
                                 <div class="nav-link d-flex float-right">
                                     <input type="hidden" name="metric" value="max">
                                     <input type="hidden" name="category" value="bits">
@@ -81,11 +81,11 @@
                     <tr>
                         <th><?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?></th>
                         <th>Switch</th>
-                        <th class="tw-text-center">Ports</th>
-                        <th class="tw-text-center">Capacity</th>
-                        <th class="tw-text-center">In</th>
-                        <th class="tw-text-center">Out</th>
-                        <th class="tw-text-center">Utilization (%)</th>
+                        <th class="tw:text-center">Ports</th>
+                        <th class="tw:text-center">Capacity</th>
+                        <th class="tw:text-center">In</th>
+                        <th class="tw:text-center">Out</th>
+                        <th class="tw:text-center">Utilization (%)</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -100,19 +100,19 @@
                             <td>
                                 <?= $t->ee( $td[ 'switch' ] ) ?>
                             </td>
-                            <td class="tw-text-center">
+                            <td class="tw:text-center">
                                 <?= $t->ee( $td[ 'num_ports_in_lag' ] ) ?>
                             </td>
-                            <td class="tw-text-center">
+                            <td class="tw:text-center">
                                 <?= $t->ee( $td[ 'vi_speed' ] * 1000000 ) ?>
                             </td>
-                            <td class="tw-text-center <?= $td[ 'max_in' ] < $td[ 'max_out' ] ? '' : 'tw-font-bold' ?>">
+                            <td class="tw:text-center <?= $td[ 'max_in' ] < $td[ 'max_out' ] ? '' : 'tw:font-bold' ?>">
                                 <?= $t->ee( $td[ 'max_in' ] ) ?>
                             </td>
-                            <td class="tw-text-center <?= $td[ 'max_in' ] > $td[ 'max_out' ] ? '' : 'tw-font-bold' ?>">
+                            <td class="tw:text-center <?= $td[ 'max_in' ] > $td[ 'max_out' ] ? '' : 'tw:font-bold' ?>">
                                 <?= $t->ee( $td[ 'max_out' ] ) ?>
                             </td>
-                            <td class="tw-text-center">
+                            <td class="tw:text-center">
                                 <?php if( $td[ 'util' ] >= 90 ): ?>
                                     <span class="badge badge-danger">
                                         <?= $t->ee( $td[ 'util' ] ) ?>
@@ -132,7 +132,7 @@
                             <td>
                                 <div class="btn-group btn-group-sm">
                                     <a class="btn btn-white" href="<?= route( 'statistics@member-drilldown', [ 'type' => 'vi', 'typeid' => $td[ 'viid' ] ] ) ?>" title="Graphs">
-                                        <i class="fa fa-xs fa-area-chart"></i>
+                                        <i class="fa fa-xs fa-chart-area"></i>
                                     </a>
                                 </div>
                             </td>

@@ -1,4 +1,7 @@
-<script>
+<script type="module">
+    window.excludedSwitchPortSideA = window.excludedSwitchPortSideA || [];
+    window.excludedSwitchPortSideB = window.excludedSwitchPortSideB || [];
+
     /**
      * set data to the switch port dropdown when we select a switcher
      */
@@ -12,7 +15,7 @@
             dd_switch_port.html( `<option value="">Loading please wait</option>\n` ).trigger( 'change.select2' );
 
             if( !edit ) {
-                excludedSwitchPort();
+                excludedSwitchPort( sside );
             }
 
             if( switchId != null && switchId !== '' ) {
@@ -22,7 +25,7 @@
                     types : [ <?= \IXP\Models\SwitchPort::TYPE_UNSET ?>, <?= \IXP\Models\SwitchPort::TYPE_CORE ?> ],
                     notAssignToPI: true,
                     piNull: true,
-                    spIdsExcluded : !edit ? excludedSwitchPortSideA.concat( excludedSwitchPortSideB ) : []
+                    spIdsExcluded : !edit ? (window.excludedSwitchPortSideA || []).concat( window.excludedSwitchPortSideB || [] ) : []
                 };
 
                 $.ajax( url , {
@@ -63,9 +66,9 @@
         $( "[id|='sp'] :selected" ).each( function() {
             if( this.value !== '' ) {
                 if( sside === 'a' ) {
-                    excludedSwitchPortSideA.push( this.value );
+                    window.excludedSwitchPortSideA.push( this.value );
                 } else {
-                    excludedSwitchPortSideB.push( this.value );
+                    window.excludedSwitchPortSideB.push( this.value );
                 }
             }
         });
@@ -115,4 +118,11 @@
         if (!subnet.includes('/')) return false;
         return Address4.isValid(subnet);
     }
+
+    // Expose helpers globally for core bundle wizard scripts
+    window.setSwitchPort         = setSwitchPort;
+    window.excludedSwitchPort    = excludedSwitchPort;
+    window.selectNextSwitchPort  = selectNextSwitchPort;
+    window.checkSubnet           = checkSubnet;
+    window.validSubnet           = validSubnet;
 </script>

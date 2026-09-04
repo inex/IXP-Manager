@@ -48,7 +48,7 @@
                 <div class="row">
                     <div class="col-lg-6 col-md-12">
                         <h3>Registration Details</h3>
-                        <hr class="tw-mb-6">
+                        <hr class="tw:mb-6">
 
                         <?= Former::text( 'registeredName' )
                             ->label( 'Registered Name' )
@@ -145,7 +145,7 @@
                     <?php if( !( $t->resellerMode() && $t->c->reseller ) ): ?>
                         <div class="col-lg-6 col-md-12 full-member-details">
                             <h3>Billing Details</h3>
-                            <hr class="tw-mb-6">
+                            <hr class="tw:mb-6">
 
                             <?= Former::text( 'billingContactName' )
                                 ->label( 'Contact' )
@@ -306,7 +306,7 @@
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>
-    <script>
+    <script type="module">
         $( document ).ready( function() {
             /**
              * set the address information to the billing address info

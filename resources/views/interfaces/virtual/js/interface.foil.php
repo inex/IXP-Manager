@@ -1,4 +1,4 @@
-<script>
+<script type="module">
     $( document ).ready(function() {
         $('[data-toggle="tooltip"]').tooltip();
 
@@ -127,4 +127,7 @@
             });
         }
     }
+
+    // Expose deletePopup globally so list and edit views can invoke it
+    window.deletePopup = deletePopup;
 </script>

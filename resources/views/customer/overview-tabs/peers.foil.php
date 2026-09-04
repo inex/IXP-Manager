@@ -29,7 +29,7 @@
 
     <?= $t->insert( 'customer/js/overview/peers', [ "peers" => $t->peers ] ); ?>
 <?php else: ?>
-    <script>
+    <script type="module">
         $( '.peers-tab' ).remove();
     </script>
 <?php endif; ?>

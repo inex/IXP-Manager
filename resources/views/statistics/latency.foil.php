@@ -139,7 +139,7 @@
 
 <?php $this->section( 'scripts' ) ?>
     <?php if( $t->vli->canGraphForLatency( IXP\Services\Grapher\Graph::PROTOCOL_IPV4 ) && $t->vli->canGraphForLatency( IXP\Services\Grapher\Graph::PROTOCOL_IPV6 ) ): ?>
-        <script>
+        <script type="module">
             let base_route   = "<?= url( 'statistics/latency' ) . '/' . $t->vli->id ?>";
             let dd_protocol = $('#select_protocol');
 

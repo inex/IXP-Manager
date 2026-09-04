@@ -34,17 +34,17 @@
 <?php $this->section('content') ?>
     <?= $t->alerts() ?>
     <div class="docstore">
-        <table class="tw-mt-8">
+        <table class="tw:mt-8">
             <tbody>
                 <?php $i = 0;
                 foreach( $t->files as $file ): ?>
 
                     <tr class="">
-                        <td class="<?= $i ? '' : 'tw-border-t-2' ?> icon"></td>
-                        <td class="<?= $i ? '' : 'tw-border-t-2' ?> icon">
-                            <i class="fa fa-lg fa-file-o tw-inline-block tw-w-full"></i>
+                        <td class="<?= $i ? '' : 'tw:border-t-2' ?> icon"></td>
+                        <td class="<?= $i ? '' : 'tw:border-t-2' ?> icon">
+                            <i class="fa fa-lg fa-file tw:inline-block tw:w-full"></i>
                         </td>
-                        <td class="<?= $i ? '' : 'tw-border-t-2' ?> tw-px-4 tw-w-auto">
+                        <td class="<?= $i ? '' : 'tw:border-t-2' ?> tw:px-4 tw:w-auto">
                             <?php if( $t->history ): ?>
                                 <a href="<?= route('patch-panel-port@view', [ 'ppp' => $file->patchPanelPortHistory->patchPanelPort->id ] ) . '#ppp-' . $file->patch_panel_port_history_id  ?>">
                                     <?= $t->ee( $file->name ) ?>
@@ -57,9 +57,9 @@
                                 <em>(<?= $t->ee( $file->patchPanelPort->patchPanel->name ) ?>)</em>
                             <?php endif; ?>
                         </td>
-                        <td class="<?= $i ? '' : 'tw-border-t-2' ?> meta">
+                        <td class="<?= $i ? '' : 'tw:border-t-2' ?> meta">
                             <div class="dropdown">
-                                <button class="btn btn-light btn-sm tw-my-0 tw-py-0" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <button class="btn btn-light btn-sm tw:my-0 tw:py-0" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     &middot;&middot;&middot;
                                 </button>
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">

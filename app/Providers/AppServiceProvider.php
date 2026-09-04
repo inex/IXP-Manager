@@ -25,6 +25,7 @@ namespace IXP\Providers;
 
 use Auth, Former, Horizon;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
 use IXP\Models\{
     DocstoreCustomerDirectory,

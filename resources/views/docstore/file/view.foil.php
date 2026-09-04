@@ -7,7 +7,7 @@
 
 <?php $this->section( 'page-header-preamble' ) ?>
     Document Store
-    :: <a class="tw-font-normal" href="<?= route( 'docstore-dir@list', [ 'dir' => $t->file->directory ] ) ?>"><?= $t->file->directory ? $t->ee( $t->file->directory->name ) : 'Root Directory' ?></a>
+    :: <a class="tw:font-normal" href="<?= route( 'docstore-dir@list', [ 'dir' => $t->file->directory ] ) ?>"><?= $t->file->directory ? $t->ee( $t->file->directory->name ) : 'Root Directory' ?></a>
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
@@ -25,8 +25,8 @@
 
 <?= $t->alerts() ?>
 
-<h3 class="tw-mt-4">Viewing File: <?= $t->ee( $t->file->name ) ?></h3>
-<div class="tw-mt-8 tw-border-1 tw-p-5 tw-rounded-lg tw-border-gray-200 tw-bg-gray-100 tw-text-black">
+<h3 class="tw:mt-4">Viewing File: <?= $t->ee( $t->file->name ) ?></h3>
+<div class="tw:mt-8 tw:border-1 tw:p-5 tw:rounded-lg tw:border-gray-200 tw:bg-gray-100 tw:text-black">
 <?php if( \Illuminate\Support\Str::endsWith( $t->file->name, '.md' ) ): ?>
 <?= clean( @parsedown( $t->content ) ) ?>
 <?php else: ?>

@@ -1,4 +1,4 @@
-<script>
+<script type="module">
     $( document ).ready( function() {
         //////////////////////////////////////////////////////////////////////////////////////
         // we'll need these handles to html elements in a few places:

@@ -1,7 +1,7 @@
 <?php
     $hasSlave = $t->ppp->duplexSlavePorts()->exists();
 ?>
-<script>
+<script type="module">
     //////////////////////////////////////////////////////////////////////////////////////
     // we'll need these handles to html elements in a few places:
     const dd_pp         = $( "#patch_panel_id" );

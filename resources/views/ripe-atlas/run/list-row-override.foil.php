@@ -64,11 +64,11 @@ $row = $t->row;
             </a>
 
             <a class="btn btn-white <?= $t->row[ 'nb_am' ] !== 0 ?: 'disabled' ?>"  href="<?= route('ripe-atlas/measurements@list' , [ 'atlasrun' => $t->row[ 'id' ] ] ) ?>" title="Show atlas measurements">
-                <i class="fa fa-th-list"></i>
+                <i class="fa fa-table-list"></i>
             </a>
 
             <a class="btn btn-white"  href="<?= route('ripe-atlas/measurements@matrix' , [ 'atlasRun' => $t->row[ 'id' ] ] ) ?>" title="Show atlas measurements matrix">
-                <i class="fa fa-file-text"></i>
+                <i class="fa fa-file-lines"></i>
             </a>
 
             <a class="btn btn-white btn-2f-list-delete <?= $t->row[ 'completed_at' ] ?: 'disabled'  ?>" id='d2f-list-delete-<?= $t->row[ 'id' ] ?>' href="<?= route( $t->feParams->route_prefix.'@delete' , [ 'id' => $t->row[ 'id' ] ] ) ?>" title="Delete">

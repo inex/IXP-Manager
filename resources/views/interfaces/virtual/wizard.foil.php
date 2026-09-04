@@ -13,7 +13,7 @@ $this->layout( 'layouts/ixpv4' );
 <?php $this->section( 'page-header-postamble' ) ?>
     <div class=" btn-group btn-group-sm" role="group">
         <a class="btn btn-white" href="<?= route( 'virtual-interface@list' )?>" title="list">
-            <span class="fa fa-th-list"></span>
+            <span class="fa fa-table-list"></span>
         </a>
         <button type="button" class="btn btn-white dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <i class="fa fa-plus"></i>

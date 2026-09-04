@@ -1,4 +1,4 @@
-<script>
+<script type="module">
     const dd_source   = $( '#source' );
     const btn_submit  = $( '#submit' );
 
@@ -35,6 +35,7 @@
     $( 'input:radio[name="source_selector"]' ).change( function(){
         if( $( this ).is( ':checked' ) ) {
             dd_source.html( '' );
+            let datas;
             if( $(this).val() === "table" ) {
                 source = 'table'
                 datas = tables;

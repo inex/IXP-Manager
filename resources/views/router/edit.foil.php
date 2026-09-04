@@ -10,7 +10,7 @@
             Documentation
         </a>
         <a class="btn btn-white" href="<?= route('router@list' ) ?>" title="list">
-            <i class="fa fa-th-list"></i>
+            <i class="fa fa-table-list"></i>
         </a>
         <?php if( $t->rt ): ?>
             <a class="btn btn-white" href="<?= route ('router@create' ) ?>" title="create">

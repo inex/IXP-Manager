@@ -130,7 +130,7 @@
                             <table class="table table-no-border">
                                 <?php foreach( $t->data[ 'params'][ "allGroups" ] as $gname => $gvalue ): ?>
                                     <?php if( $gname !== "ROLE" && config('contact_group.types.' . $gname ) ): ?>
-                                        <tr class="tw-border-b-1 tw-border-b-solid tw-border-b-gray-200">
+                                        <tr class="tw:border-b-1 tw:border-b-solid tw:border-b-gray-200">
                                             <td>
                                                 <label for="mayauthorize" class="control-label col-lg-2 col-sm-4" style="display: grid">&nbsp;<?= $t->ee( $gname ) ?>&nbsp;</label>
                                             </td>

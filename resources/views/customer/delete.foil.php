@@ -158,7 +158,7 @@
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>
-    <script>
+    <script type="module">
         $( "#delete-customer" ).on( 'click', function(e){
             e.preventDefault();
             $('#notes-modal').modal('show');

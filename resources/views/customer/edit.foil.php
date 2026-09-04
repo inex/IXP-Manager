@@ -47,10 +47,10 @@ $this->layout( 'layouts/ixpv4' );
 
             <div class="form-group d-flex">
                 <input type="text" class="form-control col-lg-3" id="asn-search">
-                <button class="btn btn-primary tw-ml-2" onclick="return false;" id="btn-populate">
+                <button class="btn btn-primary tw:ml-2" onclick="return false;" id="btn-populate">
                     Populate
                 </button>
-                <button class="btn-success btn help-btn tw-ml-2" type="button">
+                <button class="btn-success btn help-btn tw:ml-2" type="button">
                     Help
                 </button>
             </div>
@@ -61,7 +61,7 @@ $this->layout( 'layouts/ixpv4' );
                 <h3>
                     <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?> Details
                 </h3>
-                <hr class="tw-mb-6">
+                <hr class="tw:mb-6">
 
                 <?= Former::text( 'name' )
                     ->label( 'Name' )
@@ -155,7 +155,7 @@ $this->layout( 'layouts/ixpv4' );
             old( 'type' ) === \IXP\Models\Customer::TYPE_ASSOCIATE || ( $t->cust && $t->cust->typeAssociate() ) ? 'display: none;' : ''
             ?>">
                 <h3>Peering Details</h3>
-                <hr class="tw-mb-6">
+                <hr class="tw:mb-6">
 
                 <?= Former::number( 'autsys' )
                     ->label( 'AS Number' )
@@ -240,7 +240,7 @@ $this->layout( 'layouts/ixpv4' );
         ?>">
             <div class="col-lg-6 col-md-12">
                 <h3>NOC Details</h3>
-                <hr class="tw-mb-6">
+                <hr class="tw:mb-6">
 
                 <?= Former::phone( 'nocphone' )
                     ->label( 'Phone' )
@@ -283,7 +283,7 @@ $this->layout( 'layouts/ixpv4' );
             <?php if( $t->resellerMode() ): ?>
                 <div class="col-lg-6 col-md-12">
                     <h3>Reseller Details</h3>
-                    <hr class="tw-mb-6">
+                    <hr class="tw:mb-6">
 
                     <?= Former::checkbox( 'isReseller' )
                         ->label( '&nbsp;' )

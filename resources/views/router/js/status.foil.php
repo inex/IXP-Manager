@@ -1,11 +1,12 @@
-<script>
+<?= app(\Illuminate\Foundation\Vite::class)(['resources/js/moment.js']) ?>
+<script type="module">
     const lgEnabled = <?= $t->lgEnabled ? 'true' : 'false' ?>;
 
     let table = $('#router-list').on( 'init.dt', function () {
         let handles   = [ "<?= implode( '", "', $t->routersWithApi ) ?>" ];
         let versions  = { 'bird': {} };
 
-        $('#fetched-total').html( handles.length );
+        $('#fetched-total').text( handles.length );
 
         // get states
         handles.forEach( function( handle, index ) {
@@ -20,16 +21,16 @@
             })
                 .done(function (data) {
                     console.log(data);
-                    $('#' + handle + '-version').html( data.status.version );
-                    $('#' + handle + '-api-version').html( data.api.version );
-                    $('#' + handle + '-last-updated').html( moment( data.status.last_reconfig ).format( "YYYY-MM-DD HH:mm:ss" ) );
-                    $('#' + handle + '-last-reboot').html( moment( data.status.last_reboot ).format( "YYYY-MM-DD HH:mm:ss" ) );
+                    $('#' + handle + '-version').text( data.status.version );
+                    $('#' + handle + '-api-version').text( data.api.version );
+                    $('#' + handle + '-last-updated').text( moment( data.status.last_reconfig ).format( "YYYY-MM-DD HH:mm:ss" ) );
+                    $('#' + handle + '-last-reboot').text( moment( data.status.last_reboot ).format( "YYYY-MM-DD HH:mm:ss" ) );
 
                     // reset datatables
                     table.api().rows().invalidate().draw();
 
                     let numFetched = $('#fetched');
-                    numFetched.html( parseInt( numFetched.html() ) + 1) ;
+                    numFetched.text( parseInt( numFetched.text() ) + 1) ;
 
                     // stats
                     // // FIXME - this all assumes Bird only. Hard to fix until we're not bird only.
@@ -55,8 +56,8 @@
                             total++;
                         }
 
-                        $( '#' + handle + '-bgp-sessions' ).html( total );
-                        $( '#' + handle + '-bgp-sessions-up' ).html( established );
+                        $( '#' + handle + '-bgp-sessions' ).text( total );
+                        $( '#' + handle + '-bgp-sessions-up' ).text( established );
 
                         // reset datatables
                         table.api().rows().invalidate().draw();
@@ -67,12 +68,12 @@
                 })
                 .fail(function () {
                     let numFetchedErrors = $('#fetched-errors');
-                    numFetchedErrors.html( parseInt( numFetchedErrors.html() ) + 1 );
+                    numFetchedErrors.text( parseInt( numFetchedErrors.text() ) + 1 );
                     $( '#' + handle + '-version' ).html( '<i class="badge badge-danger">Error</i>' );
                 })
                 .always( function() {
-                    let numFetched       = parseInt( $( '#fetched' ).html() );
-                    let numFetchedErrors = parseInt( $( '#fetched-errors' ).html() );
+                    let numFetched       = parseInt( $( '#fetched' ).text() );
+                    let numFetchedErrors = parseInt( $( '#fetched-errors' ).text() );
 
                     if( numFetched + numFetchedErrors === handles.length ) {
                         if (numFetchedErrors === 0) {

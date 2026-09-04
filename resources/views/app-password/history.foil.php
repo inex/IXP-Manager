@@ -73,7 +73,7 @@ $this->layout( 'layouts/ixpv4' );
 
 
 <?php $this->section( 'scripts' ) ?>
-<script>
+<script type="module">
     let tableList = $( '#table-list' );
     
     tableList.dataTable({

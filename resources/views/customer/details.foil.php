@@ -24,16 +24,16 @@
                         <th>
                             <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?>
                         </th>
-                        <th class="tw-hidden md:tw-table-cell">
+                        <th class="tw:hidden tw:md:table-cell">
                             Joined
                         </th>
 
                         <?php if( !$t->associates ): ?>
-                            <th class="tw-text-right">
+                            <th class="tw:text-right">
                                 ASN
                             </th>
                             <?php if( Auth::check() ): ?>
-                                <th class="hidden lg:tw-table-cell">
+                                <th class="hidden tw:lg:table-cell">
                                     Peering Email
                                 </th>
                             <?php endif; ?>
@@ -52,14 +52,14 @@
 
                                 <?php if( !$t->associates ): ?>
                                     <?php if( $c->peeringpolicy !== \IXP\Models\Customer::PEERING_POLICY_OPEN ): ?>
-                                        <span class="tw-hidden lg:tw-inline tw-border-1 tw-p-1 tw-rounded-full tw-float-right tw-text-grey-dark tw-uppercase tw-text-xs">
+                                        <span class="tw:hidden tw:lg:inline tw:border-1 tw:p-1 tw:rounded-full tw:float-right tw:text-grey-dark tw:uppercase tw:text-xs">
                                             <?= $t->ee( $c->peeringpolicy ) ?>
                                         </span>
                                     <?php endif; ?>
 
                                     <?php if( $c->in_manrs ): ?>
                                         <a href="https://www.manrs.org/" target="_blank" class="hover:no-underline">
-                                            <span class="tw-hidden md:tw-inline tw-border-1 tw-border-green-500 tw-p-1 tw-rounded-full tw-text-green-500 tw-uppercase tw-text-xs tw-mx-3">
+                                            <span class="tw:hidden tw:md:inline tw:border-1 tw:border-green-500 tw:p-1 tw:rounded-full tw:text-green-500 tw:uppercase tw:text-xs tw:mx-3">
                                                 MANRS
                                             </span>
                                         </a>
@@ -67,12 +67,12 @@
                                 <?php endif; ?>
                             </td>
 
-                            <td class="tw-font-mono tw-hidden md:tw-table-cell">
+                            <td class="tw:font-mono tw:hidden tw:md:table-cell">
                                 <?= \Carbon\Carbon::parse( $c->datejoin )->format( 'Y-m-d' ) ?>
                             </td>
 
                             <?php if( !$t->associates ): ?>
-                                <td class="tw-font-mono tw-text-right">
+                                <td class="tw:font-mono tw:text-right">
                                     <?php if( $c->in_peeringdb ): ?>
                                         <?php if( Auth::check() ): ?>
                                             <?=  $t->asNumber( $c->autsys, false ) ?>
@@ -87,7 +87,7 @@
                                 </td>
 
                                 <?php if( Auth::check() ): ?>
-                                    <td  class="hidden lg:tw-table-cell">
+                                    <td  class="hidden tw:lg:table-cell">
                                         <a href="mailto:<?= $t->ee( $c->peeringemail ) ?>">
                                             <?= $t->ee( $c->peeringemail ) ?>
                                         </a>
@@ -103,7 +103,7 @@
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>
-    <script>
+    <script type="module">
         $(document).ready( function() {
             $( '#customer-list' ).dataTable( {
                 stateSave: true,
