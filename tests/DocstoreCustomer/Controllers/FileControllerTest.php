@@ -1,9 +1,6 @@
 <?php
-
-namespace Tests\DocstoreCustomer\Controllers;
-
 /*
- * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,13 +20,18 @@ namespace Tests\DocstoreCustomer\Controllers;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+declare(strict_types=1);
+
+namespace Tests\DocstoreCustomer\Controllers;
+
+
 use Storage;
 
 
 
 use Illuminate\Http\UploadedFile;
 
-use IXP\Models\{DocstoreCustomerFile, User};
+use IXP\Models\{DocstoreCustomerDirectory, DocstoreCustomerFile, DocstoreFile, User};
 
 use Tests\TestCase;
 
@@ -58,13 +60,73 @@ class FileControllerTest extends TestCase
         'fileName2'             => 'File3.pdf',
         'fileDescription2'      => 'This is file3.pdf',
         'filePrivs2'            => User::AUTH_CUSTADMIN,
-        'parentDirId2'          => 5,
         'fileName3'             => 'File4.txt',
         'fileDescription3'      => 'This is file4.txt',
         'textFile'              => 'I am the file4.txt',
         'filePrivs3'            => User::AUTH_CUSTADMIN,
-        'parentDirId3'          => 5,
     ];
+
+    private function makeDocstoreCustomerDirectory(int $customerId): DocstoreCustomerDirectory
+    {
+        $dir = new DocstoreCustomerDirectory();
+        $dir->name = "Test directory";
+        $dir->description = "some directory needed for tests";
+        $dir->parent_dir_id = null;
+        $dir->cust_id = $customerId;
+        $dir->save();
+        return $dir;
+    }
+
+    private function insertDocstoreCustomerFileFixture1(UploadedFile $uploadedFile): DocstoreCustomerFile
+    {
+        $file = new DocstoreCustomerFile();
+        $file->name = self::testInfo[ 'fileName' ];
+        $file->disk = self::testInfo[ 'disk' ];
+        $file->cust_id = self::testInfo[ 'customerId' ];
+        $file->docstore_customer_directory_id = self::testInfo[ 'parentDirId' ];
+        $file->description = self::testInfo[ 'fileDescription' ];
+        $file->path = $uploadedFile->store( (string) $file->cust_id, 'docstore_customers' );
+        $file->sha256 = hash_file('sha256', $uploadedFile->getPathname());
+        $file->min_privs = self::testInfo[ 'filePrivs' ];
+        $file->created_by = $this->getSuperUser( 'travis' )->id;
+        $file->file_last_updated = now();
+        $file->save();
+        return $file;
+    }
+
+    private function insertDocstoreCustomerFileFixture2(UploadedFile $uploadedFile, DocstoreCustomerDirectory $dir): DocstoreCustomerFile
+    {
+        $file = new DocstoreCustomerFile();
+        $file->name = self::testInfo[ 'fileName2' ];
+        $file->disk = self::testInfo[ 'disk' ];
+        $file->cust_id = self::testInfo[ 'customerId' ];
+        $file->docstore_customer_directory_id = $dir->id;
+        $file->description = self::testInfo[ 'fileDescription2' ];
+        $file->path = $uploadedFile->store( (string) $file->cust_id, 'docstore_customers' );
+        $file->sha256 = hash_file('sha256', $uploadedFile->getPathname());
+        $file->min_privs = self::testInfo[ 'filePrivs2' ];
+        $file->created_by = $this->getSuperUser( 'travis' )->id;
+        $file->file_last_updated = now();
+        $file->save();
+        return $file;
+    }
+
+    private function insertDocstoreCustomerFileFixture3(UploadedFile $uploadedFile, DocstoreCustomerDirectory $dir): DocstoreCustomerFile
+    {
+        $file = new DocstoreCustomerFile();
+        $file->name = self::testInfo[ 'fileName3' ];
+        $file->disk = self::testInfo[ 'disk' ];
+        $file->cust_id = self::testInfo[ 'customerId' ];
+        $file->docstore_customer_directory_id = $dir->id;
+        $file->description = self::testInfo[ 'fileDescription3' ];
+        $file->path = $uploadedFile->store( (string) $file->cust_id, 'docstore_customers' );
+        $file->sha256 = hash_file('sha256', $uploadedFile->getPathname());
+        $file->min_privs = self::testInfo[ 'filePrivs3' ];
+        $file->created_by = $this->getSuperUser( 'travis' )->id;
+        $file->file_last_updated = now();
+        $file->save();
+        return $file;
+    }
 
     /**
      * Test store an object for a superuser
@@ -87,9 +149,8 @@ class FileControllerTest extends TestCase
     public function testUploadFormAccessPublicUser(): void
     {
         // public user
-        $response = $this->get( route( 'docstore-c-file@upload' , [ 'cust' => self::testInfo[ 'customerId' ] ] ) );
-        $response->assertStatus(302 )
-            ->assertRedirect( route('login@showForm' ) );
+        $this->get( route( 'docstore-c-file@upload' , [ 'cust' => self::testInfo[ 'customerId' ] ] ) )
+            ->assertRedirectToRoute( 'login@showForm' );
     }
 
     /**
@@ -99,9 +160,9 @@ class FileControllerTest extends TestCase
      */
     public function testUploadFormAccessCustUser(): void
     {
-        $user = $this->getCustUser( 'hecustuser' );
-        $response = $this->actingAs( $user )->get( route( 'docstore-c-file@upload', [ 'cust' => self::testInfo[ 'customerId' ] ] ) );
-        $response->assertStatus(403 );
+        $this->actingAs( $this->getCustUser( 'hecustuser' ) )
+            ->get( route( 'docstore-c-file@upload', [ 'cust' => self::testInfo[ 'customerId' ] ] ) )
+            ->assertForbidden();
     }
 
     /**
@@ -111,9 +172,9 @@ class FileControllerTest extends TestCase
      */
     public function testUploadFormAccessCustAdmin(): void
     {
-        $user = $this->getCustAdminUser( 'hecustadmin' );
-        $response = $this->actingAs( $user )->get( route( 'docstore-c-file@upload', [ 'cust' => self::testInfo[ 'customerId' ] ] ) );
-        $response->assertStatus(403 );
+        $this->actingAs( $this->getCustAdminUser( 'hecustadmin' ) )
+            ->get( route( 'docstore-c-file@upload', [ 'cust' => self::testInfo[ 'customerId' ] ] ) )
+            ->assertForbidden();
     }
 
     /**
@@ -123,9 +184,9 @@ class FileControllerTest extends TestCase
      */
     public function testUploadFormAccessSuperUser(): void
     {
-        $user = $this->getSuperUser( 'travis' );
-        $response = $this->actingAs( $user )->get( route( 'docstore-c-file@upload', [ 'cust' => self::testInfo[ 'customerId' ] ] ) );
-        $response->assertStatus(200 );
+        $this->actingAs(  $this->getSuperUser( 'travis' ) )
+            ->get( route( 'docstore-c-file@upload', [ 'cust' => self::testInfo[ 'customerId' ] ] ) )
+            ->assertOk();
     }
 
     /**
@@ -137,16 +198,14 @@ class FileControllerTest extends TestCase
     {
         $uploadedFile = UploadedFile::fake()->create( self::testInfo[ 'fileName' ], '2000' );
 
-        $response = $this->post( route( 'docstore-c-file@store', [ 'cust' => self::testInfo[ 'customerId' ] ]  ), [
-            'name' =>  self::testInfo[ 'fileName' ], 'description' => self::testInfo[ 'fileDescription' ], 'docstore_customer_directory_id' => self::testInfo[ 'parentDirId' ],
-            'min_privs' => self::testInfo[ 'filePrivs' ],'uploadedFile'  => $uploadedFile
-        ] );
-
-        $response->assertStatus(302 )
-            ->assertRedirect( route('login@showForm' ) );
+        $this->post( route( 'docstore-c-file@store', [ 'cust' => self::testInfo[ 'customerId' ] ]  ), [
+                'name' =>  self::testInfo[ 'fileName' ], 'description' => self::testInfo[ 'fileDescription' ], 'docstore_customer_directory_id' => self::testInfo[ 'parentDirId' ],
+                'min_privs' => self::testInfo[ 'filePrivs' ],'uploadedFile'  => $uploadedFile
+            ] )
+            ->assertRedirectToRoute('login@showForm' );
 
         $this->assertDatabaseMissing( 'docstore_customer_files', [
-            'docstore_customer_directory_id' => self::testInfo[ 'parentDirId' ], 'name' =>  self::testInfo[ 'fileName' ], 'disk' => self::testInfo[ 'disk' ], 'sha256' => hash_file( 'sha256', $uploadedFile ),
+            'docstore_customer_directory_id' => self::testInfo[ 'parentDirId' ], 'name' =>  self::testInfo[ 'fileName' ], 'disk' => self::testInfo[ 'disk' ], 'sha256' => hash_file( 'sha256', $uploadedFile->getPathname() ),
             'description' => self::testInfo[ 'fileDescription' ], 'min_privs' => self::testInfo[ 'filePrivs' ]
         ] );
 
@@ -162,17 +221,16 @@ class FileControllerTest extends TestCase
     {
         $uploadedFile = UploadedFile::fake()->create( self::testInfo[ 'fileName' ], '2000' );
 
-        $user = $this->getCustUser( 'hecustuser' );
-
-        $response = $this->actingAs( $user )->post( route( 'docstore-c-file@store' , [ 'cust' => self::testInfo[ 'customerId' ] ] ), [
-            'name' =>  self::testInfo[ 'fileName' ], 'description' => self::testInfo[ 'fileDescription' ], 'docstore_customer_directory_id' => self::testInfo[ 'parentDirId' ],
-            'min_privs' => self::testInfo[ 'filePrivs' ],'uploadedFile'  => $uploadedFile
-        ] );
-
-        $response->assertStatus(403 );
+        // test custuser
+        $this->actingAs( $this->getCustUser( 'hecustuser' ) )
+            ->post( route( 'docstore-c-file@store' , [ 'cust' => self::testInfo[ 'customerId' ] ] ), [
+                'name' =>  self::testInfo[ 'fileName' ], 'description' => self::testInfo[ 'fileDescription' ], 'docstore_customer_directory_id' => self::testInfo[ 'parentDirId' ],
+                'min_privs' => self::testInfo[ 'filePrivs' ],'uploadedFile'  => $uploadedFile
+            ] )
+            ->assertForbidden();
 
         $this->assertDatabaseMissing( 'docstore_customer_files', [
-            'docstore_customer_directory_id' => self::testInfo[ 'parentDirId' ], 'name' =>  self::testInfo[ 'fileName' ], 'disk' => self::testInfo[ 'disk' ], 'sha256' => hash_file( 'sha256', $uploadedFile ),
+            'docstore_customer_directory_id' => self::testInfo[ 'parentDirId' ], 'name' =>  self::testInfo[ 'fileName' ], 'disk' => self::testInfo[ 'disk' ], 'sha256' => hash_file( 'sha256', $uploadedFile->getPathname() ),
             'description' => self::testInfo[ 'fileDescription' ], 'min_privs' => self::testInfo[ 'filePrivs' ]
         ] );
 
@@ -188,17 +246,16 @@ class FileControllerTest extends TestCase
     {
         $uploadedFile = UploadedFile::fake()->create( self::testInfo[ 'fileName' ], '2000' );
 
-        $user = $this->getCustAdminUser( 'hecustadmin' );
-
-        $response = $this->actingAs( $user )->post( route( 'docstore-c-file@store', [ 'cust' => self::testInfo[ 'customerId' ] ]  ), [
-            'name' =>  self::testInfo[ 'fileName' ], 'description' => self::testInfo[ 'fileDescription' ], 'docstore_customer_directory_id' => self::testInfo[ 'parentDirId' ],
-            'min_privs' => self::testInfo[ 'filePrivs' ],'uploadedFile'  => $uploadedFile
-        ] );
-
-        $response->assertStatus(403 );
+        // test custadmin
+        $this->actingAs( $this->getCustAdminUser( 'hecustadmin' ) )
+            ->post( route( 'docstore-c-file@store', [ 'cust' => self::testInfo[ 'customerId' ] ]  ), [
+                'name' =>  self::testInfo[ 'fileName' ], 'description' => self::testInfo[ 'fileDescription' ], 'docstore_customer_directory_id' => self::testInfo[ 'parentDirId' ],
+                'min_privs' => self::testInfo[ 'filePrivs' ],'uploadedFile'  => $uploadedFile
+            ] )
+            ->assertForbidden();
 
         $this->assertDatabaseMissing( 'docstore_customer_files', [
-            'docstore_customer_directory_id' => self::testInfo[ 'parentDirId' ], 'name' =>  self::testInfo[ 'fileName' ], 'disk' => self::testInfo[ 'disk' ] , 'sha256' => hash_file( 'sha256', $uploadedFile ),
+            'docstore_customer_directory_id' => self::testInfo[ 'parentDirId' ], 'name' =>  self::testInfo[ 'fileName' ], 'disk' => self::testInfo[ 'disk' ] , 'sha256' => hash_file( 'sha256', $uploadedFile->getPathname() ),
             'description' => self::testInfo[ 'fileDescription' ], 'min_privs' => self::testInfo[ 'filePrivs' ]
         ] );
 
@@ -216,13 +273,15 @@ class FileControllerTest extends TestCase
 
         $user = $this->getSuperUser( 'travis' );
 
-        $this->actingAs( $user )->post( route( 'docstore-c-file@store' , [ 'cust' => self::testInfo[ 'customerId' ] ] ), [
-            'name' =>  self::testInfo[ 'fileName' ], 'description' => self::testInfo[ 'fileDescription' ], 'docstore_customer_directory_id' => self::testInfo[ 'parentDirId' ],
-            'min_privs' => self::testInfo[ 'filePrivs' ],'uploadedFile'  => $uploadedFile
-        ] );
+        $this->actingAs( $user )
+            ->post( route( 'docstore-c-file@store' , [ 'cust' => self::testInfo[ 'customerId' ] ] ), [
+                'name' =>  self::testInfo[ 'fileName' ], 'description' => self::testInfo[ 'fileDescription' ], 'docstore_customer_directory_id' => self::testInfo[ 'parentDirId' ],
+                'min_privs' => self::testInfo[ 'filePrivs' ],'uploadedFile'  => $uploadedFile
+            ] )
+            ->assertRedirectToRoute('docstore-c-dir@list', [ 'cust' => self::testInfo[ 'customerId' ] , 'dir' => self::testInfo[ 'parentDirId' ]]);
 
         $this->assertDatabaseHas( 'docstore_customer_files', [
-            'docstore_customer_directory_id' => self::testInfo[ 'parentDirId' ], 'name' =>  self::testInfo[ 'fileName' ], 'disk' => self::testInfo[ 'disk' ], 'sha256' => hash_file( 'sha256', $uploadedFile ),
+            'docstore_customer_directory_id' => self::testInfo[ 'parentDirId' ], 'name' =>  self::testInfo[ 'fileName' ], 'disk' => self::testInfo[ 'disk' ], 'sha256' => hash_file( 'sha256', $uploadedFile->getPathname() ),
             'description' => self::testInfo[ 'fileDescription' ], 'min_privs' => self::testInfo[ 'filePrivs' ], 'created_by' => $user->id
         ] );
 
@@ -239,14 +298,15 @@ class FileControllerTest extends TestCase
         $uploadedFile = UploadedFile::fake()->create( self::testInfo[ 'fileName2' ], '2000' );
 
         $user = $this->getSuperUser( 'travis' );
-
-        $this->actingAs( $user )->post( route( 'docstore-c-file@store', [ 'cust' => self::testInfo[ 'customerId' ] ] ), [
-            'description' => self::testInfo[ 'fileDescription2' ], 'docstore_customer_directory_id' => self::testInfo[ 'parentDirId2' ],
-            'min_privs' => self::testInfo[ 'filePrivs2' ],'uploadedFile'  => $uploadedFile
-        ] );
+        $this->actingAs( $user )
+            ->post( route( 'docstore-c-file@store', [ 'cust' => self::testInfo[ 'customerId' ] ] ), [
+                'description' => self::testInfo[ 'fileDescription2' ], 'docstore_customer_directory_id' => null,
+                'min_privs' => self::testInfo[ 'filePrivs2' ],'uploadedFile'  => $uploadedFile
+            ] )
+            ->assertRedirectBackWithErrors(['name' => 'The name field is required.']);
 
         $this->assertDatabaseMissing( 'docstore_customer_files', [
-            'docstore_customer_directory_id' => self::testInfo[ 'parentDirId2' ], 'name' =>  self::testInfo[ 'fileName2' ], 'disk' =>  self::testInfo[ 'disk' ], 'sha256' => hash_file( 'sha256', $uploadedFile ),
+            'docstore_customer_directory_id' => null, 'name' =>  self::testInfo[ 'fileName2' ], 'disk' =>  self::testInfo[ 'disk' ], 'sha256' => hash_file( 'sha256', $uploadedFile->getPathname() ),
             'description' => self::testInfo[ 'fileDescription2' ], 'min_privs' => self::testInfo[ 'filePrivs2' ], 'created_by' => $user->id
         ] );
     }
@@ -260,13 +320,16 @@ class FileControllerTest extends TestCase
     {
         $user = $this->getSuperUser( 'travis' );
 
-        $this->actingAs( $user )->post( route( 'docstore-c-file@store', [ 'cust' => self::testInfo[ 'customerId' ] ] ), [
-            'description' => self::testInfo[ 'fileDescription2' ], 'docstore_customer_directory_id' => self::testInfo[ 'parentDirId2' ],
-            'min_privs' => self::testInfo[ 'filePrivs2' ]
-        ] );
+        $this->actingAs( $user )
+            ->post( route( 'docstore-c-file@store', [ 'cust' => self::testInfo[ 'customerId' ] ] ), [
+                'name' => self::testInfo[ 'fileName2' ],
+                'description' => self::testInfo[ 'fileDescription2' ], 'docstore_customer_directory_id' => null,
+                'min_privs' => self::testInfo[ 'filePrivs2' ]
+            ] )
+            ->assertRedirectBackWithErrors(['uploadedFile' => 'The uploaded file field is required.']);
 
         $this->assertDatabaseMissing( 'docstore_customer_files', [
-            'docstore_customer_directory_id' => self::testInfo[ 'parentDirId2' ], 'name' =>  self::testInfo[ 'fileName2' ], 'disk' => self::testInfo[ 'disk' ],
+            'docstore_customer_directory_id' => null, 'name' =>  self::testInfo[ 'fileName2' ], 'disk' => self::testInfo[ 'disk' ],
             'description' => self::testInfo[ 'fileDescription2' ], 'min_privs' => self::testInfo[ 'filePrivs2' ], 'created_by' => $user->id
         ] );
     }
@@ -282,13 +345,19 @@ class FileControllerTest extends TestCase
 
         $user = $this->getSuperUser( 'travis' );
 
-        $this->actingAs( $user )->post( route( 'docstore-c-file@store', [ 'cust' => self::testInfo[ 'customerId' ] ] ), [
-            'description' => self::testInfo[ 'fileDescription2' ], 'docstore_customer_directory_id' => self::testInfo[ 'parentDirId2' ],
-            'min_privs' => self::testInfo[ 'filePrivs2' ], 'uploadedFile'  => $uploadedFile, 'sha256' => '93fc19ea1eb40b8ef8984a7c53dd7b94cb690d5ae5f8b3497c206b43e0bfe117'
-        ] );
+        $this->actingAs( $user )
+            ->post( route( 'docstore-c-file@store', [ 'cust' => self::testInfo[ 'customerId' ] ] ), [
+                'name' => self::testInfo[ 'fileName2' ],
+                'description' => self::testInfo[ 'fileDescription2' ],
+                'docstore_customer_directory_id' => null,
+                'min_privs' => self::testInfo[ 'filePrivs2' ],
+                'uploadedFile'  => $uploadedFile,
+                'sha256' => '93fc19ea1eb40b8ef8984a7c53dd7b94cb690d5ae5f8b3497c206b43e0bfe117'
+            ] )
+            ->assertRedirectBackWithErrors(['sha256' => 'The sha256 checksum calculated on the server does not match the one you provided.']);
 
         $this->assertDatabaseMissing( 'docstore_customer_files', [
-            'docstore_customer_directory_id' => self::testInfo[ 'parentDirId2' ], 'name' =>  self::testInfo[ 'fileName2' ], 'disk' => self::testInfo[ 'disk' ], 'sha256' => '93fc19ea1eb40b8ef8984a7c53dd7b94cb690d5ae5f8b3497c206b43e0bfe117',
+            'docstore_customer_directory_id' => null, 'name' =>  self::testInfo[ 'fileName2' ], 'disk' => self::testInfo[ 'disk' ], 'sha256' => '93fc19ea1eb40b8ef8984a7c53dd7b94cb690d5ae5f8b3497c206b43e0bfe117',
             'description' => self::testInfo[ 'fileDescription2' ], 'min_privs' => self::testInfo[ 'filePrivs2' ], 'created_by' => $user->id
         ] );
     }
@@ -298,19 +367,22 @@ class FileControllerTest extends TestCase
      *
      * @return void
      */
-    public function testStoreWithWrongMinPivs(): void
+    public function testStoreWithWrongMinPrivs(): void
     {
         $uploadedFile = UploadedFile::fake()->create( self::testInfo[ 'fileName2' ], '2000' );
 
         $user = $this->getSuperUser( 'travis' );
 
-        $this->actingAs( $user )->post( route( 'docstore-c-file@store', [ 'cust' => self::testInfo[ 'customerId' ] ] ), [
-            'description' => self::testInfo[ 'fileDescription2' ], 'docstore_customer_directory_id' => self::testInfo[ 'parentDirId2' ],
-            'min_privs' => 4, 'uploadedFile'  => $uploadedFile,
-        ] );
+        $this->actingAs( $user )
+            ->post( route( 'docstore-c-file@store', [ 'cust' => self::testInfo[ 'customerId' ] ] ), [
+                'name' => self::testInfo[ 'fileName2' ],
+                'description' => self::testInfo[ 'fileDescription2' ], 'docstore_customer_directory_id' => null,
+                'min_privs' => 4, 'uploadedFile'  => $uploadedFile,
+            ] )
+            ->assertRedirectBackWithErrors(['min_privs' => 'The selected min privs is invalid.']);
 
         $this->assertDatabaseMissing( 'docstore_customer_files', [
-            'docstore_customer_directory_id' => self::testInfo[ 'parentDirId2' ], 'name' =>  self::testInfo[ 'fileName2' ], 'disk' => self::testInfo[ 'disk' ], 'sha256' => hash_file( 'sha256', $uploadedFile ),
+            'docstore_customer_directory_id' => null, 'name' =>  self::testInfo[ 'fileName2' ], 'disk' => self::testInfo[ 'disk' ], 'sha256' => hash_file( 'sha256', $uploadedFile->getPathname() ),
             'description' => self::testInfo[ 'fileDescription2' ], 'min_privs' => 4, 'created_by' => $user->id
         ] );
     }
@@ -322,22 +394,24 @@ class FileControllerTest extends TestCase
      */
     public function testUpdatePublicUser(): void
     {
-        $file = DocstoreCustomerFile::withoutGlobalScope( 'privs' )->where( [ 'name' => self::testInfo[ 'fileName' ] ] )->first();
+        $origUploadedFile = UploadedFile::fake()->create( self::testInfo[ 'fileName' ], '2000' );
+        $file = $this->insertDocstoreCustomerFileFixture1($origUploadedFile);
 
         $uploadedFile = UploadedFile::fake()->create( self::testInfo[ 'fileName' ], '2000' );
 
         $this->put( route( 'docstore-c-file@update', [ 'cust' => self::testInfo[ 'customerId' ], 'file' => $file ] ), [
-            'name' =>  self::testInfo[ 'fileName2' ], 'description' => self::testInfo[ 'fileDescription2' ], 'docstore_customer_directory_id' => self::testInfo[ 'parentDirId2' ],
+            'name' =>  self::testInfo[ 'fileName2' ], 'description' => self::testInfo[ 'fileDescription2' ], 'docstore_customer_directory_id' => null,
             'min_privs' => self::testInfo[ 'filePrivs2' ],'uploadedFile'  => $uploadedFile
-        ] );
+        ] )
+            ->assertRedirectToRoute('login@showForm');
 
         $this->assertDatabaseHas( 'docstore_customer_files', [
-            'docstore_customer_directory_id' => self::testInfo[ 'parentDirId' ], 'name' =>  self::testInfo[ 'fileName' ], 'disk' => self::testInfo[ 'disk' ], 'sha256' => hash_file( 'sha256', $uploadedFile ),
+            'docstore_customer_directory_id' => self::testInfo[ 'parentDirId' ], 'name' =>  self::testInfo[ 'fileName' ], 'disk' => self::testInfo[ 'disk' ], 'sha256' => hash_file( 'sha256', $uploadedFile->getPathname() ),
             'description' => self::testInfo[ 'fileDescription' ], 'min_privs' => self::testInfo[ 'filePrivs' ]
         ] );
 
         $this->assertDatabaseMissing( 'docstore_customer_files', [
-            'docstore_customer_directory_id' => self::testInfo[ 'parentDirId2' ], 'name' =>  self::testInfo[ 'fileName2' ], 'disk' => self::testInfo[ 'disk' ], 'sha256' => hash_file( 'sha256', $uploadedFile ),
+            'docstore_customer_directory_id' => null, 'name' =>  self::testInfo[ 'fileName2' ], 'disk' => self::testInfo[ 'disk' ], 'sha256' => hash_file( 'sha256', $uploadedFile->getPathname() ),
             'description' => self::testInfo[ 'fileDescription2' ], 'min_privs' => self::testInfo[ 'filePrivs2' ]
         ] );
 
@@ -352,24 +426,25 @@ class FileControllerTest extends TestCase
      */
     public function testUpdateCustUser(): void
     {
-        $file = DocstoreCustomerFile::withoutGlobalScope( 'privs' )->where( [ 'name' => self::testInfo[ 'fileName' ] ] )->first();
+        $origUploadedFile = UploadedFile::fake()->create( self::testInfo[ 'fileName' ], '2000' );
+        $file = $this->insertDocstoreCustomerFileFixture1($origUploadedFile);
 
         $uploadedFile = UploadedFile::fake()->create( self::testInfo[ 'fileName' ], '2000' );
 
-        $user = $this->getCustUser( 'hecustuser' );
-
-        $this->actingAs( $user )->put( route( 'docstore-c-file@update', [ 'cust' => self::testInfo[ 'customerId' ], 'file' => $file ] ), [
-            'name' =>  self::testInfo[ 'fileName2' ], 'description' => self::testInfo[ 'fileDescription2' ], 'docstore_customer_directory_id' => self::testInfo[ 'parentDirId2' ],
-            'min_privs' => self::testInfo[ 'filePrivs2' ],'uploadedFile'  => $uploadedFile
-        ] );
+        $this->actingAs( $this->getCustUser( 'hecustuser' ) )
+            ->put( route( 'docstore-c-file@update', [ 'cust' => self::testInfo[ 'customerId' ], 'file' => $file ] ), [
+                'name' =>  self::testInfo[ 'fileName2' ], 'description' => self::testInfo[ 'fileDescription2' ], 'docstore_customer_directory_id' => null,
+                'min_privs' => self::testInfo[ 'filePrivs2' ],'uploadedFile'  => $uploadedFile
+            ] )
+            ->assertNotFound();
 
         $this->assertDatabaseHas( 'docstore_customer_files', [
-            'docstore_customer_directory_id' => self::testInfo[ 'parentDirId' ], 'name' =>  self::testInfo[ 'fileName' ], 'disk' => self::testInfo[ 'disk' ], 'sha256' => hash_file( 'sha256', $uploadedFile ),
+            'docstore_customer_directory_id' => self::testInfo[ 'parentDirId' ], 'name' =>  self::testInfo[ 'fileName' ], 'disk' => self::testInfo[ 'disk' ], 'sha256' => hash_file( 'sha256', $uploadedFile->getPathname() ),
             'description' => self::testInfo[ 'fileDescription' ], 'min_privs' => self::testInfo[ 'filePrivs' ]
         ] );
 
         $this->assertDatabaseMissing( 'docstore_customer_files', [
-            'docstore_customer_directory_id' => self::testInfo[ 'parentDirId2' ], 'name' =>  self::testInfo[ 'fileName2' ], 'disk' => self::testInfo[ 'disk' ], 'sha256' => hash_file( 'sha256', $uploadedFile ),
+            'docstore_customer_directory_id' => null, 'name' =>  self::testInfo[ 'fileName2' ], 'disk' => self::testInfo[ 'disk' ], 'sha256' => hash_file( 'sha256', $uploadedFile->getPathname() ),
             'description' => self::testInfo[ 'fileDescription2' ], 'min_privs' => self::testInfo[ 'filePrivs2' ]
         ] );
 
@@ -384,24 +459,27 @@ class FileControllerTest extends TestCase
      */
     public function testUpdateCustAdmin(): void
     {
-        $file = DocstoreCustomerFile::withoutGlobalScope( 'privs' )->where( [ 'name' => self::testInfo[ 'fileName' ] ] )->first();
+        $origUploadedFile = UploadedFile::fake()->create( self::testInfo[ 'fileName' ], '2000' );
+        $file = $this->insertDocstoreCustomerFileFixture1($origUploadedFile);
 
         $uploadedFile = UploadedFile::fake()->create( self::testInfo[ 'fileName' ], '2000' );
 
         $user = $this->getCustAdminUser( 'hecustadmin' );
 
-        $this->actingAs( $user )->put( route( 'docstore-c-file@update', [ 'cust' => self::testInfo[ 'customerId' ], 'file' => $file ] ), [
-            'name' =>  self::testInfo[ 'fileName2' ], 'description' => self::testInfo[ 'fileDescription2' ], 'docstore_customer_directory_id' => self::testInfo[ 'parentDirId2' ],
-            'min_privs' => self::testInfo[ 'filePrivs2' ],'uploadedFile'  => $uploadedFile
-        ] );
+        $this->actingAs( $user )
+            ->put( route( 'docstore-c-file@update', [ 'cust' => self::testInfo[ 'customerId' ], 'file' => $file ] ), [
+                'name' =>  self::testInfo[ 'fileName2' ], 'description' => self::testInfo[ 'fileDescription2' ], 'docstore_customer_directory_id' => null,
+                'min_privs' => self::testInfo[ 'filePrivs2' ],'uploadedFile'  => $uploadedFile
+            ] )
+            ->assertNotFound();
 
         $this->assertDatabaseHas( 'docstore_customer_files', [
-            'docstore_customer_directory_id' => self::testInfo[ 'parentDirId' ], 'name' =>  self::testInfo[ 'fileName' ], 'disk' =>  self::testInfo[ 'disk' ], 'sha256' => hash_file( 'sha256', $uploadedFile ),
+            'docstore_customer_directory_id' => self::testInfo[ 'parentDirId' ], 'name' =>  self::testInfo[ 'fileName' ], 'disk' =>  self::testInfo[ 'disk' ], 'sha256' => hash_file( 'sha256', $uploadedFile->getPathname() ),
             'description' => self::testInfo[ 'fileDescription' ], 'min_privs' => self::testInfo[ 'filePrivs' ]
         ] );
 
         $this->assertDatabaseMissing( 'docstore_customer_files', [
-            'docstore_customer_directory_id' => self::testInfo[ 'parentDirId2' ], 'name' =>  self::testInfo[ 'fileName2' ], 'disk' =>  self::testInfo[ 'disk' ], 'sha256' => hash_file( 'sha256', $uploadedFile ),
+            'docstore_customer_directory_id' => null, 'name' =>  self::testInfo[ 'fileName2' ], 'disk' =>  self::testInfo[ 'disk' ], 'sha256' => hash_file( 'sha256', $uploadedFile->getPathname() ),
             'description' => self::testInfo[ 'fileDescription2' ], 'min_privs' => self::testInfo[ 'filePrivs2' ]
         ] );
 
@@ -414,20 +492,19 @@ class FileControllerTest extends TestCase
      *
      * @return void
      */
-    public function testUpdateWithPostMethod(): void
+    public function testUpdateWithPostMethodInsteadOfPut(): void
     {
-        $file = DocstoreCustomerFile::withoutGlobalScope( 'privs' )->where( [ 'name' => self::testInfo[ 'fileName' ] ] )->first();
+        $origUploadedFile = UploadedFile::fake()->create( self::testInfo[ 'fileName' ], '2000' );
+        $file = $this->insertDocstoreCustomerFileFixture1($origUploadedFile);
 
         $uploadedFile = UploadedFile::fake()->create( self::testInfo[ 'fileName' ], '2000' );
 
-        $user = $this->getSuperUser( 'travis' );
-
-        $response = $this->actingAs( $user )->post( route( 'docstore-c-file@update', [ 'cust' => self::testInfo[ 'customerId' ], 'file' => $file ] ), [
-            'name' =>  self::testInfo[ 'fileName2' ], 'description' => self::testInfo[ 'fileDescription2' ], 'docstore_customer_directory_id' => self::testInfo[ 'parentDirId2' ],
-            'min_privs' => self::testInfo[ 'filePrivs2' ],'uploadedFile'  => $uploadedFile
-        ] );
-
-        $response->assertStatus(405 );
+        $this->actingAs( $this->getSuperUser( 'travis' ) )
+            ->post( route( 'docstore-c-file@update', [ 'cust' => self::testInfo[ 'customerId' ], 'file' => $file ] ), [
+                'name' =>  self::testInfo[ 'fileName2' ], 'description' => self::testInfo[ 'fileDescription2' ], 'docstore_customer_directory_id' => null,
+                'min_privs' => self::testInfo[ 'filePrivs2' ],'uploadedFile'  => $uploadedFile
+            ] )
+            ->assertMethodNotAllowed();
     }
 
     /**
@@ -437,19 +514,24 @@ class FileControllerTest extends TestCase
      */
     public function testUpdateSuperUser(): void
     {
-        $file = DocstoreCustomerFile::withoutGlobalScope( 'privs' )->where( [ 'name' => self::testInfo[ 'fileName' ] ] )->get()->last();
+        $origUploadedFile = UploadedFile::fake()->create( self::testInfo[ 'fileName' ], '2000' );
+        $file = $this->insertDocstoreCustomerFileFixture1($origUploadedFile);
+
+        $testDir = $this->makeDocstoreCustomerDirectory( self::testInfo['customerId'] );
 
         $uploadedFile = UploadedFile::fake()->create( self::testInfo[ 'fileName' ], '2000' );
 
         $user = $this->getSuperUser( 'travis' );
 
-        $this->actingAs( $user )->put( route( 'docstore-c-file@update', [ 'cust' => self::testInfo[ 'customerId' ], 'file' => $file ] ), [
-            'name' =>  self::testInfo[ 'fileName2' ], 'description' => self::testInfo[ 'fileDescription2' ], 'docstore_customer_directory_id' => self::testInfo[ 'parentDirId2' ],
-            'min_privs' => self::testInfo[ 'filePrivs2' ], 'uploadedFile'  => $uploadedFile
-        ] );
+        $this->actingAs( $user )
+            ->put( route( 'docstore-c-file@update', [ 'cust' => self::testInfo[ 'customerId' ], 'file' => $file ] ), [
+                'name' =>  self::testInfo[ 'fileName2' ], 'description' => self::testInfo[ 'fileDescription2' ], 'docstore_customer_directory_id' => $testDir->id,
+                'min_privs' => self::testInfo[ 'filePrivs2' ], 'uploadedFile'  => $uploadedFile
+            ] )
+            ->assertRedirectToRoute('docstore-c-dir@list', [ 'cust' => self::testInfo[ 'customerId' ] , 'dir' => $testDir->id ]);
 
         $this->assertDatabaseHas( 'docstore_customer_files', [
-            'docstore_customer_directory_id' => self::testInfo[ 'parentDirId2' ], 'name' =>  self::testInfo[ 'fileName2' ], 'disk' =>  self::testInfo[ 'disk' ], 'sha256' => hash_file( 'sha256', $uploadedFile ),
+            'docstore_customer_directory_id' => $testDir->id, 'name' =>  self::testInfo[ 'fileName2' ], 'disk' =>  self::testInfo[ 'disk' ], 'sha256' => hash_file( 'sha256', $uploadedFile->getPathname() ),
             'description' => self::testInfo[ 'fileDescription2' ], 'min_privs' => self::testInfo[ 'filePrivs2' ], 'created_by' => $user->id
         ] );
 
@@ -464,11 +546,11 @@ class FileControllerTest extends TestCase
      */
     public function testViewNoneViewableFilePublicUser(): void
     {
-        $file = DocstoreCustomerFile::withoutGlobalScope( 'privs' )->where( [ 'name' => self::testInfo[ 'fileName2' ] ] )->first();
+        $origUploadedFile = UploadedFile::fake()->create( self::testInfo[ 'fileName' ], '2000' );
+        $file = $this->insertDocstoreCustomerFileFixture1($origUploadedFile);
 
         $this->get( route( 'docstore-c-file@view', [  'cust' => self::testInfo[ 'customerId' ], 'file' => $file ] ) )
-            ->assertStatus(302 )
-            ->assertRedirect( route('login@showForm' ) );
+            ->assertRedirectToRoute('login@showForm' );
     }
 
     /**
@@ -478,12 +560,13 @@ class FileControllerTest extends TestCase
      */
     public function testViewNoneViewableFileCustUser(): void
     {
-        $file = DocstoreCustomerFile::withoutGlobalScope( 'privs' )->where( [ 'name' => self::testInfo[ 'fileName2' ] ] )->first();
+        $origUploadedFile = UploadedFile::fake()->create( self::testInfo[ 'fileName' ], '2000' );
+        $file = $this->insertDocstoreCustomerFileFixture1($origUploadedFile);
 
         $user = $this->getCustUser( 'hecustuser' );
 
         $this->actingAs( $user )->get( route( 'docstore-c-file@view', [ 'cust' => self::testInfo[ 'customerId' ], 'file' => $file ] ) )
-            ->assertStatus(404 );
+            ->assertNotFound();
     }
 
     /**
@@ -493,12 +576,14 @@ class FileControllerTest extends TestCase
      */
     public function testViewNoneViewableFileCustAdmin(): void
     {
-        $file = DocstoreCustomerFile::withoutGlobalScope( 'privs' )->where( [ 'name' => self::testInfo[ 'fileName2' ] ] )->first();
+        $origUploadedFile = UploadedFile::fake()->create( self::testInfo[ 'fileName' ], '2000' );
+        $testDir = $this->makeDocstoreCustomerDirectory( self::testInfo['customerId'] );
+        $file = $this->insertDocstoreCustomerFileFixture2($origUploadedFile, $testDir);
 
         $user = $this->getCustAdminUser( 'hecustadmin' );
 
         $this->actingAs( $user )->get( route( 'docstore-c-file@view', [  'cust' => self::testInfo[ 'customerId' ], 'file' => $file ] ) )
-            ->assertStatus(403 );
+            ->assertForbidden();
     }
 
     /**
@@ -508,7 +593,8 @@ class FileControllerTest extends TestCase
      */
     public function testViewNoneViewableFileSuperUser(): void
     {
-        $file = DocstoreCustomerFile::withoutGlobalScope( 'privs' )->where( [ 'name' => self::testInfo[ 'fileName2' ] ] )->first();
+        $origUploadedFile = UploadedFile::fake()->create( self::testInfo[ 'fileName' ], '2000' );
+        $file = $this->insertDocstoreCustomerFileFixture1($origUploadedFile);
 
         $user = $this->getSuperUser( 'travis' );
 
@@ -523,11 +609,11 @@ class FileControllerTest extends TestCase
      */
     public function testDownloadPublicUser(): void
     {
-        $file = DocstoreCustomerFile::withoutGlobalScope( 'privs' )->where( [ 'name' => self::testInfo[ 'fileName2' ] ] )->first();
+        $origUploadedFile = UploadedFile::fake()->create( self::testInfo[ 'fileName' ], '2000' );
+        $file = $this->insertDocstoreCustomerFileFixture1($origUploadedFile);
 
-        $response = $this->get( route( 'docstore-c-file@download', [ 'cust' => self::testInfo[ 'customerId' ], 'file' => $file ] ) );
-        $response->assertStatus( 302 )
-            ->assertRedirect( route('login@showForm' ) );
+        $this->get( route( 'docstore-c-file@download', [ 'cust' => self::testInfo[ 'customerId' ], 'file' => $file ] ) )
+            ->assertRedirectToRoute('login@showForm' );
     }
 
     /**
@@ -537,12 +623,13 @@ class FileControllerTest extends TestCase
      */
     public function testDownloadCustUser(): void
     {
-        $file = DocstoreCustomerFile::withoutGlobalScope( 'privs' )->where( [ 'name' => self::testInfo[ 'fileName2' ] ] )->first();
+        $origUploadedFile = UploadedFile::fake()->create( self::testInfo[ 'fileName' ], '2000' );
+        $testDir = $this->makeDocstoreCustomerDirectory( self::testInfo['customerId'] );
+        $file = $this->insertDocstoreCustomerFileFixture2($origUploadedFile, $testDir);
 
-        $user = $this->getCustUser( 'hecustuser' );
-
-        $response = $this->actingAs( $user )->get( route( 'docstore-c-file@download', [ 'cust' => self::testInfo[ 'customerId' ], 'file' => $file ] ) );
-        $response->assertStatus( 404 );
+        $this->actingAs( $this->getCustUser( 'hecustuser' ) )
+            ->get( route( 'docstore-c-file@download', [ 'cust' => self::testInfo[ 'customerId' ], 'file' => $file ] ) )
+            ->assertNotFound();
     }
 
     /**
@@ -552,12 +639,13 @@ class FileControllerTest extends TestCase
      */
     public function testDownloadCustAdmin(): void
     {
-        $file = DocstoreCustomerFile::withoutGlobalScope( 'privs' )->where( [ 'name' => self::testInfo[ 'fileName2' ] ] )->first();
+        $origUploadedFile = UploadedFile::fake()->create( self::testInfo[ 'fileName' ], '2000' );
+        $testDir = $this->makeDocstoreCustomerDirectory( self::testInfo['customerId'] );
+        $file = $this->insertDocstoreCustomerFileFixture2($origUploadedFile, $testDir);
 
-        $user = $this->getCustAdminUser( 'imcustadmin' );
-
-        $response = $this->actingAs( $user )->get( route( 'docstore-c-file@download', [ 'cust' => self::testInfo[ 'customerId' ], 'file' => $file ] ) );
-        $response->assertStatus( 200 );
+        $this->actingAs( $this->getCustAdminUser( 'imcustadmin' ) )
+            ->get( route( 'docstore-c-file@download', [ 'cust' => self::testInfo[ 'customerId' ], 'file' => $file ] ) )
+            ->assertOk();
     }
 
     /**
@@ -567,12 +655,13 @@ class FileControllerTest extends TestCase
      */
     public function testDownloadSuperUser(): void
     {
-        $file = DocstoreCustomerFile::withoutGlobalScope( 'privs' )->where( [ 'name' => self::testInfo[ 'fileName2' ] ] )->first();
+        $origUploadedFile = UploadedFile::fake()->create( self::testInfo[ 'fileName' ], '2000' );
+        $testDir = $this->makeDocstoreCustomerDirectory( self::testInfo['customerId'] );
+        $file = $this->insertDocstoreCustomerFileFixture2($origUploadedFile, $testDir);
 
-        $user = $this->getSuperUser( 'travis' );
-
-        $response = $this->actingAs( $user )->get( route( 'docstore-c-file@download', [ 'cust' => self::testInfo[ 'customerId' ], 'file' => $file ] ) );
-        $response->assertStatus( 200 );
+        $this->actingAs( $this->getSuperUser( 'travis' ) )
+            ->get( route( 'docstore-c-file@download', [ 'cust' => self::testInfo[ 'customerId' ], 'file' => $file ] ) )
+            ->assertOk();
     }
 
     /**
@@ -582,11 +671,14 @@ class FileControllerTest extends TestCase
      */
     public function testInfoPublicUser(): void
     {
-        $file = DocstoreCustomerFile::withoutGlobalScope( 'privs' )->where( [ 'name' => self::testInfo[ 'fileName2' ] ] )->first();
-        $response = $this->get( route( 'docstore-c-file-api@info', [ 'cust' => self::testInfo[ 'customerId' ], 'file' => $file ] ) );
+        $origUploadedFile = UploadedFile::fake()->create( self::testInfo[ 'fileName' ], '2000' );
+        $testDir = $this->makeDocstoreCustomerDirectory( self::testInfo['customerId'] );
+        $file = $this->insertDocstoreCustomerFileFixture2($origUploadedFile, $testDir);
+
         // model binding happens before our authentication middleware and fails
         // because of the global scope on DocstureCustomerFile that triggers ModelNotFound
-        $response->assertStatus( 404 );
+        $this->get( route( 'docstore-c-file-api@info', [ 'cust' => self::testInfo[ 'customerId' ], 'file' => $file ] ) )
+            ->assertNotFound();
     }
 
     /**
@@ -596,14 +688,15 @@ class FileControllerTest extends TestCase
      */
     public function testInfoCustUser(): void
     {
-        $file = DocstoreCustomerFile::withoutGlobalScope( 'privs' )->where( [ 'name' => self::testInfo[ 'fileName2' ] ] )->first();
-
-        $user = $this->getCustUser( 'hecustuser' );
+        $origUploadedFile = UploadedFile::fake()->create( self::testInfo[ 'fileName' ], '2000' );
+        $testDir = $this->makeDocstoreCustomerDirectory( self::testInfo['customerId'] );
+        $file = $this->insertDocstoreCustomerFileFixture2($origUploadedFile, $testDir);
 
         // model binding happens before our authentication middleware and fails
         // because of the global scope on DocstureCustomerFile that triggers ModelNotFound
-        $response = $this->actingAs( $user )->get( route( 'docstore-c-file-api@info', [ 'cust' => self::testInfo[ 'customerId' ], 'file' => $file ] ) );
-        $response->assertStatus( 404 );
+        $this->actingAs( $this->getCustUser( 'hecustuser' ) )
+            ->get( route( 'docstore-c-file-api@info', [ 'cust' => self::testInfo[ 'customerId' ], 'file' => $file ] ) )
+            ->assertNotFound();
     }
 
     /**
@@ -613,12 +706,13 @@ class FileControllerTest extends TestCase
      */
     public function testInfoCustAdmin(): void
     {
-        $file = DocstoreCustomerFile::withoutGlobalScope( 'privs' )->where( [ 'name' => self::testInfo[ 'fileName2' ] ] )->first();
+        $origUploadedFile = UploadedFile::fake()->create( self::testInfo[ 'fileName' ], '2000' );
+        $testDir = $this->makeDocstoreCustomerDirectory( self::testInfo['customerId'] );
+        $file = $this->insertDocstoreCustomerFileFixture2($origUploadedFile, $testDir);
 
-        $user = $this->getCustAdminUser( 'hecustadmin' );
-
-        $response = $this->actingAs( $user )->get( route( 'docstore-c-file-api@info', [ 'cust' => self::testInfo[ 'customerId' ], 'file' => $file ] ) );
-        $response->assertStatus( 403 );
+        $this->actingAs( $this->getCustAdminUser( 'hecustadmin' ) )
+            ->get( route( 'docstore-c-file-api@info', [ 'cust' => self::testInfo[ 'customerId' ], 'file' => $file ] ) )
+            ->assertForbidden();
     }
 
     /**
@@ -628,16 +722,17 @@ class FileControllerTest extends TestCase
      */
     public function testInfoSuperUser(): void
     {
-        $file = DocstoreCustomerFile::withoutGlobalScope( 'privs' )->where( [ 'name' => self::testInfo[ 'fileName2' ] ] )->first();
+        $origUploadedFile = UploadedFile::fake()->create( self::testInfo[ 'fileName' ], '2000' );
+        $testDir = $this->makeDocstoreCustomerDirectory( self::testInfo['customerId'] );
+        $file = $this->insertDocstoreCustomerFileFixture2($origUploadedFile, $testDir);
 
         $user = $this->getSuperUser( 'travis' );
-
-        $response = $this->actingAs( $user )->get( route( 'docstore-c-file-api@info', [ 'cust' => self::testInfo[ 'customerId' ] ,'file' => $file ] ) );
-        $response->assertStatus( 200 )
+        $this->actingAs( $user )
+            ->get( route( 'docstore-c-file-api@info', [ 'cust' => self::testInfo[ 'customerId' ] ,'file' => $file ] ) )
+            ->assertOk()
             ->assertJson( [
-                    'file_name' => self::testInfo[ 'fileName2' ],
-                    'created_by' => $user->username . " (" . $user->name . ")",
-                    'customer' => $file->customer->name,
+                'file_name' => self::testInfo[ 'fileName2' ],
+                'created_by' => $user->username . " (" . $user->name . ")",
             ] );
     }
 
@@ -648,13 +743,15 @@ class FileControllerTest extends TestCase
      */
     public function testDeletePublicUser(): void
     {
-        $file = DocstoreCustomerFile::withoutGlobalScope( 'privs' )->where( [ 'name' => self::testInfo[ 'fileName2' ] ] )->first();
+        $origUploadedFile = UploadedFile::fake()->create( self::testInfo[ 'fileName' ], '2000' );
+        $testDir = $this->makeDocstoreCustomerDirectory( self::testInfo['customerId'] );
+        $file = $this->insertDocstoreCustomerFileFixture2($origUploadedFile, $testDir);
 
         $this->delete( route( 'docstore-c-file@delete', [  'cust' => self::testInfo[ 'customerId' ] ,'file' => $file ] ) )
-            ->assertStatus(302 )
-            ->assertRedirect( route('login@showForm' ) );
+            ->assertRedirectToRoute( 'login@showForm' );
+
         $this->assertDatabaseHas( 'docstore_customer_files', [
-            'docstore_customer_directory_id' => self::testInfo[ 'parentDirId2' ], 'name' =>  self::testInfo[ 'fileName2' ], 'disk' =>  self::testInfo[ 'disk' ], 'sha256' => $file->sha256,
+            'docstore_customer_directory_id' => $testDir->id, 'name' =>  self::testInfo[ 'fileName2' ], 'disk' =>  self::testInfo[ 'disk' ], 'sha256' => $file->sha256,
             'description' => self::testInfo[ 'fileDescription2' ], 'min_privs' => self::testInfo[ 'filePrivs2' ]
         ] );
     }
@@ -666,15 +763,16 @@ class FileControllerTest extends TestCase
      */
     public function testDeleteCustUser(): void
     {
-        $file = DocstoreCustomerFile::withoutGlobalScope( 'privs' )->where( [ 'name' => self::testInfo[ 'fileName2' ] ] )->first();
+        $origUploadedFile = UploadedFile::fake()->create( self::testInfo[ 'fileName' ], '2000' );
+        $testDir = $this->makeDocstoreCustomerDirectory( self::testInfo['customerId'] );
+        $file = $this->insertDocstoreCustomerFileFixture2($origUploadedFile, $testDir);
 
-        $user = $this->getCustUser( 'hecustuser' );
-
-        $this->actingAs( $user )->delete( route( 'docstore-c-file@delete', [  'cust' => self::testInfo[ 'customerId' ] ,'file' => $file ] ) )
-            ->assertStatus(404 );
+        $this->actingAs( $this->getCustUser( 'hecustuser' ) )
+            ->delete( route( 'docstore-c-file@delete', [  'cust' => self::testInfo[ 'customerId' ] ,'file' => $file ] ) )
+            ->assertNotFound();
 
         $this->assertDatabaseHas( 'docstore_customer_files', [
-            'docstore_customer_directory_id' => self::testInfo[ 'parentDirId2' ], 'name' =>  self::testInfo[ 'fileName2' ], 'disk' =>  self::testInfo[ 'disk' ], 'sha256' => $file->sha256,
+            'docstore_customer_directory_id' => $testDir->id, 'name' =>  self::testInfo[ 'fileName2' ], 'disk' =>  self::testInfo[ 'disk' ], 'sha256' => $file->sha256,
             'description' => self::testInfo[ 'fileDescription2' ], 'min_privs' => self::testInfo[ 'filePrivs2' ], 'created_by' => 1
         ] );
     }
@@ -686,13 +784,15 @@ class FileControllerTest extends TestCase
      */
     public function testDeleteCustAdmin(): void
     {
-        $file = DocstoreCustomerFile::withoutGlobalScope( 'privs' )->where( [ 'name' => self::testInfo[ 'fileName2' ] ] )->first();
+        $origUploadedFile = UploadedFile::fake()->create( self::testInfo[ 'fileName' ], '2000' );
+        $testDir = $this->makeDocstoreCustomerDirectory( self::testInfo['customerId'] );
+        $file = $this->insertDocstoreCustomerFileFixture2($origUploadedFile, $testDir);
 
-        $user = $this->getCustAdminUser( 'hecustadmin' );
-        $this->actingAs( $user )->delete( route( 'docstore-c-file@delete', [ 'cust' => self::testInfo[ 'customerId' ] , 'file' => $file ] ) )
-            ->assertStatus(403 );
+        $this->actingAs( $this->getCustAdminUser( 'hecustadmin' ) )
+            ->delete( route( 'docstore-c-file@delete', [ 'cust' => self::testInfo[ 'customerId' ] , 'file' => $file ] ) )
+            ->assertForbidden();
         $this->assertDatabaseHas( 'docstore_customer_files', [
-            'docstore_customer_directory_id' => self::testInfo[ 'parentDirId2' ], 'name' =>  self::testInfo[ 'fileName2' ], 'disk' =>  self::testInfo[ 'disk' ], 'sha256' => $file->sha256,
+            'docstore_customer_directory_id' => $testDir->id, 'name' =>  self::testInfo[ 'fileName2' ], 'disk' =>  self::testInfo[ 'disk' ], 'sha256' => $file->sha256,
             'description' => self::testInfo[ 'fileDescription2' ], 'min_privs' => self::testInfo[ 'filePrivs2' ], 'created_by' => 1
         ] );
     }
@@ -704,14 +804,17 @@ class FileControllerTest extends TestCase
      */
     public function testDeleteSuperUser(): void
     {
-        $file = DocstoreCustomerFile::withoutGlobalScope( 'privs' )->where( [ 'name' => self::testInfo[ 'fileName2' ] ] )->first();
+        $origUploadedFile = UploadedFile::fake()->create( self::testInfo[ 'fileName' ], '2000' );
+        $testDir = $this->makeDocstoreCustomerDirectory( self::testInfo['customerId'] );
+        $file = $this->insertDocstoreCustomerFileFixture2($origUploadedFile, $testDir);
 
         $user = $this->getSuperUser( 'travis' );
 
         $this->actingAs( $user )
-            ->delete( route( 'docstore-c-file@delete', [  'cust' => self::testInfo[ 'customerId' ] , 'file' => $file ] ) );
+            ->delete( route( 'docstore-c-file@delete', [  'cust' => self::testInfo[ 'customerId' ] , 'file' => $file ] ) )
+            ->assertRedirectToRoute('docstore-c-dir@list', [ 'cust' => self::testInfo['customerId'], 'dir' => $testDir->id ]);
         $this->assertDatabaseMissing( 'docstore_customer_files', [
-            'docstore_customer_directory_id' => self::testInfo[ 'parentDirId2' ], 'name' =>  self::testInfo[ 'fileName2' ], 'disk' =>  self::testInfo[ 'disk' ], 'sha256' => $file->sha256,
+            'docstore_customer_directory_id' => $testDir->id, 'name' =>  self::testInfo[ 'fileName2' ], 'disk' =>  self::testInfo[ 'disk' ], 'sha256' => $file->sha256,
             'description' => self::testInfo[ 'fileDescription2' ], 'min_privs' => self::testInfo[ 'filePrivs2' ], 'created_by' => $user->id
         ] );
     }
@@ -723,17 +826,18 @@ class FileControllerTest extends TestCase
      */
     public function testStoreViewableObject(): void
     {
-        $uploadedFile = UploadedFile::fake()->create( self::testInfo[ 'fileName3' ], self::testInfo[ 'textFile' ] );
+        $uploadedFile = UploadedFile::fake()->create( self::testInfo[ 'fileName3' ], '2000' );
+        $testDir = $this->makeDocstoreCustomerDirectory( self::testInfo['customerId'] );
 
         $user = $this->getSuperUser( 'travis' );
 
         $this->actingAs( $user )->post( route( 'docstore-c-file@store', [  'cust' => self::testInfo[ 'customerId' ] ] ), [
-            'name' =>  self::testInfo[ 'fileName3' ], 'description' => self::testInfo[ 'fileDescription3' ], 'docstore_customer_directory_id' => self::testInfo[ 'parentDirId3' ],
+            'name' =>  self::testInfo[ 'fileName3' ], 'description' => self::testInfo[ 'fileDescription3' ], 'docstore_customer_directory_id' => $testDir->id,
             'min_privs' => self::testInfo[ 'filePrivs3' ],'uploadedFile'  => $uploadedFile
         ] );
 
         $this->assertDatabaseHas( 'docstore_customer_files', [
-            'docstore_customer_directory_id' => self::testInfo[ 'parentDirId3' ], 'name' =>  self::testInfo[ 'fileName3' ], 'disk' =>  self::testInfo[ 'disk' ], 'sha256' => hash_file( 'sha256', $uploadedFile ),
+            'docstore_customer_directory_id' => $testDir->id, 'name' =>  self::testInfo[ 'fileName3' ], 'disk' =>  self::testInfo[ 'disk' ], 'sha256' => hash_file( 'sha256', $uploadedFile->getPathname() ),
             'description' => self::testInfo[ 'fileDescription3' ], 'min_privs' => self::testInfo[ 'filePrivs3' ], 'created_by' => $user->id
         ] );
 
@@ -747,10 +851,12 @@ class FileControllerTest extends TestCase
      */
     public function testViewPublicUser(): void
     {
-        $file = DocstoreCustomerFile::withoutGlobalScope( 'privs' )->where( [ 'name' => self::testInfo[ 'fileName3' ] ] )->first();
+        $origUploadedFile = UploadedFile::fake()->create( self::testInfo[ 'fileName' ], '2000' );
+        $testDir = $this->makeDocstoreCustomerDirectory( self::testInfo['customerId'] );
+        $file = $this->insertDocstoreCustomerFileFixture3($origUploadedFile, $testDir);
 
         $this->get( route( 'docstore-c-file@view', [ 'cust' => self::testInfo[ 'customerId' ] , 'file' => $file ] ) )
-            ->assertStatus(302 );
+            ->assertRedirectToRoute('login@showForm');
     }
 
     /**
@@ -760,12 +866,13 @@ class FileControllerTest extends TestCase
      */
     public function testViewCustUser(): void
     {
-        $file = DocstoreCustomerFile::withoutGlobalScope( 'privs' )->where( [ 'name' => self::testInfo[ 'fileName3' ] ] )->first();
+        $origUploadedFile = UploadedFile::fake()->create( self::testInfo[ 'fileName' ], '2000' );
+        $testDir = $this->makeDocstoreCustomerDirectory( self::testInfo['customerId'] );
+        $file = $this->insertDocstoreCustomerFileFixture3($origUploadedFile, $testDir);
 
-        $user = $this->getCustUser( 'hecustuser' );
-
-        $this->actingAs( $user )->get( route( 'docstore-c-file@view', [ 'cust' => self::testInfo[ 'customerId' ] , 'file' => $file ] ) )
-            ->assertStatus(404 );
+        $this->actingAs( $this->getCustUser( 'hecustuser' ) )
+            ->get( route( 'docstore-c-file@view', [ 'cust' => self::testInfo[ 'customerId' ] , 'file' => $file ] ) )
+            ->assertNotFound();
     }
 
     /**
@@ -775,12 +882,13 @@ class FileControllerTest extends TestCase
      */
     public function testViewCustAdmin(): void
     {
-        $file = DocstoreCustomerFile::withoutGlobalScope( 'privs' )->where( [ 'name' => self::testInfo[ 'fileName3' ] ] )->first();
+        $origUploadedFile = UploadedFile::fake()->create( self::testInfo[ 'fileName' ], '2000' );
+        $testDir = $this->makeDocstoreCustomerDirectory( self::testInfo['customerId'] );
+        $file = $this->insertDocstoreCustomerFileFixture3($origUploadedFile, $testDir);
 
-        $user = $this->getCustAdminUser( 'imcustadmin' );
-
-        $this->actingAs( $user )->get( route( 'docstore-c-file@view', [ 'cust' => self::testInfo[ 'customerId' ] , 'file' => $file ] ) )
-            ->assertStatus(200 )
+        $this->actingAs( $this->getCustAdminUser( 'imcustadmin' ) )
+            ->get( route( 'docstore-c-file@view', [ 'cust' => self::testInfo[ 'customerId' ] , 'file' => $file ] ) )
+            ->assertOk()
             ->assertViewIs( 'docstore-customer.file.view' );
     }
 
@@ -791,12 +899,13 @@ class FileControllerTest extends TestCase
      */
     public function testViewSuperUser(): void
     {
-        $file = DocstoreCustomerFile::withoutGlobalScope( 'privs' )->where( [ 'name' => self::testInfo[ 'fileName3' ] ] )->first();
+        $origUploadedFile = UploadedFile::fake()->create( self::testInfo[ 'fileName' ], '2000' );
+        $testDir = $this->makeDocstoreCustomerDirectory( self::testInfo['customerId'] );
+        $file = $this->insertDocstoreCustomerFileFixture3($origUploadedFile, $testDir);
 
-        $user = $this->getSuperUser( 'travis' );
-
-        $this->actingAs( $user )->get( route( 'docstore-c-file@view', [ 'cust' => self::testInfo[ 'customerId' ] , 'file' => $file ] ) )
-            ->assertStatus(200 )
+        $this->actingAs( $this->getSuperUser( 'travis' ) )
+            ->get( route( 'docstore-c-file@view', [ 'cust' => self::testInfo[ 'customerId' ] , 'file' => $file ] ) )
+            ->assertOk()
             ->assertViewIs( 'docstore-customer.file.view' );
     }
 
@@ -807,14 +916,17 @@ class FileControllerTest extends TestCase
      */
     public function testDelete2SuperUser(): void
     {
-        $file = DocstoreCustomerFile::withoutGlobalScope( 'privs' )->where( [ 'name' => self::testInfo[ 'fileName3' ] ] )->first();
+        $origUploadedFile = UploadedFile::fake()->create( self::testInfo[ 'fileName' ], '2000' );
+        $testDir = $this->makeDocstoreCustomerDirectory( self::testInfo['customerId'] );
+        $file = $this->insertDocstoreCustomerFileFixture3($origUploadedFile, $testDir);
 
         $user = $this->getSuperUser( 'travis' );
 
         $this->actingAs( $user )
-            ->delete( route( 'docstore-c-file@delete', [ 'file' => $file ] ) );
+            ->delete( route( 'docstore-c-file@delete', [ 'file' => $file ] ) )
+            ->assertRedirectToRoute('docstore-c-dir@list', [ 'cust' => self::testInfo['customerId'], 'dir' => $testDir->id ]);
         $this->assertDatabaseMissing( 'docstore_customer_files', [
-            'docstore_customer_directory_id' => self::testInfo[ 'parentDirId3' ], 'name' =>  self::testInfo[ 'fileName3' ], 'disk' =>  self::testInfo[ 'disk' ], 'sha256' => $file->sha256,
+            'docstore_customer_directory_id' => $testDir->id, 'name' =>  self::testInfo[ 'fileName3' ], 'disk' =>  self::testInfo[ 'disk' ], 'sha256' => $file->sha256,
             'description' => self::testInfo[ 'fileDescription3' ], 'min_privs' => self::testInfo[ 'filePrivs3' ], 'created_by' => $user->id
         ] );
     }

@@ -1,9 +1,6 @@
 <?php
-
-namespace Tests;
-
 /*
- * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,6 +20,12 @@ namespace Tests;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+declare(strict_types=1);
+
+namespace Tests;
+
+use Database\Seeders\Tests\CiTestDataSeeder;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 
 use IXP\Models\User;
@@ -30,8 +33,16 @@ use IXP\Models\User;
 /**
  * TestCase
  *
+ * This base test class is used for feature testing beyond point unit tests, that is,
+ * the code under test requires a database and/or a full application environment. For
+ * pure unit tests, extend the PHPUnit TestCase class.
+ *
+ * This test uses the RefreshDatabase trait to migrate the database, seed it with test
+ * data, and reset state after testing so that each test is isolated from the others.
+ *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @author     Thomas Kerin <thomas@islandbridgenetworks.ie>
  * @category   IXP
  * @package    IXP\Tests
  * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
@@ -40,6 +51,11 @@ use IXP\Models\User;
 abstract class TestCase extends BaseTestCase
 {
     use CreatesApplication;
+    use RefreshDatabase;
+
+    protected $seed = true;
+
+    protected $seeder = CiTestDataSeeder::class;
 
     public const API_KEY_CUSTUSER  = 'ixpm_v7zO4TmaX3Ft_bo4NB55lMRFPSqoNDCv34xDkwg8d2WK01bMzif';
     public const API_KEY_CUSTADMIN = 'ixpm_GcMPPjWig7w2_G6yoQYvkQSLhfkOuhwEYoULcsM512Vjt2sQ532';
