@@ -22,6 +22,8 @@ namespace IXP\Listeners\Auth;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+
+use Illuminate\Support\Facades\Log;
 use Mail;
 
 use IXP\Events\Auth\ForgotPassword as ForgotPasswordEvent;
@@ -55,5 +57,6 @@ class ForgotPassword
     public function handle( ForgotPasswordEvent $e ): void
     {
         Mail::to( $e->user->email )->send( new ForgotPasswordMailable( $e->token, $e->user ) );
+        Log::notice( 'Password reset email sent to ' . $e->user->email );
     }
 }
