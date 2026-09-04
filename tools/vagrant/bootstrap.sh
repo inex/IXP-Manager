@@ -141,15 +141,18 @@ GRANT SUPER,SYSTEM_USER ON *.* TO ixp_ci@`%`;
 FLUSH PRIVILEGES;
 END_SQL
 
-
-
+SEEDED=0
 if [[ -f /vagrant/ixpmanager-preferred.sql.bz2 ]]; then
+    echo "Importing ixpmanager-preferred.sql.bz2 - Full database dump expected."
     bzcat /vagrant/ixpmanager-preferred.sql.bz2 | mysql --defaults-extra-file=/etc/mysql/root-client.cnf ixp
-elif [[ -f /vagrant/tools/vagrant/vagrant-base.sql ]]; then
-    cat /vagrant/tools/vagrant/vagrant-base.sql | mysql --defaults-extra-file=/etc/mysql/root-client.cnf ixp
+    SEEDED=1
+elif [[ -f /vagrant/ixpmanager-preferred.sql ]]; then
+    echo "Importing ixpmanager-preferred.sql - Full database dump expected."
+    cat /vagrant/ixpmanager-preferred.sql | mysql --defaults-extra-file=/etc/mysql/root-client.cnf ixp
+    SEEDED=1
+else
+    echo "No full schema dumps (vagrant) to import"
 fi
-
-cat /vagrant/data/ci/ci_test_db.sql  | mysql --defaults-extra-file=/etc/mysql/root-client.cnf ixp_ci
 
 
 ####################################################################################
@@ -174,6 +177,10 @@ su - vagrant -c "cd /vagrant && COMPOSER_ALLOW_SUPERUSER=1 composer install" &>/
 echo "Installing / migrating database..."
 php /vagrant/artisan migrate --force &>/dev/null
 
+if [ "$SEEDED" == "0" ]; then
+    echo "Importing vagrant sample data"
+    cat /vagrant/tools/vagrant/vagrant-base-data.sql  | mysql --defaults-extra-file=/etc/mysql/root-client.cnf ixp
+fi
 
 
 ####################################################################################

@@ -1,9 +1,6 @@
 <?php
-
-namespace Tests\Docstore\Controllers;
-
 /*
- * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,6 +19,11 @@ namespace Tests\Docstore\Controllers;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+
+declare(strict_types=1);
+
+namespace Tests\Docstore\Controllers;
+
 
 use IXP\Models\User;
 use Storage;
@@ -61,6 +63,54 @@ class FileControllerTest extends TestCase
         'parentDirId3'          => 1,
     ];
 
+    private function insertDocstoreFileFixture1(UploadedFile $uploadedFile): DocstoreFile
+    {
+        $file = new DocstoreFile();
+        $file->name = self::testInfo[ 'fileName' ];
+        $file->disk = self::testInfo[ 'disk' ];
+        $file->docstore_directory_id = self::testInfo[ 'parentDirId' ];
+        $file->description = self::testInfo[ 'fileDescription' ];
+        $file->path = $uploadedFile->store( '', 'docstore' );
+        $file->sha256 = hash_file('sha256', $uploadedFile->getPathname());
+        $file->min_privs = self::testInfo[ 'filePrivs' ];
+        $file->created_by = $this->getSuperUser( 'travis' )->id;
+        $file->file_last_updated = now();
+        $file->save();
+        return $file;
+    }
+
+    private function insertDocstoreFileFixture2(UploadedFile $uploadedFile): DocstoreFile
+    {
+        $file = new DocstoreFile();
+        $file->name = self::testInfo[ 'fileName2' ];
+        $file->disk = self::testInfo[ 'disk' ];
+        $file->docstore_directory_id = self::testInfo[ 'parentDirId2' ];
+        $file->description = self::testInfo[ 'fileDescription2' ];
+        $file->path = $uploadedFile->store( '', 'docstore' );
+        $file->sha256 = hash_file('sha256', $uploadedFile->getPathname());
+        $file->min_privs = self::testInfo[ 'filePrivs2' ];
+        $file->created_by = $this->getSuperUser( 'travis' )->id;
+        $file->file_last_updated = now();
+        $file->save();
+        return $file;
+    }
+
+    private function insertDocstoreFileFixture3(UploadedFile $uploadedFile): DocstoreFile
+    {
+        $file = new DocstoreFile();
+        $file->name = self::testInfo[ 'fileName3' ];
+        $file->disk = self::testInfo[ 'disk' ];
+        $file->docstore_directory_id = self::testInfo[ 'parentDirId3' ];
+        $file->description = self::testInfo[ 'fileDescription3' ];
+        $file->path = $uploadedFile->store( '', 'docstore' );
+        $file->sha256 = hash_file('sha256', $uploadedFile->getPathname());
+        $file->min_privs = self::testInfo[ 'filePrivs3' ];
+        $file->created_by = $this->getSuperUser( 'travis' )->id;
+        $file->file_last_updated = now();
+        $file->save();
+        return $file;
+    }
+
     /**
      * Test the access to the upload form for a public user
      *
@@ -69,8 +119,8 @@ class FileControllerTest extends TestCase
     public function testUploadFormAccessPublicUser(): void
     {
         // public user
-        $response = $this->get( route( 'docstore-file@upload' ) );
-        $response->assertStatus(302 );
+        $this->get( route( 'docstore-file@upload' ) )
+            ->assertRedirectToRoute( 'login@showForm' );
     }
 
     /**
@@ -80,9 +130,9 @@ class FileControllerTest extends TestCase
      */
     public function testUploadFormAccessCustUser(): void
     {
-        $response = $this->actingAs( $this->getCustUser( 'hecustuser' ) )
-            ->get( route( 'docstore-file@upload' ) );
-        $response->assertStatus(403 );
+        $this->actingAs( $this->getCustUser( 'hecustuser' ) )
+            ->get( route( 'docstore-file@upload' ) )
+            ->assertForbidden();
     }
 
     /**
@@ -92,9 +142,9 @@ class FileControllerTest extends TestCase
      */
     public function testUploadFormAccessCustAdmin(): void
     {
-        $response = $this->actingAs( $this->getCustAdminUser( 'hecustadmin' ) )
-            ->get( route( 'docstore-file@upload' ) );
-        $response->assertStatus(403 );
+        $this->actingAs( $this->getCustAdminUser( 'hecustadmin' ) )
+            ->get( route( 'docstore-file@upload' ) )
+            ->assertForbidden();
     }
 
     /**
@@ -104,9 +154,9 @@ class FileControllerTest extends TestCase
      */
     public function testUploadFormAccessSuperUser(): void
     {
-        $response = $this->actingAs( $this->getSuperUser( 'travis' ) )
-            ->get( route( 'docstore-file@upload' ) );
-        $response->assertStatus(200 );
+        $this->actingAs( $this->getSuperUser( 'travis' ) )
+            ->get( route( 'docstore-file@upload' ) )
+            ->assertOk();
     }
 
     /**
@@ -118,15 +168,14 @@ class FileControllerTest extends TestCase
     {
         $uploadedFile = UploadedFile::fake()->create( self::testInfo[ 'fileName' ], '2000' );
 
-        $response = $this->post( route( 'docstore-file@store' ), [
-            'name' =>  self::testInfo[ 'fileName' ], 'description' => self::testInfo[ 'fileDescription' ], 'docstore_directory_id' => self::testInfo[ 'parentDirId' ],
+        $this->post( route( 'docstore-file@store' ), [
+            'name' => self::testInfo[ 'fileName' ], 'description' => self::testInfo[ 'fileDescription' ], 'docstore_directory_id' => self::testInfo[ 'parentDirId' ],
             'min_privs' => self::testInfo[ 'filePrivs' ],'uploadedFile'  => $uploadedFile
-        ] );
-
-        $response->assertStatus(302 );
+        ] )
+            ->assertRedirectToRoute( 'login@showForm' );
 
         $this->assertDatabaseMissing( 'docstore_files', [
-            'docstore_directory_id' => self::testInfo[ 'parentDirId' ], 'name' =>  self::testInfo[ 'fileName' ], 'disk' => 'docstore', 'sha256' => hash_file( 'sha256', $uploadedFile ),
+            'docstore_directory_id' => self::testInfo[ 'parentDirId' ], 'name' => self::testInfo[ 'fileName' ], 'disk' => 'docstore', 'sha256' => hash_file( 'sha256', $uploadedFile->getPathname() ),
             'description' => self::testInfo[ 'fileDescription' ], 'min_privs' => self::testInfo[ 'filePrivs' ]
         ] );
 
@@ -142,22 +191,21 @@ class FileControllerTest extends TestCase
     {
         $uploadedFile = UploadedFile::fake()->create( self::testInfo[ 'fileName' ], '2000' );
 
-        $response = $this->actingAs( $this->getCustUser( 'hecustuser' ) )
+        $this->actingAs( $this->getCustUser( 'hecustuser' ) )
             ->post( route( 'docstore-file@store' ), [
-                'name'                  =>  self::testInfo[ 'fileName' ],
+                'name'                  => self::testInfo[ 'fileName' ],
                 'description'           => self::testInfo[ 'fileDescription' ],
                 'docstore_directory_id' => self::testInfo[ 'parentDirId' ],
                 'min_privs'             => self::testInfo[ 'filePrivs' ],
                 'uploadedFile'          => $uploadedFile
-            ] );
-
-        $response->assertStatus(403 );
+            ] )
+            ->assertForbidden();
 
         $this->assertDatabaseMissing( 'docstore_files', [
             'docstore_directory_id'     => self::testInfo[ 'parentDirId' ],
-            'name'                      =>  self::testInfo[ 'fileName' ],
+            'name'                      => self::testInfo[ 'fileName' ],
             'disk'                      => 'docstore',
-            'sha256'                    => hash_file( 'sha256', $uploadedFile ),
+            'sha256'                    => hash_file( 'sha256', $uploadedFile->getPathname() ),
             'description'               => self::testInfo[ 'fileDescription' ],
             'min_privs'                 => self::testInfo[ 'filePrivs' ]
         ] );
@@ -174,22 +222,21 @@ class FileControllerTest extends TestCase
     {
         $uploadedFile = UploadedFile::fake()->create( self::testInfo[ 'fileName' ], '2000' );
 
-        $response = $this->actingAs( $this->getCustAdminUser( 'hecustadmin' ) )
+        $this->actingAs( $this->getCustAdminUser( 'hecustadmin' ) )
             ->post( route( 'docstore-file@store' ), [
-                'name'                  =>  self::testInfo[ 'fileName' ],
+                'name'                  => self::testInfo[ 'fileName' ],
                 'description'           => self::testInfo[ 'fileDescription' ],
                 'docstore_directory_id' => self::testInfo[ 'parentDirId' ],
                 'min_privs'             => self::testInfo[ 'filePrivs' ],
                 'uploadedFile'          => $uploadedFile
-        ] );
-
-        $response->assertStatus(403 );
+        ] )
+            ->assertForbidden();
 
         $this->assertDatabaseMissing( 'docstore_files', [
             'docstore_directory_id' => self::testInfo[ 'parentDirId' ],
-            'name'                  =>  self::testInfo[ 'fileName' ],
+            'name'                  => self::testInfo[ 'fileName' ],
             'disk'                  => 'docstore',
-            'sha256'                => hash_file( 'sha256', $uploadedFile ),
+            'sha256'                => hash_file( 'sha256', $uploadedFile->getPathname() ),
             'description'           => self::testInfo[ 'fileDescription' ],
             'min_privs'             => self::testInfo[ 'filePrivs' ]
         ] );
@@ -208,18 +255,19 @@ class FileControllerTest extends TestCase
 
         $this->actingAs( $user = $this->getSuperUser( 'travis' ) )
             ->post( route( 'docstore-file@store' ), [
-                'name'                  =>  self::testInfo[ 'fileName' ],
+                'name'                  => self::testInfo[ 'fileName' ],
                 'description'           => self::testInfo[ 'fileDescription' ],
                 'docstore_directory_id' => self::testInfo[ 'parentDirId' ],
                 'min_privs'             => self::testInfo[ 'filePrivs' ],
                 'uploadedFile'          => $uploadedFile
-        ] );
+        ] )
+            ->assertRedirectToRoute(  'docstore-dir@list', [ 'dir' => self::testInfo[ 'parentDirId' ] ] );
 
         $this->assertDatabaseHas( 'docstore_files', [
             'docstore_directory_id' => self::testInfo[ 'parentDirId' ],
-            'name'                  =>  self::testInfo[ 'fileName' ],
+            'name'                  => self::testInfo[ 'fileName' ],
             'disk'                  => 'docstore',
-            'sha256'                => hash_file( 'sha256', $uploadedFile ),
+            'sha256'                => hash_file( 'sha256', $uploadedFile->getPathname() ),
             'description'           => self::testInfo[ 'fileDescription' ],
             'min_privs'             => self::testInfo[ 'filePrivs' ],
             'created_by'            => $user->id
@@ -243,13 +291,14 @@ class FileControllerTest extends TestCase
                 'docstore_directory_id' => self::testInfo[ 'parentDirId2' ],
                 'min_privs'             => self::testInfo[ 'filePrivs2' ],
                 'uploadedFile'          => $uploadedFile
-        ] );
+        ] )
+            ->assertRedirectBackWithErrors(['name' => 'The name field is required.']);
 
         $this->assertDatabaseMissing( 'docstore_files', [
             'docstore_directory_id' => self::testInfo[ 'parentDirId2' ],
-            'name'                  =>  self::testInfo[ 'fileName2' ],
+            'name'                  => self::testInfo[ 'fileName2' ],
             'disk'                  => 'docstore',
-            'sha256'                => hash_file( 'sha256', $uploadedFile ),
+            'sha256'                => hash_file( 'sha256', $uploadedFile->getPathname() ),
             'description'           => self::testInfo[ 'fileDescription2' ],
             'min_privs'             => self::testInfo[ 'filePrivs2' ],
             'created_by'            => $user->id
@@ -265,14 +314,16 @@ class FileControllerTest extends TestCase
     {
         $this->actingAs( $user = $this->getSuperUser( 'travis' ) )
             ->post( route( 'docstore-file@store' ), [
+                'name'                  => self::testInfo[ 'fileName' ],
                 'description'           => self::testInfo[ 'fileDescription2' ],
                 'docstore_directory_id' => self::testInfo[ 'parentDirId2' ],
                 'min_privs'             => self::testInfo[ 'filePrivs2' ]
-        ] );
+        ] )
+            ->assertRedirectBackWithErrors(['uploadedFile' => 'The uploaded file field is required.']);
 
         $this->assertDatabaseMissing( 'docstore_files', [
             'docstore_directory_id' => self::testInfo[ 'parentDirId2' ],
-            'name'                  =>  self::testInfo[ 'fileName2' ],
+            'name'                  => self::testInfo[ 'fileName2' ],
             'disk'                  => 'docstore',
             'description'           => self::testInfo[ 'fileDescription2' ],
             'min_privs'             => self::testInfo[ 'filePrivs2' ],
@@ -291,16 +342,18 @@ class FileControllerTest extends TestCase
 
         $this->actingAs( $user = $this->getSuperUser( 'travis' ) )
             ->post( route( 'docstore-file@store' ), [
+                'name'                  => self::testInfo[ 'fileName2' ],
                 'description'           => self::testInfo[ 'fileDescription2' ],
                 'docstore_directory_id' => self::testInfo[ 'parentDirId2' ],
                 'min_privs'             => self::testInfo[ 'filePrivs2' ],
                 'uploadedFile'          => $uploadedFile,
                 'sha256'                => '93fc19ea1eb40b8ef8984a7c53dd7b94cb690d5ae5f8b3497c206b43e0bfe117'
-        ] );
+        ] )
+            ->assertRedirectBackWithErrors(['sha256' => 'The selected sha256 is invalid.']);
 
         $this->assertDatabaseMissing( 'docstore_files', [
             'docstore_directory_id' => self::testInfo[ 'parentDirId2' ],
-            'name'                  =>  self::testInfo[ 'fileName2' ],
+            'name'                  => self::testInfo[ 'fileName2' ],
             'disk'                  => 'docstore',
             'sha256'                => '93fc19ea1eb40b8ef8984a7c53dd7b94cb690d5ae5f8b3497c206b43e0bfe117',
             'description'           => self::testInfo[ 'fileDescription2' ],
@@ -314,23 +367,25 @@ class FileControllerTest extends TestCase
      *
      * @return void
      */
-    public function testStoreWithWrongMinPivs(): void
+    public function testStoreWithWrongMinPrivs(): void
     {
         $uploadedFile = UploadedFile::fake()->create( self::testInfo[ 'fileName2' ], '2000' );
 
         $this->actingAs( $user = $this->getSuperUser( 'travis' ) )
             ->post( route( 'docstore-file@store' ), [
+                'name'                  => self::testInfo[ 'fileName2' ],
                 'description'           => self::testInfo[ 'fileDescription2' ],
                 'docstore_directory_id' => self::testInfo[ 'parentDirId2' ],
                 'min_privs'             => 4,
                 'uploadedFile'          => $uploadedFile,
-        ] );
+        ] )
+            ->assertRedirectBackWithErrors(['min_privs' => 'The selected min privs is invalid.']);
 
         $this->assertDatabaseMissing( 'docstore_files', [
             'docstore_directory_id' => self::testInfo[ 'parentDirId2' ],
-            'name'                  =>  self::testInfo[ 'fileName2' ],
+            'name'                  => self::testInfo[ 'fileName2' ],
             'disk'                  => 'docstore',
-            'sha256'                => hash_file( 'sha256', $uploadedFile ),
+            'sha256'                => hash_file( 'sha256', $uploadedFile->getPathname() ),
             'description'           => self::testInfo[ 'fileDescription2' ],
             'min_privs'             => 4,
             'created_by'            => $user->id
@@ -344,32 +399,34 @@ class FileControllerTest extends TestCase
      */
     public function testUpdatePublicUser(): void
     {
-        $file = DocstoreFile::where( [ 'name' => self::testInfo[ 'fileName' ] ] )->first();
+        $origUploadedFile = UploadedFile::fake()->create( self::testInfo[ 'fileName' ], '2000' );
+        $file = $this->insertDocstoreFileFixture1($origUploadedFile);
 
         $uploadedFile = UploadedFile::fake()->create( self::testInfo[ 'fileName' ], '2000' );
 
         $this->put( route( 'docstore-file@update', [ 'file' => $file ] ), [
-            'name'                  =>  self::testInfo[ 'fileName2' ],
+            'name'                  => self::testInfo[ 'fileName2' ],
             'description'           => self::testInfo[ 'fileDescription2' ],
             'docstore_directory_id' => self::testInfo[ 'parentDirId2' ],
             'min_privs'             => self::testInfo[ 'filePrivs2' ],
             'uploadedFile'          => $uploadedFile
-        ] );
+        ] )
+            ->assertRedirectToRoute( 'login@showForm' );
 
         $this->assertDatabaseHas( 'docstore_files', [
             'docstore_directory_id' => self::testInfo[ 'parentDirId' ],
-            'name'                  =>  self::testInfo[ 'fileName' ],
+            'name'                  => self::testInfo[ 'fileName' ],
             'disk'                  => 'docstore',
-            'sha256'                => hash_file( 'sha256', $uploadedFile ),
+            'sha256'                => hash_file( 'sha256', $uploadedFile->getPathname() ),
             'description'           => self::testInfo[ 'fileDescription' ],
             'min_privs'             => self::testInfo[ 'filePrivs' ]
         ] );
 
         $this->assertDatabaseMissing( 'docstore_files', [
             'docstore_directory_id' => self::testInfo[ 'parentDirId2' ],
-            'name'                  =>  self::testInfo[ 'fileName2' ],
+            'name'                  => self::testInfo[ 'fileName2' ],
             'disk'                  => 'docstore',
-            'sha256'                => hash_file( 'sha256', $uploadedFile ),
+            'sha256'                => hash_file( 'sha256', $uploadedFile->getPathname() ),
             'description'           => self::testInfo[ 'fileDescription2' ],
             'min_privs'             => self::testInfo[ 'filePrivs2' ]
         ] );
@@ -385,33 +442,35 @@ class FileControllerTest extends TestCase
      */
     public function testUpdateCustUser(): void
     {
-        $file = DocstoreFile::where( [ 'name' => self::testInfo[ 'fileName' ] ] )->first();
+        $origUploadedFile = UploadedFile::fake()->create( self::testInfo[ 'fileName' ], '2000' );
+        $file = $this->insertDocstoreFileFixture1($origUploadedFile);
 
         $uploadedFile = UploadedFile::fake()->create( self::testInfo[ 'fileName' ], '2000' );
 
         $this->actingAs( $this->getCustUser( 'hecustuser' ) )
             ->put( route( 'docstore-file@update', [ 'file' => $file ] ), [
-                'name'                  =>  self::testInfo[ 'fileName2' ],
+                'name'                  => self::testInfo[ 'fileName2' ],
                 'description'           => self::testInfo[ 'fileDescription2' ],
                 'docstore_directory_id' => self::testInfo[ 'parentDirId2' ],
                 'min_privs'             => self::testInfo[ 'filePrivs2' ],
                 'uploadedFile'          => $uploadedFile
-        ] );
+        ] )
+            ->assertForbidden();
 
         $this->assertDatabaseHas( 'docstore_files', [
             'docstore_directory_id' => self::testInfo[ 'parentDirId' ],
-            'name'                  =>  self::testInfo[ 'fileName' ],
+            'name'                  => self::testInfo[ 'fileName' ],
             'disk'                  => 'docstore',
-            'sha256'                => hash_file( 'sha256', $uploadedFile ),
+            'sha256'                => hash_file( 'sha256', $uploadedFile->getPathname() ),
             'description'           => self::testInfo[ 'fileDescription' ],
             'min_privs'             => self::testInfo[ 'filePrivs' ]
         ] );
 
         $this->assertDatabaseMissing( 'docstore_files', [
             'docstore_directory_id' => self::testInfo[ 'parentDirId2' ],
-            'name'                  =>  self::testInfo[ 'fileName2' ],
+            'name'                  => self::testInfo[ 'fileName2' ],
             'disk'                  => 'docstore',
-            'sha256'                => hash_file( 'sha256', $uploadedFile ),
+            'sha256'                => hash_file( 'sha256', $uploadedFile->getPathname() ),
             'description'           => self::testInfo[ 'fileDescription2' ],
             'min_privs'             => self::testInfo[ 'filePrivs2' ]
         ] );
@@ -427,33 +486,35 @@ class FileControllerTest extends TestCase
      */
     public function testUpdateCustAdmin(): void
     {
-        $file = DocstoreFile::where( [ 'name' => self::testInfo[ 'fileName' ] ] )->first();
+        $origUploadedFile = UploadedFile::fake()->create( self::testInfo[ 'fileName' ], '2000' );
+        $file = $this->insertDocstoreFileFixture1($origUploadedFile);
 
         $uploadedFile = UploadedFile::fake()->create( self::testInfo[ 'fileName' ], '2000' );
 
         $this->actingAs( $this->getCustAdminUser( 'hecustadmin' ) )
             ->put( route( 'docstore-file@update', [ 'file' => $file ] ), [
-                'name'                  =>  self::testInfo[ 'fileName2' ],
+                'name'                  => self::testInfo[ 'fileName2' ],
                 'description'           => self::testInfo[ 'fileDescription2' ],
                 'docstore_directory_id' => self::testInfo[ 'parentDirId2' ],
                 'min_privs'             => self::testInfo[ 'filePrivs2' ],
                 'uploadedFile'          => $uploadedFile
-        ] );
+        ] )
+            ->assertForbidden();
 
         $this->assertDatabaseHas( 'docstore_files', [
             'docstore_directory_id' => self::testInfo[ 'parentDirId' ],
-            'name'                  =>  self::testInfo[ 'fileName' ],
+            'name'                  => self::testInfo[ 'fileName' ],
             'disk'                  => 'docstore',
-            'sha256'                => hash_file( 'sha256', $uploadedFile ),
+            'sha256'                => hash_file( 'sha256', $uploadedFile->getPathname() ),
             'description'           => self::testInfo[ 'fileDescription' ],
             'min_privs'             => self::testInfo[ 'filePrivs' ]
         ] );
 
         $this->assertDatabaseMissing( 'docstore_files', [
             'docstore_directory_id' => self::testInfo[ 'parentDirId2' ],
-            'name'                  =>  self::testInfo[ 'fileName2' ],
+            'name'                  => self::testInfo[ 'fileName2' ],
             'disk'                  => 'docstore',
-            'sha256'                => hash_file( 'sha256', $uploadedFile ),
+            'sha256'                => hash_file( 'sha256', $uploadedFile->getPathname() ),
             'description'           => self::testInfo[ 'fileDescription2' ],
             'min_privs'             => self::testInfo[ 'filePrivs2' ]
         ] );
@@ -469,20 +530,20 @@ class FileControllerTest extends TestCase
      */
     public function testUpdateWithPostMethod(): void
     {
-        $file = DocstoreFile::where( [ 'name' => self::testInfo[ 'fileName' ] ] )->first();
+        $origUploadedFile = UploadedFile::fake()->create( self::testInfo[ 'fileName' ], '2000' );
+        $file = $this->insertDocstoreFileFixture1($origUploadedFile);
 
         $uploadedFile = UploadedFile::fake()->create( self::testInfo[ 'fileName' ], '2000' );
 
-        $response = $this->actingAs( $this->getSuperUser( 'travis' ) )
+        $this->actingAs( $this->getSuperUser( 'travis' ) )
             ->post( route( 'docstore-file@update', [ 'file' => $file ] ), [
-                'name'                  =>  self::testInfo[ 'fileName2' ],
+                'name'                  => self::testInfo[ 'fileName2' ],
                 'description'           => self::testInfo[ 'fileDescription2' ],
                 'docstore_directory_id' => self::testInfo[ 'parentDirId2' ],
                 'min_privs'             => self::testInfo[ 'filePrivs2' ],
                 'uploadedFile'          => $uploadedFile
-        ] );
-
-        $response->assertStatus(405 );
+        ] )
+            ->assertMethodNotAllowed();
     }
 
     /**
@@ -492,24 +553,26 @@ class FileControllerTest extends TestCase
      */
     public function testUpdateSuperUser(): void
     {
-        $file = DocstoreFile::where( [ 'name' => self::testInfo[ 'fileName' ] ] )->first();
+        $origUploadedFile = UploadedFile::fake()->create( self::testInfo[ 'fileName' ], '2000' );
+        $file = $this->insertDocstoreFileFixture1($origUploadedFile);
 
         $uploadedFile = UploadedFile::fake()->create( self::testInfo[ 'fileName' ], '2000' );
 
         $this->actingAs( $user = $this->getSuperUser( 'travis' ) )
             ->put( route( 'docstore-file@update', [ 'file' => $file ] ), [
-                'name'                  =>  self::testInfo[ 'fileName2' ],
+                'name'                  => self::testInfo[ 'fileName2' ],
                 'description'           => self::testInfo[ 'fileDescription2' ],
                 'docstore_directory_id' => self::testInfo[ 'parentDirId2' ],
                 'min_privs'             => self::testInfo[ 'filePrivs2' ],
                 'uploadedFile'          => $uploadedFile
-        ] );
+        ] )
+            ->assertRedirectToRoute( 'docstore-dir@list', [ 'dir' => self::testInfo[ 'parentDirId2' ] ] );
 
         $this->assertDatabaseHas( 'docstore_files', [
             'docstore_directory_id' => self::testInfo[ 'parentDirId2' ],
-            'name'                  =>  self::testInfo[ 'fileName2' ],
+            'name'                  => self::testInfo[ 'fileName2' ],
             'disk'                  => 'docstore',
-            'sha256'                => hash_file( 'sha256', $uploadedFile ),
+            'sha256'                => hash_file( 'sha256', $uploadedFile->getPathname() ),
             'description'           => self::testInfo[ 'fileDescription2' ],
             'min_privs'             => self::testInfo[ 'filePrivs2' ],
             'created_by'            => $user->id
@@ -526,10 +589,11 @@ class FileControllerTest extends TestCase
      */
     public function testViewNoneViewableFilePublicUser(): void
     {
-        $file = DocstoreFile::where( [ 'name' => self::testInfo[ 'fileName2' ] ] )->first();
+        $origUploadedFile = UploadedFile::fake()->create( self::testInfo[ 'fileName2' ], '2000' );
+        $file = $this->insertDocstoreFileFixture2($origUploadedFile);
 
         $this->get( route( 'docstore-file@view', [ 'file' => $file ] ) )
-            ->assertStatus(403 );
+            ->assertForbidden();
     }
 
     /**
@@ -539,11 +603,12 @@ class FileControllerTest extends TestCase
      */
     public function testViewNoneViewableFileCustUser(): void
     {
-        $file = DocstoreFile::where( [ 'name' => self::testInfo[ 'fileName2' ] ] )->first();
+        $origUploadedFile = UploadedFile::fake()->create( self::testInfo[ 'fileName2' ], '2000' );
+        $file = $this->insertDocstoreFileFixture2($origUploadedFile);
 
         $this->actingAs( $this->getCustUser( 'hecustuser' ) )
             ->get( route( 'docstore-file@view', [ 'file' => $file ] ) )
-            ->assertStatus(403 );
+            ->assertForbidden();
     }
 
     /**
@@ -553,7 +618,8 @@ class FileControllerTest extends TestCase
      */
     public function testViewNoneViewableFileCustAdmin(): void
     {
-        $file = DocstoreFile::where( [ 'name' => self::testInfo[ 'fileName2' ] ] )->first();
+        $origUploadedFile = UploadedFile::fake()->create( self::testInfo[ 'fileName2' ], '2000' );
+        $file = $this->insertDocstoreFileFixture2($origUploadedFile);
 
         $this->actingAs( $this->getCustAdminUser( 'hecustadmin' ) )
             ->get( route( 'docstore-file@view', [ 'file' => $file ] ) )
@@ -567,7 +633,8 @@ class FileControllerTest extends TestCase
      */
     public function testViewNoneViewableFileSuperUser(): void
     {
-        $file = DocstoreFile::where( [ 'name' => self::testInfo[ 'fileName2' ] ] )->first();
+        $origUploadedFile = UploadedFile::fake()->create( self::testInfo[ 'fileName2' ], '2000' );
+        $file = $this->insertDocstoreFileFixture2($origUploadedFile);
 
         $this->actingAs( $this->getSuperUser( 'travis' ) )
             ->get( route( 'docstore-file@view', [ 'file' => $file ] ) )
@@ -581,10 +648,11 @@ class FileControllerTest extends TestCase
      */
     public function testDownloadPublicUser(): void
     {
-        $file = DocstoreFile::where( [ 'name' => self::testInfo[ 'fileName2' ] ] )->first();
+        $origUploadedFile = UploadedFile::fake()->create( self::testInfo[ 'fileName2' ], '2000' );
+        $file = $this->insertDocstoreFileFixture2($origUploadedFile);
 
-        $response = $this->get( route( 'docstore-file@download', [ 'file' => $file ] ) );
-        $response->assertStatus( 403 );
+        $this->get( route( 'docstore-file@download', [ 'file' => $file ] ) )
+            ->assertForbidden();
     }
 
     /**
@@ -594,11 +662,12 @@ class FileControllerTest extends TestCase
      */
     public function testDownloadCustUser(): void
     {
-        $file = DocstoreFile::where( [ 'name' => self::testInfo[ 'fileName2' ] ] )->first();
+        $origUploadedFile = UploadedFile::fake()->create( self::testInfo[ 'fileName2' ], '2000' );
+        $file = $this->insertDocstoreFileFixture2($origUploadedFile);
 
-        $response = $this->actingAs( $this->getCustUser( 'hecustuser' ) )
-            ->get( route( 'docstore-file@download', [ 'file' => $file ] ) );
-        $response->assertStatus( 403 );
+        $this->actingAs( $this->getCustUser( 'hecustuser' ) )
+            ->get( route( 'docstore-file@download', [ 'file' => $file ] ) )
+            ->assertForbidden();
     }
 
     /**
@@ -608,11 +677,12 @@ class FileControllerTest extends TestCase
      */
     public function testDownloadCustAdmin(): void
     {
-        $file = DocstoreFile::where( [ 'name' => self::testInfo[ 'fileName2' ] ] )->first();
+        $origUploadedFile = UploadedFile::fake()->create( self::testInfo[ 'fileName2' ], '2000' );
+        $file = $this->insertDocstoreFileFixture2($origUploadedFile);
 
-        $response = $this->actingAs( $this->getCustAdminUser( 'hecustadmin' ) )
-            ->get( route( 'docstore-file@download', [ 'file' => $file ] ) );
-        $response->assertStatus( 200 );
+        $this->actingAs( $this->getCustAdminUser( 'hecustadmin' ) )
+            ->get( route( 'docstore-file@download', [ 'file' => $file ] ) )
+            ->assertOk();
     }
 
     /**
@@ -622,11 +692,12 @@ class FileControllerTest extends TestCase
      */
     public function testDownloadSuperUser(): void
     {
-        $file = DocstoreFile::where( [ 'name' => self::testInfo[ 'fileName2' ] ] )->first();
+        $origUploadedFile = UploadedFile::fake()->create( self::testInfo[ 'fileName2' ], '2000' );
+        $file = $this->insertDocstoreFileFixture2($origUploadedFile);
 
-        $response = $this->actingAs( $this->getSuperUser( 'travis' ) )
-            ->get( route( 'docstore-file@download', [ 'file' => $file ] ) );
-        $response->assertStatus( 200 );
+        $this->actingAs( $this->getSuperUser( 'travis' ) )
+            ->get( route( 'docstore-file@download', [ 'file' => $file ] ) )
+            ->assertOk();
     }
 
     /**
@@ -636,11 +707,12 @@ class FileControllerTest extends TestCase
      */
     public function testInfoPublicUser(): void
     {
-        $file = DocstoreFile::where( [ 'name' => self::testInfo[ 'fileName2' ] ] )->first();
+        $origUploadedFile = UploadedFile::fake()->create( self::testInfo[ 'fileName2' ], '2000' );
+        $file = $this->insertDocstoreFileFixture2($origUploadedFile);
 
-        $response = $this->get( route( 'docstore-file-api@info', [ 'file' => $file ] ) );
-
-        $response->assertStatus( 401 ); // hits ApiAuthenticate middleware
+        // hits ApiAuthenticate middleware
+        $this->get( route( 'docstore-file-api@info', [ 'file' => $file ] ) )
+            ->assertStatus( 401 );
     }
 
     /**
@@ -650,11 +722,13 @@ class FileControllerTest extends TestCase
      */
     public function testInfoCustUser(): void
     {
-        $file = DocstoreFile::where( [ 'name' => self::testInfo[ 'fileName2' ] ] )->first();
+        $origUploadedFile = UploadedFile::fake()->create( self::testInfo[ 'fileName2' ], '2000' );
+        $file = $this->insertDocstoreFileFixture2($origUploadedFile);
 
-        $response = $this->actingAs(  $this->getCustUser( 'hecustuser' ) )
-            ->get( route( 'docstore-file-api@info', [ 'file' => $file ] ) );
-        $response->assertStatus( 403 ); // policy prevents non-superadmins from accessing file
+        // policy prevents non-superadmins from accessing file
+        $this->actingAs(  $this->getCustUser( 'hecustuser' ) )
+            ->get( route( 'docstore-file-api@info', [ 'file' => $file ] ) )
+            ->assertForbidden();
     }
 
     /**
@@ -664,11 +738,12 @@ class FileControllerTest extends TestCase
      */
     public function testInfoCustAdmin(): void
     {
-        $file = DocstoreFile::where( [ 'name' => self::testInfo[ 'fileName2' ] ] )->first();
+        $origUploadedFile = UploadedFile::fake()->create( self::testInfo[ 'fileName2' ], '2000' );
+        $file = $this->insertDocstoreFileFixture2($origUploadedFile);
 
-        $response = $this->actingAs( $this->getCustAdminUser( 'hecustadmin' ) )
-            ->get( route( 'docstore-file-api@info', [ 'file' => $file ] ) );
-        $response->assertStatus( 403 );  // policy prevents non-superadmins from accessing file
+        $this->actingAs( $this->getCustAdminUser( 'hecustadmin' ) )
+            ->get( route( 'docstore-file-api@info', [ 'file' => $file ] ) )
+            ->assertForbidden(); // policy prevents non-superadmins from accessing file
     }
 
     /**
@@ -678,12 +753,14 @@ class FileControllerTest extends TestCase
      */
     public function testInfoSuperUser(): void
     {
-        $file = DocstoreFile::where( [ 'name' => self::testInfo[ 'fileName2' ] ] )->first();
+        $origUploadedFile = UploadedFile::fake()->create( self::testInfo[ 'fileName2' ], '2000' );
+        $file = $this->insertDocstoreFileFixture2($origUploadedFile);
 
         $user = $this->getSuperUser( 'travis' );
-        $response = $this->actingAs( $user )
-            ->get( route( 'docstore-file-api@info', [ 'file' => $file ] ) );
-        $response->assertStatus( 200 )
+
+        $this->actingAs( $user )
+            ->get( route( 'docstore-file-api@info', [ 'file' => $file ] ) )
+            ->assertOk()
             ->assertJson( [
                 'file_name' => self::testInfo[ 'fileName2' ],
                 'created_by' => $user->username . " (" . $user->name . ")",
@@ -697,13 +774,15 @@ class FileControllerTest extends TestCase
      */
     public function testDeletePublicUser(): void
     {
-        $file = DocstoreFile::where( [ 'name' => self::testInfo[ 'fileName2' ] ] )->first();
+        $origUploadedFile = UploadedFile::fake()->create( self::testInfo[ 'fileName2' ], '2000' );
+        $file = $this->insertDocstoreFileFixture2($origUploadedFile);
 
         $this->delete( route( 'docstore-file@delete', [ 'file' => $file ] ) )
-            ->assertStatus(302 );
+            ->assertRedirectToRoute( 'login@showForm' );
+
         $this->assertDatabaseHas( 'docstore_files', [
             'docstore_directory_id' => self::testInfo[ 'parentDirId2' ],
-            'name'                  =>  self::testInfo[ 'fileName2' ],
+            'name'                  => self::testInfo[ 'fileName2' ],
             'disk'                  => 'docstore',
             'sha256'                => $file->sha256,
             'description'           => self::testInfo[ 'fileDescription2' ],
@@ -718,15 +797,16 @@ class FileControllerTest extends TestCase
      */
     public function testDeleteCustUser(): void
     {
-        $file = DocstoreFile::where( [ 'name' => self::testInfo[ 'fileName2' ] ] )->first();
+        $origUploadedFile = UploadedFile::fake()->create( self::testInfo[ 'fileName2' ], '2000' );
+        $file = $this->insertDocstoreFileFixture2($origUploadedFile);
 
         $this->actingAs( $this->getCustUser( 'hecustuser' ) )
             ->delete( route( 'docstore-file@delete', [ 'file' => $file ] ) )
-            ->assertStatus(403 );
+            ->assertForbidden();
 
         $this->assertDatabaseHas( 'docstore_files', [
             'docstore_directory_id' => self::testInfo[ 'parentDirId2' ],
-            'name'                  =>  self::testInfo[ 'fileName2' ],
+            'name'                  => self::testInfo[ 'fileName2' ],
             'disk'                  => 'docstore',
             'sha256'                => $file->sha256,
             'description'           => self::testInfo[ 'fileDescription2' ],
@@ -742,14 +822,16 @@ class FileControllerTest extends TestCase
      */
     public function testDeleteCustAdmin(): void
     {
-        $file = DocstoreFile::where( [ 'name' => self::testInfo[ 'fileName2' ] ] )->first();
+        $origUploadedFile = UploadedFile::fake()->create( self::testInfo[ 'fileName2' ], '2000' );
+        $file = $this->insertDocstoreFileFixture2($origUploadedFile);
 
         $this->actingAs( $this->getCustAdminUser( 'hecustadmin' ) )
             ->delete( route( 'docstore-file@delete', [ 'file' => $file ] ) )
-            ->assertStatus(403 );
+            ->assertForbidden();
+
         $this->assertDatabaseHas( 'docstore_files', [
             'docstore_directory_id' => self::testInfo[ 'parentDirId2' ],
-            'name'                  =>  self::testInfo[ 'fileName2' ],
+            'name'                  => self::testInfo[ 'fileName2' ],
             'disk'                  => 'docstore',
             'sha256'                => $file->sha256,
             'description'           => self::testInfo[ 'fileDescription2' ],
@@ -765,13 +847,16 @@ class FileControllerTest extends TestCase
      */
     public function testDeleteSuperUser(): void
     {
-        $file = DocstoreFile::where( [ 'name' => self::testInfo[ 'fileName2' ] ] )->first();
+        $origUploadedFile = UploadedFile::fake()->create( self::testInfo[ 'fileName2' ], '2000' );
+        $file = $this->insertDocstoreFileFixture2($origUploadedFile);
 
         $this->actingAs( $user = $this->getSuperUser( 'travis' ) )
-            ->delete( route( 'docstore-file@delete', [ 'file' => $file ] ) );
+            ->delete( route( 'docstore-file@delete', [ 'file' => $file ] ) )
+            ->assertRedirectToRoute( 'docstore-dir@list', [ 'dir' => $file->docstore_directory_id ] );
+
         $this->assertDatabaseMissing( 'docstore_files', [
             'docstore_directory_id' => self::testInfo[ 'parentDirId2' ],
-            'name'                  =>  self::testInfo[ 'fileName2' ],
+            'name'                  => self::testInfo[ 'fileName2' ],
             'disk'                  => 'docstore',
             'sha256'                => $file->sha256,
             'description'           => self::testInfo[ 'fileDescription2' ],
@@ -791,18 +876,19 @@ class FileControllerTest extends TestCase
 
         $this->actingAs( $user = $this->getSuperUser( 'travis' ) )
             ->post( route( 'docstore-file@store' ), [
-                'name'                  =>  self::testInfo[ 'fileName3' ],
+                'name'                  => self::testInfo[ 'fileName3' ],
                 'description'           => self::testInfo[ 'fileDescription3' ],
                 'docstore_directory_id' => self::testInfo[ 'parentDirId3' ],
                 'min_privs'             => self::testInfo[ 'filePrivs3' ],
                 'uploadedFile'          => $uploadedFile
-        ] );
+        ] )
+            ->assertRedirectToRoute('docstore-dir@list', [ 'dir' => self::testInfo[ 'parentDirId3' ] ]);
 
         $this->assertDatabaseHas( 'docstore_files', [
             'docstore_directory_id' => self::testInfo[ 'parentDirId3' ],
-            'name'                  =>  self::testInfo[ 'fileName3' ],
+            'name'                  => self::testInfo[ 'fileName3' ],
             'disk'                  => 'docstore',
-            'sha256'                => hash_file( 'sha256', $uploadedFile ),
+            'sha256'                => hash_file( 'sha256', $uploadedFile->getPathname() ),
             'description'           => self::testInfo[ 'fileDescription3' ],
             'min_privs'             => self::testInfo[ 'filePrivs3' ],
             'created_by'            => $user->id
@@ -818,10 +904,11 @@ class FileControllerTest extends TestCase
      */
     public function testViewPublicUser(): void
     {
-        $file = DocstoreFile::where( [ 'name' => self::testInfo[ 'fileName3' ] ] )->first();
+        $uploadedFile = UploadedFile::fake()->create( self::testInfo[ 'fileName3' ], self::testInfo[ 'textFile' ] );
+        $file = $this->insertDocstoreFileFixture3($uploadedFile);
 
         $this->get( route( 'docstore-file@view', [ 'file' => $file ] ) )
-            ->assertStatus(403 );
+            ->assertForbidden();
     }
 
     /**
@@ -831,11 +918,12 @@ class FileControllerTest extends TestCase
      */
     public function testViewCustUser(): void
     {
-        $file = DocstoreFile::where( [ 'name' => self::testInfo[ 'fileName3' ] ] )->first();
+        $uploadedFile = UploadedFile::fake()->create( self::testInfo[ 'fileName3' ], self::testInfo[ 'textFile' ] );
+        $file = $this->insertDocstoreFileFixture3($uploadedFile);
 
         $this->actingAs( $this->getCustUser( 'hecustuser' ) )
             ->get( route( 'docstore-file@view', [ 'file' => $file ] ) )
-            ->assertStatus(403 );
+            ->assertForbidden();
     }
 
     /**
@@ -845,11 +933,12 @@ class FileControllerTest extends TestCase
      */
     public function testViewCustAdmin()
     {
-        $file = DocstoreFile::where( [ 'name' => self::testInfo[ 'fileName3' ] ] )->first();
+        $uploadedFile = UploadedFile::fake()->create( self::testInfo[ 'fileName3' ], self::testInfo[ 'textFile' ] );
+        $file = $this->insertDocstoreFileFixture3($uploadedFile);
 
         $this->actingAs( $this->getCustAdminUser( 'hecustadmin' ) )
             ->get( route( 'docstore-file@view', [ 'file' => $file ] ) )
-            ->assertStatus(200 )
+            ->assertOk()
             ->assertViewIs( 'docstore.file.view' );
     }
 
@@ -860,11 +949,12 @@ class FileControllerTest extends TestCase
      */
     public function testViewSuperUser(): void
     {
-        $file = DocstoreFile::where( [ 'name' => self::testInfo[ 'fileName3' ] ] )->first();
+        $uploadedFile = UploadedFile::fake()->create( self::testInfo[ 'fileName3' ], self::testInfo[ 'textFile' ] );
+        $file = $this->insertDocstoreFileFixture3($uploadedFile);
 
         $this->actingAs( $this->getSuperUser( 'travis' ) )
             ->get( route( 'docstore-file@view', [ 'file' => $file ] ) )
-            ->assertStatus(200 )
+            ->assertOk()
             ->assertViewIs( 'docstore.file.view' );
     }
 
@@ -875,13 +965,16 @@ class FileControllerTest extends TestCase
      */
     public function testDelete2SuperUser(): void
     {
-        $file = DocstoreFile::where( [ 'name' => self::testInfo[ 'fileName3' ] ] )->first();
+        $uploadedFile = UploadedFile::fake()->create( self::testInfo[ 'fileName3' ], self::testInfo[ 'textFile' ] );
+        $file = $this->insertDocstoreFileFixture3($uploadedFile);
 
         $this->actingAs( $user = $this->getSuperUser( 'travis' ) )
-            ->delete( route( 'docstore-file@delete', [ 'file' => $file ] ) );
+            ->delete( route( 'docstore-file@delete', [ 'file' => $file ] ) )
+            ->assertRedirectToRoute('docstore-dir@list', [ 'dir' => self::testInfo[ 'parentDirId3' ] ]);
+
         $this->assertDatabaseMissing( 'docstore_files', [
             'docstore_directory_id' => self::testInfo[ 'parentDirId3' ],
-            'name'                  =>  self::testInfo[ 'fileName3' ],
+            'name'                  => self::testInfo[ 'fileName3' ],
             'disk'                  => 'docstore',
             'sha256'                => $file->sha256,
             'description'           => self::testInfo[ 'fileDescription3' ],
