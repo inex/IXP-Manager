@@ -25,6 +25,7 @@ namespace IXP\Console\Commands\Grapher;
 
 use Grapher, Mail;
 
+use Illuminate\Support\Facades\Log;
 use IXP\Mail\Grapher\PortUtilisation as PortUtilisationMail;
 
 use IXP\Models\{
@@ -118,6 +119,7 @@ class EmailPortUtilisation extends GrapherCommand
         if( count( $excess ) ) {
             Mail::to( explode( ',', $this->argument( 'email' ) ) )
                 ->send( new PortUtilisationMail( $excess, (float)$this->option('threshold') ) );
+            Log::notice("Sent email as " . count($excess) . " ports with utilization exceeding reporting threshold");
         }
 
         return 0;

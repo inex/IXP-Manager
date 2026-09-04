@@ -1,9 +1,6 @@
 <?php
-
-namespace IXP\Mail\Customer;
-
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,6 +19,11 @@ namespace IXP\Mail\Customer;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+
+declare(strict_types=1);
+
+namespace IXP\Mail\Customer;
+
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
@@ -38,37 +40,14 @@ use IXP\Models\CompanyBillingDetail;
  * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class BillingDetailsChanged extends Mailable
+final class BillingDetailsChanged extends Mailable
 {
     use Queueable, SerializesModels;
 
-    /**
-     * Old/original details
-     *
-     * @var CompanyBillingDetail
-     */
-    public $ocbd;
-
-    /**
-     * New details
-     *
-     * @var CompanyBillingDetail
-     */
-    public $cbd;
-
-    /**
-     * Create a new message instance.
-     *
-     * @param CompanyBillingDetail     $ocbd
-     * @param CompanyBillingDetail     $cbd
-     *
-     * @return void
-    */
-    public function __construct( CompanyBillingDetail $ocbd, CompanyBillingDetail $cbd )
-    {
-        $this->ocbd = $ocbd;
-        $this->cbd  = $cbd;
-    }
+    public function __construct(
+        public readonly CompanyBillingDetail $ocbd,
+        public readonly CompanyBillingDetail $cbd
+    ) {}
 
     /**
      * Build the message.

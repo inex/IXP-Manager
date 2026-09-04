@@ -1,9 +1,6 @@
 <?php
-
-namespace IXP\Mail\Auth;
-
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,8 +19,13 @@ namespace IXP\Mail\Auth;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+
+declare(strict_types=1);
+
+namespace IXP\Mail\Auth;
+
 use Illuminate\Bus\Queueable;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
@@ -37,25 +39,17 @@ use Illuminate\Queue\SerializesModels;
  * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class ForgotUsername extends Mailable
+final class ForgotUsername extends Mailable
 {
     use Queueable, SerializesModels;
 
     /**
-     * Create a new message instance.
-     *
-     * @param Collection $users
-     *
+     * @param Collection<int, \IXP\Models\User> $users
      */
     public function __construct(
-        public Collection $users
+        public readonly Collection $users
     ){}
 
-    /**
-     * Build the message.
-     *
-     * @return $this
-     */
     public function build(): self
     {
         return $this->markdown( 'auth/emails/forgot-username' )

@@ -22,24 +22,34 @@
 
 declare(strict_types=1);
 
-namespace IXP\Listeners\Customer;
+namespace Tests\Listeners\Auth;
 
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use IXP\Events\Auth\PasswordReset as PasswordResetEvent;
+use IXP\Listeners\Auth\PasswordReset;
+use IXP\Listeners\Auth\PasswordReset as PasswordResetListener;
+use IXP\Mail\Auth\PasswordReset as PasswordResetMail;
+use IXP\Models\User;
+use Tests\TestCase;
 
-use IXP\Events\Customer\BillingDetailsChanged as BillingDetailsChangedEvent;
-
-use IXP\Mail\Customer\BillingDetailsChanged as BillingDetailsChangedMailable;
-
-final class BillingDetailsChanged
+class PasswordResetTest extends TestCase
 {
-    public function handle( BillingDetailsChangedEvent $e ): void
+    public function testListener()
     {
-        if( !config( 'ixp_fe.customer.billing_updates_notify' ) || $e->ocbd->customer->resellerObject()->exists() ) {
-            return;
-        }
+        Mail::fake();
+        Log::spy();
 
-        Mail::to( config( 'ixp_fe.customer.billing_updates_notify' ) )->send( new BillingDetailsChangedMailable( $e->ocbd, $e->cbd ) );
-        Log::notice("Sending Billing Details Changed email regarding customer [" . $e->ocbd->customer->id . "|" . $e->ocbd->customer->name . "] ");
+        $user = $this->getCustUser();
+
+        new PasswordReset()->handle(new PasswordResetEvent($user));
+
+        Log::shouldHaveReceived( 'notice' )
+            ->with( $user->username . '(' . $user->name . ') reset their password' );
+
+        Mail::assertSent(PasswordResetMail::class, function( PasswordResetMail $mail ) use( $user ) {
+            $this->assertSame($user, $mail->user);
+            return $user->id === $mail->user->id;
+        });
     }
 }

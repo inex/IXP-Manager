@@ -153,7 +153,7 @@ class UserRememberTokenControllerTest extends DuskTestCase
 
 
             /**
-             * Delete the user remember token left for the user and check that the user is loggued out
+             * Delete the user remember token left for the user and check that the user is logged out
              */
             // Get the user remember token left for the user
             $urt = UserRememberToken::whereUserId( $user->id )->first();

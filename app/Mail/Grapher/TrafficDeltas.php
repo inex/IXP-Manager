@@ -1,9 +1,6 @@
 <?php
-
-namespace IXP\Mail\Grapher;
-
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,6 +20,10 @@ namespace IXP\Mail\Grapher;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+declare(strict_types=1);
+
+namespace IXP\Mail\Grapher;
+
 use Carbon\Carbon;
 use DateTime;
 use Illuminate\Bus\Queueable;
@@ -38,38 +39,15 @@ use Illuminate\Queue\SerializesModels;
  * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class TrafficDeltas extends Mailable
+final class TrafficDeltas extends Mailable
 {
     use Queueable, SerializesModels;
 
-    /**
-     * @var array
-     */
-    public $ports;
-
-    /**
-     * @var float
-     */
-    public $stddev;
-
-    /**
-     * @var Carbon
-     */
-    public $day;
-
-    /**
-     * Create a new message instance.
-     *
-     * @param array     $ports
-     * @param float     $stddev
-     * @param Carbon    $day
-     */
-    public function __construct( array $ports, float $stddev, Carbon $day )
-    {
-        $this->ports    = $ports;
-        $this->stddev   = $stddev;
-        $this->day      = $day;
-    }
+    public function __construct(
+        public readonly array $ports,
+        public readonly float $stddev,
+        public readonly Carbon $day
+    ) {}
 
     /**
      * Build the message.

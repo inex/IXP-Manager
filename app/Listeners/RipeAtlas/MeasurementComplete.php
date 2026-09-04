@@ -1,9 +1,6 @@
 <?php
-
-namespace IXP\Listeners\RipeAtlas;
-
 /*
- * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,10 +20,13 @@ namespace IXP\Listeners\RipeAtlas;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+declare(strict_types=1);
+
+namespace IXP\Listeners\RipeAtlas;
+
 use App;
 
 use IXP\Events\RipeAtlas\MeasurementComplete as MeasurementCompleteEvent;
-use IXP\Models\AtlasResult;
 use IXP\Services\RipeAtlas\Interpretor;
 
 /**
@@ -38,15 +38,8 @@ use IXP\Services\RipeAtlas\Interpretor;
  * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class MeasurementComplete
+final class MeasurementComplete
 {
-    /**
-     * Create the event listener.
-     *
-     * @return void
-     */
-    public function __construct(){}
-
     public function handle( MeasurementCompleteEvent $event ): void
     {
         // get the measurement ORM entity

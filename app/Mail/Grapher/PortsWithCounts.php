@@ -1,9 +1,6 @@
 <?php
-
-namespace IXP\Mail\Grapher;
-
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,6 +19,11 @@ namespace IXP\Mail\Grapher;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+
+declare(strict_types=1);
+
+namespace IXP\Mail\Grapher;
+
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
@@ -36,31 +38,14 @@ use IXP\Services\Grapher\Graph;
  * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class PortsWithCounts extends Mailable
+final class PortsWithCounts extends Mailable
 {
     use Queueable, SerializesModels;
 
-    /**
-     * @var array
-     */
-    public $ports;
-
-    /**
-     * @var string
-     */
-    public $category;
-
-    /**
-     * Create a new message instance.
-     *
-     * @param array $ports
-     * @param string $category
-     */
-    public function __construct( array $ports, string $category )
-    {
-        $this->ports    = $ports;
-        $this->category = $category;
-    }
+    public function __construct(
+        public readonly array $ports,
+        public readonly string $category
+    ) {}
 
     /**
      * Build the message.

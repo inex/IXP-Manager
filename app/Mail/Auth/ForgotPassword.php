@@ -1,9 +1,6 @@
 <?php
-
-namespace IXP\Mail\Auth;
-
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,6 +20,10 @@ namespace IXP\Mail\Auth;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+declare(strict_types=1);
+
+namespace IXP\Mail\Auth;
+
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
@@ -39,32 +40,14 @@ use IXP\Models\User;
  * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class ForgotPassword extends Mailable
+final class ForgotPassword extends Mailable
 {
     use Queueable, SerializesModels;
 
-    /**
-     * @var User
-     */
-    public $user;
-
-    /**
-     * @var string
-     */
-    public $token;
-
-    /**
-     * Create a new message instance.
-     *
-     * @param string    $token
-     * @param User      $user
-     *
-     */
-    public function __construct( string $token, User $user )
-    {
-        $this->token    = $token;
-        $this->user     = $user;
-    }
+    public function __construct(
+        public readonly string $token,
+        public readonly User $user
+    ) {}
 
     /**
      * Build the message.

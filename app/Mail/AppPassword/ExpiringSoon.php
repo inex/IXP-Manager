@@ -1,7 +1,4 @@
 <?php
-
-namespace IXP\Mail\AppPassword;
-
 /*
  * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
@@ -23,13 +20,17 @@ namespace IXP\Mail\AppPassword;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+declare(strict_types=1);
+
+namespace IXP\Mail\AppPassword;
+
 use Illuminate\Bus\Queueable;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use IXP\Models\User;
 
-class ExpiringSoon extends Mailable
+final class ExpiringSoon extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -37,8 +38,8 @@ class ExpiringSoon extends Mailable
      * @param Collection<int, \IXP\Models\AppPassword> $appPasswords
      */
     public function __construct(
-        public User $user,
-        public Collection $appPasswords
+        public readonly User $user,
+        public readonly Collection $appPasswords
     ) {}
 
     public function build(): self

@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
@@ -20,6 +19,8 @@
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+
+declare(strict_types=1);
 
 namespace IXP\Mail\PatchPanelPort;
 
@@ -49,8 +50,6 @@ abstract class Email extends Mailable
 {
     use Queueable, SerializesModels, MarkdownContent;
 
-    public PatchPanelPort $ppp;
-
     /**
      * @var string
      */
@@ -66,10 +65,8 @@ abstract class Email extends Mailable
      *
      * @param PatchPanelPort $ppp
      */
-    public function __construct( PatchPanelPort $ppp )
+    public function __construct(public readonly PatchPanelPort $ppp )
     {
-        $this->ppp    = $ppp;
-
         if( $c = $this->ppp->customer ) {
             $this->to( $c->nocemail, $c->abbreviatedName . ' NOC' );
         }
@@ -136,7 +133,11 @@ abstract class Email extends Mailable
         // recipients
         foreach( [ 'to', 'cc', 'bcc' ] as $r ) {
             $hasFn = 'has' . ucfirst( $r );
-            foreach( explode(',', $request->input('email_' . $r ) ) as $emaddr ) {
+            if ( !( $field = $request->input( 'email_' . $r ) ) ) {
+                continue;
+            }
+
+            foreach( explode(',', $field ) as $emaddr ) {
                 $email = trim( $emaddr );
                 if( filter_var( $email, FILTER_VALIDATE_EMAIL ) && !$this->$hasFn( $email ) ) {
                     $this->$r($email);

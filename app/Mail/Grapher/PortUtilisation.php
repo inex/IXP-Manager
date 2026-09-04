@@ -1,9 +1,6 @@
 <?php
-
-namespace IXP\Mail\Grapher;
-
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,6 +19,11 @@ namespace IXP\Mail\Grapher;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+
+declare(strict_types=1);
+
+namespace IXP\Mail\Grapher;
+
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
@@ -35,31 +37,14 @@ use Illuminate\Queue\SerializesModels;
  * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class PortUtilisation extends Mailable
+final class PortUtilisation extends Mailable
 {
     use Queueable, SerializesModels;
 
-    /**
-     * @var array
-     */
-    public $excess = [];
-
-    /**
-     * @var float
-     */
-    public $threshold;
-
-    /**
-     * Create a new message instance.
-     *
-     * @param array $excess
-     * @param float $threshold
-     */
-    public function __construct( array $excess, float $threshold )
-    {
-        $this->excess    = $excess;
-        $this->threshold = $threshold;
-    }
+    public function __construct(
+        public readonly array $excess,
+        public readonly float $threshold
+    ) {}
 
     /**
      * Build the message.

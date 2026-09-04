@@ -22,24 +22,31 @@
 
 declare(strict_types=1);
 
-namespace IXP\Listeners\Customer;
+namespace Tests\Listeners\Auth;
 
+use Illuminate\Auth\Events\Failed;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
+use IXP\Listeners\Auth\LoginFailed;
+use IXP\Models\User;
+use Tests\TestCase;
 
-use IXP\Events\Customer\BillingDetailsChanged as BillingDetailsChangedEvent;
-
-use IXP\Mail\Customer\BillingDetailsChanged as BillingDetailsChangedMailable;
-
-final class BillingDetailsChanged
+class LoginFailedTest extends TestCase
 {
-    public function handle( BillingDetailsChangedEvent $e ): void
+    public function testListener()
     {
-        if( !config( 'ixp_fe.customer.billing_updates_notify' ) || $e->ocbd->customer->resellerObject()->exists() ) {
-            return;
-        }
+        $user1 = User::create();
+        $user1->name = 'Reminder User';
+        $user1->username = "failedlogin";
+        $user1->email = 'failedlogin@example.net';
+        $user1->save();
 
-        Mail::to( config( 'ixp_fe.customer.billing_updates_notify' ) )->send( new BillingDetailsChangedMailable( $e->ocbd, $e->cbd ) );
-        Log::notice("Sending Billing Details Changed email regarding customer [" . $e->ocbd->customer->id . "|" . $e->ocbd->customer->name . "] ");
+        Log::spy();
+
+        new LoginFailed()->handle( new Failed( 'web', $user1, [ 'username' => 'failedlogin', 'password' => 'incorrect' ] ) );
+
+        Log::shouldHaveReceived( 'warning' )
+            ->once()
+            ->with( 'Login failed for user [failedlogin] from IP [127.0.0.1]' )
+        ;
     }
 }
