@@ -83,7 +83,6 @@ abstract class BgpqBase implements IrrQuerier
      *
      * @return array The array of prefixes (or empty array).
      *
-     * @throws GeneralException On a JSON decoding error
      * @throws ProcessException if process returns non-zero exit code
      *
      * @psalm-return list{0?: mixed,...}
@@ -93,24 +92,8 @@ abstract class BgpqBase implements IrrQuerier
     {
         $minSubnetSize = config( 'ixp.irrdb.min_v' . $proto . '_subnet_size' );
 
-        $json = $this->execute( [ '-l', 'pl', '-j', '-m', $minSubnetSize, $asmacro ], $proto );
-        $array = json_decode( $json, true );
-
-        if( $array === null ){
-            throw new GeneralException( "Could not decode JSON response from " . $this->utility );
-        }
-
-        if( !isset( $array[ 'pl' ] ) ){
-            throw new GeneralException( "Named prefix list [pl] expected in decoded JSON but not found!" );
-        }
-
-        $prefixes = [];
-        // we're going to ignore the 'exact' for now.
-        foreach( $array[ 'pl' ] as $ar ){
-            $prefixes[] = $ar['prefix'];
-        }
-
-        return $prefixes;
+        $out = $this->execute( [ '-F', "%n/%l\n", '-m', $minSubnetSize, $asmacro ], $proto );
+        return preg_split( '/\R/', $out, -1, PREG_SPLIT_NO_EMPTY ) ?: [];
     }
 
     /**

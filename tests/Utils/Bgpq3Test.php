@@ -184,9 +184,9 @@ class Bgpq3Test extends TestCase
 
     public function testGetPrefixListDefaultProto()
     {
-        // test command without specific flags..
+        // -F emits one "network/masklen" per line (see BgpqBase::getPrefixList).
         Process::fake([
-            "*" => Process::result( $this->getV4PrefixSampleData() ),
+            "*" => Process::result( $this->getPrefixSampleDataF( 4 ) ),
         ]);
 
         $expectingPrefixes = $this->getExpectedPrefixes( 4 );
@@ -194,61 +194,54 @@ class Bgpq3Test extends TestCase
         $program = config('ixp.irrdb.bgpq3.path');
         $bgp = new Bgpq3( $program );
         $this->assertEquals( $expectingPrefixes, $bgp->getPrefixList( "AS-HEANET" ) );
-        $this->assertRan("'$program' '-l' 'pl' '-j' '-m' '24' 'AS-HEANET'");
+        $this->assertRan("'$program' '-F' '%n/%l\n' '-m' '24' 'AS-HEANET'");
 
         // test command when invoked with whois + sources
         $bgp->setWhois( "whois.radb.net" );
         $bgp->setSources( "RIPE" );
         $this->assertEquals( $expectingPrefixes, $bgp->getPrefixList( "AS-HEANET" ) );
-        $this->assertRan("'$program' '-S' 'RIPE' '-h' 'whois.radb.net' '-l' 'pl' '-j' '-m' '24' 'AS-HEANET'");
+        $this->assertRan("'$program' '-S' 'RIPE' '-h' 'whois.radb.net' '-F' '%n/%l\n' '-m' '24' 'AS-HEANET'");
     }
 
     public function testGetPrefixListV4()
     {
         Process::fake([
-            "*" => Process::result( $this->getV4PrefixSampleData() ),
+            "*" => Process::result( $this->getPrefixSampleDataF( 4 ) ),
         ]);
 
         $program = config('ixp.irrdb.bgpq3.path');
         $bgp = new Bgpq3( $program );
         $this->assertEquals($this->getExpectedPrefixes( 4 ), $bgp->getPrefixList("AS-HEANET", 4));
-        $this->assertRan("'$program' '-l' 'pl' '-j' '-m' '24' 'AS-HEANET'");
+        $this->assertRan("'$program' '-F' '%n/%l\n' '-m' '24' 'AS-HEANET'");
     }
 
     public function testGetPrefixListV6()
     {
         Process::fake([
-            "*" => Process::result( $this->getV6PrefixSampleData() ),
+            "*" => Process::result( $this->getPrefixSampleDataF( 6 ) ),
         ]);
 
         $program = config('ixp.irrdb.bgpq3.path');
         $bgp = new Bgpq3( $program );
         $this->assertEquals($this->getExpectedPrefixes( 6 ), $bgp->getPrefixList("AS-HEANET", 6));
-        $this->assertRan("'$program' '-6' '-l' 'pl' '-j' '-m' '48' 'AS-HEANET'");
+        $this->assertRan("'$program' '-6' '-F' '%n/%l\n' '-m' '48' 'AS-HEANET'");
     }
 
-    public function testGetPrefixListInvalidJson()
+    /**
+     * getPrefixList must split on any line ending (\R) and drop empties, so trailing
+     * newlines, blank lines and CR/LF from bgpq never yield phantom prefixes.
+     */
+    public function testGetPrefixListParsesFFormat()
     {
         Process::fake([
-            "*" => Process::result('{'),
+            "*" => Process::result( "10.0.0.0/24\r\n10.0.1.0/24\n\n192.0.2.0/24\n" ),
         ]);
 
         $bgp = new Bgpq3( config('ixp.irrdb.bgpq3.path') );
-        $this->expectException(GeneralException::class);
-        $this->expectExceptionMessage("Could not decode JSON response from BGPQ");
-        $bgp->getPrefixList("AS-HEANET");
-    }
-
-    public function testGetPrefixListMissingPl()
-    {
-        Process::fake([
-            "*" => Process::result('{}'),
-        ]);
-
-        $bgp = new Bgpq3( config('ixp.irrdb.bgpq3.path') );
-        $this->expectException(GeneralException::class);
-        $this->expectExceptionMessage("Named prefix list [pl] expected in decoded JSON but not found!");
-        $bgp->getPrefixList("AS-HEANET");
+        $this->assertEquals(
+            [ '10.0.0.0/24', '10.0.1.0/24', '192.0.2.0/24' ],
+            $bgp->getPrefixList("AS-HEANET")
+        );
     }
 
     public function testProcessFailure()
@@ -260,7 +253,7 @@ class Bgpq3Test extends TestCase
         $program = config('ixp.irrdb.bgpq3.path');
         $bgp = new Bgpq3( $program );
         $this->expectException(ProcessException::class);
-        $this->expectExceptionMessage("Error executing command with: '$program' '-l' 'pl' '-j' '-m' '24' 'AS-HEANET'" );
+        $this->expectExceptionMessage("Error executing command with: '$program' '-F' '%n/%l\n' '-m' '24' 'AS-HEANET'" );
         $bgp->getPrefixList("AS-HEANET");
     }
 
@@ -316,13 +309,9 @@ class Bgpq3Test extends TestCase
         return \file_get_contents("data/ci/known-good/bgpq3/heanet-asns.json");
     }
 
-    private function getV4PrefixSampleData(): string
+    private function getPrefixSampleDataF( int $proto ): string
     {
-        return \file_get_contents( "data/ci/known-good/bgpq3/heanet-prefixes-v4.json" );
-    }
-
-    private function getV6PrefixSampleData(): string
-    {
-        return \file_get_contents( "data/ci/known-good/bgpq3/heanet-prefixes-v6.json" );
+        // Reproduce bgpq3 -F '%n/%l\n' output from the known-good prefix list.
+        return implode( "\n", $this->getExpectedPrefixes( $proto ) ) . "\n";
     }
 }
