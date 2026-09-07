@@ -181,6 +181,7 @@ class SettingsController extends Controller
     public function update( Request $request ): RedirectResponse
     {
         $validated = $request->validate( $this->gatherRules() );
+        $changes = (object) ['new' => [], 'changed' => [], 'cleared' => []];
 
         try {
             // only interested in saving settings where the value has changed
@@ -196,6 +197,10 @@ class SettingsController extends Controller
                     }
 
                     if( !isset( $validated[ $fname ] ) ) {
+                        if ( $dotenv->indexOf( $fconfig[ 'dotenv_key' ] ) ) {
+                            $dotenv->unset( $fconfig[ 'dotenv_key' ] );
+                            $changes->cleared[] = $fconfig[ 'dotenv_key' ];
+                        }
                         continue;
                     }
 
@@ -213,11 +218,13 @@ class SettingsController extends Controller
 
                     // update dotenv container
                     if( $dotenv->isset( $fconfig[ 'dotenv_key' ] ) ) {
+                        $changes->changed[] = $fconfig[ 'dotenv_key' ];
                         $dotenv->updateValue( $fconfig[ 'dotenv_key' ], $validated[ $fname ] );
                     } else {
                         // include blank line
                         $dotenv->set( null, null, null );
                         $dotenv->set( $fconfig[ 'dotenv_key' ], $validated[ $fname ] );
+                        $changes->new[] = $fconfig[ 'dotenv_key' ];
                     }
                 }
             }
@@ -230,7 +237,7 @@ class SettingsController extends Controller
         }
 
         AlertContainer::push( 'Settings have been successfully updated', Alert::SUCCESS );
-        Log::notice( Auth::user()->username . ' updated .env file' );
+        Log::notice( Auth::user()->username . ' updated .env file', ['new' => $changes->new, 'changed' => $changes->changed, 'cleared' => $changes->cleared]);
         return redirect( route( 'settings@index') );
     }
 
