@@ -138,8 +138,6 @@ class P2pDailyStats extends Model
 
     /**
      * Get the latest n P2pDailyStats for this customer.
-     *
-     * @param Customer $c
      */
     public static function latestN( Customer $c, int $n = 5 ): Collection
     {
