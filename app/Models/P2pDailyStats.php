@@ -36,14 +36,14 @@ use IXP\Traits\Observable;
  * @property string $day
  * @property int $cust_id
  * @property int $peer_id
- * @property float|null $ipv4_total_in
- * @property float|null $ipv4_total_out
- * @property float|null $ipv6_total_in
- * @property float|null $ipv6_total_out
- * @property float|null $ipv4_max_in
- * @property float|null $ipv4_max_out
- * @property float|null $ipv6_max_in
- * @property float|null $ipv6_max_out
+ * @property int|null $ipv4_total_in
+ * @property int|null $ipv4_total_out
+ * @property int|null $ipv6_total_in
+ * @property int|null $ipv6_total_out
+ * @property int|null $ipv4_max_in
+ * @property int|null $ipv4_max_out
+ * @property int|null $ipv6_max_in
+ * @property int|null $ipv6_max_out
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \IXP\Models\Customer|null $peer

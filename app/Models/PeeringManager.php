@@ -39,7 +39,7 @@ use Illuminate\Database\Eloquent\{
  * @property int|null $peered
  * @property int|null $rejected
  * @property string|null $notes
- * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \IXP\Models\Customer|null $customer
  * @property-read \IXP\Models\Customer|null $peer

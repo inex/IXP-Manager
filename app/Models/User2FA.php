@@ -35,7 +35,7 @@ use Illuminate\Database\Eloquent\{
  * @property int $user_id
  * @property int $enabled
  * @property string|null $secret
- * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \IXP\Models\User $user
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User2FA newModelQuery()
