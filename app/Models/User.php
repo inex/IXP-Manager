@@ -111,7 +111,6 @@ use IXP\Traits\Observable;
  */
 class User extends Model implements AuthenticatableContract, CanResetPasswordContract
 {
-
     use Authenticatable, Authorizable, CanResetPassword, Notifiable, Observable;
     /**
      * The table associated with the model.
@@ -179,6 +178,20 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         self::AUTH_CUSTADMIN => 'CA',
         self::AUTH_SUPERUSER => 'SU',
     ];
+
+    /**
+     * This ensures that when changes affecting custid are saved, that we purge 'currentCustomerToUser' relation from memory
+     * Otherwise we are keeping around the old record referring to a different customer to user record.
+     */
+    #[\Override]
+    protected static function booted(): void
+    {
+        static::updated(function (User $user) {
+            if ($user->wasChanged('custid')) {
+                $user->unsetRelation('currentCustomerToUser');
+            }
+        });
+    }
 
     /**
      * Get the remember tokens for the user
@@ -363,6 +376,9 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
      * Defines a relationship to query against the **current** customer-to-user
      * record for the user. Benefits from memoization instead of querying every
      * single time.
+     *
+     * This is a relation that relies on a composite key, which is why the subquery
+     * is required.
      *
      * @return HasOne
      */
