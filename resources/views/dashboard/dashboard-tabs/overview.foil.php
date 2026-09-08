@@ -102,7 +102,7 @@
                             <?= $t->ee( $p2p->peer->abbreviatedName ) ?>
                         </td>
                         <td class="tw:text-right tw:font-mono">
-                            <?= \IXP\IXP::scaleBytes( $p2p->total_traffic() ) ?>
+                            <?= \IXP\IXP::scaleBytes( (float) $p2p->total_traffic() ) ?>
                         </td>
                         <td>
                             <a class="btn btn-white btn-sm my-auto" href="<?= route( "statistics@p2p-totals", [ 'srcCust' => $t->c->id,

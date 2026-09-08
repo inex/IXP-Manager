@@ -24,7 +24,6 @@ namespace IXP\Models;
  */
 
 
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -36,14 +35,14 @@ use IXP\Traits\Observable;
  * @property string $day
  * @property int $cust_id
  * @property int $peer_id
- * @property float|null $ipv4_total_in
- * @property float|null $ipv4_total_out
- * @property float|null $ipv6_total_in
- * @property float|null $ipv6_total_out
- * @property float|null $ipv4_max_in
- * @property float|null $ipv4_max_out
- * @property float|null $ipv6_max_in
- * @property float|null $ipv6_max_out
+ * @property int|null $ipv4_total_in
+ * @property int|null $ipv4_total_out
+ * @property int|null $ipv6_total_in
+ * @property int|null $ipv6_total_out
+ * @property int|null $ipv4_max_in
+ * @property int|null $ipv4_max_out
+ * @property int|null $ipv6_max_in
+ * @property int|null $ipv6_max_out
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \IXP\Models\Customer|null $peer
@@ -109,9 +108,9 @@ class P2pDailyStats extends Model
     /**
      * Accessor for total traffic
      */
-    public function total_traffic(): float
+    public function total_traffic(): int
     {
-        return (int)$this->ipv4_total_out + (int)$this->ipv4_total_in + (int)$this->ipv6_total_out + (int)$this->ipv6_total_in;
+        return ($this->ipv4_total_out ?? 0) + ($this->ipv4_total_in ?? 0) + ($this->ipv6_total_out ?? 0) + ($this->ipv6_total_in ?? 0);
     }
 
 
@@ -138,8 +137,6 @@ class P2pDailyStats extends Model
 
     /**
      * Get the latest n P2pDailyStats for this customer.
-     *
-     * @param Customer $c
      */
     public static function latestN( Customer $c, int $n = 5 ): Collection
     {

@@ -43,14 +43,9 @@ use Illuminate\Support\Collection;
  * IXP\Models\Aggregators\CustomerAggregator
  *
  * @property int $id
- * @property int|null $irrdb
- * @property int|null $company_registered_detail_id
- * @property int|null $company_billing_details_id
- * @property int|null $reseller
  * @property string|null $name
  * @property int|null $type
  * @property string|null $shortname
- * @property string|null $abbreviatedName
  * @property int|null $autsys
  * @property int|null $maxprefixes
  * @property int|null $maxprefixesv6
@@ -61,8 +56,8 @@ use Illuminate\Support\Collection;
  * @property string|null $nocemail
  * @property string|null $nochours
  * @property string|null $nocwww
+ * @property int|null $irrdb
  * @property string|null $peeringmacro
- * @property string|null $peeringmacrov6
  * @property string|null $peeringpolicy
  * @property string|null $corpwww
  * @property string|null $datejoin
@@ -71,12 +66,17 @@ use Illuminate\Support\Collection;
  * @property int|null $activepeeringmatrix
  * @property int|null $lastupdatedby
  * @property string|null $creator
+ * @property int|null $company_registered_detail_id
+ * @property int|null $company_billing_details_id
+ * @property string|null $peeringmacrov6
+ * @property string|null $abbreviatedName
  * @property string|null $MD5Support
+ * @property int|null $reseller
  * @property int $isReseller
  * @property int $in_manrs
  * @property int $in_peeringdb
  * @property int $peeringdb_oauth
- * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read EloquentCollection<int, \IXP\Models\AtlasMeasurement> $AtlasMeasurementsDest
  * @property-read int|null $atlas_measurements_dest_count
