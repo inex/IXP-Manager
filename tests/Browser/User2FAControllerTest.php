@@ -203,7 +203,8 @@ class User2FAControllerTest extends DuskTestCase
         // Assert object is type User2FAEntity
         $this->assertInstanceOf(User2FA::class, $u2fa );
 
-        $this->assertFalse( (bool)$u2fa->enabled  );
+        $this->assertFalse( $u2fa->enabled  );
+        $this->assertFalse( $u2fa->isEnabled()  );
         $this->assertNotNull( $u2fa->secret );
 
         $browser->assertSee( $u2fa->secret  );
@@ -249,6 +250,7 @@ class User2FAControllerTest extends DuskTestCase
 
         //Check 2fa is enabled
         $u2fa->refresh();
-        $this->assertTrue( (bool)$u2fa->enabled );
+        $this->assertTrue( $u2fa->enabled );
+        $this->assertTrue( $u2fa->isEnabled() );
     }
 }
