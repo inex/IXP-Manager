@@ -121,8 +121,8 @@ class BgpSessionDataAggregator extends BgpSessionData
             ->when( $vlan !== null && $evlan, function( Builder $q ) use ( $evlan ) {
                 return $q->where( 'vlan.id', $evlan->id );
             } )
-            ->when( $asn !== null, function( Builder $q, $asn ) {
-                return $q->where( 'cs.autsys', (int)$asn );
+            ->when( $asn, function( Builder $q, int $asn ) {
+                return $q->where( 'cs.autsys', $asn );
             } )
             ->groupBy( [ 'bs.srcipaddressid', 'bs.dstipaddressid', 'bs.id', 'vlis.virtualinterfaceid', 'vlid.virtualinterfaceid' ] )
         ->get()->toArray();
