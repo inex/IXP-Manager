@@ -55,9 +55,9 @@ use IXP\Models\{
  * @property string|null $name
  * @property int|null $peeringdb_id
  * @property array<array-key, mixed>|null $extra_attributes (DC2Type:json)
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
  * @property array<array-key, mixed>|null $prefs
+ * @property \Illuminate\Support\Carbon $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\ApiKey> $apiKeys
  * @property-read int|null $api_keys_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\AppPassword> $appPasswords
