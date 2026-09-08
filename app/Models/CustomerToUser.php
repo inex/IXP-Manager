@@ -39,11 +39,11 @@ use IXP\Traits\Observable;
  * @property int $customer_id
  * @property int $user_id
  * @property int $privs
+ * @property array<array-key, mixed>|null $extra_attributes (DC2Type:json)
  * @property \Illuminate\Support\Carbon|null $last_login_date
  * @property string|null $last_login_from
- * @property array<array-key, mixed>|null $extra_attributes (DC2Type:json)
  * @property string|null $last_login_via
- * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \IXP\Models\Customer $customer
  * @property-read \IXP\Models\User $user

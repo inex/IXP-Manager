@@ -39,7 +39,7 @@ use IXP\Traits\Observable;
  * @property string|null $mac
  * @property string|null $firstseen
  * @property string|null $lastseen
- * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \IXP\Models\VlanInterface $vlanInterface
  * @method static Builder<static>|Layer2Address newModelQuery()

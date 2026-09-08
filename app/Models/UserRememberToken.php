@@ -39,7 +39,7 @@ use Illuminate\Database\Eloquent\{
  * @property string $ip
  * @property string $expires
  * @property bool $is_2fa_complete
- * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \IXP\Models\User $user
  * @method static Builder<static>|UserRememberToken newModelQuery()
