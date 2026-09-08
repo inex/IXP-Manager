@@ -14,7 +14,7 @@ use PragmaRX\Google2FALaravel\Support\Authenticator as GoogleAuthenticator;
         // hide most things until 2fa complete:
         $authenticator = new GoogleAuthenticator( request() );
 
-        if( !Auth::getUser()->user2FA || !Auth::getUser()->user2FA->enabled || $authenticator->isAuthenticated() ):
+        if( !Auth::getUser()->user2FA || !Auth::getUser()->user2FA->isEnabled() || $authenticator->isAuthenticated() ):
     ?>
 
 

@@ -1,9 +1,6 @@
 <?php
-
-namespace IXP\Models;
-
 /*
- * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,6 +20,10 @@ namespace IXP\Models;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+declare(strict_types=1);
+
+namespace IXP\Models;
+
 use Illuminate\Database\Eloquent\{
     Model,
     Relations\BelongsTo
@@ -33,7 +34,7 @@ use Illuminate\Database\Eloquent\{
  *
  * @property int $id
  * @property int $user_id
- * @property int $enabled
+ * @property bool $enabled
  * @property string|null $secret
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -58,24 +59,38 @@ class User2FA extends Model
      */
     protected $table = 'user_2fa';
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'user_id',
-        'enabled',
-        'secret',
+    protected $casts = [
+        'enabled' => 'boolean',
     ];
 
+    public static function setupForUser( User $user, string $secret ): User2FA
+    {
+        $user2fa = new self();
+        $user2fa->user_id = $user->id;
+        $user2fa->secret = $secret;
+        $user2fa->enabled = false;
+        $user2fa->save();
+        return $user2fa;
+    }
+
     /**
-     * Get the physical interface associated with the core interface.
+     * Return the user to which this 2FA record belongs
      *
      * @return BelongsTo<User, User2FA>
      */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id' );
+    }
+
+    public function enable(): bool
+    {
+        $this->enabled = true;
+        return $this->save();
+    }
+
+    public function isEnabled(): bool
+    {
+        return $this->enabled;
     }
 }

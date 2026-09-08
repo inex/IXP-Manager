@@ -329,7 +329,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         }
 
         return $this->privs() >= config( "google2fa.ixpm_2fa_enforce_for_users" )
-            && ( !$this->user2FA || !$this->user2FA->enabled );
+            && ( !$this->user2FA || !$this->user2FA->isEnabled() );
     }
 
     /**
@@ -343,7 +343,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
             return false;
         }
 
-        if( !$this->user2FA || !$this->user2FA->enabled ) {
+        if( !$this->user2FA || !$this->user2FA->isEnabled() ) {
             // If the user does not have 2fa configured or enabled but it is required, then return true:
             if( $this->is2faEnforced() ) {
                 return true;
