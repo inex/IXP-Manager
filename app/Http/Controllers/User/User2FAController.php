@@ -101,14 +101,14 @@ class User2FAController extends Controller
             return redirect( route('2fa@configure' ) );
         }
 
-        $r->user()->user2FA->update( [ 'enabled' => true ] );
+        $r->user()->user2FA->enable();
 
         // We also need to mark the current session as 2fa complete:
         if( $recallerName = $r->cookies->get( Auth::getRecallerName() ) ) {
             $recaller = new Recaller( $recallerName );
 
             if( $urt = UserRememberToken::where( 'token', $recaller->token() )->first() ) {
-                $urt->update( [ 'is_2fa_complete' => true ] );
+                $urt->record2faIsComplete();
             }
         }
 
@@ -165,11 +165,7 @@ class User2FAController extends Controller
         $google2fa = app( 'pragmarx.google2fa' );
 
         if( !$user->user2FA ) {
-            User2FA::create([
-                'user_id'   => $user->id,
-                'enabled'   => false,
-                'secret'    => $google2fa->generateSecretKey( 32 ),
-            ]);
+            User2FA::setupForUser($user, $google2fa->generateSecretKey( 32 ) );
         }
     }
 
