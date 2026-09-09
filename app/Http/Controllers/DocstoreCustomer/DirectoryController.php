@@ -270,8 +270,12 @@ class DirectoryController extends Controller
         DocstoreCustomerDirectory::recursiveDelete( $dir );
         Log::notice( sprintf( "DocStore: finish recursive deletion of directory [%d|%s] by %s for the customer [%d|%s]", $dir->id, $dir->name, $r->user()->username, $dir->customer->id, $dir->customer->name ) );
 
-        AlertContainer::push( __( ':CustomerDirectory <em>:name</em> deleted.', [
-            'Customer' => ucfirst( config( 'ixp_fe.lang.customer.one' ) ), 'name' => $dir->name ] ), Alert::SUCCESS );
+        // NB: upstream rendered this as "MemberDirectory <em>x</em> deleted." with
+        // no space. That is a bug, and keeping it would force the ambiguous
+        // placeholder ':CustomerDirectory', which only resolves by accidental
+        // prefix matching against ':Customer'. The space is added here.
+        AlertContainer::push( __c( ':Customer directory <em>:name</em> deleted.', [
+            'name' => $dir->name ] ), Alert::SUCCESS );
         return redirect( route( 'docstore-c-dir@list', [ 'cust' => $dir->customer , 'dir' => $dir->parent_dir_id ] ) );
     }
 

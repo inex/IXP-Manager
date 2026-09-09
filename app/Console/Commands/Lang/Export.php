@@ -66,7 +66,8 @@ class Export extends IXPCommand
         {locale=fr : the locale to export}
         {--o|output= : file to write (default: lang/exports/<locale>-<date>.<ext>)}
         {--format= : xlsx (default, needs phpoffice/phpspreadsheet) or csv}
-        {--untranslated : export only the strings that still need translating}';
+        {--untranslated : export only the strings that still need translating}
+        {--draft : mark existing translations as needing review - use when the catalogue was machine drafted}';
 
     /**
      * The console command description.
@@ -98,7 +99,7 @@ class Export extends IXPCommand
     {
         $locale    = (string)$this->argument( 'locale' );
         $catalogue = Catalogue::load( $locale );
-        $extracted = ( new Extractor() )->scan( Scope::files() )->keys();
+        $extracted = ( new Extractor() )->scan( Scope::files() )->withConfiguredNouns()->keys();
 
         $orphaned = array_diff_key( $catalogue->all(), $extracted );
         $rows     = [];
@@ -130,7 +131,11 @@ class Export extends IXPCommand
                                     . ( count( $sites ) > 1 ? ' (+' . ( count( $sites ) - 1 ) . ' more)' : '' ),
                 'placeholders' => implode( ' ', array_map( static fn( $p ) => ':' . $p, $placeholders ) ),
                 'notes'        => implode( ' ', $notes ),
-                'status'       => $translated ? 'translated' : 'new',
+                'status'       => match( true ) {
+                    !$translated                => 'to translate',
+                    (bool)$this->option( 'draft' ) => 'review draft',
+                    default                     => 'approved',
+                },
             ];
         }
 
@@ -156,7 +161,7 @@ class Export extends IXPCommand
 
         $format === 'csv' ? $this->writeCsv( $path, $rows ) : $this->writeXlsx( $path, $rows, $locale );
 
-        $new = count( array_filter( $rows, static fn( array $r ): bool => $r[ 'status' ] === 'new' ) );
+        $new = count( array_filter( $rows, static fn( array $r ): bool => $r[ 'status' ] === 'to translate' ) );
 
         $this->info( sprintf( 'Wrote %s - %d row%s (%d still to translate, ~%d words).',
             $path, count( $rows ), count( $rows ) === 1 ? '' : 's', $new,

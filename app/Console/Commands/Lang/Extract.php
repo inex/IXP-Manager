@@ -66,7 +66,7 @@ class Extract extends IXPCommand
     public function handle(): int
     {
         $files = Scope::files();
-        $e     = ( new Extractor() )->scan( $files );
+        $e     = ( new Extractor() )->scan( $files )->withConfiguredNouns();
         $keys  = $e->keys();
 
         if( $this->option( 'list' ) ) {

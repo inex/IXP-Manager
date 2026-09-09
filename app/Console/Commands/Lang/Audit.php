@@ -79,7 +79,7 @@ class Audit extends IXPCommand
     {
         $locale     = (string)$this->argument( 'locale' );
         $catalogue  = Catalogue::load( $locale );
-        $extracted  = ( new Extractor() )->scan( Scope::files() )->keys();
+        $extracted  = ( new Extractor() )->scan( Scope::files() )->withConfiguredNouns()->keys();
 
         $missing = $orphaned = $broken = [];
 
@@ -91,11 +91,8 @@ class Audit extends IXPCommand
 
             // a translation that drops or invents a :placeholder will render
             // the literal text instead of the value, so treat it as an error
-            $want = Extractor::placeholders( $key );
-            $got  = Extractor::placeholders( (string)$catalogue->get( $key ) );
-
-            sort( $want );
-            sort( $got );
+            $want = Extractor::placeholderNames( $key );
+            $got  = Extractor::placeholderNames( (string)$catalogue->get( $key ) );
 
             if( $want !== $got ) {
                 $broken[ $key ] = [ 'expected' => $want, 'found' => $got ];

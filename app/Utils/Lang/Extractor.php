@@ -91,6 +91,38 @@ class Extractor
     }
 
     /**
+     * Add the configurable member/customer noun as translatable strings.
+     *
+     * config('ixp_fe.lang.customer') holds English words ('member',
+     * 'members', ...) chosen by the operator, and __c() runs them through the
+     * translator so a French user sees 'membre' rather than 'member'. They are
+     * user visible strings but they are not written as __() literals anywhere,
+     * so without this they would never reach a translator.
+     *
+     * Only the configured convention is emitted - an install using 'member'
+     * has no need of a translation for 'customer'.
+     *
+     * Call it explicitly rather than from scan(), which stays a pure file
+     * scanner so it can be tested against fixtures.
+     *
+     * @return static
+     */
+    public function withConfiguredNouns(): static
+    {
+        foreach( (array)config( 'ixp_fe.lang.customer', [] ) as $form => $noun ) {
+            if( !is_string( $noun ) || trim( $noun ) === '' ) {
+                continue;
+            }
+
+            $this->keys[ $noun ][] = [ 'file' => 'config/ixp_fe.php', 'line' => 0 ];
+        }
+
+        ksort( $this->keys, SORT_NATURAL | SORT_FLAG_CASE );
+
+        return $this;
+    }
+
+    /**
      * The extracted keys: key => list of [ 'file' => ..., 'line' => ... ]
      *
      * @return array
@@ -129,6 +161,31 @@ class Extractor
         preg_match_all( '/(?<!\w):([A-Za-z_][A-Za-z0-9_]*)/', $key, $m );
 
         return array_values( array_unique( $m[ 1 ] ?? [] ) );
+    }
+
+    /**
+     * Placeholder names, lower cased and sorted, for comparing an English
+     * string with its translation.
+     *
+     * Laravel treats :name, :Name and :NAME as one placeholder and casts the
+     * value to match, so a translation may legitimately change the case: an
+     * English string starting ':Customer Details' becomes
+     * 'Coordonnées du :customer', where French grammar puts the noun
+     * mid-sentence and therefore lower case. Comparing case sensitively would
+     * reject correct translations.
+     *
+     * @param   string  $key
+     *
+     * @return string[]
+     */
+    public static function placeholderNames( string $key ): array
+    {
+        $names = array_map( 'strtolower', self::placeholders( $key ) );
+
+        $names = array_values( array_unique( $names ) );
+        sort( $names );
+
+        return $names;
     }
 
     /**

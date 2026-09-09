@@ -102,7 +102,16 @@ class Import extends IXPCommand
         }
 
         $catalogue = Catalogue::load( $locale );
-        $extracted = ( new Extractor() )->scan( Scope::files() )->keys();
+        $extracted = ( new Extractor() )->scan( Scope::files() )->withConfiguredNouns()->keys();
+
+        // A couple of upstream strings end in a space. Spreadsheet editors trim
+        // cells, and so does this importer, so match a trimmed key back to the
+        // exact source string rather than discarding the row.
+        $byTrimmed = [];
+
+        foreach( array_keys( $extracted ) as $codeKey ) {
+            $byTrimmed[ trim( $codeKey ) ] ??= $codeKey;
+        }
 
         $problems = $unknown = [];
         $accepted = [];
@@ -120,15 +129,16 @@ class Import extends IXPCommand
             }
 
             if( !isset( $extracted[ $key ] ) ) {
-                $unknown[] = $key;
-                continue;
+                if( isset( $byTrimmed[ $key ] ) ) {
+                    $key = $byTrimmed[ $key ];
+                } else {
+                    $unknown[] = $key;
+                    continue;
+                }
             }
 
-            $want = Extractor::placeholders( $key );
-            $got  = Extractor::placeholders( $french );
-
-            sort( $want );
-            sort( $got );
+            $want = Extractor::placeholderNames( $key );
+            $got  = Extractor::placeholderNames( $french );
 
             if( $want !== $got ) {
                 $problems[] = sprintf( 'row %d: "%s" expects %s but the translation has %s',

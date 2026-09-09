@@ -345,16 +345,23 @@ if( !function_exists( '__c' ) ) {
      */
     function __c( string $key, array $replace = [] ): string
     {
+        $t    = app( 'translator' );
         $lang = config( 'ixp_fe.lang.customer' );
 
-        // resolve via the translator directly rather than __(): this is a
+        // The configured nouns are English ('member' / 'customer'), so they
+        // are themselves translated before being substituted. A French user of
+        // an IXP configured as 'member' sees 'membre'; one configured as
+        // 'customer' sees 'client'. Untranslated, they fall back to the
+        // configured English, as everything else does.
+        //
+        // Resolved via the translator directly rather than __(): this is a
         // forwarder, so its $key is never a literal and lang:extract would
         // otherwise report it as an unextractable call site.
-        return app( 'translator' )->get( $key, array_merge( [
-            'customerOwners' => $lang[ 'owners' ],
-            'customerOwner'  => $lang[ 'owner' ],
-            'customers'      => $lang[ 'many' ],
-            'customer'       => $lang[ 'one' ],
+        return $t->get( $key, array_merge( [
+            'customerOwners' => $t->get( $lang[ 'owners' ] ),
+            'customerOwner'  => $t->get( $lang[ 'owner' ] ),
+            'customers'      => $t->get( $lang[ 'many' ] ),
+            'customer'       => $t->get( $lang[ 'one' ] ),
         ], $replace ) );
     }
 }
