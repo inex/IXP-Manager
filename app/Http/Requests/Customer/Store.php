@@ -26,6 +26,7 @@ namespace IXP\Http\Requests\Customer;
 use Auth;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
 
 use IXP\Models\Customer;
@@ -75,6 +76,8 @@ class Store extends FormRequest
             'status'                => 'required|integer|in:' . implode( ',', array_keys( Customer::$CUST_STATUS_TEXT ) ),
             'md5support'            => 'nullable|string|in:'  . implode( ',', array_keys( Customer::$MD5_SUPPORT ) ),
             'abbreviatedName'       => 'required|string|max:30',
+            // customer wide default UI language - '' / null means 'use the site default':
+            'locale'                => [ 'nullable', Rule::in( array_keys( config( 'ixp_fe.locales', [] ) ) ) ],
         ];
 
         $validateOtherDetails = [

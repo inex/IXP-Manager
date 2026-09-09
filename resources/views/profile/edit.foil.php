@@ -24,6 +24,8 @@
 
         <?= $t->insert( 'profile/notes-form', [ 'notesNotifications' => $t->notesNotifications ] ); ?>
 
+        <?= $t->insert( 'profile/language-form', [ 'language' => $t->language ] ); ?>
+
         <?= $t->insert( 'profile/mailling-lists-form', [ 'mailingListSubscriptions' => $t->mailingListSubscriptions ] ); ?>
     </div>
 <?php $this->append() ?>

@@ -238,6 +238,14 @@ class CustomerController extends Controller
             ]
         ) );
 
+        // prefs is a JSON bag and so is not mass assignable - set it explicitly.
+        // Guarded by has() as the select is not rendered when the instance only
+        // offers one language - without this we would wipe any stored value:
+        if( $r->has( 'locale' ) ) {
+            $cust->setLocale( $r->locale );
+            $cust->save();
+        }
+
         Cache::forget( 'admin_home_customers' );
         AlertContainer::push( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) . ' created.', Alert::SUCCESS );
         return redirect( route( 'customer@billing-registration' , [ 'cust' => $cust->id ] ) );
@@ -281,6 +289,7 @@ class CustomerController extends Controller
             'isResold'              => $r->old( 'isResold',            ( $this->resellerMode() && $cust->reseller ) ? '1' : '0' ),
             'reseller'              => $r->old( 'reseller',            ( $this->resellerMode() && $cust->reseller ) ? (string) $cust->reseller : null ),
             'peeringdb_oauth'       => $r->old( 'peeringdb_oauth',     (string) $cust->peeringdb_oauth       ),
+            'locale'                => $r->old( 'locale',              $cust->locale() ?? ''                 ),
         ]);
 
         return view( 'customer/edit' )->with([
@@ -310,6 +319,14 @@ class CustomerController extends Controller
                 'reseller'      => $r->isResold ? $r->reseller : null,
             ]
         ));
+
+        // prefs is a JSON bag and so is not mass assignable - set it explicitly.
+        // Guarded by has() as the select is not rendered when the instance only
+        // offers one language - without this we would wipe any stored value:
+        if( $r->has( 'locale' ) ) {
+            $cust->setLocale( $r->locale );
+            $cust->save();
+        }
 
         Cache::forget( 'admin_home_customers' );
         AlertContainer::push( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) . ' updated ', Alert::SUCCESS );

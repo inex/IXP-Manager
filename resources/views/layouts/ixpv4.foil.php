@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html class="h-100" lang="en">
+<html class="h-100" lang="<?= app()->getLocale() ?>">
     <head>
         <!--  IXP MANAGER - template directory: resources/[views|skins] -->
 
