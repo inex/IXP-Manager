@@ -1,0 +1,98 @@
+# Minimal development / test stack for IXP Manager v7.x
+#
+# The stack in docker-compose.yml alongside this file is from the v5 era: its
+# www container is php:7.4 and cannot run v7 (composer.json requires ^8.4), and
+# it brings up twelve services (BIRD route servers, SNMP simulators, MRTG,
+# Routinator) that are not needed for application or browser testing.
+#
+# This file brings up just what is needed to run the app and the Dusk suite.
+#
+# Build contexts and volumes below are relative to the REPOSITORY ROOT, so run
+# this from the root of the repo:
+#
+#   docker compose -f tools/docker/docker-compose.dev.yml up -d --build
+#
+# See tools/docker/README-dev.md for the full first-run sequence.
+
+volumes:
+    ixpmanager-dev-db:
+
+services:
+    mysql:
+        image: mysql:8.0
+        # matches shogo82148/actions-setup-mysql in .github/workflows/ci-dusk.yml
+        command: --default-authentication-plugin=mysql_native_password
+        environment:
+            MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+            # DB_DATABASE in .env.ci:
+            MYSQL_DATABASE: ixp_ci
+        ports:
+            # 33061 rather than the 33060 used by docker-compose.yml so both
+            # stacks can coexist:
+            - "33061:3306"
+        volumes:
+            - ixpmanager-dev-db:/var/lib/mysql
+            # seeded on FIRST START ONLY (mysql only runs initdb.d against an
+            # empty data directory). To reseed later, see README-dev.md.
+            - ../../data/ci/ci_test_db.sql:/docker-entrypoint-initdb.d/01-ixpmanager.sql:ro
+        healthcheck:
+            test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1"]
+            interval: 5s
+            timeout: 5s
+            retries: 30
+            start_period: 30s
+
+    www:
+        build:
+            context: containers/www-dev
+        image: ixpmanager/www-dev:v7
+        depends_on:
+            mysql:
+                condition: service_healthy
+        # Run as the host user so that files written into the bind mount
+        # (vendor/, storage/, node_modules/) are owned by you and not by root,
+        # and so that Chromium's sandbox works - it refuses to run as root.
+        # Override with DOCKER_UID/DOCKER_GID if your host ids are not 1000.
+        user: "${DOCKER_UID:-1000}:${DOCKER_GID:-1000}"
+        # Chromium needs more than the default 64MB of shared memory:
+        shm_size: 2gb
+        environment:
+            # NOTE: deliberately no DB_* here. `php artisan serve` forwards only
+            # a whitelist of environment variables to the built-in server it
+            # spawns, so DB_HOST set here would apply to artisan and phpunit but
+            # NOT to the served app - which then silently falls back to .env and
+            # fails to reach the database. .env is the single source of truth;
+            # see README-dev.md for the one line it needs.
+            #
+            # the host user has no entry in the image's /etc/passwd, so give
+            # composer and friends a writable home:
+            HOME: /tmp/ixpm-home
+            COMPOSER_HOME: /tmp/ixpm-home/composer
+            # the built-in server is single threaded by default, which makes
+            # asset-heavy pages queue and blow Dusk's 5s waitForLocation():
+            PHP_CLI_SERVER_WORKERS: "10"
+        ports:
+            # `php artisan serve --host=0.0.0.0` - matches APP_URL in .env.ci
+            - "8000:8000"
+        volumes:
+            - ../../:/srv/ixpmanager
+        working_dir: /srv/ixpmanager
+        # Run the dev server as the container's main process so its stdout is
+        # the container log. Do NOT start it with `docker compose exec -d`: the
+        # exec client disconnects immediately, the server's stdout becomes a
+        # broken pipe, and PHP then injects
+        #   "Notice: file_put_contents(): ... Broken pipe ... server.php"
+        # into the body of every response. That corrupts the headers, the
+        # session cookie is never set, and every Dusk login silently fails.
+        #
+        # The loop waits for `composer install` on first run rather than
+        # crash-looping when vendor/ is not there yet.
+        command:
+            - sh
+            - -c
+            - |
+                while [ ! -f vendor/autoload.php ]; do
+                    echo "waiting for vendor/ - run: docker compose -f tools/docker/docker-compose.dev.yml exec www composer install"
+                    sleep 5
+                done
+                exec php artisan serve --host=0.0.0.0 --port=8000
