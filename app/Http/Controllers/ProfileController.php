@@ -134,7 +134,7 @@ class ProfileController extends Controller
             ->where( 'token', '!=', $token ?? null )
             ->delete();
 
-        AlertContainer::push( 'Password updated.', Alert::SUCCESS );
+        AlertContainer::push( __( 'Password updated.' ), Alert::SUCCESS );
         return redirect( route( "profile@edit"  ) );
     }
 
@@ -159,7 +159,7 @@ class ProfileController extends Controller
         $user->lastupdatedby    = $user->id;
         $user->save();
 
-        AlertContainer::push( 'Profile details updated.', Alert::SUCCESS );
+        AlertContainer::push( __( 'Profile details updated.' ), Alert::SUCCESS );
         return redirect( route( "profile@edit"  ) );
     }
 
@@ -183,7 +183,7 @@ class ProfileController extends Controller
         $user->prefs = $prefs;
         $user->save();
 
-        AlertContainer::push( 'Notification preference updated.', Alert::SUCCESS );
+        AlertContainer::push( __( 'Notification preference updated.' ), Alert::SUCCESS );
         return Redirect::to( route( "profile@edit"  ) );
     }
 
@@ -239,11 +239,11 @@ class ProfileController extends Controller
             $prefs[ 'mailinglist' ] = $mailintLists;
             $user->prefs = $prefs;
             $user->save();
-            AlertContainer::push( 'Mailing list subscriptions updated and will take effect within 12 hours.', Alert::SUCCESS );
+            AlertContainer::push( __( 'Mailing list subscriptions updated and will take effect within 12 hours.' ), Alert::SUCCESS );
             return Redirect::to( route( "profile@edit"  ) );
         }
 
-        AlertContainer::push( 'Mailing list subscriptions is not enabled.', Alert::DANGER );
+        AlertContainer::push( __( 'Mailing list subscriptions is not enabled.' ), Alert::DANGER );
         return Redirect::to( route( "profile@edit"  ) );
     }
 }

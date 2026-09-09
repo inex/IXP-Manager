@@ -101,9 +101,9 @@ class PeeringManagerRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'to.emails'  => 'One or more of the email addresses are invalid',
-            'cc.emails'  => 'One or more of the email addresses are invalid',
-            'bcc.emails' => 'One or more of the email addresses are invalid',
+            'to.emails'  => __( 'One or more of the email addresses are invalid' ),
+            'cc.emails'  => __( 'One or more of the email addresses are invalid' ),
+            'bcc.emails' => __( 'One or more of the email addresses are invalid' ),
         ];
     }
 }

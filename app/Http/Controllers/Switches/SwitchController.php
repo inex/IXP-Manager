@@ -405,7 +405,7 @@ class SwitchController extends EloquentController
         $this->checkForm( $r );
 
         if( $r->asn && Switcher::where( 'asn', $r->asn )->exists() ) {
-            AlertContainer::push( "Note: this ASN is already is use by at least one other switch. If you are using eBGP, this may cause prefixes to be black-holed.", Alert::WARNING );
+            AlertContainer::push( __( "Note: this ASN is already is use by at least one other switch. If you are using eBGP, this may cause prefixes to be black-holed." ), Alert::WARNING );
         }
 
         $r->merge( [ 'mgmt_mac_address' => preg_replace( "/[^a-f0-9]/i", '', strtolower( $r->mgmt_mac_address ) ) ] );
@@ -476,7 +476,7 @@ class SwitchController extends EloquentController
         $this->checkForm( $r );
 
         if( $r->asn && Switcher::where('asn', $r->asn )->where( 'id', '!=', $this->object->id )->exists() ){
-            AlertContainer::push( "Note: this ASN is already is use by at least one other switch. If you are using eBGP, this may cause prefixes to be black-holed.", Alert::WARNING );
+            AlertContainer::push( __( "Note: this ASN is already is use by at least one other switch. If you are using eBGP, this may cause prefixes to be black-holed." ), Alert::WARNING );
         }
 
         $r->merge( [ 'mgmt_mac_address' => preg_replace( "/[^a-f0-9]/i", '', strtolower( $r->mgmt_mac_address ) ) ] );
@@ -562,12 +562,12 @@ class SwitchController extends EloquentController
 
         if( $this->object->getPhysicalInterfaces()->count() ) {
             $okay = false;
-            AlertContainer::push( "Cannot delete switch: there are switch ports assigned to one or more physical interfaces.", Alert::DANGER );
+            AlertContainer::push( __( "Cannot delete switch: there are switch ports assigned to one or more physical interfaces." ), Alert::DANGER );
         }
 
         if( $this->object->getPatchPanelPorts()->count() ) {
             $okay = false;
-            AlertContainer::push( "Cannot delete switch: there are switch ports assigned to patch panel ports", Alert::DANGER );
+            AlertContainer::push( __( "Cannot delete switch: there are switch ports assigned to patch panel ports" ), Alert::DANGER );
         }
 
         if( $okay ){

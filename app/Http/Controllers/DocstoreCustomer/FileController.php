@@ -113,7 +113,7 @@ class FileController extends Controller
                 'X-Content-Type-Options' => 'nosniff',
             ] );
         } catch( FilesystemException $e ) {
-            AlertContainer::push( "This customer file could not be found / downloaded. Please report this error to the support team.", Alert::DANGER );
+            AlertContainer::push( __( "This customer file could not be found / downloaded. Please report this error to the support team." ), Alert::DANGER );
             return redirect( route( 'docstore-c-dir@list', [ 'cust' => $file->customer->id , 'dir' => $file->docstore_customer_directory_id ] ) );
         }
     }
@@ -176,7 +176,8 @@ class FileController extends Controller
 
         Log::info( sprintf( "DocStore: file [%d|%s] uploaded by %s for the customer [%d|%s]", $file->id, $file->name, $r->user()->username, $cust->id, $cust->name ) );
 
-        AlertContainer::push( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) . " File <em>{$file->name}</em> uploaded.", Alert::SUCCESS );
+        AlertContainer::push( __( ':Customer File <em>:name</em> uploaded.', [
+            'Customer' => ucfirst( config( 'ixp_fe.lang.customer.one' ) ), 'name' => $file->name ] ), Alert::SUCCESS );
         return redirect( route( 'docstore-c-dir@list', [ 'cust' => $cust , 'dir' => $file->docstore_customer_directory_id ] ) );
     }
 
@@ -254,7 +255,8 @@ class FileController extends Controller
 
         Log::info( sprintf( "DocStore: customer file [%d|%s] edited by %s for the customer [%d|%s]", $file->id, $file->name, $r->user()->username, $cust->id, $cust->name ) );
 
-        AlertContainer::push( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) . " file <em>{$r->name}</em> updated.", Alert::SUCCESS );
+        AlertContainer::push( __( ':Customer file <em>:name</em> updated.', [
+            'Customer' => ucfirst( config( 'ixp_fe.lang.customer.one' ) ), 'name' => $r->name ] ), Alert::SUCCESS );
         return redirect( route( 'docstore-c-dir@list', [ 'cust' => $cust , 'dir' => $file->docstore_customer_directory_id ] ) );
     }
 
@@ -277,7 +279,8 @@ class FileController extends Controller
 
         Storage::disk( $file->disk )->delete( $file->path );
 
-        AlertContainer::push( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) . " file <em>{$file->name}</em> deleted.", Alert::SUCCESS );
+        AlertContainer::push( __( ':Customer file <em>:name</em> deleted.', [
+            'Customer' => ucfirst( config( 'ixp_fe.lang.customer.one' ) ), 'name' => $file->name ] ), Alert::SUCCESS );
         Log::info( sprintf( "DocStore: customer file [%d|%s] deleted by %s for the customer [%d|%s]", $file->id, $file->name, $r->user()->username, $cust->id, $cust->name ) );
 
         $file->delete();

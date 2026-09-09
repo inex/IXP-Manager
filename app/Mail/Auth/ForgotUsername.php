@@ -53,6 +53,6 @@ final class ForgotUsername extends Mailable
     public function build(): self
     {
         return $this->markdown( 'auth/emails/forgot-username' )
-            ->subject( config('identity.sitename' ) . " - Your Accounts " );
+            ->subject( __( ':site - Your Accounts', [ 'site' => config( 'identity.sitename' ) ] ) );
     }
 }

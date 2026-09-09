@@ -247,7 +247,8 @@ class CustomerController extends Controller
         }
 
         Cache::forget( 'admin_home_customers' );
-        AlertContainer::push( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) . ' created.', Alert::SUCCESS );
+        AlertContainer::push( __( ':Customer created.', [
+            'Customer' => ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ] ), Alert::SUCCESS );
         return redirect( route( 'customer@billing-registration' , [ 'cust' => $cust->id ] ) );
     }
 
@@ -329,7 +330,8 @@ class CustomerController extends Controller
         }
 
         Cache::forget( 'admin_home_customers' );
-        AlertContainer::push( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) . ' updated ', Alert::SUCCESS );
+        AlertContainer::push( __( ':Customer updated ', [
+            'Customer' => ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ] ), Alert::SUCCESS );
         return redirect( route( "customer@overview" , [ "cust" => $cust->id ] ) );
     }
 
@@ -606,7 +608,7 @@ class CustomerController extends Controller
 
         Mail::send( $mailable );
         Log::notice("Welcome email sent for {$cust->id}|{$cust->name}");
-        AlertContainer::push( "Welcome email sent.", Alert::SUCCESS );
+        AlertContainer::push( __( "Welcome email sent." ), Alert::SUCCESS );
         return redirect( route( "customer@overview", [ "cust" => $cust->id ] ) );
     }
 
@@ -652,10 +654,12 @@ class CustomerController extends Controller
         }
 
         if( CustomerAggregator::deleteObject( $cust ) ) {
-            AlertContainer::push( "Customer <em>{$cust->getFormattedName()}</em> deleted.", Alert::SUCCESS );
+            AlertContainer::push( __( ':Customer <em>:name</em> deleted.', [
+                'Customer' => ucfirst( config( 'ixp_fe.lang.customer.one' ) ),
+                'name'     => $cust->getFormattedName() ] ), Alert::SUCCESS );
             Cache::forget( 'admin_home_customers' );
         } else {
-            AlertContainer::push( "Customer could not be deleted. Please open a GitHub bug report.", Alert::DANGER );
+            AlertContainer::push( __( "Customer could not be deleted. Please open a GitHub bug report." ), Alert::DANGER );
         }
         return redirect( route( "customer@list" ) );
     }
@@ -663,8 +667,9 @@ class CustomerController extends Controller
     private function redirectIfCustomerHasResellerCustomers( Customer $cust ): ?RedirectResponse
     {
         if( $cust->isReseller && Customer::whereReseller( $cust->id )->notDeleted()->count() > 0 ) {
-            AlertContainer::push( "This customer is a reseller still associated with active resold customers. Please ".
-                " disassociate their customers before proceeding with deleting the reselling customer.", Alert::DANGER );
+            AlertContainer::push( __( 'This :customer is a reseller still associated with active resold :customers. Please  disassociate their :customers before proceeding with deleting the reselling :customer.', [
+                'customer'  => config( 'ixp_fe.lang.customer.one' ),
+                'customers' => config( 'ixp_fe.lang.customer.many' ) ] ), Alert::DANGER );
             return redirect( route( "customer@overview", [ 'cust' => $cust->id ] ) );
         }
         return null;
@@ -673,9 +678,8 @@ class CustomerController extends Controller
     private function redirectIfCustomerHasActiveCrossConnects( Customer $cust ): ?RedirectResponse
     {
         if( $cust->patchPanelPorts->isNotEmpty() ) {
-            AlertContainer::push( "This customer has active patch panel ports. Please cease "
-                . "these (or set them to awaiting cease and unset the customer link in the patch panel "
-                . "port) to proceed with deleting this customer.", Alert::DANGER
+            AlertContainer::push( __( 'This :customer has active patch panel ports. Please cease these (or set them to awaiting cease and unset the :customer link in the patch panel port) to proceed with deleting this :customer.', [
+                'customer' => config( 'ixp_fe.lang.customer.one' ) ] ), Alert::DANGER
             );
             return redirect( route( "customer@overview", [ 'cust' => $cust->id ] ) );
         }
@@ -689,8 +693,8 @@ class CustomerController extends Controller
             ->leftJoin( 'physicalinterface AS pi', 'pi.virtualinterfaceid', 'vi.id' )
             ->whereNotNull( 'pi.fanout_physical_interface_id' )
             ->whereNotNull( 'reseller' )->where( 'cust.id', $cust->id )->count() ){
-            AlertContainer::push( "This customer has is a resold customer with fan out physical "
-                . "interfaces. Please delete these manually before proceeding with deleting the customer.",
+            AlertContainer::push( __( 'This :customer has is a resold :customer with fan out physical interfaces. Please delete these manually before proceeding with deleting the :customer.', [
+                'customer' => config( 'ixp_fe.lang.customer.one' ) ] ),
                 Alert::DANGER
             );
             return redirect( route( "customer@overview", [ 'cust' => $cust->id ] ) );

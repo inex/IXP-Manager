@@ -221,7 +221,8 @@ class DirectoryController extends Controller
 
         Log::info( sprintf( "DocStore: new directory [%d|%s] created by %s for the customer [%d|%s]", $dir->id, $dir->name, $r->user()->username, $cust->id, $cust->name ) );
 
-        AlertContainer::push( "New per-" . config( 'ixp_fe.lang.customer.one' ) . " directory <em>{$r->name}</em> created.", Alert::SUCCESS );
+        AlertContainer::push( __( 'New per-:customer directory <em>:name</em> created.', [
+            'customer' => config( 'ixp_fe.lang.customer.one' ), 'name' => $r->name ] ), Alert::SUCCESS );
         return redirect( route( 'docstore-c-dir@list', [ 'cust' => $cust,'dir' => $dir->id ] ) );
     }
 
@@ -246,7 +247,8 @@ class DirectoryController extends Controller
 
         Log::info( sprintf( "DocStore: customer directory [%d|%s] edited by %s", $dir->id, $dir->name, $r->user()->username ) );
 
-        AlertContainer::push( "Per-" . config( 'ixp_fe.lang.customer.one' ) . " directory  <em>{$r->name}</em> updated.", Alert::SUCCESS );
+        AlertContainer::push( __( 'Per-:customer directory  <em>:name</em> updated.', [
+            'customer' => config( 'ixp_fe.lang.customer.one' ), 'name' => $r->name ] ), Alert::SUCCESS );
         return redirect( route( 'docstore-c-dir@list', [ 'cust' => $cust, 'dir' => $dir->parent_dir_id ] ) );
     }
 
@@ -268,7 +270,8 @@ class DirectoryController extends Controller
         DocstoreCustomerDirectory::recursiveDelete( $dir );
         Log::notice( sprintf( "DocStore: finish recursive deletion of directory [%d|%s] by %s for the customer [%d|%s]", $dir->id, $dir->name, $r->user()->username, $dir->customer->id, $dir->customer->name ) );
 
-        AlertContainer::push( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) .  "Directory <em>{$dir->name}</em> deleted.", Alert::SUCCESS );
+        AlertContainer::push( __( ':CustomerDirectory <em>:name</em> deleted.', [
+            'Customer' => ucfirst( config( 'ixp_fe.lang.customer.one' ) ), 'name' => $dir->name ] ), Alert::SUCCESS );
         return redirect( route( 'docstore-c-dir@list', [ 'cust' => $dir->customer , 'dir' => $dir->parent_dir_id ] ) );
     }
 
@@ -289,7 +292,8 @@ class DirectoryController extends Controller
         DocstoreCustomerDirectory::deleteAllForCustomer( $cust );
         Log::notice( sprintf( "DocStore: finish purge for the customer [%d|%s]", $cust->id, $cust->name ) );
 
-        AlertContainer::push( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) .  " <em>{$cust->name}</em> purged.", Alert::SUCCESS );
+        AlertContainer::push( __( ':Customer <em>:name</em> purged.', [
+            'Customer' => ucfirst( config( 'ixp_fe.lang.customer.one' ) ), 'name' => $cust->name ] ), Alert::SUCCESS );
         return redirect( route( 'docstore-c-dir@customers' ) );
     }
 
@@ -312,7 +316,8 @@ class DirectoryController extends Controller
                 function( $attribute, $value, $fail ) use ($r) {
                     if( !Customer::find( $value ) ) {
                         Log::notice( "Attempt to create/edit a directory where the customer ID [{$value}] is invalid / does not exist by user ID {$r->user()->id}." );
-                        AlertContainer::push( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) . ' is invalid / does not exist.', Alert::DANGER );
+                        AlertContainer::push( __( ':Customer is invalid / does not exist.', [
+                            'Customer' => ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ] ), Alert::DANGER );
                         return $fail( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) . ' is invalid / does not exist.' );
                     }
                 }

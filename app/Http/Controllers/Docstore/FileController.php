@@ -119,7 +119,7 @@ class FileController extends Controller
         ] );
 
         Log::info( sprintf( "DocStore: file [%d|%s] uploaded by %s", $file->id, $file->name, Auth::user()->username ) );
-        AlertContainer::push( "File <em>{$file->name}</em> uploaded.", Alert::SUCCESS );
+        AlertContainer::push( __( 'File <em>:name</em> uploaded.', [ 'name' => $file->name ] ), Alert::SUCCESS );
         return redirect( route( 'docstore-dir@list', [ 'dir' => $file->docstore_directory_id ] ) );
     }
 
@@ -198,7 +198,7 @@ class FileController extends Controller
         ] );
 
         Log::info( sprintf( "DocStore: file [%d|%s] edited by %s", $file->id, $file->name, $user->username ) );
-        AlertContainer::push( "File <em>{$file->name}</em> updated.", Alert::SUCCESS );
+        AlertContainer::push( __( 'File <em>:name</em> updated.', [ 'name' => $file->name ] ), Alert::SUCCESS );
         return redirect( route( 'docstore-dir@list', [ 'dir' => $file->docstore_directory_id ] ) );
     }
 
@@ -252,7 +252,7 @@ class FileController extends Controller
                 'X-Content-Type-Options' => 'nosniff',
             ] );
         } catch( FilesystemException $e ) {
-            AlertContainer::push( "This file could not be found / downloaded. Please report this error to the support team.", Alert::DANGER );
+            AlertContainer::push( __( "This file could not be found / downloaded. Please report this error to the support team." ), Alert::DANGER );
             return redirect()->back();
         }
     }
@@ -277,7 +277,7 @@ class FileController extends Controller
         $file->logs()->delete();
         $file->delete();
 
-        AlertContainer::push( "File <em>{$file->name}</em> deleted.", Alert::SUCCESS );
+        AlertContainer::push( __( 'File <em>:name</em> deleted.', [ 'name' => $file->name ] ), Alert::SUCCESS );
         Log::info( sprintf( "DocStore: file [%d|%s] deleted by %s", $file->id, $file->name, $r->user()->username ) );
         return redirect( route( 'docstore-dir@list', [ 'dir' => $dir ] ) );
     }

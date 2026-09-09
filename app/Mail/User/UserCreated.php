@@ -59,6 +59,6 @@ final class UserCreated extends Mailable
         $token = app('auth.password.broker')->createToken( $this->user );
 
         return $this->markdown( 'user.emails.welcome', [ 'token' => $token ] )
-            ->subject( config('identity.sitename' ) . " - Your Access Details" );
+            ->subject( __( ':site - Your Access Details', [ 'site' => config( 'identity.sitename' ) ] ) );
     }
 }

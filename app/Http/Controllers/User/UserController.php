@@ -273,7 +273,7 @@ class UserController extends Controller
         $c2u->save();
 
         if( (int)$r->privs === User::AUTH_SUPERUSER ) {
-            AlertContainer::push( 'Please note that you have given this user full administrative access.', Alert::WARNING );
+            AlertContainer::push( __( 'Please note that you have given this user full administrative access.' ), Alert::WARNING );
         }
 
         // Send Email related to the event
@@ -281,8 +281,8 @@ class UserController extends Controller
 
         Log::notice( Auth::user()->username . ' Created a User  with ID ' . $user->id );
 
-        AlertContainer::push( "User created. A welcome email is being sent to {$user->email} with "
-            . "instructions on how to set their password. ", Alert::SUCCESS );
+        AlertContainer::push( __( 'User created. A welcome email is being sent to :email with instructions on how to set their password. ', [
+            'email' => $user->email ] ), Alert::SUCCESS );
 
         return redirect( $this->postStoreRedirect() );
     }
@@ -385,7 +385,7 @@ class UserController extends Controller
             if ($us->id === $u->id) {
                 // editing our self - if we are dropping privs and there's no one else with this privilege, disallow the change
                 if ($r->privs < $c2u->privs && CustomerToUserAggregator::countActiveUsersWithPrivilege(Auth::user()->custid, $c2u->privs) === 1) {
-                    AlertContainer::push( 'You are the only user with that privilege so the change is not allowed.', Alert::WARNING );
+                    AlertContainer::push( __( 'You are the only user with that privilege so the change is not allowed.' ), Alert::WARNING );
                     return redirect( request()->headers->get('referer', "" ) );
                 }
             }
@@ -395,7 +395,7 @@ class UserController extends Controller
         }
 
         Log::notice( Auth::user()->username . ' updated a User with ID ' . $u->id );
-        AlertContainer::push( 'User updated', Alert::SUCCESS );
+        AlertContainer::push( __( 'User updated' ), Alert::SUCCESS );
         return redirect( $this->postStoreRedirect() );
     }
 
@@ -495,11 +495,11 @@ class UserController extends Controller
         if( Auth::id() === $u->id ) {
             Auth::logout();
             // Note: logout triggers session invalidation so push this log after.
-            AlertContainer::push('User deleted.', Alert::SUCCESS );
+            AlertContainer::push( __( 'User deleted.' ), Alert::SUCCESS );
             return redirect( route( "login@showForm" ) );
         }
 
-        AlertContainer::push('User deleted.', Alert::SUCCESS );
+        AlertContainer::push( __( 'User deleted.' ), Alert::SUCCESS );
 
         if( $us->isSuperUser() && strpos( request()->headers->get('referer', "" ), "customer/overview" ) ) {
             return redirect( route( "customer@overview", [ 'cust' => $u->custid , "tab" => "users"] ) );
@@ -522,7 +522,7 @@ class UserController extends Controller
 
         Mail::to( $u->email )->send( new UserCreatedeMailable( $u, true ) );
         Log::notice("The user welcome email has been resent to {$u->email}");
-        AlertContainer::push( sprintf( 'The welcome email has been resent' ), Alert::SUCCESS );
+        AlertContainer::push( __( 'The welcome email has been resent' ), Alert::SUCCESS );
 
         if( $us->isSuperUser() && strpos( request()->headers->get('referer', "" ), "customer/overview" ) ) {
             return redirect( route( "customer@overview", [ 'cust' => $u->custid , "tab" => "users"] ) );

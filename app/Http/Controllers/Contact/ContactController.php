@@ -529,7 +529,7 @@ class ContactController extends EloquentController
             // keep the customer ID for redirection on success
             $this->request->session()->put( "ixp_contact_delete_custid", $this->object->customer->id );
         } elseif( $this->object->customer->id !== $us->custid ) {
-            AlertContainer::push( 'You are not authorised to delete this contact.', Alert::DANGER );
+            AlertContainer::push( __( 'You are not authorised to delete this contact.' ), Alert::DANGER );
             return false;
         }
 
@@ -645,7 +645,8 @@ class ContactController extends EloquentController
                         ->get()->count();
 
                     if( $cgroup->limited_to <= $nbContactForCust && !$this->object->contactGroupsAll->contains( 'id', $groupid ) ) {
-                        AlertContainer::push( "Contact group " . $cgroup->type . " : " . $cgroup->name . " has a limited membership and is full." , Alert::DANGER );
+                        AlertContainer::push( __( 'Contact group :type : :name has a limited membership and is full.', [
+                            'type' => $cgroup->type, 'name' => $cgroup->name ] ), Alert::DANGER );
                         return false;
                     }
                 }

@@ -222,7 +222,7 @@
                     </div>
                     <div class="col-sm-12">
                         <p>
-                            <?= __( "In previous versions of :app, administrators had the facility to set a user's password. This has been removed as we believe it to be bad practice - only a user should know their own password. Users can set (and reset) their passwords via their :profile page or using the password reset functionality.", [
+                            <?= __( "In previous versions of :app, administrators had the facility to set a user's password. This has been removed as we believe it to be bad practice - only a user should know their own password. User's can set (and reset) their passwords via their :profile page or using the password reset functionality.", [
                                 'app'     => '<b>IXP Manager</b>',
                                 'profile' => '<i>' . __( 'Profile' ) . '</i>',
                             ] ) ?>
