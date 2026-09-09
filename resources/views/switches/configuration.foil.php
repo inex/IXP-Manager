@@ -19,7 +19,7 @@
             </button>
             <div class="dropdown-menu dropdown-menu-right scrollable-dropdown">
                 <a class="dropdown-item <?= $switch ? "" : ( !$infra ? "active" : "" ) ?>" href="<?= route( "switch@configuration", [ "infra" => 0 ] ) ?>">
-                    All Infrastructures
+                    <?= __( 'All Infrastructures' ) ?>
                 </a>
                 <div class="dropdown-divider"></div>
                 <?php foreach( $t->infras as $i ): ?>
@@ -37,7 +37,7 @@
 
             <div class="dropdown-menu dropdown-menu-right scrollable-dropdown">
                 <a class="dropdown-item <?= !$vlan ? "active" : "" ?>" href="<?= route( "switch@configuration", [ "vlan" => 0 ] ) ?>">
-                    All VLANs
+                    <?= __( 'All VLANs' ) ?>
                 </a>
                 <div class="dropdown-divider"></div>
                 <?php foreach( $t->vlans as $vl ): ?>
@@ -54,7 +54,7 @@
             </button>
             <div class="dropdown-menu dropdown-menu-right scrollable-dropdown">
                 <a class="dropdown-item <?= $switch ? "" : ( $location ?: "active" ) ?>" href="<?= route( "switch@configuration", [ "location" => 0 ] ) ?>">
-                    All Facilities
+                    <?= __( 'All Facilities' ) ?>
                 </a>
                 <div class="dropdown-divider"></div>
                 <?php foreach( $t->locations as $l ): ?>
@@ -70,7 +70,7 @@
                 <?= $t->ee( $switch->name  ?? "All switches" ) ?>
             </button>
             <div class="dropdown-menu dropdown-menu-right scrollable-dropdown">
-                <a class="dropdown-item <?= !$switch ? "active" : "" ?>" href="<?= route( "switch@configuration", [ "switch" => 0 ] ) ?>">All Switch</a>
+                <a class="dropdown-item <?= !$switch ? "active" : "" ?>" href="<?= route( "switch@configuration", [ "switch" => 0 ] ) ?>"><?= __( 'All Switch' ) ?></a>
                 <div class="dropdown-divider"></div>
                 <?php foreach( $t->switches as $s ): ?>
                     <a class="dropdown-item <?= $switch && $switch->id === $s->id ? "active" : "" ?>" href="<?= route( "switch@configuration", [ "switch" => $s->id ] ) ?>">
@@ -86,7 +86,7 @@
             </button>
             <div class="dropdown-menu dropdown-menu-right scrollable-dropdown">
                 <a class="dropdown-item <?= !$t->speed ? "active" : "" ?>" href="<?= route( "switch@configuration", [ "speed" => 0 ] ) ?>">
-                  All Speed
+                  <?= __( 'All Speed' ) ?>
                 </a>
                 <div class="dropdown-divider"></div>
                 <?php foreach( $t->speeds as $speed ): ?>
@@ -98,7 +98,7 @@
         </div>
 
         <a class="btn btn-white" href="<?= route( "switch@configuration", [ "switch" => 0, "infra" => 0, "location" => 0, "speed" => 0, 'vlan' => 0 ] ) ?>">
-            Clear
+            <?= __( 'Clear' ) ?>
         </a>
     </div>
 <?php $this->append() ?>
@@ -116,39 +116,39 @@
                 <thead class="thead-dark">
                     <tr>
                         <th>
-                            ID
+                            <?= __( 'ID' ) ?>
                         </th>
                         <th>
                             <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?>
                         </th>
                         <th>
-                            Switch
+                            <?= __( 'Switch' ) ?>
                         </th>
                         <th>
-                            Port
+                            <?= __( 'Port' ) ?>
                         </th>
                         <th>
-                            Speed
+                            <?= __( 'Speed' ) ?>
                         </th>
                         <th>
-                            Raw Speed
+                            <?= __( 'Raw Speed' ) ?>
                         </th>
                         <th>
-                            Peering LAN
+                            <?= __( 'Peering LAN' ) ?>
                         </th>
                         <th>
-                            ASN
+                            <?= __( 'ASN' ) ?>
                         </th>
                         <th>
-                            Route Server
+                            <?= __( 'Route Server' ) ?>
                         </th>
                         <th>
-                            IPv4</th>
+                            <?= __( 'IPv4' ) ?></th>
                         <th>
-                            IPv6
+                            <?= __( 'IPv6' ) ?>
                         </th>
                         <th>
-                            Status
+                            <?= __( 'Status' ) ?>
                         </th>
                     </tr>
                 </thead>
@@ -213,7 +213,7 @@
                                 <?php foreach( explode( "," , $conf[ "portstatus" ] ) as $portstatus ): ?>
                                     <?= \IXP\Models\PhysicalInterface::$STATES[ $portstatus ] ?? '' ?>
                                     <?php if( $conf[ "rate_limit" ] ): ?>
-                                        <span class="badge badge-info" data-toggle="tooltip" title="Rate Limited">RL</span>
+                                        <span class="badge badge-info" data-toggle="tooltip" title="Rate Limited"><?= __( 'RL' ) ?></span>
                                     <?php endif; ?>
                                     <br>
                                 <?php endforeach; ?>

@@ -9,7 +9,7 @@ $row = $t->row;
     <td>
         <?= $t->ee( $row['device'] ) ?>
         <?php if( $row['token'] === $t->data['session_token'] ): ?>
-            <span class="badge badge-info ml-2">Current</span>
+            <span class="badge badge-info ml-2"><?= __( 'Current' ) ?></span>
         <?php endif; ?>
     </td>
     <td>

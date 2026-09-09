@@ -32,7 +32,7 @@
                         </div>
                         <div class="col-sm-12 d-flex">
                             <b class="mr-auto my-auto">
-                                As a read-only user, you can only view the rules below and cannot alter them. Please contact a member of your organisation with read/write access.
+                                <?= __( 'As a read-only user, you can only view the rules below and cannot alter them. Please contact a member of your organisation with read/write access.' ) ?>
                             </b>
                         </div>
                     </div>
@@ -61,19 +61,19 @@
                         </div>
                         <div class="col-sm-12 d-flex">
                             <b class="mr-auto my-auto">
-                                Your filters are not in sync with our production configuration. You can continue editing or:
+                                <?= __( 'Your filters are not in sync with our production configuration. You can continue editing or:' ) ?>
                             </b>
                             <div class="pull-right d-flex">
                                 <form id="form-revert" action="<?= route( 'rs-filter@revert', [ 'cust' => $t->c->id ] ) ?>" method="post">
                                     <input type="hidden" name="_token" value="<?= csrf_token() ?>" />
                                     <button type="submit" class="btn btn-warning mr-4" id="submit-revert"  title="Revert Changes">
-                                        Revert
+                                        <?= __( 'Revert' ) ?>
                                     </button>
                                 </form>
                                 <form id="form-commit" action="<?= route( 'rs-filter@commit', [ 'cust' => $t->c->id ] ) ?>" method="post">
                                     <input type="hidden" name="_token" value="<?= csrf_token() ?>" />
                                     <button type="submit" class="btn btn-warning mr-4" id="submit-commit"  title="Commit Changes to Production">
-                                        Commit
+                                        <?= __( 'Commit' ) ?>
                                     </button>
                                 </form>
                             </div>
@@ -83,7 +83,7 @@
             <?php endif; ?>
 
             <?php if( !$t->in_sync ): ?>
-                <h3 class="my-4">Staged Rules (Deploy via Commit above)</h3>
+                <h3 class="my-4"><?= __( 'Staged Rules (Deploy via Commit above)' ) ?></h3>
             <?php endif; ?>
 
             <?php if( $t->rsFilters->count() ): ?>
@@ -91,34 +91,34 @@
                     <thead class="thead-dark">
                         <tr>
                             <th>
-                                Peer
+                                <?= __( 'Peer' ) ?>
                             </th>
                             <th>
-                                LAN
+                                <?= __( 'LAN' ) ?>
                             </th>
                             <th>
-                                Protocol
+                                <?= __( 'Protocol' ) ?>
                             </th>
                             <th>
-                                Advertised Prefix
+                                <?= __( 'Advertised Prefix' ) ?>
                             </th>
                             <th>
-                                Advertise Action
+                                <?= __( 'Advertise Action' ) ?>
                             </th>
                             <th>
-                                Received Prefix
+                                <?= __( 'Received Prefix' ) ?>
                             </th>
                             <th>
-                                Receive Action
+                                <?= __( 'Receive Action' ) ?>
                             </th>
                             <th>
-                                Enabled
+                                <?= __( 'Enabled' ) ?>
                             </th>
                             <th>
-                                Order
+                                <?= __( 'Order' ) ?>
                             </th>
                             <th>
-                                Actions
+                                <?= __( 'Actions' ) ?>
                             </th>
                         </tr>
                     <thead>
@@ -219,7 +219,7 @@
                                 <?= $t->in_sync ? 'No route server filters have been defined.' : 'Commit now to remove all filters from production.' ?>
                                 &nbsp;&nbsp;&nbsp;&nbsp;
                                 <a class="btn btn-sm btn-white" href="<?= route( "rs-filter@create", [ "cust" => $t->c->id ] ) ?>">
-                                    Create Route Filter
+                                    <?= __( 'Create Route Filter' ) ?>
                                 </a>
                             </b>
                         </div>
@@ -229,7 +229,7 @@
 
 
             <?php if( !$t->in_sync ): ?>
-                <h3 class="my-4">Rules in Production</h3>
+                <h3 class="my-4"><?= __( 'Rules in Production' ) ?></h3>
 
                 <?php if( $t->rsFiltersProd->count() ): ?>
                 <?php /// note - we name the ABOVE table production-table-list if the tables are in sync ?>
@@ -237,31 +237,31 @@
                         <thead class="thead-dark">
                         <tr>
                             <th>
-                                Peer
+                                <?= __( 'Peer' ) ?>
                             </th>
                             <th>
-                                LAN
+                                <?= __( 'LAN' ) ?>
                             </th>
                             <th>
-                                Protocol
+                                <?= __( 'Protocol' ) ?>
                             </th>
                             <th>
-                                Advertised Prefix
+                                <?= __( 'Advertised Prefix' ) ?>
                             </th>
                             <th>
-                                Advertise Action
+                                <?= __( 'Advertise Action' ) ?>
                             </th>
                             <th>
-                                Received Prefix
+                                <?= __( 'Received Prefix' ) ?>
                             </th>
                             <th>
-                                Receive Action
+                                <?= __( 'Receive Action' ) ?>
                             </th>
                             <th>
-                                Enabled
+                                <?= __( 'Enabled' ) ?>
                             </th>
                             <th>
-                                Order
+                                <?= __( 'Order' ) ?>
                             </th>
                             <th></th>
                         </tr>
@@ -338,7 +338,7 @@
                             </div>
                             <div class="col-sm-12 d-flex">
                                 <b class="mr-auto my-auto">
-                                    There are no filters in production.
+                                    <?= __( 'There are no filters in production.' ) ?>
                                 </b>
                             </div>
                         </div>

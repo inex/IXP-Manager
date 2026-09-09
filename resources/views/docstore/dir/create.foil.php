@@ -11,7 +11,7 @@
 <?php $this->section( 'page-header-postamble' ) ?>
     <div class="btn-group btn-group-sm ml-auto" role="group">
         <a target="_blank" class="btn btn-white" href="https://docs.ixpmanager.org/latest/features/docstore/">
-            Documentation
+            <?= __( 'Documentation' ) ?>
         </a>
     </div>
 <?php $this->append() ?>
@@ -47,10 +47,10 @@
                     <div class="card-header">
                         <ul class="nav nav-tabs card-header-tabs">
                             <li role="presentation" class="nav-item">
-                                <a class="tab-link-body-note nav-link active" href="#body">Description</a>
+                                <a class="tab-link-body-note nav-link active" href="#body"><?= __( 'Description' ) ?></a>
                             </li>
                             <li role="presentation" class="nav-item">
-                                <a class="tab-link-preview-note nav-link" href="#preview">Preview</a>
+                                <a class="tab-link-preview-note nav-link" href="#preview"><?= __( 'Preview' ) ?></a>
                             </li>
                         </ul>
                     </div>
@@ -68,7 +68,7 @@
                         </div>
                         <div role="tabpanel" class="tab-pane" id="preview">
                             <div class="bg-light p-4 well-preview">
-                                Loading...
+                                <?= __( 'Loading...' ) ?>
                             </div>
                         </div>
                     </div>

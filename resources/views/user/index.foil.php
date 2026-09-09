@@ -12,7 +12,7 @@
 <?php $this->section( 'page-header-postamble' ) ?>
     <div class="btn-group btn-group-sm ml-auto" role="group">
         <a target="_blank" class="btn btn-white" href="https://docs.ixpmanager.org/latest/usage/users/">
-            Documentation
+            <?= __( 'Documentation' ) ?>
         </a>
 
         <a id="add-user" class="btn btn-white" href="<?= route('user@create-wizard') ?>">
@@ -30,13 +30,13 @@
                 <thead class="thead-dark">
                     <tr>
                         <th>
-                            Name
+                            <?= __( 'Name' ) ?>
                         </th>
                         <th>
-                            Username
+                            <?= __( 'Username' ) ?>
                         </th>
                         <th>
-                            Email
+                            <?= __( 'Email' ) ?>
                         </th>
                         <?php if( $isSuperUser ): ?>
                             <th>
@@ -44,16 +44,16 @@
                             </th>
                         <?php endif; ?>
                         <th>
-                            Privs
+                            <?= __( 'Privs' ) ?>
                         </th>
                         <th>
-                            Flags
+                            <?= __( 'Flags' ) ?>
                         </th>
                         <th>
-                            Created
+                            <?= __( 'Created' ) ?>
                         </th>
                         <th>
-                            Action
+                            <?= __( 'Action' ) ?>
                         </th>
                     </tr>
                 </thead>
@@ -81,7 +81,7 @@
                                         </a>
                                     <?php else: ?>
                                         <?php if( !$u['customer'] || !$u[ 'custid' ] ): ?>
-                                            <span class="badge badge-warning">DB Issue?</span> User not affiliated to a customer.
+                                            <span class="badge badge-warning"><?= __( 'DB Issue?' ) ?></span> User not affiliated to a customer.
                                         <?php else: ?>
                                             <a href="<?=  route( "customer@overview" , [ 'cust' => $u[ 'custid' ] ] ) ?>">
                                                 <?= $t->ee( $u['customer'] ) ?>
@@ -96,13 +96,13 @@
                             </td>
                             <td data-sort="<?= $u[ 'u2fa_enabled' ] ? 1 : 0 ?>">
                                 <?php if( $u[ 'u2fa_enabled' ] ): ?>
-                                    <span class="badge badge-success">2FA</span>
+                                    <span class="badge badge-success"><?= __( '2FA' ) ?></span>
                                 <?php else: ?>
-                                    <span class="badge badge-danger">2FA</span>
+                                    <span class="badge badge-danger"><?= __( '2FA' ) ?></span>
                                 <?php endif; ?>
 
                                 <?php if( config( 'auth.peeringdb.enabled' ) && $u['peeringdb_id'] ): ?>
-                                    <span class="badge badge-info">OAuth</span>
+                                    <span class="badge badge-info"><?= __( 'OAuth' ) ?></span>
                                 <?php endif; ?>
                             </td>
                             <td>
@@ -132,22 +132,22 @@
                                             <form id="welcome-email" method="POST" action="<?= route('user@welcome-email', [ 'u' => $u[ 'id' ] ] ) ?>">
                                                 <input type="hidden" name="_token" value="<?= csrf_token() ?>">
                                                 <button class="dropdown-item" type="submit">
-                                                    Resend welcome email
+                                                    <?= __( 'Resend welcome email' ) ?>
                                                 </button>
                                             </form>
 
                                             <a class="dropdown-item" href="<?= route( "login-history@view", [ 'id' => $u['id'] ] ) ?>">
-                                                Login history
+                                                <?= __( 'Login history' ) ?>
                                             </a>
                                             <?php if( $u['c2uid'] ): ?>
                                                 <a id="d2f-option-login-as-<?= $u[ 'id' ] ?>" class="dropdown-item <?= $u[ 'disabled' ] || $authId  === $u['id'] || session()->exists('switched_user_from') ? "disabled" : "" ?>" href="<?= route( "switch-user@switch", [ "c2u" => $u['c2uid'] ] ) ?>">
-                                                    Login as
+                                                    <?= __( 'Login as' ) ?>
                                                 </a>
                                             <?php endif; ?>
 
                                             <?php if( $u['u2fa_enabled'] ): ?>
                                                 <a id="d2f-option-remove-2fa-<?= $u[ 'id' ] ?>" class="dropdown-item remove-2fa" data-object-id="<?= $u[ 'id' ] ?>" href="#">
-                                                    Remove 2FA
+                                                    <?= __( 'Remove 2FA' ) ?>
                                                 </a>
                                             <?php endif; ?>
                                         </ul>
@@ -163,9 +163,9 @@
 
     <div class="tw:mt-16 tw:border-2 tw:border-gray-400 tw:rounded-lg">
         <p class="tw:p-6 tw:m-0">
-            <b>Privileges:</b> CU - Cust User; CA - Cust Admin; SU - Super User.<br>
-            <b>Flags:</b> <span class="badge badge-success">2FA</span> - Two-factor authentication is enabled; <span class="badge badge-success">OAuth</span> - user created via PeeringDB OAuth.<br>
-            <b>Disabled Users:</b> - identified with <span class="badge badge-danger">X</span> badge beside username.
+            <b><?= __( 'Privileges:' ) ?></b> <?= __( 'CU - Cust User; CA - Cust Admin; SU - Super User.' ) ?><br>
+            <b><?= __( 'Flags:' ) ?></b> <span class="badge badge-success"><?= __( '2FA' ) ?></span> <?= __( '- Two-factor authentication is enabled;' ) ?> <span class="badge badge-success"><?= __( 'OAuth' ) ?></span> <?= __( '- user created via PeeringDB OAuth.' ) ?><br>
+            <b><?= __( 'Disabled Users:' ) ?></b> <?= __( '- identified with' ) ?> <span class="badge badge-danger">X</span> <?= __( 'badge beside username.' ) ?>
         </p>
     </div>
 <?php $this->append() ?>

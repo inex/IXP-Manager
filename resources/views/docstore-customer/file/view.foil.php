@@ -18,7 +18,7 @@
 <?php $this->section( 'page-header-postamble' ) ?>
     <div class="btn-group btn-group-sm ml-auto" role="group">
         <a id="add-file" class="btn btn-white" href="<?= route('docstore-c-file@download', [ 'cust' => $t->cust, 'file' => $t->file ] ) ?>">
-            Download
+            <?= __( 'Download' ) ?>
         </a>
     </div>
 <?php $this->append() ?>

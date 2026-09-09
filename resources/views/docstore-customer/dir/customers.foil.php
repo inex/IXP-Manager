@@ -11,7 +11,7 @@
 <?php $this->section( 'page-header-postamble' ) ?>
     <div class="btn-group btn-group-sm ml-auto" role="group">
         <a target="_blank" class="btn btn-white" href="https://docs.ixpmanager.org/latest/features/docstore/">
-            Documentation
+            <?= __( 'Documentation' ) ?>
         </a>
     </div>
 <?php $this->append() ?>
@@ -40,7 +40,7 @@
                                 </button>
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
                                     <a class="dropdown-item btn-delete"  href="<?= route( 'docstore-c-dir@delete-for-customer', [ 'cust' => $file->customer ] ) ?>">
-                                      Purge
+                                      <?= __( 'Purge' ) ?>
                                     </a>
                                 </div>
                             </div>

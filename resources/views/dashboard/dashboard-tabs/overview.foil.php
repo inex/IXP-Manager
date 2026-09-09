@@ -4,7 +4,7 @@
             <div class="card-header  d-flex">
                 <div class="mr-auto">
                     <h5>
-                        Aggregate Traffic Statistics
+                        <?= __( 'Aggregate Traffic Statistics' ) ?>
                     </h5>
                 </div>
 
@@ -25,7 +25,7 @@
                     <div class="text-center"><i class="fa fa-info-circle fa-2x "></i></div>
                     <div class="col-sm-12">
                         You have <?= $t->c->routeServerFiltersInProduction()->count() ?> active route server filter(s) configured.
-                        <a href="<?= route('rs-filter@list', [ 'cust' => Auth::getUser()->customer ] ) ?>">Click here</a> to view/edit them.
+                        <a href="<?= route('rs-filter@list', [ 'cust' => Auth::getUser()->customer ] ) ?>"><?= __( 'Click here' ) ?></a> <?= __( 'to view/edit them.' ) ?>
                     </div>
                 </div>
             </div>
@@ -35,13 +35,13 @@
 
         <?php if( $t->logoManagementEnabled() ): ?>
             <div class="col-lg-12 mt-4">
-                <h3>Your Logo</h3>
+                <h3><?= __( 'Your Logo' ) ?></h3>
 
                 <div class="row col-sm-12">
                     <?php if( $logo = $t->c->logo ): ?>
                         <div class="col-sm-6">
-                            This is your current logo.<br/>
-                            Please <a href="<?= route( 'logo@manage', [ 'id' => $t->c->id ] ) ?>">click here</a> to change it.
+                            <?= __( 'This is your current logo.' ) ?><br/>
+                            <?= __( 'Please' ) ?> <a href="<?= route( 'logo@manage', [ 'id' => $t->c->id ] ) ?>"><?= __( 'click here' ) ?></a> <?= __( 'to change it.' ) ?>
                         </div>
                         <div class="col-sm-6">
                             <img class="img-responsive" src="<?= url( 'logos/' . $logo->shardedPath() ) ?>" />
@@ -53,10 +53,8 @@
                                     <i class="fa fa-exclamation-triangle fa-2x"></i>
                                 </div>
                                 <div class="col-sm-12">
-                                    No logo uploaded which means it is not currently displayed on our public
-                                    website.
-                                    Please <a href="<?= route( 'logo@manage', [ 'id' => $t->c->id ] ) ?>">click here</a>
-                                    to add one now.
+                                    <?= __( 'No logo uploaded which means it is not currently displayed on our public website. Please' ) ?> <a href="<?= route( 'logo@manage', [ 'id' => $t->c->id ] ) ?>"><?= __( 'click here' ) ?></a>
+                                    <?= __( 'to add one now.' ) ?>
                                 </div>
                             </div>
                         </div>
@@ -73,20 +71,20 @@
         <?php if( count( $t->p2pstats ) ): ?>
 
             <div class="col-12">
-                <h4>Your Top Peers</h4>
+                <h4><?= __( 'Your Top Peers' ) ?></h4>
                 <div class="mb-4 tw:text-sm">
                     Your top peers <?= \Carbon\Carbon::parse( $t->p2pstats[0]->day )->diffForHumans() ?>.
-                    See all <a href="<?= route( 'statistics@p2p-table' ) ?>">here</a>.
+                    See all <a href="<?= route( 'statistics@p2p-table' ) ?>"><?= __( 'here' ) ?></a>.
                 </div>
 
                 <table  class="table table-sm table-hover" >
                     <thead class="thead-dark">
                     <tr>
                         <th>
-                            Peer
+                            <?= __( 'Peer' ) ?>
                         </th>
                         <th class="tw:text-right">
-                            Total Traffic
+                            <?= __( 'Total Traffic' ) ?>
                         </th>
                         <th>
                         </th>

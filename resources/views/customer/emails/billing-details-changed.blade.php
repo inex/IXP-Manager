@@ -3,7 +3,7 @@
 Dear Accounts,
 
 @component('mail::panel')
-Billing details have been updated for <em>{{ $cbd->customer->name }}</em>.
+Billing details have been updated for <em>{{ $cbd->customer-><?= __( 'name }}' ) ?></em>.
 @endcomponent
 
 @component('mail::table')

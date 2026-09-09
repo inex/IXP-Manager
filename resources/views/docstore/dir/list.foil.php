@@ -15,7 +15,7 @@
     <?php if( Auth::check() && $isSuperUser ): ?>
         <div class="btn-group btn-group-sm ml-auto" role="group">
             <a target="_blank" class="btn btn-white" href="https://docs.ixpmanager.org/latest/features/docstore/">
-                Documentation
+                <?= __( 'Documentation' ) ?>
             </a>
 
             <a id="add-dir" class="btn btn-white" href="<?= route('docstore-dir@list' ) ?>"
@@ -96,10 +96,10 @@
                                     </button>
                                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
                                         <a class="dropdown-item" href="<?= route( "docstore-dir@edit", [ "dir" => $dir['id'] ] ) ?>">
-                                            Edit
+                                            <?= __( 'Edit' ) ?>
                                         </a>
                                         <a class="dropdown-item btn-delete" data-object-type="dir" href="<?= route('docstore-dir@delete', [ 'dir' => $dir['id'] ] ) ?>">
-                                            Delete
+                                            <?= __( 'Delete' ) ?>
                                         </a>
                                     </div>
                                 </div>
@@ -158,26 +158,26 @@
                                 </button>
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
                                     <?php if( $file->isViewable() ): ?>
-                                        <a class="dropdown-item" href="<?= route( 'docstore-file@download', ['file' => $file->id] ) ?>">Download</a>
+                                        <a class="dropdown-item" href="<?= route( 'docstore-file@download', ['file' => $file->id] ) ?>"><?= __( 'Download' ) ?></a>
                                     <?php endif; ?>
                                     <?php if( Auth::check() && $isSuperUser ): ?>
-                                        <a class="dropdown-item btn-infos" data-object-type="file" href="<?= route( "docstore-file-api@info", [ "file" => $file ] ) ?>">Metadata</a>
+                                        <a class="dropdown-item btn-infos" data-object-type="file" href="<?= route( "docstore-file-api@info", [ "file" => $file ] ) ?>"><?= __( 'Metadata' ) ?></a>
                                     <?php endif; ?>
                                     <a class="dropdown-item" href="#"
-                                       onclick="bootbox.alert({ message: 'SHA checksums can be used to check the authenticity / integrity of files.<br><br><?= $file->sha256 ? "SHA256 checksum: [<code>" . $t->ee( $file->sha256 ) . "</code>]" : "there is no sha256 checksum registered for this file." ?>', size: 'large' }); return false;">Show SHA256</a>
+                                       onclick="bootbox.alert({ message: 'SHA checksums can be used to check the authenticity / integrity of files.<br><br><?= $file->sha256 ? "SHA256 checksum: [<code>" . $t->ee( $file->sha256 ) . "</code>]" : "there is no sha256 checksum registered for this file." ?>', size: 'large' }); return false;"><?= __( 'Show SHA256' ) ?></a>
 
                                     <?php if( Auth::check() && $isSuperUser ): ?>
                                         <div class="dropdown-divider"></div>
-                                        <a class="dropdown-item" href="<?= route( 'docstore-log@unique-list', [ 'file' => $file ] ) ?>">Unique Downloads</a>
-                                        <a class="dropdown-item" href="<?= route( 'docstore-log@list', [ 'file' => $file ] ) ?>">All Downloads</a>
+                                        <a class="dropdown-item" href="<?= route( 'docstore-log@unique-list', [ 'file' => $file ] ) ?>"><?= __( 'Unique Downloads' ) ?></a>
+                                        <a class="dropdown-item" href="<?= route( 'docstore-log@list', [ 'file' => $file ] ) ?>"><?= __( 'All Downloads' ) ?></a>
                                         <div class="dropdown-divider"></div>
                                         <?php if( !config( 'ixp_fe.frontend.disabled.logs' ) && method_exists( \IXP\Models\DocstoreFile::class, 'logSubject') ): ?>
                                             <a class="dropdown-item" href="<?= route( 'log@list', [ 'model' => 'DocstoreFile' , 'model_id' => $file->id ] ) ?>">
-                                                View logs
+                                                <?= __( 'View logs' ) ?>
                                             </a>
                                         <?php endif; ?>
-                                        <a class="dropdown-item" href="<?= route( "docstore-file@edit", [ "file" => $file ] ) ?>">Edit</a>
-                                        <a class="dropdown-item btn-delete" data-object-type="file" href="<?= route( "docstore-file@delete", [ "file" => $file ] ) ?>">Delete</a>
+                                        <a class="dropdown-item" href="<?= route( "docstore-file@edit", [ "file" => $file ] ) ?>"><?= __( 'Edit' ) ?></a>
+                                        <a class="dropdown-item btn-delete" data-object-type="file" href="<?= route( "docstore-file@delete", [ "file" => $file ] ) ?>"><?= __( 'Delete' ) ?></a>
                                     <?php endif; ?>
                                 </div>
                             </div>
@@ -204,7 +204,7 @@
             <table class="tw:mt-8">
                 <tr class="tw:border-t-1 tw:border-blue-500">
                     <td class="tw:text-right tw:font-bold tw:p-2">
-                        Created By
+                        <?= __( 'Created By' ) ?>
                     </td>
                     <td class="tw:pl-4 tw:font-mono tw:text-sm tw:p-2">
                         <span id="meta-created-by"></span>
@@ -212,7 +212,7 @@
                 </tr>
                 <tr class="tw:border-t-1 tw:border-blue-500">
                     <td class="tw:text-right tw:font-bold tw:p-2">
-                        Path
+                        <?= __( 'Path' ) ?>
                     </td>
                     <td class="tw:pl-4 tw:font-mono tw:text-sm tw:p-2">
                         <span id="meta-dspath"></span>
@@ -220,7 +220,7 @@
                 </tr>
                 <tr class="tw:border-t-1 tw:border-blue-500">
                     <td class="tw:text-right tw:font-bold tw:p-2">
-                        Created
+                        <?= __( 'Created' ) ?>
                     </td>
                     <td class="tw:pl-4 tw:font-mono tw:text-sm tw:p-2">
                         <span id="meta-created-at"></span>
@@ -228,7 +228,7 @@
                 </tr>
                 <tr class="tw:border-t-1 tw:border-blue-500">
                     <td class="tw:text-right tw:font-bold tw:p-2">
-                        Last Modified
+                        <?= __( 'Last Modified' ) ?>
                     </td>
                     <td class="tw:pl-4 tw:font-mono tw:text-sm tw:p-2">
                         <span id="meta-last-modified"></span>
@@ -236,7 +236,7 @@
                 </tr>
                 <tr class="tw:border-t-1 tw:border-b-1 tw:border-blue-500">
                     <td class="tw:text-right tw:font-bold tw:p-2">
-                        Size
+                        <?= __( 'Size' ) ?>
                     </td>
                     <td class="tw:pl-4 tw:font-mono tw:text-sm tw:p-2">
                         <span id="meta-size"></span>

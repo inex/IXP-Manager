@@ -70,7 +70,7 @@
                         fragment.find('#meta-created-by').text(data.created_by);
                     } else {
                         fragment.find('#meta-created-by').html(
-                            $('em').text('User no longer exists in database.')
+                            $('em').text('<?= __( 'User no longer exists in database.' ) ?>')
                         );
                     }
                     fragment.find('#meta-customer').text(data.customer);

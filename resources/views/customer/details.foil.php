@@ -21,16 +21,16 @@
                             <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?>
                         </th>
                         <th class="tw:hidden tw:md:table-cell">
-                            Joined
+                            <?= __( 'Joined' ) ?>
                         </th>
 
                         <?php if( !$t->associates ): ?>
                             <th class="tw:text-right">
-                                ASN
+                                <?= __( 'ASN' ) ?>
                             </th>
                             <?php if( Auth::check() ): ?>
                                 <th class="hidden tw:lg:table-cell">
-                                    Peering Email
+                                    <?= __( 'Peering Email' ) ?>
                                 </th>
                             <?php endif; ?>
                         <?php endif; ?>
@@ -56,7 +56,7 @@
                                     <?php if( $c->in_manrs ): ?>
                                         <a href="https://www.manrs.org/" target="_blank" class="hover:no-underline">
                                             <span class="tw:hidden tw:md:inline tw:border-1 tw:border-green-500 tw:p-1 tw:rounded-full tw:text-green-500 tw:uppercase tw:text-xs tw:mx-3">
-                                                MANRS
+                                                <?= __( 'MANRS' ) ?>
                                             </span>
                                         </a>
                                     <?php endif; ?>

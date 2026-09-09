@@ -21,7 +21,7 @@
             <?php if( $t->logo ): ?>
                 <div class="row mb-4">
                     <div class="col-md-6 col-sm-12">
-                        <h3>Your Existing Logo:</h3>
+                        <h3><?= __( 'Your Existing Logo:' ) ?></h3>
                     </div>
                     <div class="col-md-6 text-center col-sm-12">
                         <img src="<?= url( 'logos/' . $t->logo->shardedPath() ) ?>" class="www80-padding img-responsive">
@@ -44,16 +44,16 @@
                     </div>
                     <div class="col-sm-12">
                         <b>
-                            For best results, your logo must be uploaded as a PNG image with a <u>transparent background</u> that is 80px high and without any margin.
+                            <?= __( 'For best results, your logo must be uploaded as a PNG image with a' ) ?> <u><?= __( 'transparent background' ) ?></u> <?= __( 'that is 80px high and without any margin.' ) ?>
                         </b>
                     </div>
                 </div>
             </div>
             <p>
-                Any other size will be scaled to 80px high which may affect the quality. We'll add a margin when displaying so you should not include any.
+                <?= __( "Any other size will be scaled to 80px high which may affect the quality. We'll add a margin when displaying so you should not include any." ) ?>
             </p>
             <p>
-                If your logo does not conform to these specifications, we may remove it as it will not look appropriate to our website design.
+                <?= __( 'If your logo does not conform to these specifications, we may remove it as it will not look appropriate to our website design.' ) ?>
             </p>
 
             <div class="card">
@@ -94,10 +94,10 @@
                         </div>
                         <div class="col-sm-12 d-flex">
                             <b class="mr-auto my-auto">
-                                Delete your logo ...
+                                <?= __( 'Delete your logo ...' ) ?>
                             </b>
                             <a id="btn-delete" class="btn btn-danger mr-4 " href="<?= route( "logo@delete" , [ 'id' => $t->c->id ] )  ?>">
-                                Remove My Logo
+                                <?= __( 'Remove My Logo' ) ?>
                             </a>
                         </div>
                     </div>

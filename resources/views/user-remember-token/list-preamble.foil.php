@@ -1,7 +1,7 @@
 <?php if( $t->data['session_token'] === null ): ?>
     <div class="alert alert-info tw:mb-8" role="alert">
-        <b>Active sessions</b> are only login sessions that had <em>Remember me</em> checked. Your current session was
-        <b>not</b> initiated with <em>Remember me</em> checked.
+        <b><?= __( 'Active sessions' ) ?></b> <?= __( 'are only login sessions that had' ) ?> <em><?= __( 'Remember me' ) ?></em> <?= __( 'checked. Your current session was' ) ?>
+        <b><?= __( 'not' ) ?></b> <?= __( 'initiated with' ) ?> <em><?= __( 'Remember me' ) ?></em> <?= __( 'checked.' ) ?>
     </div>
 <?php endif; ?>
 
@@ -10,7 +10,7 @@
         <ul class="nav nav-tabs card-header-tabs">
             <li role="user-remember-token" class="nav-item">
                 <a class="nav-link active" data-toggle="tab" href="#user-remember-token">
-                    Active Sessions
+                    <?= __( 'Active Sessions' ) ?>
                 </a>
             </li>
         </ul>

@@ -21,7 +21,7 @@
         <div class="btn-group btn-group-sm ml-auto" role="group">
             <?php if( isset( $t->feParams->documentation ) && $t->feParams->documentation ): ?>
                 <a target="_blank" class="btn btn-white" href="<?= $t->feParams->documentation ?>">
-                    Documentation
+                    <?= __( 'Documentation' ) ?>
                 </a>
             <?php endif; ?>
 
@@ -53,7 +53,7 @@
                             <div class="col-sm-12">
                                 <b>No <?= $t->feParams->nameSingular ?> exists.</b>
                                 <?php if( !isset( $t->feParams->readonly ) || !$t->feParams->readonly ): ?>
-                                    <a class="btn btn-white ml-2" href="<?= $t->feParams->addRoute ?? route($t->feParams->route_prefix.'@create') ?>">Create one...</a>
+                                    <a class="btn btn-white ml-2" href="<?= $t->feParams->addRoute ?? route($t->feParams->route_prefix.'@create') ?>"><?= __( 'Create one...' ) ?></a>
                                 <?php endif;?>
                             </div>
                         </div>
@@ -82,7 +82,7 @@
                                 <?php endforeach;?>
                                 <?php if( !isset( $t->feParams->hideactioncolumn ) || !$t->feParams->hideactioncolumn ): ?>
                                     <th>
-                                        Actions
+                                        <?= __( 'Actions' ) ?>
                                     </th> <!-- actions column -->
                                 <?php endif; ?>
                             </tr>

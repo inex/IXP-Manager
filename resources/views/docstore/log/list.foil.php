@@ -13,7 +13,7 @@
     <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
         <div class="btn-group btn-group-sm ml-auto" role="group">
             <a target="_blank" class="btn btn-white" href="https://docs.ixpmanager.org/latest/features/docstore/">
-                Documentation
+                <?= __( 'Documentation' ) ?>
             </a>
         </div>
     <?php endif; ?>
@@ -27,17 +27,16 @@
                 <?= $t->unique ? 'Unique' : 'All' ?> Downloads for: <?= $t->ee( $t->file->name ) ?>
                 <small class="tw:ml-8 tw:text-sm">
                     [Switch to <?php if( $t->unique ): ?>
-                        <a href="<?= route( 'docstore-log@list', [ 'file' => $t->file ] ) ?>">All Downloads</a>]
+                        <a href="<?= route( 'docstore-log@list', [ 'file' => $t->file ] ) ?>"><?= __( 'All Downloads' ) ?></a>]
                     <?php else: ?>
-                        <a href="<?= route( 'docstore-log@unique-list', [ 'file' => $t->file ] ) ?>">Unique Downloads</a>]
+                        <a href="<?= route( 'docstore-log@unique-list', [ 'file' => $t->file ] ) ?>"><?= __( 'Unique Downloads' ) ?></a>]
                     <?php endif; ?>
                 </small>
             </h3>
 
             <?php if( $t->file->created_at < $sixmonthsago ): ?>
                 <p>
-                    <b>Note:</b> This file is more than six months old. As such, all download logs older than six months
-                    (except the first / original download) have been expunged.
+                    <b><?= __( 'Note:' ) ?></b> <?= __( 'This file is more than six months old. As such, all download logs older than six months (except the first / original download) have been expunged.' ) ?>
                 </p>
             <?php endif; ?>
 
@@ -46,23 +45,23 @@
                     <thead class="thead-dark">
                         <tr>
                             <th>
-                                Downloaded By
+                                <?= __( 'Downloaded By' ) ?>
                             </th>
                             <?php if( $t->unique ): ?>
                                 <th>
-                                    Downloads
+                                    <?= __( 'Downloads' ) ?>
                                 </th>
                                 <th>
-                                    First Downloaded
+                                    <?= __( 'First Downloaded' ) ?>
                                 </th>
                                 <?php if( $t->file->created_at > $sixmonthsago ): ?>
                                     <th>
-                                        Last Downloaded
+                                        <?= __( 'Last Downloaded' ) ?>
                                     </th>
                                 <?php endif; ?>
                             <?php else: ?>
                                 <th>
-                                    Downloaded At
+                                    <?= __( 'Downloaded At' ) ?>
                                 </th>
                             <?php endif; ?>
                         </tr>

@@ -21,7 +21,7 @@
             <?php endif; ?>
 
             <?php if( is_array( $t->wms ) ): ?>
-                <h3>Available Weathermaps</h3>
+                <h3><?= __( 'Available Weathermaps' ) ?></h3>
                 <ul>
                     <?php foreach( $t->wms as $id => $wp ): ?>
                         <li>

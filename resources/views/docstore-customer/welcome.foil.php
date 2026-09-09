@@ -4,7 +4,7 @@
     </h3>
 
     <p>
-        This is <b>IXP Manager's</b> <b><u>per-<?= config( 'ixp_fe.lang.customer.one') ?></u></b> document store allowing
+        <?= __( 'This is' ) ?> <b><?= __( "IXP Manager's" ) ?></b> <b><u>per-<?= config( 'ixp_fe.lang.customer.one') ?></u></b> document store allowing
         administrators to upload documents into individual <?= config( 'ixp_fe.lang.customer.one') ?>-silos.
     </p>
 
@@ -19,17 +19,17 @@
     </p>
 
     <ul>
-        <li>Upload any file type.</li>
-        <li>Edit uploaded files including name, description, minimum access privilege and replacing the file itself.</li>
-        <li>Display of text (.txt) and display and parsing of Markdown (.md) files within IXP Manager.</li>
-        <li>Directory hierarchy allowing the categorization of files.</li>
-        <li>Each directory can have explanatory text.</li>
-        <li>Deletion of files and recursive deletion of directories.</li>
-        <li>Logging of destructive actions.</li>
-        <li>Please note that all actions except for viewing and downloading files are restricted to super users.</li>
+        <li><?= __( 'Upload any file type.' ) ?></li>
+        <li><?= __( 'Edit uploaded files including name, description, minimum access privilege and replacing the file itself.' ) ?></li>
+        <li><?= __( 'Display of text (.txt) and display and parsing of Markdown (.md) files within IXP Manager.' ) ?></li>
+        <li><?= __( 'Directory hierarchy allowing the categorization of files.' ) ?></li>
+        <li><?= __( 'Each directory can have explanatory text.' ) ?></li>
+        <li><?= __( 'Deletion of files and recursive deletion of directories.' ) ?></li>
+        <li><?= __( 'Logging of destructive actions.' ) ?></li>
+        <li><?= __( 'Please note that all actions except for viewing and downloading files are restricted to super users.' ) ?></li>
     </ul>
 
     <p>
-        <b>For more information, <a target="_blank" href="https://docs.ixpmanager.org/latest/features/docstore/">see the official documentation here</a>.</b>
+        <b><?= __( 'For more information,' ) ?> <a target="_blank" href="https://docs.ixpmanager.org/latest/features/docstore/"><?= __( 'see the official documentation here' ) ?></a>.</b>
     </p>
 </div>

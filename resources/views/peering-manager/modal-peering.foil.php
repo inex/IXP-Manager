@@ -12,19 +12,19 @@
             </div>
             <div class="modal-footer" id="modal-peering-request-footer">
                 <button id="modal-peering-request-close"  type="button" class="btn btn-secondary" data-dismiss="modal">
-                    <i class="fa fa-times"></i> Cancel
+                    <i class="fa fa-times"></i> <?= __( 'Cancel' ) ?>
                 </button>
                 <button class="btn btn-primary btn-footer-modal btn-footer-modal-email collapse" id="modal-peering-request-marksent" data-toggle="tooltip" title="Don't send this email but mark it as sent - useful if you are sending requests manually but want to track them here." >
-                    Mark Sent
+                    <?= __( 'Mark Sent' ) ?>
                 </button>
                 <button class="btn btn-primary btn-footer-modal btn-footer-modal-email collapse" id="modal-peering-request-sendtome" data-toggle="tooltip" title="Just send this email to me so I can see how it looks." >
-                    Send to Me
+                    <?= __( 'Send to Me' ) ?>
                 </button>
                 <button class="btn btn-success btn-footer-modal btn-footer-modal-email collapse" id="modal-peering-request-send" >
-                    Send
+                    <?= __( 'Send' ) ?>
                 </button>
                 <button class="btn btn-success btn-footer-modal btn-footer-modal-note collapse" id="modal-peering-notes-save" >
-                    Save
+                    <?= __( 'Save' ) ?>
                 </button>
 
             </div>

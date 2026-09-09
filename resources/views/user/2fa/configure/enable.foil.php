@@ -1,14 +1,14 @@
 <?php if( Auth::getUser()->is2faEnforced() ): ?>
     <div class="alert alert-warning tw:my-8" role="alert">
-        You do not have two-factor authentication enabled but it is compulsory for your user account. Please configure and enable 2fa below to proceed.
+        <?= __( 'You do not have two-factor authentication enabled but it is compulsory for your user account. Please configure and enable 2fa below to proceed.' ) ?>
     </div>
 <?php endif; ?>
 <p>
-    To enable two factor authentication on your account, you need to perform the following steps.
+    <?= __( 'To enable two factor authentication on your account, you need to perform the following steps.' ) ?>
 </p>
 
 <p>
-    <b>Step 1:</b> Set up your two factor authentication by scanning the barcode below.
+    <b><?= __( 'Step 1:' ) ?></b> <?= __( 'Set up your two factor authentication by scanning the barcode below.' ) ?>
 </p>
 
 <div class="tw:mx-auto">
@@ -16,11 +16,11 @@
 </div>
 
 <p>
-    Alternatively, you can enter this code manually into your authenticator application: <b class="tw:font-mono"><?= $t->ee( $t->user->user2FA->secret ) ?></b>
+    <?= __( 'Alternatively, you can enter this code manually into your authenticator application:' ) ?> <b class="tw:font-mono"><?= $t->ee( $t->user->user2FA->secret ) ?></b>
 </p>
 
 <p>
-    <b>Step 2:</b> Enter the 6-digit code you see in your authenticator app and your password below.
+    <b><?= __( 'Step 2:' ) ?></b> <?= __( 'Enter the 6-digit code you see in your authenticator app and your password below.' ) ?>
 </p>
 <br/>
 

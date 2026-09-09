@@ -71,7 +71,7 @@
                     <?php if( $t->data[ 'params'][ "allGroups" ] && isset( $t->data[ 'params'][ "allGroups" ][ 'ROLE' ] ) ): ?>
                         <div class="collapse">
                             <label class="control-label col-lg-3 col-sm-3">&nbsp;
-                                Role&nbsp;
+                                <?= __( 'Role' ) ?>&nbsp;
                             </label>
                         </div>
                         <div>
@@ -97,10 +97,10 @@
                             <div class="card-header">
                                 <ul class="nav nav-tabs card-header-tabs">
                                     <li role="presentation" class="nav-item">
-                                        <a class="tab-link-body-note nav-link active" href="#body">Notes</a>
+                                        <a class="tab-link-body-note nav-link active" href="#body"><?= __( 'Notes' ) ?></a>
                                     </li>
                                     <li role="presentation" class="nav-item">
-                                        <a class="tab-link-preview-note nav-link" href="#preview">Preview</a>
+                                        <a class="tab-link-preview-note nav-link" href="#preview"><?= __( 'Preview' ) ?></a>
                                     </li>
                                 </ul>
                             </div>
@@ -115,7 +115,7 @@
                                 </div>
                                 <div role="tabpanel" class="tab-pane" id="preview">
                                     <div class="bg-light p-4 well-preview">
-                                        Loading...
+                                        <?= __( 'Loading...' ) ?>
                                     </div>
                                 </div>
                             </div>
@@ -126,7 +126,7 @@
                 <?php if( $isSuperUser ): ?>
                     <?php if( ( $t->data[ 'params' ][ "allGroups" ] && count( $t->data[ 'params' ][ "allGroups" ] ) > 1 ) || ( count( $t->data[ 'params'][ "allGroups" ] ) == 1 && !isset( $t->data[ 'params'][ "allGroups" ]['ROLE'] ) ) ): ?>
                         <div class="form-group">
-                            <label for="mayauthorize" class="control-label col-lg-2 col-sm-4">&nbsp;Groups&nbsp;</label>
+                            <label for="mayauthorize" class="control-label col-lg-2 col-sm-4">&nbsp;<?= __( 'Groups' ) ?>&nbsp;</label>
                             <table class="table table-no-border">
                                 <?php foreach( $t->data[ 'params'][ "allGroups" ] as $gname => $gvalue ): ?>
                                     <?php if( $gname !== "ROLE" && config('contact_group.types.' . $gname ) ): ?>

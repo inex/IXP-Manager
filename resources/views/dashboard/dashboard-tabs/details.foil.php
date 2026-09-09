@@ -6,7 +6,7 @@
 <div class="row">
     <div class="col-lg-6 mb-4">
         <h3>
-            NOC Details
+            <?= __( 'NOC Details' ) ?>
         </h3>
         <hr>
         <?= Former::open()
@@ -69,7 +69,7 @@
     <div class="col-lg-6">
         <?php if( !config('ixp.reseller.no_billing') || !$t->resellerMode() || !$c->resellerObject()->exists() ): ?>
             <h3>
-                Billing Details
+                <?= __( 'Billing Details' ) ?>
             </h3>
             <hr>
             <?= Former::open()
@@ -160,12 +160,12 @@
 
     <div class="col-lg-6">
         <h3>
-            AS-SETS
+            <?= __( 'AS-SETS' ) ?>
         </h3>
         <table class="table table-striped">
             <tr>
                 <td>
-                    Peering Policy
+                    <?= __( 'Peering Policy' ) ?>
                 </td>
                 <td>
                     <?= $t->ee( $c->peeringpolicy ) ?>
@@ -173,14 +173,14 @@
             </tr>
             <tr>
                 <td>
-                    IRRDB source
+                    <?= __( 'IRRDB source' ) ?>
                 </td>
                 <td>
                     <?php if( $c->irrdb ): ?>
                         <?= $t->ee( $c->irrdbConfig->source )?>
 
                         <?php if( $c->routeServerClient() && $c->irrdbFiltered() ): ?>
-                            (<a href="<?= route( "irrdb@list", [ "cust" => $c->id, "type" => 'prefix', "protocol" => $c->isIPvXEnabled( 4) ? 4 : 6 ] ) ?>">entries</a>)
+                            (<a href="<?= route( "irrdb@list", [ "cust" => $c->id, "type" => 'prefix', "protocol" => $c->isIPvXEnabled( 4) ? 4 : 6 ] ) ?>"><?= __( 'entries' ) ?></a>)
                         <?php endif; ?>
 
                     <?php endif; ?>
@@ -188,7 +188,7 @@
             </tr>
             <tr>
                 <td>
-                    ASN
+                    <?= __( 'ASN' ) ?>
                 </td>
                 <td>
                     <?= $t->asNumber( $c->autsys ) ?>
@@ -196,7 +196,7 @@
             </tr>
             <tr>
                 <td>
-                    IPv4 AS-SET
+                    <?= __( 'IPv4 AS-SET' ) ?>
                 </td>
                 <td>
                     <?= $t->ee( $c->peeringmacro ) ?>
@@ -204,7 +204,7 @@
             </tr>
             <tr>
                 <td>
-                    IPv6 AS-SET
+                    <?= __( 'IPv6 AS-SET' ) ?>
                 </td>
                 <td>
                     <?= $t->ee( $c->peeringmacrov6 ) ?>

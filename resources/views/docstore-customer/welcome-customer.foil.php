@@ -6,17 +6,16 @@
         </h3>
 
         <p>
-            This is <b>IXP Manager's</b> <b><u>per-<?= config( 'ixp_fe.lang.customer.one') ?></u></b> document store allowing
+            <?= __( 'This is' ) ?> <b><?= __( "IXP Manager's" ) ?></b> <b><u>per-<?= config( 'ixp_fe.lang.customer.one') ?></u></b> document store allowing
             administrators to upload documents into individual <?= config( 'ixp_fe.lang.customer.one') ?>-silos.
         </p>
 
         <p>
-            Files are also sometimes attached to patch panel ports (e.g. LoAs, test results, etc.). Where these exist for this customer,
-            you will find a virtual <em>Patch Panel Port Files</em> directory below listing all of these for convenience.
+            <?= __( 'Files are also sometimes attached to patch panel ports (e.g. LoAs, test results, etc.). Where these exist for this customer, you will find a virtual' ) ?> <em><?= __( 'Patch Panel Port Files' ) ?></em> <?= __( 'directory below listing all of these for convenience.' ) ?>
         </p>
 
         <p>
-            <b>For more information, <a target="_blank" href="https://docs.ixpmanager.org/latest/features/docstore/">see the official documentation here</a>.</b>
+            <b><?= __( 'For more information,' ) ?> <a target="_blank" href="https://docs.ixpmanager.org/latest/features/docstore/"><?= __( 'see the official documentation here' ) ?></a>.</b>
         </p>
 
     <?php else: ?>
@@ -28,12 +27,11 @@
         </p>
 
         <p>
-            Files are also sometimes attached to patch panel ports (e.g. LoAs, test results, etc.). Where these exist for you,
-            you will find a virtual <em>Patch Panel Port Files</em> directory below listing all of these.
+            <?= __( 'Files are also sometimes attached to patch panel ports (e.g. LoAs, test results, etc.). Where these exist for you, you will find a virtual' ) ?> <em><?= __( 'Patch Panel Port Files' ) ?></em> <?= __( 'directory below listing all of these.' ) ?>
         </p>
 
         <p>
-            <b>For more information, <a target="_blank" href="https://docs.ixpmanager.org/latest/features/docstore/">see the official documentation here</a>.</b>
+            <b><?= __( 'For more information,' ) ?> <a target="_blank" href="https://docs.ixpmanager.org/latest/features/docstore/"><?= __( 'see the official documentation here' ) ?></a>.</b>
         </p>
     <?php endif; ?>
 </div>

@@ -17,17 +17,17 @@
 <?php $this->section( 'page-header-postamble' ) ?>
       <div class="btn-group btn-group-sm" role="group">
           <button type="button" class="btn btn-white dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              View / Update IRRDB Entries
+              <?= __( 'View / Update IRRDB Entries' ) ?>
           </button>
 
           <div class="dropdown-menu dropdown-menu-right scrollable-dropdown">
               <?php if( $t->customer->isIPvXEnabled( 4 ) ): ?>
-                  <a class="dropdown-item <?= !request()->is( "irrdb/*/asn/4" ) ?: 'active' ?>" href="<?= route( "irrdb@list", [ "cust" => $t->customer->id, "type" => "asn", "protocol" => 4 ] ) ?>">IPv4 IRRDB ASNs</a>
-                  <a class="dropdown-item <?= !request()->is( "irrdb/*/prefix/4" ) ?: 'active' ?>" href="<?= route( "irrdb@list", [ "cust" => $t->customer->id, "type" => "prefix", "protocol" => 4 ] ) ?>">IPv4 IRRDB Prefixes</a>
+                  <a class="dropdown-item <?= !request()->is( "irrdb/*/asn/4" ) ?: 'active' ?>" href="<?= route( "irrdb@list", [ "cust" => $t->customer->id, "type" => "asn", "protocol" => 4 ] ) ?>"><?= __( 'IPv4 IRRDB ASNs' ) ?></a>
+                  <a class="dropdown-item <?= !request()->is( "irrdb/*/prefix/4" ) ?: 'active' ?>" href="<?= route( "irrdb@list", [ "cust" => $t->customer->id, "type" => "prefix", "protocol" => 4 ] ) ?>"><?= __( 'IPv4 IRRDB Prefixes' ) ?></a>
               <?php endif; ?>
               <?php if( $t->customer->isIPvXEnabled( 6 ) ): ?>
-                  <a class="dropdown-item <?= !request()->is( "irrdb/*/asn/6" ) ?: 'active' ?>" href="<?= route( "irrdb@list", [ "cust" => $t->customer->id, "type" => "asn", "protocol" => 6 ] ) ?>">IPv6 IRRDB ASNs</a>
-                  <a class="dropdown-item <?= !request()->is( "irrdb/*/prefix/6" ) ?: 'active' ?>" href="<?= route( "irrdb@list", [ "cust" => $t->customer->id, "type" => "prefix", "protocol" => 6 ] ) ?>">IPv6 IRRDB Prefixes</a>
+                  <a class="dropdown-item <?= !request()->is( "irrdb/*/asn/6" ) ?: 'active' ?>" href="<?= route( "irrdb@list", [ "cust" => $t->customer->id, "type" => "asn", "protocol" => 6 ] ) ?>"><?= __( 'IPv6 IRRDB ASNs' ) ?></a>
+                  <a class="dropdown-item <?= !request()->is( "irrdb/*/prefix/6" ) ?: 'active' ?>" href="<?= route( "irrdb@list", [ "cust" => $t->customer->id, "type" => "prefix", "protocol" => 6 ] ) ?>"><?= __( 'IPv6 IRRDB Prefixes' ) ?></a>
               <?php endif; ?>
           </div>
 
@@ -45,11 +45,10 @@
               <div class="alert alert-info" role="alert">
                   <?php if( $t->updatingIrrdb ): ?>
                       <p>
-                          Our queue runner is updating the IRRDB entries for you.
+                          <?= __( 'Our queue runner is updating the IRRDB entries for you.' ) ?>
                       </p>
                       <p>
-                          Please wait a few moments and then <a href="<?= route( "irrdb@list", [ "cust" => $t->customer->id, "type" => $t->type, "protocol" => $t->protocol ] ) ?>">click
-                              here to refresh the page</a>.
+                          <?= __( 'Please wait a few moments and then' ) ?> <a href="<?= route( "irrdb@list", [ "cust" => $t->customer->id, "type" => $t->type, "protocol" => $t->protocol ] ) ?>"><?= __( 'click here to refresh the page' ) ?></a>.
                       </p>
                   <?php else: ?>
                       The IRRDB update process has completed. <?= $t->ee( $t->updatedIrrdb[ "msg" ] ) ?>
@@ -87,10 +86,10 @@
                           <?= $t->type === "asn" ? 'ASN' : 'Prefix' ?>
                       </th>
                       <th>
-                          First seen
+                          <?= __( 'First seen' ) ?>
                       </th>
                       <th>
-                          Last seen
+                          <?= __( 'Last seen' ) ?>
                       </th>
                   </tr>
               </thead>
@@ -124,8 +123,8 @@
                           <?= $t->ee( $t->updatedIrrdb['netTime'] ) ?>s / <?= $t->ee( $t->updatedIrrdb['dbTime'] ) ?>s / <?= $t->ee( $t->updatedIrrdb['procTime'] ) ?>s.
                       </p>
                       <p>
-                          <b>It looks like you're a super admin!</b>
-                          You can <a href="<?= route( 'irrdb@update', [ 'cust' => $t->customer->id, 'type' => $t->type, 'protocol' => $t->protocol, 'reset_cache' => 1 ] ) ?>">force a cache refresh by clicking here</a>.
+                          <b><?= __( "It looks like you're a super admin!" ) ?></b>
+                          <?= __( 'You can' ) ?> <a href="<?= route( 'irrdb@update', [ 'cust' => $t->customer->id, 'type' => $t->type, 'protocol' => $t->protocol, 'reset_cache' => 1 ] ) ?>"><?= __( 'force a cache refresh by clicking here' ) ?></a>.
                       </p>
                   <?php endif; ?>
               </div>

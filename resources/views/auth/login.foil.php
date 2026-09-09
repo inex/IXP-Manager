@@ -13,7 +13,7 @@
                     <img class="tw:inline img-fluid tw:w-full tw:max-w-sm tw:mx-auto" src="<?= config( "identity.biglogo" ) ?>" />
                 <?php else: ?>
                     <h2>
-                        [Your Logo Here]
+                        <?= __( '[Your Logo Here]' ) ?>
                     </h2>
                     <div>
                         Configure <code>IDENTITY_BIGLOGO</code> in <code>.env</code>.
@@ -32,7 +32,7 @@
                 ?>
                 <div class="tw:mb-6">
                     <label class="control-label" for="username">
-                        Username
+                        <?= __( 'Username' ) ?>
                     </label>
                     <input name="username" class="form-control" id="username" type="text" placeholder="Username" autofocus value="<?= $t->ee( old('username') ) ?>">
                     <?php foreach( $t->errors->get( 'username' ) as $err ): ?>
@@ -42,7 +42,7 @@
 
                 <div class="tw:mb-6">
                     <label class="control-label" for="password">
-                        Password
+                        <?= __( 'Password' ) ?>
                     </label>
                     <input name="password" class="form-control" id="password" type="password" placeholder="...">
                     <?php foreach( $t->errors->get( 'password' ) as $err ): ?>
@@ -54,24 +54,24 @@
                     <label class="tw:block tw:text-grey-dark tw:font-bold">
                         <input class="tw:mr-2 tw:leading-tight" type="checkbox" name="remember" id="remember-me" value="1">
                         <span class="tw:text-sm">
-                            Remember me
+                            <?= __( 'Remember me' ) ?>
                         </span>
                     </label>
                 </div>
 
                 <div class="tw:flex tw:items-center tw:justify-between">
                     <a href="<?= route( "forgot-password@show-form" ) ?>">
-                        Forgot Password?
+                        <?= __( 'Forgot Password?' ) ?>
                     </a>
 
                     <button id="login-btn" class="btn btn-primary" type="submit">
-                        Sign In
+                        <?= __( 'Sign In' ) ?>
                     </button>
                 </div>
 
                 <?php if( config( 'auth.peeringdb.enabled' ) ): ?>
                     <hr class="tw:my-4">
-                    <p class="tw:text-center tw:text-lg tw:italic tw:text-grey-dark">or login with</p>
+                    <p class="tw:text-center tw:text-lg tw:italic tw:text-grey-dark"><?= __( 'or login with' ) ?></p>
                     <p class="tw:text-center">
                         <a href="<?= route('auth:login-peeringdb') ?>">
                             <img class="tw:inline" width="60%" src="<?= asset( 'images/pdb-logo-coloured.png' ) ?>">

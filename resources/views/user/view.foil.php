@@ -10,7 +10,7 @@
 <?php $this->section( 'page-header-postamble' ) ?>
     <div class="btn-group btn-group-sm ml-auto" role="group">
         <a target="_blank" class="btn btn-white" href="https://docs.ixpmanager.org/latest/usage/users/">
-            Documentation
+            <?= __( 'Documentation' ) ?>
         </a>
 
         <a id="add-user" class="btn btn-white" href="<?= route('user@list') ?>">
@@ -38,7 +38,7 @@
 
                     <?php if( !config( 'ixp_fe.frontend.disabled.logs' ) && method_exists( \IXP\Models\User::class, 'logSubject') && Auth::user()->isSuperUser() ): ?>
                         <a class="btn btn-white btn-sm" href="<?= route( 'log@list', [ 'model' => 'User' , 'model_id' => $t->u[ 'id' ]  ] ) ?>">
-                            View logs
+                            <?= __( 'View logs' ) ?>
                         </a>
                     <?php endif; ?>
                 </div>
@@ -48,7 +48,7 @@
                             <tr>
                                 <td>
                                     <b>
-                                        Name
+                                        <?= __( 'Name' ) ?>
                                     </b>
                                 </td>
                                 <td>
@@ -59,7 +59,7 @@
                             <tr>
                                 <td>
                                     <b>
-                                        Username
+                                        <?= __( 'Username' ) ?>
                                     </b>
                                 </td>
                                 <td>
@@ -70,7 +70,7 @@
                             <tr>
                                 <td>
                                     <b>
-                                        Email
+                                        <?= __( 'Email' ) ?>
                                     </b>
                                 </td>
                                 <td>
@@ -81,7 +81,7 @@
                             <tr>
                                 <td>
                                     <b>
-                                        Privileges
+                                        <?= __( 'Privileges' ) ?>
                                     </b>
                                 </td>
                                 <td>
@@ -92,7 +92,7 @@
                             <tr>
                                 <td>
                                     <b>
-                                        Enabled
+                                        <?= __( 'Enabled' ) ?>
                                     </b>
                                 </td>
                                 <td>
@@ -103,7 +103,7 @@
                             <tr>
                                 <td>
                                     <b>
-                                        2FA Enabled
+                                        <?= __( '2FA Enabled' ) ?>
                                     </b>
                                 </td>
                                 <td>
@@ -114,7 +114,7 @@
                             <tr>
                                 <td>
                                     <b>
-                                        Created
+                                        <?= __( 'Created' ) ?>
                                     </b>
                                 </td>
                                 <td>
@@ -124,7 +124,7 @@
                             <tr>
                                 <td>
                                     <b>
-                                        Created By
+                                        <?= __( 'Created By' ) ?>
                                     </b>
                                 </td>
                                 <td>
@@ -136,7 +136,7 @@
                                 <tr>
                                     <td>
                                         <b>
-                                            Updated
+                                            <?= __( 'Updated' ) ?>
                                         </b>
                                     </td>
                                     <td>
@@ -154,19 +154,19 @@
                                                         <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?>
                                                     </th>
                                                     <th>
-                                                        Privilege
+                                                        <?= __( 'Privilege' ) ?>
                                                     </th>
                                                     <th>
-                                                        Created By
+                                                        <?= __( 'Created By' ) ?>
                                                     </th>
                                                     <th>
-                                                        Created
+                                                        <?= __( 'Created' ) ?>
                                                     </th>
                                                     <th>
-                                                        Updated
+                                                        <?= __( 'Updated' ) ?>
                                                     </th>
                                                     <th>
-                                                        Actions
+                                                        <?= __( 'Actions' ) ?>
                                                     </th>
                                                 </tr>
                                             </thead>
@@ -191,7 +191,7 @@
                                                         <td>
                                                             <?php if( !config( 'ixp_fe.frontend.disabled.logs' ) && method_exists( \IXP\Models\CustomerToUser::class, 'logSubject') ): ?>
                                                                 <a class="btn btn-white btn-sm" href="<?= route( 'log@list', [ 'model' => 'CustomerToUser' , 'model_id' => $c2u->id ] ) ?>">
-                                                                    View logs
+                                                                    <?= __( 'View logs' ) ?>
                                                                 </a>
                                                             <?php endif; ?>
                                                         </td>
@@ -208,12 +208,12 @@
             </div>
             <br><br><br>
             <p>
-                The <em>created by</em> column indicates how the user was linked to the <?= config( 'ixp_fe.lang.customer.one' ) ?>. The information you may see includes:
+                <?= __( 'The' ) ?> <em><?= __( 'created by' ) ?></em> column indicates how the user was linked to the <?= config( 'ixp_fe.lang.customer.one' ) ?>. The information you may see includes:
             </p>
             <ul>
-                <li> <em>migration-script:</em> the user originally belonged to this <?= config( 'ixp_fe.lang.customer.one' ) ?> in versions of IXP Manager &lt;v5.0 when users where linked 1:1 with <?= config( 'ixp_fe.lang.customer.many' ) ?>. </li>
-                <li> <em>user:</em> the user was linked to this <?= config( 'ixp_fe.lang.customer.one' ) ?> by either a <?= config( 'ixp_fe.lang.customer.one' ) ?> admin or a super admin. </li>
-                <li> <em>PeeringDB:</em> the user was added via a PeeringDB OAuth login. </li>
+                <li> <em><?= __( 'migration-script:' ) ?></em> the user originally belonged to this <?= config( 'ixp_fe.lang.customer.one' ) ?> in versions of IXP Manager &lt;v5.0 when users where linked 1:1 with <?= config( 'ixp_fe.lang.customer.many' ) ?>. </li>
+                <li> <em><?= __( 'user:' ) ?></em> the user was linked to this <?= config( 'ixp_fe.lang.customer.one' ) ?> by either a <?= config( 'ixp_fe.lang.customer.one' ) ?> admin or a super admin. </li>
+                <li> <em><?= __( 'PeeringDB:' ) ?></em> <?= __( 'the user was added via a PeeringDB OAuth login.' ) ?> </li>
             </ul>
         </div>
     </div>
