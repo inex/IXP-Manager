@@ -151,7 +151,7 @@
                                             <thead class="thead-dark">
                                                 <tr>
                                                     <th>
-                                                        <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?>
+                                                        <?= __c( ':Customer' ) ?>
                                                     </th>
                                                     <th>
                                                         <?= __( 'Privilege' ) ?>
@@ -208,11 +208,14 @@
             </div>
             <br><br><br>
             <p>
-                <?= __( 'The' ) ?> <em><?= __( 'created by' ) ?></em> column indicates how the user was linked to the <?= config( 'ixp_fe.lang.customer.one' ) ?>. The information you may see includes:
+                <?= __c( 'The :createdBy column indicates how the user was linked to the :customer. The information you may see includes:', [
+                    'createdBy' => '<em>' . __( 'created by' ) . '</em>' ] ) ?>
             </p>
             <ul>
-                <li> <em><?= __( 'migration-script:' ) ?></em> the user originally belonged to this <?= config( 'ixp_fe.lang.customer.one' ) ?> in versions of IXP Manager &lt;v5.0 when users where linked 1:1 with <?= config( 'ixp_fe.lang.customer.many' ) ?>. </li>
-                <li> <em><?= __( 'user:' ) ?></em> the user was linked to this <?= config( 'ixp_fe.lang.customer.one' ) ?> by either a <?= config( 'ixp_fe.lang.customer.one' ) ?> admin or a super admin. </li>
+                <li> <?= __c( ':label the user originally belonged to this :customer in versions of IXP Manager &lt;v5.0 when users where linked 1:1 with :customers.', [
+                    'label' => '<em>' . __( 'migration-script:' ) . '</em>' ] ) ?> </li>
+                <li> <?= __c( ':label the user was linked to this :customer by either a :customer admin or a super admin.', [
+                    'label' => '<em>' . __( 'user:' ) . '</em>' ] ) ?> </li>
                 <li> <em><?= __( 'PeeringDB:' ) ?></em> <?= __( 'the user was added via a PeeringDB OAuth login.' ) ?> </li>
             </ul>
         </div>

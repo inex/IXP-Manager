@@ -5,7 +5,7 @@
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-    <?= $t->associates ? 'Associate' : '' ?> <?= ucfirst( config( 'ixp_fe.lang.customer.many' ) ) ?>
+    <?= $t->associates ? __c( 'Associate :Customers' ) : __c( ':Customers' ) ?>
 <?php $this->append() ?>
 
 
@@ -18,7 +18,7 @@
                 <thead class="thead-dark">
                     <tr>
                         <th>
-                            <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?>
+                            <?= __c( ':Customer' ) ?>
                         </th>
                         <th class="tw:hidden tw:md:table-cell">
                             <?= __( 'Joined' ) ?>

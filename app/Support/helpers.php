@@ -309,3 +309,52 @@ if( !function_exists( 'ixp_manager_website_url' ) ) {
         return rtrim( config( 'ixp_api.ixp-manager-dotorg.base_url' ), "/" ) . "/" . ltrim( $path, '/' );
     }
 }
+if( !function_exists( '__c' ) ) {
+    /**
+     * Translate a string containing the configurable member / customer noun.
+     *
+     * Each IXP chooses whether its participants are called 'members' or
+     * 'customers' (IXP_FE_FRONTEND_CUSTOMER_* / config('ixp_fe.lang.customer')).
+     * Before translation those nouns were concatenated into English sentences:
+     *
+     *     ucfirst( config( 'ixp_fe.lang.customer.one' ) ) . ' Details'
+     *
+     * That cannot be translated. The translator never sees the whole sentence,
+     * and languages that need an article or agreement around the noun - French
+     * among them - cannot express it by substitution alone.
+     *
+     * This wraps __() and supplies the noun as placeholders, so the call site
+     * is a single translatable sentence:
+     *
+     *     __c( ':Customer Details' )
+     *
+     * Placeholders provided:
+     *
+     *     :customer        one         (member)
+     *     :customers       many        (members)
+     *     :customerOwner   possessive  (member's)
+     *     :customerOwners  possessive  (members')
+     *
+     * Laravel derives the capitalised forms itself, so :Customer and :CUSTOMER
+     * also work. Pass $replace for any further placeholders the string needs.
+     *
+     * @param string $key      the English source string, and the translation key
+     * @param array  $replace  further placeholders
+     *
+     * @return string
+     */
+    function __c( string $key, array $replace = [] ): string
+    {
+        $lang = config( 'ixp_fe.lang.customer' );
+
+        // resolve via the translator directly rather than __(): this is a
+        // forwarder, so its $key is never a literal and lang:extract would
+        // otherwise report it as an unextractable call site.
+        return app( 'translator' )->get( $key, array_merge( [
+            'customerOwners' => $lang[ 'owners' ],
+            'customerOwner'  => $lang[ 'owner' ],
+            'customers'      => $lang[ 'many' ],
+            'customer'       => $lang[ 'one' ],
+        ], $replace ) );
+    }
+}

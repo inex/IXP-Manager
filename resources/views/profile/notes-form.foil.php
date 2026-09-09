@@ -1,7 +1,7 @@
 <?php if( Auth::getUser()->isSuperUser() ): ?>
     <div class="col-lg-6 col-md-12">
         <h3>
-            <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?> Notes
+            <?= __c( ':Customer Notes' ) ?>
         </h3>
         <hr>
         <?= Former::open()
@@ -16,8 +16,8 @@
         <?=  Former::radios('')
             ->radios([
                 '&nbsp;&nbsp;&nbsp;Disable all email notifications'                                                                   => [ 'name' => 'notify', 'id' => 'notify-none',     'value' => 'none'    ],
-                '&nbsp;&nbsp;&nbsp;Email me on changes to only watched ' . config( 'ixp_fe.lang.customer.many' ) . ' and notes'   => [ 'name' => 'notify', 'id' => 'notify-watched',  'value' => 'watched' ],
-                '&nbsp;&nbsp;&nbsp;Email me on any change to any ' . config( 'ixp_fe.lang.customer.one' ) . ' note'               => [ 'name' => 'notify', 'id' => 'id="notify-all"', 'value' => 'all'     ],
+                '&nbsp;&nbsp;&nbsp;' . __c( 'Email me on changes to only watched :customers and notes' )   => [ 'name' => 'notify', 'id' => 'notify-watched',  'value' => 'watched' ],
+                '&nbsp;&nbsp;&nbsp;' . __c( 'Email me on any change to any :customer note' )               => [ 'name' => 'notify', 'id' => 'id="notify-all"', 'value' => 'all'     ],
             ])
             ->name( 'notify' )
             ->label( '' )

@@ -6,7 +6,7 @@ $this->layout( 'layouts/ixpv4' );
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-    <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?> Document Store / <?= $t->dir ? 'Edit' : 'Create' ?> Directory
+    <?= __c( ':Customer Document Store' ) ?> / <?= $t->dir ? __( 'Edit Directory' ) : __( 'Create Directory' ) ?>
 <?php $this->append() ?>
 
 

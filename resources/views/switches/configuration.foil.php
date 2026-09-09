@@ -119,7 +119,7 @@
                             <?= __( 'ID' ) ?>
                         </th>
                         <th>
-                            <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?>
+                            <?= __c( ':Customer' ) ?>
                         </th>
                         <th>
                             <?= __( 'Switch' ) ?>

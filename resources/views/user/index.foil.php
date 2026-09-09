@@ -40,7 +40,7 @@
                         </th>
                         <?php if( $isSuperUser ): ?>
                             <th>
-                                <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?>
+                                <?= __c( ':Customer' ) ?>
                             </th>
                         <?php endif; ?>
                         <th>

@@ -40,15 +40,15 @@ use PragmaRX\Google2FALaravel\Support\Authenticator as GoogleAuthenticator;
 
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle <?= !request()->is( 'customer/*' , 'switch/configuration', 'docstore/*' ) ?: 'active' ?>" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?> Information
+                    <?= __c( ':Customer Information' ) ?>
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                     <a class="dropdown-item <?= !request()->is( 'customer/details' ) ?: 'active' ?>" href="<?= route('customer@details') ?>">
-                        <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?> Details
+                        <?= __c( ':Customer Details' ) ?>
                     </a>
 
                     <a class="dropdown-item <?= !request()->is( 'customer/associates' ) ?: 'active' ?>" href="<?= route( "customer@associates" ) ?>">
-                        Associate <?= ucfirst( config( 'ixp_fe.lang.customer.many' ) ) ?>
+                        <?= __c( 'Associate :Customers' ) ?>
                     </a>
 
                     <a class="dropdown-item <?= !request()->is( 'switch/configuration' ) ?: 'active' ?>" href="<?= route('switch@configuration') ?>">
@@ -175,7 +175,7 @@ use PragmaRX\Google2FALaravel\Support\Authenticator as GoogleAuthenticator;
                         <div class="dropdown-divider"></div>
 
                         <a class="dropdown-item <?= !request()->is( 'statistics/members' ) ?: 'active' ?>" href="<?= route( 'statistics@members' ) ?>">
-                            <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?> Graphs
+                            <?= __c( ':Customer Graphs' ) ?>
                         </a>
                     <?php endif; ?>
 

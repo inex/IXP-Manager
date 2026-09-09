@@ -123,6 +123,44 @@ orphaned key in the `notes` column as a starting suggestion.
 Users can then pick it on their profile page, and it can be set as a customer
 wide default on the customer edit form.
 
+## The member / customer noun
+
+Each IXP chooses whether its participants are called *members* or *customers*
+(`IXP_FE_FRONTEND_CUSTOMER_*`, exposed as `config('ixp_fe.lang.customer')`).
+That noun used to be concatenated into English sentences:
+
+```php
+ucfirst( config( 'ixp_fe.lang.customer.one' ) ) . ' Details'
+```
+
+which cannot be translated - the translator never sees the whole sentence, and
+French needs an article and agreement around the noun that substitution alone
+cannot produce.
+
+Use `__c()` instead. It wraps `__()` and supplies the noun as placeholders:
+
+```php
+<?= __c( ':Customer Details' ) ?>
+<?= __c( 'Associate :Customers' ) ?>
+<?= __c( 'Any :customer which has files uploaded will be listed here.' ) ?>
+```
+
+| Placeholder | Config key | English default |
+|---|---|---|
+| `:customer` | `one` | member |
+| `:customers` | `many` | members |
+| `:customerOwner` | `owner` | member's |
+| `:customerOwners` | `owners` | members' |
+
+Laravel derives the capitalised forms, so `:Customer` and `:CUSTOMER` work too.
+Pass a second argument for any further placeholders:
+
+```php
+__c( ':Customer :name has :n ports', [ 'name' => $c->name, 'n' => $n ] )
+```
+
+`lang:extract` understands `__c()` exactly as it does `__()`.
+
 ## Translating a string that is not yet wrapped
 
 ```diff

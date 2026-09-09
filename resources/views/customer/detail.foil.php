@@ -8,10 +8,10 @@
 <?php $this->section( 'page-header-preamble' ) ?>
     <?php if( Auth::check() && $isSuperUser ): ?>
         <a href="<?= route( $c->typeAssociate() ? 'customer@associates' : 'customer@details' )?>">
-            <?= $c->typeAssociate() ? 'Associate ' : '' ?><?= ucfirst( config( 'ixp_fe.lang.customer.many' ) ) ?>
+            <?= $c->typeAssociate() ? __c( 'Associate :Customers' ) : __c( ':Customers' ) ?>
         </a>
     <?php else: ?>
-        <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?> Detail
+        <?= __c( ':Customer Detail' ) ?>
     <?php endif; ?>
 
     <?php if( Auth::check() && $isSuperUser ): ?>

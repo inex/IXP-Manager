@@ -5,7 +5,7 @@
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-    Per-<?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?> Document Store
+    <?= __c( 'Per-:Customer Document Store' ) ?>
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>

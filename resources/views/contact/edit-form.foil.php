@@ -39,11 +39,11 @@
                 <?php if( $isSuperUser ):?>
                     <?= Former::select( 'custid' )
                         ->id( 'cust' )
-                        ->label( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) )
-                        ->placeholder( 'Select a ' . config( 'ixp_fe.lang.customer.one' ) )
+                        ->label( __c( ':Customer' ) )
+                        ->placeholder( __c( 'Select a :customer' ) )
                         ->fromQuery( $t->data[ 'params'][ 'custs' ], fn ($model) => $t->ee( $model->name ) )
                         ->addClass( 'chzn-select' )
-                        ->blockHelp( ucfirst( config( 'ixp_fe.lang.customer.one' ) )  . ' to assign this contact to.' );
+                        ->blockHelp( __c( ':Customer to assign this contact to.' ) );
                     ?>
                 <?php endif; ?>
 

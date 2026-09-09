@@ -50,9 +50,12 @@ class Extractor
     /**
      * Functions whose first argument is a translation key.
      *
+     * __c() is IXP Manager's own helper for strings containing the
+     * configurable member/customer noun - see app/Support/helpers.php.
+     *
      * @var string[]
      */
-    public const array FUNCTIONS = [ '__', 'trans' ];
+    public const array FUNCTIONS = [ '__', 'trans', '__c' ];
 
     /**
      * key => list of [ 'file' => ..., 'line' => ... ]

@@ -2,12 +2,14 @@
 
     <?php if( Auth::getUser()->isSuperUser() ): ?>
         <h3 class="tw:mb-8">
-          Welcome to the <?= ucfirst( config( 'ixp_fe.lang.customer.one') ) ?> Document Store for <?= $t->ee( $t->cust->name ) ?>
+          <?= __c( 'Welcome to the :Customer Document Store for :name', [ 'name' => $t->ee( $t->cust->name ) ] ) ?>
         </h3>
 
         <p>
-            <?= __( 'This is' ) ?> <b><?= __( "IXP Manager's" ) ?></b> <b><u>per-<?= config( 'ixp_fe.lang.customer.one') ?></u></b> document store allowing
-            administrators to upload documents into individual <?= config( 'ixp_fe.lang.customer.one') ?>-silos.
+            <?= __c( "This is :app :perCustomer document store allowing administrators to upload documents into individual :customer-silos.", [
+                'app'         => '<b>' . __( "IXP Manager's" ) . '</b>',
+                'perCustomer' => '<b><u>' . __c( 'per-:customer' ) . '</u></b>',
+            ] ) ?>
         </p>
 
         <p>
