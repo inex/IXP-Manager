@@ -1,7 +1,10 @@
 <?php if( $t->data['session_token'] === null ): ?>
     <div class="alert alert-info tw:mb-8" role="alert">
-        <b><?= __( 'Active sessions' ) ?></b> <?= __( 'are only login sessions that had' ) ?> <em><?= __( 'Remember me' ) ?></em> <?= __( 'checked. Your current session was' ) ?>
-        <b><?= __( 'not' ) ?></b> <?= __( 'initiated with' ) ?> <em><?= __( 'Remember me' ) ?></em> <?= __( 'checked.' ) ?>
+        <?= __( ':activeSessions are only login sessions that had :rememberMe checked. Your current session was :not initiated with :rememberMe checked.', [
+            'activeSessions' => '<b>'  . __( 'Active sessions' ) . '</b>',
+            'rememberMe'     => '<em>' . __( 'Remember me' )     . '</em>',
+            'not'            => '<b>'  . __( 'not' )             . '</b>',
+        ] ) ?>
     </div>
 <?php endif; ?>
 

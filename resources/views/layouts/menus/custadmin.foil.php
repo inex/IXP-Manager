@@ -6,7 +6,7 @@ use PragmaRX\Google2FALaravel\Support\Authenticator as GoogleAuthenticator;
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <?= $this->insert('layouts/ixp-logo-header'); ?>
 
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="<?= __( 'Toggle navigation' ) ?>">
         <i class="fa fa-ellipsis-v"></i>
     </button>
 

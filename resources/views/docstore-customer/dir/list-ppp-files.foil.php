@@ -22,7 +22,7 @@
             </a>
 
             <a id="add-dir" class="btn btn-white" href="<?= route('docstore-c-dir@list', [ 'cust' => $t->cust ] ) ?>"
-               data-toggle="tooltip" data-placement="bottom" title="Root Directory"
+               data-toggle="tooltip" data-placement="bottom" title="<?= __( 'Root Directory' ) ?>"
             >
                 <i class="fa fa-home"></i>
             </a>

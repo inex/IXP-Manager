@@ -34,7 +34,7 @@
                     <label class="control-label" for="username">
                         <?= __( 'Username' ) ?>
                     </label>
-                    <input name="username" class="form-control" id="username" type="text" placeholder="Username" autofocus value="<?= $t->ee( old('username') ) ?>">
+                    <input name="username" class="form-control" id="username" type="text" placeholder="<?= __( 'Username' ) ?>" autofocus value="<?= $t->ee( old('username') ) ?>">
                     <?php foreach( $t->errors->get( 'username' ) as $err ): ?>
                         <p class="tw:text-red-500 tw:text-xs tw:italic tw:mt-2"><?= $t->ee( $err ) ?></p>
                     <?php endforeach; ?>

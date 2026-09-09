@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title><?= __( 'Down for Maintenance' ) ?></title>
+    <title>Down for Maintenance</title>
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
@@ -52,11 +52,11 @@
 <div class="flex-center position-ref" style="margin-top: 60px;">
 
     <div style="display: flex; justify-content: center;">
-        <?= __( '@if( config( "identity.biglogo" ) )' ) ?>
+        @if( config( "identity.biglogo" ) )
             <img class="tw:inline img-fluid tw:w-full tw:max-w-sm tw:mx-auto" src="<?= config( "identity.biglogo" ) ?>" alt="IXP Manager Logo" />
-        <?= __( '@else' ) ?>
+        @else
             <img src="<?= url("/images/ixp-manager.png") ?>" alt="IXP Manager Logo" />
-        <?= __( '@endif' ) ?>
+        @endif
     </div>
 
 </div>
@@ -64,20 +64,20 @@
 
 <div class="flex-center position-ref" style="margin-top: 80px; font-weight: 900; color: #434b4f;">
     <div class="code">
-        <?= __( 'Planned Maintenance' ) ?>
+        Planned Maintenance
     </div>
 
 </div>
 
 <div class="flex-center position-ref message" style="margin-top: 120px; font-size: 18px;">
 
-    <?= __( 'IXP Manager is undergoing planned maintenance. Please check back later.' ) ?>
+    IXP Manager is undergoing planned maintenance. Please check back later.
 
 </div>
 
 <div class="flex-center position-ref message" style="margin-top: 20px; font-size: 18px;">
 
-    <?= __( 'For support, please email' ) ?>&nbsp;<a href="mailto:{{ config( 'identity.support_email' ) }}">{{ config( 'identity.support_email' ) }}</a>.
+    For support, please email&nbsp;<a href="mailto:{{ config( 'identity.support_email' ) }}">{{ config( 'identity.support_email' ) }}</a>.
 
 </div>
 

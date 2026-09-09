@@ -142,7 +142,7 @@
                                             </td>
                                             <td>
                                                 <a class="btn btn-white btn-delete btn-delete-c2u" id="btn-delete-c2u-<?= $c2u->id ?>" data-object-id='<?= count( $customersToUser ) > 1 ? $c2u->id : $c2u->user_id ?>'
-                                                   href="<?= count( $customersToUser ) > 1 ? route( 'customer-to-user@delete', [ 'c2u' => $c2u->id ] ) : route('user@delete', [ 'u' => $c2u->user_id ] )  ?>" title="Delete">
+                                                   href="<?= count( $customersToUser ) > 1 ? route( 'customer-to-user@delete', [ 'c2u' => $c2u->id ] ) : route('user@delete', [ 'u' => $c2u->user_id ] )  ?>" title="<?= __( 'Delete' ) ?>">
                                                     <i class="fa fa-trash"></i>
                                                 </a>
                                             </td>
@@ -207,7 +207,7 @@
                             <b class="mr-auto my-auto">
                                 <?= __( 'If you are sure you want to delete the user:' ) ?>
                             </b>
-                            <a class="btn btn-danger mr-4 btn-delete btn-delete-user" id="btn-delete-<?= $t->user->id ?>" data-object-id='<?= $t->user->id ?>' data-nb-c2u="<?= $t->user->customers()->count() ?>" href="<?= route( 'user@delete', [ 'u' => $t->user->id ] ) ?>" title="Delete">
+                            <a class="btn btn-danger mr-4 btn-delete btn-delete-user" id="btn-delete-<?= $t->user->id ?>" data-object-id='<?= $t->user->id ?>' data-nb-c2u="<?= $t->user->customers()->count() ?>" href="<?= route( 'user@delete', [ 'u' => $t->user->id ] ) ?>" title="<?= __( 'Delete' ) ?>">
                                 <?= __( 'Delete User' ) ?>
                             </a>
                         </div>
@@ -222,7 +222,10 @@
                     </div>
                     <div class="col-sm-12">
                         <p>
-                            <?= __( 'In previous versions of' ) ?> <b><?= __( 'IXP Manager' ) ?></b><?= __( ", administrators had the facility to set a user's password. This has been removed as we believe it to be bad practice - only a user should know their own password. User's can set (and reset) their passwords via their" ) ?> <i><?= __( 'Profile' ) ?></i> <?= __( 'page or using the password reset functionality.' ) ?>
+                            <?= __( "In previous versions of :app, administrators had the facility to set a user's password. This has been removed as we believe it to be bad practice - only a user should know their own password. Users can set (and reset) their passwords via their :profile page or using the password reset functionality.", [
+                                'app'     => '<b>IXP Manager</b>',
+                                'profile' => '<i>' . __( 'Profile' ) . '</i>',
+                            ] ) ?>
                         </p>
                     </div>
                 </div>

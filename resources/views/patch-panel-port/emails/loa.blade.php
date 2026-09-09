@@ -1,7 +1,6 @@
-Hi,
+{{ __( 'Hi,' ) }}
 
-You or someone in your organisation requested a LoA on the
-following cross connect to {{ env( 'IDENTITY_ORGNAME' ) }}.
+{{ __( 'You or someone in your organisation requested a LoA on the following cross connect to :org.', [ 'org' => env( 'IDENTITY_ORGNAME' ) ] ) }}
 
 
 ```
@@ -16,9 +15,9 @@ Connector:      {{ $ppp->patchPanel->connectorType() }}
 State:          {{ $ppp->states() }}
 ```
 
-Please find the LoA attached as a PDF.
+{{ __( 'Please find the LoA attached as a PDF.' ) }}
 
-If you have any queries about this, please reply to this email.
+{{ __( 'If you have any queries about this, please reply to this email.' ) }}
 
 @include('patch-panel-port/emails/signature')
 

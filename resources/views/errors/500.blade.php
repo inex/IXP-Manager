@@ -4,7 +4,7 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 
-	<title><?= __( 'Server Error' ) ?></title>
+	<title>Server Error</title>
 
 	<!-- Fonts -->
 	<link rel="dns-prefetch" href="//fonts.gstatic.com">
@@ -56,7 +56,8 @@
 	<div class="message" style="padding: 10px;">
 		Server Error
 		@if (config('app.debug') && $exception->getMessage())
-			:: {{ $exception-><?= __( 'getMessage() }} @endif' ) ?>
+			:: {{ $exception->getMessage() }}
+		@endif
 	</div>
 </div>
 </body>

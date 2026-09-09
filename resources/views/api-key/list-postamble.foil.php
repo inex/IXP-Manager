@@ -71,12 +71,17 @@
 
             <?php if( Auth::getUser()->isSuperUser() ): ?>
 
-                <dt><?= __( 'Automated Provisioning' ) ?></dt>
+                <dt>Automated Provisioning</dt>
                 <dd>
-                    <a href="https://www.inex.ie/"><?= __( 'INEX' ) ?></a> <?= __( 'auto-provisions our peering LANs which use a mixture of switching technologies (as of 2019, VXLAN on Arista on one network and VXLAN on Cumulus on another). We have' ) ?>
-                    <a href="https://www.ixpmanager.org/presentations"><?= __( 'presented on this a number of times in 2017' ) ?></a> <?= __( 'and we have' ) ?> <a href="https://github.com/inex/ixp-manager-provisioning"><?= __( 'open-sourced a GitHub repository' ) ?></a> <?= __( 'with our provisioning scripts.' ) ?><br><br>
-                    <?= __( 'While INEX uses SaltStack directly or Cumulus or with Napalm on Arista, the schema we have designed via the following URLs should be sufficient to allow you to use any provisioning tool.' ) ?><br><br>
-                    <?= __( 'These are per-switch' ) ?> <em><?= __( '(use the switch name in the url)' ) ?></em> <?= __( 'YAML outputs for generating different configuration aspects.' ) ?><br><br>
+                    <a href="https://www.inex.ie/">INEX</a> auto-provisions our peering LANs which use a mixture of switching
+                    technologies (as of 2019, VXLAN on Arista on one network and VXLAN on Cumulus on another). We have
+                    <a href="https://www.ixpmanager.org/presentations">presented on this a number of times in 2017</a> and we
+                    have <a href="https://github.com/inex/ixp-manager-provisioning">open-sourced a GitHub repository</a> with
+                    our provisioning scripts.<br><br>
+                    While INEX uses SaltStack directly or Cumulus or with Napalm on Arista, the schema we have designed via the
+                    following URLs should be sufficient to allow you to use any provisioning tool.<br><br>
+                    These are per-switch <em>(use the switch name in the url)</em> YAML outputs for generating different configuration
+                    aspects.<br><br>
                     You may change <code>.yaml</code> to <code>.json</code> in the URL if you prefer. If you wish to use the switch
                     database ID rather than the name, alter the URL for: <code>s#switch-name/{switchname}#switch/{id}#</code>.
                     <ul>
@@ -91,20 +96,22 @@
 
 
 
-                <dt><?= __( 'Sflow MAC Address Mapping' ) ?></dt>
+                <dt>Sflow MAC Address Mapping</dt>
                 <dd>
-                    <?= __( 'When configuring' ) ?> <a href="https://docs.ixpmanager.org/latest/features/sflow-p2p/"><?= __( 'Sflow based peer to peer graphs' ) ?></a><?= __( ', the mechanism to associate sflow samples (based on source and destination MAC addreesses) to VLAN interfaces requires a MAC to VLAN interface dictionary.' ) ?>
+                    When configuring <a href="https://docs.ixpmanager.org/latest/features/sflow-p2p/">Sflow based peer to peer graphs</a>,
+                    the mechanism to associate sflow samples (based on source and destination MAC addreesses) to VLAN interfaces
+                    requires a MAC to VLAN interface dictionary.
                     <br><br>
-                    <?= __( 'As IXP Manager' ) ?> <a href="https://docs.ixpmanager.org/latest/features/layer2-addresses/"><?= __( 'supports layer2 / MAC addresses in two ways' ) ?></a>
-                    <?= __( '(learned versus configured), there are two endpoints.' ) ?>
+                    As IXP Manager <a href="https://docs.ixpmanager.org/latest/features/layer2-addresses/">supports layer2 / MAC addresses in two ways</a>
+                    (learned versus configured), there are two endpoints.
                     <ul>
                         <li>Learned: <code><a href="<?= url( "/admin/api/v4/sflow-db-mapper/learned-macs" ) ?>"><?= url( "/admin/api/v4/sflow-db-mapper/learned-macs" ) ?></a></code></li>
                         <li>Configured: <code><a href="<?= url( "/admin/api/v4/sflow-db-mapper/configured-macs" ) ?>"><?= url( "/admin/api/v4/sflow-db-mapper/configured-macs" ) ?></a></code></li>
                     </ul>
-                    <?= __( 'The JSON output is structured as follows:' ) ?>
+                    The JSON output is structured as follows:
                     <ul>
-                        <li> <?= __( 'outer object indexed by infrastructure ID' ) ?> </li>
-                        <li> <?= __( 'each infrastructure object has per VLAN objects indexed by the VLAN' ) ?> <b><?= __( 'tag' ) ?></b> <?= __( '(NB: this is not the VLAN database ID but the VLAN tag)' ) ?> </li>
+                        <li> outer object indexed by infrastructure ID </li>
+                        <li> each infrastructure object has per VLAN objects indexed by the VLAN <b>tag</b> (NB: this is not the VLAN database ID but the VLAN tag) </li>
                         <li> each VLAN object has key/value pairs of <code>macaddress: vlaninterfaceid</code> </li>
                     </ul>
                     <br><hr>

@@ -39,7 +39,7 @@
                     <label class="control-label" for="email">
                         <?= __( 'Email' ) ?>
                     </label>
-                    <input name="email" class="form-control" id="email" type="text" placeholder="name@example.com" autofocus value="<?= $t->ee( old('email') ) ?>">
+                    <input name="email" class="form-control" id="email" type="text" placeholder="<?= __( 'name@example.com' ) ?>" autofocus value="<?= $t->ee( old('email') ) ?>">
                     <?php foreach( $t->errors->get( 'email' ) as $err ): ?>
                         <p class="tw:text-red-500 tw:text-xs tw:italic tw:mt-2"><?= $t->ee( $err ) ?></p>
                     <?php endforeach; ?>

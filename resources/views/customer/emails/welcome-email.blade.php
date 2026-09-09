@@ -87,7 +87,7 @@ Customer users with *admin* privileges can create and manage other user accounts
 We have created your administration account(s) with the following username(s) and email address(es):
 
 @foreach( $admins as $a )
-* {{ $a->user-><?= __( 'username }}' ) ?> <{{$a->user->email}}>
+* {{ $a->user->username }} <{{$a->user->email}}>
 @endforeach
 
 

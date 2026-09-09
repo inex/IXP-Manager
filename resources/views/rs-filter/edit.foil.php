@@ -10,11 +10,11 @@
 
 <?php $this->section( 'page-header-postamble' ) ?>
     <div class="btn-group btn-group-sm" role="group">
-        <a class="btn btn-white" href="<?= route ('rs-filter@list', [ "cust" => $t->c->id ] ) ?>" title="list">
+        <a class="btn btn-white" href="<?= route ('rs-filter@list', [ "cust" => $t->c->id ] ) ?>" title="<?= __( 'list' ) ?>">
             <span class="fa fa-list"></span>
         </a>
         <?php if( $t->rsf ): ?>
-            <a class="btn btn-white" href="<?= route('rs-filter@view', [ "rsf" => $t->rsf->id ] ) ?>" title="view route serve filter">
+            <a class="btn btn-white" href="<?= route('rs-filter@view', [ "rsf" => $t->rsf->id ] ) ?>" title="<?= __( 'view route serve filter' ) ?>">
                 <i class="fa fa-eye"></i>
             </a>
         <?php endif; ?>
@@ -144,8 +144,10 @@
                         <?= __( 'No Action' ) ?>
                     </dt>
                     <dd>
-                      <?= __( 'Take no action whatsoever on the matched routes. This is important as' ) ?> <b><?= __( 'Receive As Is / Advertise As Is' ) ?></b>
-                      <?= __( 'is a matching action and processing of those routes will stop there. Using' ) ?> <b><?= __( 'No Action' ) ?></b> <?= __( 'will not match the routes and they will continue to be evaluated by any further rules.' ) ?>
+                      <?= __( 'Take no action whatsoever on the matched routes. This is important as :receiveAsIs is a matching action and processing of those routes will stop there. Using :noAction will not match the routes and they will continue to be evaluated by any further rules.', [
+                          'receiveAsIs' => '<b>' . __( 'Receive As Is / Advertise As Is' ) . '</b>',
+                          'noAction'    => '<b>' . __( 'No Action' ) . '</b>',
+                      ] ) ?>
                     </dd>
                     <dt>
                         <?= __( 'Receive As Is / Advertise As Is' ) ?>

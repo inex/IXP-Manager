@@ -27,19 +27,19 @@
             </a>
 
             <a id="add-dir" class="btn btn-white" href="<?= route('docstore-c-dir@list', [ 'cust' => $t->cust ] ) ?>"
-               data-toggle="tooltip" data-placement="bottom" title="Root Directory"
+               data-toggle="tooltip" data-placement="bottom" title="<?= __( 'Root Directory' ) ?>"
             >
                 <i class="fa fa-home"></i>
             </a>
 
             <a id="add-dir" class="btn btn-white" href="<?= route('docstore-c-dir@create', [ 'cust' => $t->cust, 'parent_dir_id' => $t->dir->id ?? null] ) ?>"
-               data-toggle="tooltip" data-placement="bottom" title="Create Directory"
+               data-toggle="tooltip" data-placement="bottom" title="<?= __( 'Create Directory' ) ?>"
             >
                 <i class="fa fa-plus"></i> <i class="fa fa-folder"></i>
             </a>
 
             <a id="add-file" class="btn btn-white" href="<?= route('docstore-c-file@upload', [ 'cust' => $t->cust, 'docstore_customer_directory_id' => $t->dir ? $t->dir->id : null ] ) ?>"
-               data-toggle="tooltip" data-placement="bottom" title="Upload File"
+               data-toggle="tooltip" data-placement="bottom" title="<?= __( 'Upload File' ) ?>"
             >
                 <i class="fa fa-plus"></i> <i class="fa fa-file"></i>
             </a>

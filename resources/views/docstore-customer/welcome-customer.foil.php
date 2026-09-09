@@ -11,11 +11,16 @@
         </p>
 
         <p>
-            <?= __( 'Files are also sometimes attached to patch panel ports (e.g. LoAs, test results, etc.). Where these exist for this customer, you will find a virtual' ) ?> <em><?= __( 'Patch Panel Port Files' ) ?></em> <?= __( 'directory below listing all of these for convenience.' ) ?>
+            <?= __( 'Files are also sometimes attached to patch panel ports (e.g. LoAs, test results, etc.). Where these exist for this customer, you will find a virtual :patchPanelPortFiles directory below listing all of these for convenience.', [
+                'patchPanelPortFiles' => '<em>' . __( 'Patch Panel Port Files' ) . '</em>',
+            ] ) ?>
         </p>
 
         <p>
-            <b><?= __( 'For more information,' ) ?> <a target="_blank" href="https://docs.ixpmanager.org/latest/features/docstore/"><?= __( 'see the official documentation here' ) ?></a>.</b>
+            <b><?= __( 'For more information, :seeTheDocs.', [
+                'seeTheDocs' => '<a target="_blank" href="https://docs.ixpmanager.org/latest/features/docstore/">'
+                    . __( 'see the official documentation' ) . '</a>',
+            ] ) ?></b>
         </p>
 
     <?php else: ?>
@@ -27,11 +32,16 @@
         </p>
 
         <p>
-            <?= __( 'Files are also sometimes attached to patch panel ports (e.g. LoAs, test results, etc.). Where these exist for you, you will find a virtual' ) ?> <em><?= __( 'Patch Panel Port Files' ) ?></em> <?= __( 'directory below listing all of these.' ) ?>
+            <?= __( 'Files are also sometimes attached to patch panel ports (e.g. LoAs, test results, etc.). Where these exist for you, you will find a virtual :patchPanelPortFiles directory below listing all of these.', [
+                'patchPanelPortFiles' => '<em>' . __( 'Patch Panel Port Files' ) . '</em>',
+            ] ) ?>
         </p>
 
         <p>
-            <b><?= __( 'For more information,' ) ?> <a target="_blank" href="https://docs.ixpmanager.org/latest/features/docstore/"><?= __( 'see the official documentation here' ) ?></a>.</b>
+            <b><?= __( 'For more information, :seeTheDocs.', [
+                'seeTheDocs' => '<a target="_blank" href="https://docs.ixpmanager.org/latest/features/docstore/">'
+                    . __( 'see the official documentation' ) . '</a>',
+            ] ) ?></b>
         </p>
     <?php endif; ?>
 </div>

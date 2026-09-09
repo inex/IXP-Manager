@@ -2,7 +2,9 @@
     <h3 class="tw:mb-8"><?= __( 'Welcome to the Document Store!' ) ?></h3>
 
     <p>
-        <b><?= __( 'IXP Manager' ) ?></b> <?= __( 'has a document store allowing administrators to upload documents to be made generally available for specific user classes (public, customer user, customer admin, superadmin). The document store supports:' ) ?>
+        <?= __( ':app has a document store allowing administrators to upload documents to be made generally available for specific user classes (public, customer user, customer admin, superadmin). The document store supports:', [
+            'app' => '<b>IXP Manager</b>',
+        ] ) ?>
     </p>
 
     <ul>
@@ -18,10 +20,16 @@
     </ul>
 
     <p>
-        <?= __( 'You the use' ) ?> <em><?= __( 'Create Directory' ) ?></em> <?= __( 'and the' ) ?> <em><?= __( 'Upload File' ) ?></em> <?= __( 'buttons on the top right to start populating the directory store.' ) ?>
+        <?= __( 'Use the :createDirectory and the :uploadFile buttons on the top right to start populating the directory store.', [
+            'createDirectory' => '<em>' . __( 'Create Directory' ) . '</em>',
+            'uploadFile'      => '<em>' . __( 'Upload File' ) . '</em>',
+        ] ) ?>
     </p>
 
     <p>
-        <b><?= __( 'For more information,' ) ?> <a target="_blank" href="https://docs.ixpmanager.org/latest/features/docstore/"><?= __( 'see the official document here' ) ?></a>.</b>
+        <b><?= __( 'For more information, :seeTheDocs.', [
+            'seeTheDocs' => '<a target="_blank" href="https://docs.ixpmanager.org/latest/features/docstore/">'
+                . __( 'see the official documentation' ) . '</a>',
+        ] ) ?></b>
     </p>
 </div>

@@ -1,23 +1,23 @@
 @component('mail::message')
 
-To whom it may concern,
+{{ __( 'To whom it may concern,' ) }}
 
-You, or someone entering your email address, has requested a username reminder for your email address for <?= config( "identity.sitename" ) ?>.
+{{ __( 'You, or someone entering your email address, has requested a username reminder for your email address for :site.', [ 'site' => config( 'identity.sitename' ) ] ) }}
 
-The usernames linked to your account are:
+{{ __( 'The usernames linked to your account are:' ) }}
 
 
 @foreach( $users as $user )
 
-* {{ $user->username }} (for *{{ $user->customer->name }}*)
+* {{ $user->username }} ({{ __( 'for' ) }} *{{ $user->customer->name }}*)
 
 @endforeach
 
 
-If you did not make this request, please ignore this email.
+{{ __( 'If you did not make this request, please ignore this email.' ) }}
 
 
-Thanks and kind regards,
+{{ __( 'Thanks and kind regards,' ) }}
 
 {{ config( 'identity.name' ) }}
 

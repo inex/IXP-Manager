@@ -9,7 +9,9 @@
                 <i class="fa fa-info-circle fa-2x"></i>
             </div>
             <div class="col-sm-12">
-                <?= __( 'Passwords are stored in IXP Manager using' ) ?> <a href="https://en.wikipedia.org/wiki/Bcrypt"><?= __( 'bcrypt' ) ?></a>.
+                <?= __( 'Passwords are stored in IXP Manager using :bcrypt.', [
+                    'bcrypt' => '<a href="https://en.wikipedia.org/wiki/Bcrypt">bcrypt</a>',
+                ] ) ?>
             </div>
         </div>
     </div>

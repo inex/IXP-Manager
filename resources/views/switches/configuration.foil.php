@@ -213,7 +213,7 @@
                                 <?php foreach( explode( "," , $conf[ "portstatus" ] ) as $portstatus ): ?>
                                     <?= \IXP\Models\PhysicalInterface::$STATES[ $portstatus ] ?? '' ?>
                                     <?php if( $conf[ "rate_limit" ] ): ?>
-                                        <span class="badge badge-info" data-toggle="tooltip" title="Rate Limited"><?= __( 'RL' ) ?></span>
+                                        <span class="badge badge-info" data-toggle="tooltip" title="<?= __( 'Rate Limited' ) ?>"><?= __( 'RL' ) ?></span>
                                     <?php endif; ?>
                                     <br>
                                 <?php endforeach; ?>

@@ -1,12 +1,12 @@
 @component('mail::message')
 
-To whom it may concern,
+{{ __( 'To whom it may concern,' ) }}
 
-Your password for <?= config( "identity.sitename" ) ?> has been reset by the user initiated password reset procedure.
+{{ __( 'Your password for :site has been reset by the user initiated password reset procedure.', [ 'site' => config( 'identity.sitename' ) ] ) }}
 
-If you did not make this request, please contact our support team.
+{{ __( 'If you did not make this request, please contact our support team.' ) }}
 
-Thanks and kind regards,
+{{ __( 'Thanks and kind regards,' ) }}
 
 {{ config( 'identity.name' ) }}
 

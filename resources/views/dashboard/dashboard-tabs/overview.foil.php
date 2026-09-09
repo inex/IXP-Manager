@@ -25,7 +25,10 @@
                     <div class="text-center"><i class="fa fa-info-circle fa-2x "></i></div>
                     <div class="col-sm-12">
                         You have <?= $t->c->routeServerFiltersInProduction()->count() ?> active route server filter(s) configured.
-                        <a href="<?= route('rs-filter@list', [ 'cust' => Auth::getUser()->customer ] ) ?>"><?= __( 'Click here' ) ?></a> <?= __( 'to view/edit them.' ) ?>
+                        <?= __( ':clickHere to view or edit them.', [
+                            'clickHere' => '<a href="' . route( 'rs-filter@list', [ 'cust' => Auth::getUser()->customer ] ) . '">'
+                                . __( 'Click here' ) . '</a>',
+                        ] ) ?>
                     </div>
                 </div>
             </div>
@@ -41,7 +44,10 @@
                     <?php if( $logo = $t->c->logo ): ?>
                         <div class="col-sm-6">
                             <?= __( 'This is your current logo.' ) ?><br/>
-                            <?= __( 'Please' ) ?> <a href="<?= route( 'logo@manage', [ 'id' => $t->c->id ] ) ?>"><?= __( 'click here' ) ?></a> <?= __( 'to change it.' ) ?>
+                            <?= __( 'Please :clickHere to change it.', [
+                                'clickHere' => '<a href="' . route( 'logo@manage', [ 'id' => $t->c->id ] ) . '">'
+                                    . __( 'click here' ) . '</a>',
+                            ] ) ?>
                         </div>
                         <div class="col-sm-6">
                             <img class="img-responsive" src="<?= url( 'logos/' . $logo->shardedPath() ) ?>" />
@@ -53,8 +59,10 @@
                                     <i class="fa fa-exclamation-triangle fa-2x"></i>
                                 </div>
                                 <div class="col-sm-12">
-                                    <?= __( 'No logo uploaded which means it is not currently displayed on our public website. Please' ) ?> <a href="<?= route( 'logo@manage', [ 'id' => $t->c->id ] ) ?>"><?= __( 'click here' ) ?></a>
-                                    <?= __( 'to add one now.' ) ?>
+                                    <?= __( 'No logo uploaded which means it is not currently displayed on our public website. Please :clickHere to add one now.', [
+                                        'clickHere' => '<a href="' . route( 'logo@manage', [ 'id' => $t->c->id ] ) . '">'
+                                            . __( 'click here' ) . '</a>',
+                                    ] ) ?>
                                 </div>
                             </div>
                         </div>
@@ -74,7 +82,9 @@
                 <h4><?= __( 'Your Top Peers' ) ?></h4>
                 <div class="mb-4 tw:text-sm">
                     Your top peers <?= \Carbon\Carbon::parse( $t->p2pstats[0]->day )->diffForHumans() ?>.
-                    See all <a href="<?= route( 'statistics@p2p-table' ) ?>"><?= __( 'here' ) ?></a>.
+                    <?= __( 'See all :here.', [
+                        'here' => '<a href="' . route( 'statistics@p2p-table' ) . '">' . __( 'here' ) . '</a>',
+                    ] ) ?>
                 </div>
 
                 <table  class="table table-sm table-hover" >

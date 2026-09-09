@@ -19,17 +19,17 @@
             </a>
 
             <a id="add-dir" class="btn btn-white" href="<?= route('docstore-dir@list' ) ?>"
-               data-toggle="tooltip" data-placement="bottom" title="Root Directory">
+               data-toggle="tooltip" data-placement="bottom" title="<?= __( 'Root Directory' ) ?>">
                 <i class="fa fa-home"></i>
             </a>
 
             <a id="add-dir" class="btn btn-white" href="<?= route('docstore-dir@create', ['parent_dir_id' => $t->dir->id ?? null ] ) ?>"
-               data-toggle="tooltip" data-placement="bottom" title="Create Directory">
+               data-toggle="tooltip" data-placement="bottom" title="<?= __( 'Create Directory' ) ?>">
                 <i class="fa fa-plus"></i> <i class="fa fa-folder"></i>
             </a>
 
             <a id="add-file" class="btn btn-white" href="<?= route('docstore-file@upload', ['docstore_directory_id' => $t->dir->id ?? null ] ) ?>"
-               data-toggle="tooltip" data-placement="bottom" title="Upload File">
+               data-toggle="tooltip" data-placement="bottom" title="<?= __( 'Upload File' ) ?>">
                 <i class="fa fa-plus"></i> <i class="fa fa-file"></i>
             </a>
 

@@ -66,13 +66,13 @@
                             <div class="pull-right d-flex">
                                 <form id="form-revert" action="<?= route( 'rs-filter@revert', [ 'cust' => $t->c->id ] ) ?>" method="post">
                                     <input type="hidden" name="_token" value="<?= csrf_token() ?>" />
-                                    <button type="submit" class="btn btn-warning mr-4" id="submit-revert"  title="Revert Changes">
+                                    <button type="submit" class="btn btn-warning mr-4" id="submit-revert"  title="<?= __( 'Revert Changes' ) ?>">
                                         <?= __( 'Revert' ) ?>
                                     </button>
                                 </form>
                                 <form id="form-commit" action="<?= route( 'rs-filter@commit', [ 'cust' => $t->c->id ] ) ?>" method="post">
                                     <input type="hidden" name="_token" value="<?= csrf_token() ?>" />
-                                    <button type="submit" class="btn btn-warning mr-4" id="submit-commit"  title="Commit Changes to Production">
+                                    <button type="submit" class="btn btn-warning mr-4" id="submit-commit"  title="<?= __( 'Commit Changes to Production' ) ?>">
                                         <?= __( 'Commit' ) ?>
                                     </button>
                                 </form>
@@ -181,18 +181,18 @@
                                 </td>
                                 <td>
                                     <div class="btn-group btn-group-sm" role="group">
-                                        <a class="btn btn-white" id="view-rsf-<?= $rsf->id ?>" href="<?= route( 'rs-filter@view' , [ 'rsf' =>  $rsf->id ] ) ?>" title="Preview">
+                                        <a class="btn btn-white" id="view-rsf-<?= $rsf->id ?>" href="<?= route( 'rs-filter@view' , [ 'rsf' =>  $rsf->id ] ) ?>" title="<?= __( 'Preview' ) ?>">
                                             <i class="fa fa-eye"></i>
                                         </a>
 
                                         <?php if( !$isCustUser ): ?>
-                                            <a class="btn btn-white" id="edit-rsf-<?= $rsf->id ?>" href="<?= route( 'rs-filter@edit' , [ 'rsf' =>  $rsf->id ] ) ?>" title="Edit">
+                                            <a class="btn btn-white" id="edit-rsf-<?= $rsf->id ?>" href="<?= route( 'rs-filter@edit' , [ 'rsf' =>  $rsf->id ] ) ?>" title="<?= __( 'Edit' ) ?>">
                                                 <i class="fa fa-pencil"></i>
                                             </a>
                                             <a class="btn btn-white" id="toggle-rsf-<?= $rsf->id ?>" href="<?= route( "rs-filter@toggle-enable", [ "rsf" => $rsf->id, "enable" => $rsf->enabled ? 0 : 1 ] ) ?>" title="<?= $rsf->enabled ? "Disable" : "Enable" ?>">
                                                 <i class="fa <?= $rsf->enabled ? "fa-times-circle" : "fa-check-circle" ?>"></i>
                                             </a>
-                                            <a class="btn btn-white delete-rsf" id="delete-rsf-<?= $rsf->id ?>" data-object-id="<?=  $rsf->id ?>"  href="<?= route( 'rs-filter@delete' , [ 'rsf' => $rsf->id ]  )  ?>" title="Delete">
+                                            <a class="btn btn-white delete-rsf" id="delete-rsf-<?= $rsf->id ?>" data-object-id="<?=  $rsf->id ?>"  href="<?= route( 'rs-filter@delete' , [ 'rsf' => $rsf->id ]  )  ?>" title="<?= __( 'Delete' ) ?>">
                                                 <i class="fa fa-trash"></i>
                                             </a>
                                             <a class="btn btn-white <?= $t->rsFilters->first()->id !== $rsf->id ?: "disabled" ?>" id="change-rsf-order-up-<?= $rsf->id ?>" href="<?= route( "rs-filter@change-order", [ "rsf" => $rsf->id, "up" => 1 ] ) ?>">

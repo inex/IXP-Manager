@@ -1,8 +1,8 @@
 
 @if( trim( $ppp->patchPanel->locationDescription() ) !== '' || trim( $ppp->patchPanel->location_notes ) !== '' )
-#### Notes for the Colocation Provider
+#### {{ __( 'Notes for the Colocation Provider' ) }}
 
-{{ env( 'IDENTITY_ORGNAME' ) }}'s records include the following notes to help identify the above patch panel:
+{{ __( "The records of :org include the following notes to help identify the above patch panel:", [ 'org' => env( 'IDENTITY_ORGNAME' ) ] ) }}
 
 @if( trim( $ppp->patchPanel->locationDescription() ) !== '' )
 {{ $ppp->patchPanel->locationDescription() }}
@@ -15,7 +15,7 @@
 @endif
 
 
-Kind regards,
+{{ __( 'Kind regards,' ) }}
 
 {{ env('IDENTITY_NAME') }}
 
