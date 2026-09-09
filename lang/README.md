@@ -75,6 +75,9 @@ php artisan lang:audit fr --show-missing --show-orphaned
 - **orphaned** - in the catalogue, no longer in the code. Usually means
   upstream reworded the English.
 - **placeholder mismatch** - the translation lost or invented a `:placeholder`.
+  Case is ignored when comparing, because Laravel treats `:Customer` and
+  `:customer` as one placeholder and casts the value: a translation may
+  legitimately move a capitalised English noun into mid-sentence.
   This is always a bug: at run time the literal text is rendered instead of the
   value. Audit fails on these even with `--placeholders-only`.
 
@@ -89,6 +92,10 @@ CSV.
 
 `--untranslated` exports only what still needs doing - use this for the small
 delta after an upstream upgrade rather than resending the whole file.
+
+`--draft` marks every existing translation `review draft` rather than
+`approved`. Use it when the catalogue was machine drafted and each row still
+needs a human to check it - which is how the shipped French started life.
 
 `lang:import` validates before writing anything:
 
@@ -160,6 +167,16 @@ __c( ':Customer :name has :n ports', [ 'name' => $c->name, 'n' => $n ] )
 ```
 
 `lang:extract` understands `__c()` exactly as it does `__()`.
+
+The configured noun is itself translated, so a French user of an installation
+configured as `member` sees *membre*, and one configured as `customer` sees
+*client*. `lang:extract` therefore emits the configured nouns as translatable
+strings even though they are config values rather than `__()` literals.
+
+`lang/fr.json` carries **both** conventions, so the translation works whichever
+way an installation is configured. Only one set is ever in use, which is why
+`lang:audit` reports four orphaned entries on any given install. That is
+expected - do not prune them.
 
 ## Translating a string that is not yet wrapped
 

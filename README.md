@@ -24,6 +24,16 @@ and especially new and small IXPs looking to expand.
 
 Our documentation is hosted on GitHub pages: https://docs.ixpmanager.org/.
 
+## Languages
+
+The member-facing parts of IXP Manager can be translated. A French translation
+is included. Users choose their own language on their profile page, and a
+default can be set per member; admin screens are English only.
+
+See [lang/README.md](lang/README.md) for how it works, how to add a language,
+and the `lang:extract` / `lang:audit` / `lang:export` / `lang:import` commands
+used to keep a translation current across upgrades.
+
 ## About IXP Manager
 
 For detailed information, see: https://www.ixpmanager.org/
