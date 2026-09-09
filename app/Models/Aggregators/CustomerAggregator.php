@@ -78,6 +78,7 @@ use Illuminate\Support\Collection;
  * @property int $peeringdb_oauth
  * @property \Illuminate\Support\Carbon $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property array<array-key, mixed>|null $prefs
  * @property-read EloquentCollection<int, \IXP\Models\AtlasMeasurement> $AtlasMeasurementsDest
  * @property-read int|null $atlas_measurements_dest_count
  * @property-read EloquentCollection<int, \IXP\Models\AtlasMeasurement> $AtlasMeasurementsSource
@@ -175,6 +176,7 @@ use Illuminate\Support\Collection;
  * @method static Builder<static>|CustomerAggregator wherePeeringmacro($value)
  * @method static Builder<static>|CustomerAggregator wherePeeringmacrov6($value)
  * @method static Builder<static>|CustomerAggregator wherePeeringpolicy($value)
+ * @method static Builder<static>|CustomerAggregator wherePrefs($value)
  * @method static Builder<static>|CustomerAggregator whereReseller($value)
  * @method static Builder<static>|CustomerAggregator whereShortname($value)
  * @method static Builder<static>|CustomerAggregator whereStatus($value)

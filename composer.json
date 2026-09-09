@@ -47,6 +47,7 @@
         "laravel/boost": "^2.1",
         "laravel/dusk": "^8.0",
         "mockery/mockery": "^1.6",
+        "phpoffice/phpspreadsheet": "^5.9",
         "phpunit/phpunit": "^12.5",
         "psalm/plugin-laravel": "^3.0.0",
         "staudenmeir/dusk-updater": "^1.5",

@@ -82,6 +82,7 @@ use IXP\Exceptions\GeneralException as IXP_Exception;
  * @property int $peeringdb_oauth
  * @property Carbon $created_at
  * @property Carbon|null $updated_at
+ * @property array<array-key, mixed>|null $prefs
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\AtlasMeasurement> $AtlasMeasurementsDest
  * @property-read int|null $atlas_measurements_dest_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\AtlasMeasurement> $AtlasMeasurementsSource
@@ -179,6 +180,7 @@ use IXP\Exceptions\GeneralException as IXP_Exception;
  * @method static Builder<static>|Customer wherePeeringmacro($value)
  * @method static Builder<static>|Customer wherePeeringmacrov6($value)
  * @method static Builder<static>|Customer wherePeeringpolicy($value)
+ * @method static Builder<static>|Customer wherePrefs($value)
  * @method static Builder<static>|Customer whereReseller($value)
  * @method static Builder<static>|Customer whereShortname($value)
  * @method static Builder<static>|Customer whereStatus($value)
