@@ -184,12 +184,13 @@ class UserAggregator extends User
                 $int++;
                 $uname = $un . ( $int === 1 ? '' : "{$int}" );
             } while( User::where( 'username', $uname )->first() );
-                $user = new User();
-                $user->peeringdb_id = $pdbuser['id'];
-                $user->username     = $uname;
-                $user->password     = Hash::make( Str::random() );
-                $user->creator      = 'OAuth-PeeringDB';
-                $user->save();
+
+            $user = new User();
+            $user->peeringdb_id = $pdbuser['id'];
+            $user->username     = $uname;
+            $user->password     = Hash::make( Str::random() );
+            $user->creator      = 'OAuth-PeeringDB';
+            $user->save();
 
             $user_created = true;
             Log::info( 'PeeringDB OAuth: created new user ' . $user->id . '/' . $user->username . ' for PeeringDB user: ' . $pdbuser[ 'name' ] . '/' . $pdbuser[ 'email' ] );

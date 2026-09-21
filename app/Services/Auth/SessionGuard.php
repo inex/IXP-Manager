@@ -87,11 +87,15 @@ class SessionGuard extends BaseGuard
         // one exists. Otherwise we will check for a "remember me" cookie in this
         // request, and if one exists, attempt to retrieve the user using that.
         if (! is_null( $id ) && $this->user = $this->provider->retrieveById( $id ) ) {
-
             // User has local session - make sure it hasn't been invalidated if a remember me cookie exists.
             // This is the bit we added to allow a user to invalidate other sessions via the UI.
             if( $recaller ) {
-                $urt = UserRememberToken::whereToken( $recaller->token() )->first();
+                if( !$recaller->valid() || (int)$recaller->id() !== $this->user->getAuthIdentifier() ) {
+                    $this->logout();
+                    return null;
+                }
+
+                $urt = UserRememberToken::whereUserId($this->user->getAuthIdentifier())->whereToken( $recaller->token() )->first();
 
                 if( !$urt || $urt->expired() ) {
                     $this->logout();
@@ -113,7 +117,7 @@ class SessionGuard extends BaseGuard
 
                 // Get the UserRememberToken and, if 2fa has been completed, don't redo it:
                 if( $this->user->user2FA && $this->user->user2FA->enabled ) {
-                    $urt = UserRememberToken::whereToken( $recaller->token() )->first();
+                    $urt = UserRememberToken::whereUserId($this->user->getAuthIdentifier())->whereToken( $recaller->token() )->first();
 
                     if( $urt && $urt->is_2fa_complete ) {
                         $authenticator = new GoogleAuthenticator( $this->request );

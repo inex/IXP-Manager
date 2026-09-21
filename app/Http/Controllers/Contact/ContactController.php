@@ -441,6 +441,10 @@ class ContactController extends EloquentController
         $us = Auth::getUser();
 
         $this->object = Contact::findOrFail( $id );
+        if( !$us->isSuperUser() && $us->custid !== $this->object->customer->id ) {
+            $this->unauthorized();
+        }
+
         $this->checkForm( $r );
 
         $custid = $us->custid;

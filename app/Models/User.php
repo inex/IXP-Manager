@@ -425,6 +425,15 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     }
 
     /**
+     * Mark users remember me token (if there is any) as having completed 2FA
+     */
+    public function markRememberToken2faComplete(string $token): bool
+    {
+        return $this->userRememberTokens()->whereToken($token)->first()
+            ?->record2faIsComplete() ?? false;
+    }
+
+    /**
      * Allow direct access to the 2FA secret code
      */
     #[\Override]

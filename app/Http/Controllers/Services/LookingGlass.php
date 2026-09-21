@@ -235,13 +235,16 @@ class LookingGlass extends Controller
             $routes = $this->lg()->routesForTable( $table );
         } catch( ErrorException $e ) {
             if( strpos( $e->getMessage(), 'HTTP/1.0 403' ) !== false ) {
-                return redirect( 'lg/' . $handle )->with( 'msg', $tooManyRoutesMsg );
+                AlertContainer::push($tooManyRoutesMsg, Alert::WARNING);
+                return redirect( 'lg/' . $handle );
             }
-            return redirect( 'lg/' . $handle )->with('msg', 'An error occurred - please contact our support team if you wish.' );
+            AlertContainer::push('An error occurred - please contact our support team if you wish.', Alert::WARNING);
+            return redirect( 'lg/' . $handle );
         }
 
         if( $routes === "" ) {
-            return redirect( 'lg/' . $handle )->with( 'msg', $tooManyRoutesMsg );
+            AlertContainer::push($tooManyRoutesMsg, Alert::WARNING);
+            return redirect( 'lg/' . $handle );
         }
 
         $view = view('services/lg/routes' )->with([

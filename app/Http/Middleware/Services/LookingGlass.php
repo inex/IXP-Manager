@@ -104,7 +104,7 @@ class LookingGlass
 
         // get the router object
         try {
-            $router =  Router::whereHandle( $r->handle )->first();
+            $router =  Router::whereHandle( $r->route('handle') )->first();
 
             if( !$router || !$router->api() ) {
                 AlertContainer::push( "No router with the provided handle was found", Alert::DANGER );
@@ -114,8 +114,8 @@ class LookingGlass
             abort( 404, $e->getMessage() );
         }
 
-        if( ( $r->table && !$this->validateSymbol( $r->table ) )
-                || ( $r->protocol && !$this->validateSymbol( $r->protocol ) ) ) {
+        if( ( $r->route('table') && !$this->validateSymbol( $r->route('table') ) )
+                || ( $r->route('protocol') && !$this->validateSymbol( $r->route('protocol') ) ) ) {
             AlertContainer::push( "Symbol (protocol / table) invalid or not found", Alert::DANGER );
             return redirect( route( 'lg::bgp-sum', [ 'handle' => $r->handle ] ) );
         }

@@ -107,9 +107,7 @@ class User2FAController extends Controller
         if( $recallerName = $r->cookies->get( Auth::getRecallerName() ) ) {
             $recaller = new Recaller( $recallerName );
 
-            if( $urt = UserRememberToken::where( 'token', $recaller->token() )->first() ) {
-                $urt->record2faIsComplete();
-            }
+            $r->user()->markRememberToken2faComplete( $recaller->token() );
         }
 
         $this->google2faLogin( $r );

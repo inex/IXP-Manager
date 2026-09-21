@@ -23,7 +23,9 @@ namespace Tests\Browser;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+use IXP\Models\User;
 use IXP\Models\User2FA;
+use IXP\Models\UserRememberToken;
 use Laravel\Dusk\Browser;
 
 use PragmaRX\Google2FALaravel\Google2FA;
@@ -240,7 +242,7 @@ class User2FAControllerTest extends DuskTestCase
                 ->assertSee( 'Incorrect user password - please check your password and try again.',1);
 
         /**
-         * Test to enable the 2FA with good OTP and wrong Password
+         * Test to enable the 2FA with good OTP and good Password
          */
         $browser->type( '#one_time_password', $otp )
                 ->type( 'password', $userPassword )
@@ -253,4 +255,172 @@ class User2FAControllerTest extends DuskTestCase
         $this->assertTrue( $u2fa->enabled );
         $this->assertTrue( $u2fa->isEnabled() );
     }
+
+
+    /**
+     * Test workflows involving the User2FAController
+     *
+     * @return void
+     *
+     * @throws
+     */
+    public function testWithRememberMe(): void
+    {
+        $this->browse( function ( Browser $browser) {
+
+            $userUsername = 'travis';
+            $userPassword = 'travisci';
+
+            $user = User::whereUsername( $userUsername )->first();
+
+            $this->assertCount( 0, UserRememberToken::all());
+            $this->assertDatabaseMissing( 'user_remember_tokens', ['user_id' => $user->id] );
+
+            $browser->resize( 1600, 1200 )
+                ->visit( '/logout' )
+                ->visit('/login')
+                ->waitForLocation('/login')
+                ->type('username', $userUsername )
+                ->type('password', $userPassword )
+                ->check('remember')
+                ->press('#login-btn' )
+                ->waitForLocation( '/admin/dashboard' );
+
+            $this->assertCount( 1, UserRememberToken::all());
+            $this->assertDatabaseHas('user_remember_tokens', [
+                'user_id' => $user->id,
+                'is_2fa_complete' => false,
+            ]);
+
+            $browser->visit('/profile')
+                ->assertPathIs('/profile');
+
+            $browser->click("#configue-2fa")
+                ->waitForLocation('/2fa/configure');
+
+            // Check if the 2FA object has been created
+            $u2fa = User2FA::whereUserId( 1 )->first();
+
+            // enables 2FA:
+            $this->checkOtpAndPassword( $browser, $userPassword, $u2fa );
+
+            $this->assertCount( 1, UserRememberToken::all());
+            $this->assertDatabaseHas('user_remember_tokens', [
+                'user_id' => $user->id,
+                'is_2fa_complete' => true,
+            ]);
+
+            /**
+             * Logout and test that OTP is required
+             */
+            $browser->visit('/logout')
+                ->waitForLocation('/login');
+
+            $this->assertCount( 0, UserRememberToken::all());
+            $this->assertDatabaseMissing('user_remember_tokens', [
+                'user_id' => $user->id,
+            ]);
+
+            $browser->visit('/login')
+                ->waitForLocation('/login')
+                ->type('username', $userUsername)
+                ->type('password', $userPassword)
+                ->check('remember')
+                ->press('#login-btn')
+                ->waitForText('Enter the one time code from your authenticator app');
+
+            $this->assertCount( 1, UserRememberToken::all());
+            $this->assertDatabaseHas('user_remember_tokens', [
+                'user_id' => $user->id,
+                'is_2fa_complete' => false,
+            ]);
+
+            /**
+             * Try to access to a page without typing the OTP
+             */
+            $browser->visit(route( 'customer@list' ) )
+                ->assertSee('Enter the one time code from your authenticator app');
+
+            /**
+             * Try wrong OTP
+             */
+            $browser->type('one_time_password', 'wrongOTP')
+                ->press('Authenticate')
+                ->waitForLocation('/2fa/authenticate')
+                ->assertSee('The one time password entered was wrong.');
+
+            $this->assertDatabaseHas('user_remember_tokens', [
+                'user_id' => $user->id,
+                'is_2fa_complete' => false,
+            ]);
+
+            $google2FA = new Google2FA( request() );
+            $otp = $google2FA->getCurrentOtp( $u2fa->secret );
+
+            /**
+             * Try good OTP
+             */
+            $browser->type('one_time_password', $otp)
+                ->press('Authenticate')
+                ->waitForLocation( '/admin/dashboard' )
+                ->assertDontSee('The one time password entered was wrong.');
+
+            $this->assertCount( 1, UserRememberToken::all());
+            $this->assertDatabaseHas('user_remember_tokens', [
+                'user_id' => $user->id,
+                'is_2fa_complete' => true,
+            ]);
+
+            /**
+             * Trying disable 2FA with wrong password
+             */
+            $browser->visit('/profile')
+                ->assertPathIs('/profile');
+
+            $browser->click("#configue-2fa")
+                ->waitForLocation('/2fa/configure')
+                ->type('password', 'wrongPassword')
+                ->press('Disable 2FA')
+                ->waitForText('Incorrect user password - please check your password and try again.');
+
+            /**
+             * Trying disable 2FA with good password
+             */
+            $browser->type('password', $userPassword)
+                ->press('Disable 2FA')
+                ->waitForLocation('/profile')
+                ->assertSee('2FA successfully disabled.');
+
+            /**
+             * Logout and set .env to force user to create 2fa
+             */
+            $browser->visit('/logout')
+                ->waitForLocation('/login');
+
+            $this->assertCount( 0, UserRememberToken::all());
+            $this->assertDatabaseMissing('user_remember_tokens', [
+                'user_id' => $user->id,
+            ]);
+
+            //$this->overrideEnv( ["2FA_ENFORCE_FOR_USERS" => 1] );
+            $this->replaceEnvAttr( '2FA_ENFORCE_FOR_USERS="4"','2FA_ENFORCE_FOR_USERS="1"' );
+            // changing the environment causes the server to restart
+            // Environment modified. Restarting server...
+            sleep(2);
+
+            $browser->visit('/login')
+                ->type('username', $userUsername )
+                ->type('password', $userPassword )
+                ->press('#login-btn' )
+                ->waitForLocation('/2fa/configure')
+                ->assertPathIs('/2fa/configure')
+                ->assertSee('You do not have two-factor authentication enabled but it is compulsory for your user account. Please configure and enable 2fa below to proceed.');
+
+            // Check if the 2FA object has been created
+            $u2fa2 = User2FA::whereUserId( 1 )->first();
+
+            $this->checkOtpAndPassword( $browser, $userPassword, $u2fa2 );
+        });
+    }
+
 }
