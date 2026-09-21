@@ -28,7 +28,7 @@ use Auth;
 
 use Illuminate\Auth\Recaller;
 
-use IXP\Models\UserRememberToken;
+use IXP\Models\User;
 
 use PragmaRX\Google2FALaravel\Events\LoginSucceeded;
 
@@ -55,13 +55,16 @@ final class Google2FALoginSucceeded
      */
     public function handle( LoginSucceeded $e ): void
     {
+        /** @var User $user */
+        $user = $e->user;
+
         if( $r = request()->cookies->get( Auth::getRecallerName() ) ) {
             $recaller = new Recaller( $r );
-            $urt = UserRememberToken::where( 'token',  $recaller->token() )->first();
-
-            if( $urt && !$urt->is_2fa_complete ) {
-                $urt->record2faIsComplete();
+            if( !$recaller->valid() || (int)$recaller->id() !== $user->id ) {
+                return;
             }
+
+            $user->markRememberToken2faComplete( $recaller->token() );
         }
     }
 }

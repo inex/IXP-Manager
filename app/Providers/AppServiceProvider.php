@@ -23,9 +23,12 @@
 
 namespace IXP\Providers;
 
-use Auth, Former, Horizon;
+use Auth, Former;
+use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Pagination\Paginator;
-use Illuminate\Support\Facades\Vite;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use IXP\Models\{
     DocstoreCustomerDirectory,
@@ -34,6 +37,7 @@ use IXP\Models\{
 use IXP\Observers\DocstoreCustomerDirectoryObserver;
 use IXP\Observers\DocstoreDirectoryObserver;
 use IXP\Utils\Former\Framework\TwitterBootstrap4;
+use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 /**
  * App Service Provider
@@ -69,6 +73,31 @@ class AppServiceProvider extends ServiceProvider
         DocstoreCustomerDirectory::observe( DocstoreCustomerDirectoryObserver::class );
 
         Paginator::useBootstrap();
+
+        RateLimiter::for('2fa-authenticate', function ( Request $request ) {
+            // These limits are applied to the 2fa-authenticate POST endpoint.
+            // When successful, the user is redirected away. If unsuccessful, there's no
+            // redirect and the user is shown the form to try again.
+            $identifier = request()->user()?->getAuthIdentifier() ?? ixp_get_client_ip();
+
+            return [
+                Limit::perMinute( 5, decayMinutes: 2 )
+                    ->by( '2fa:by-user:' . $identifier )
+                    ->after( function ( SymfonyResponse $response): bool {
+                        // Only count against the quota when authentication did NOT succeed. If the middleware receives
+                        // an invalid token, it doesn't redirect it just displays the challenge form
+                        return !$response->isRedirect();
+                    } )
+                    ->response( function ( Request $request, array $headers ): RedirectResponse {
+                        $retryAfter = $headers['Retry-After'] ?? 120;
+                        return redirect()
+                            ->to( '/' )
+                            ->withErrors( [
+                                'one_time_password' => "Too many failed 2FA attempts. Please try again in {$retryAfter} seconds.",
+                            ] );
+                    } ),
+            ];
+        });
     }
 
     /**

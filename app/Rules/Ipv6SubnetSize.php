@@ -26,7 +26,9 @@ namespace IXP\Rules;
 use Illuminate\Contracts\Validation\Rule;
 
 /**
- * Ipv6SubnetSize
+ * Ipv6SubnetSize - NOTE! This rule is currently only used in conjunction with the IPv6Cidr rule
+ * which implements stricter checks on the input. This class should only be used when these
+ * checks have taken place.
  *
  * @author     Barry O'Donovan  <barry@opensolutions.ie>
  * @author     Yann Robin       <yann@islandbridgenetworks.ie>
@@ -51,6 +53,10 @@ class Ipv6SubnetSize implements Rule
         $parts = explode( '/', $value );
 
         // mask:
+        if (false === filter_var( $parts[1], FILTER_VALIDATE_INT ) ) {
+            return false;
+        }
+
         $mask = (int)$parts[1];
         if( $mask > config( "ixp.irrdb.min_v6_subnet_size" ) ) {
             return false;

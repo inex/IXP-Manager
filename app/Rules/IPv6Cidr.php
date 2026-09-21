@@ -68,6 +68,10 @@ class IPv6Cidr implements Rule
         }
 
         // mask:
+        if (false === filter_var( $parts[1], FILTER_VALIDATE_INT ) ) {
+            return false;
+        }
+
         $mask = (int)$parts[1];
         if( $mask < 0 || $mask > 128 ) {
             return false;
