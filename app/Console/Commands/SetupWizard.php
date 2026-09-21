@@ -367,7 +367,7 @@ class SetupWizard extends Command
             'ixp-legalname' => 'required|string',
             'ixp-shortname' => 'required|string',
             'admin-name' => 'required|string',
-            'admin-username' => 'required|string',
+            'admin-username' => 'required|string|min:3|max:255|regex:/^[a-z0-9\-_\.]{3,255}$/',
             'admin-email' => 'required|email',
             'admin-password' => 'required|string|min:10',
             'ixp-phone' => 'required|string',

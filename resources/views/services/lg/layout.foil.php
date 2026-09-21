@@ -99,11 +99,8 @@
         </div>
     <?php endif; ?>
 
-    <?php if( session('msg') ): ?>
-        <div class="alert alert-dark" role="alert">
-            <?= session('msg') ?>
-        </div>
-    <?php endif; ?>
+    <?= $t->alerts() ?>
+
 <?php $this->append() ?>
 
 <?php $this->section('scripts') ?>

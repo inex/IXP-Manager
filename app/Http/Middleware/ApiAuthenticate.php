@@ -135,8 +135,14 @@ class ApiAuthenticate
 
             if( $us->disabled ){
                 return response( 'User is disabled', 401 );
-            } elseif( $us->customer()->active()->notDeleted()->doesntExist() ){// Check if default customer is disabled
+            }
+
+            if( $us->customer()->active()->notDeleted()->doesntExist() ){// Check if default customer is disabled
                 return response( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) . ' of the user is disabled', 401 );
+            }
+
+            if ($us->is2faAuthRequiredForSession()) {
+                return response('User has not completed 2FA authentication', 401);
             }
         }
 

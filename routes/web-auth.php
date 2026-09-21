@@ -185,7 +185,7 @@ if( config( 'google2fa.enabled' ) ) {
             }
             return redirect( '' );
 
-        } )->name( '2fa@authenticate' )->middleware( '2fa' );
+        } )->name( '2fa@authenticate' )->middleware( [ '2fa', 'throttle:2fa-authenticate' ] );
     } );
 }
 

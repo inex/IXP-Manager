@@ -27,6 +27,7 @@ use Auth, Closure;
 
 use Illuminate\Http\Request;
 
+use IXP\Models\User;
 use PragmaRX\Google2FALaravel\Support\Authenticator as GoogleAuthenticator;
 
 /**
@@ -42,13 +43,31 @@ use PragmaRX\Google2FALaravel\Support\Authenticator as GoogleAuthenticator;
 class Google2FA
 {
     /**
-     * @var array List of route names to exclude from 2fa
+     * @var string[] List of routes to exclude from 2fa
      */
-    protected $excludes = [
-        '2fa@configure',
-        '2fa@enable',
+    protected array $excludedForAll = [
         'login@logout',
     ];
+
+    /**
+     * @var string[] Extra routes to exclude if the user hasn't completed 2FA setup
+     */
+    protected array $excludedFor2faSetup = [
+        '2fa@configure',
+        '2fa@enable',
+    ];
+
+    /**
+     * Determine urls to be excluded from the 2FA challenge for this user
+     * @return string[]
+     */
+    protected function excludedUrls(User $user): array
+    {
+        if ($user->is2faEnforced()) {
+            return array_merge( $this->excludedForAll, $this->excludedFor2faSetup );
+        }
+        return $this->excludedForAll;
+    }
 
     /**
      * Handle an incoming request.
@@ -68,7 +87,7 @@ class Google2FA
         // or we are using the Switch User feature (in which case we'll have
         // done 2FA already), don't do 2FA enforcement or 2FA challenge
         if( session( 'ixpm_external_2fa_completed', false )
-            || in_array( $r->route()->getName(), $this->excludes, true )
+            || in_array( $r->route()->getName(), $this->excludedUrls( Auth::user() ), true )
             || session()->exists( "switched_user_from" )
         ) {
             return $next( $r );
