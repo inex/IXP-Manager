@@ -67,7 +67,8 @@ class Export extends IXPCommand
         {--o|output= : file to write (default: lang/exports/<locale>-<date>.<ext>)}
         {--format= : xlsx (default, needs phpoffice/phpspreadsheet) or csv}
         {--untranslated : export only the strings that still need translating}
-        {--draft : mark existing translations as needing review - use when the catalogue was machine drafted}';
+        {--draft : mark existing translations as needing review - use when the catalogue was machine drafted}
+        {--notes= : JSON file of "key": "note" pairs, appended to the notes column - use to tell a reviewer why a previous suggestion was not taken}';
 
     /**
      * The console command description.
@@ -102,6 +103,22 @@ class Export extends IXPCommand
         $extracted = ( new Extractor() )->scan( Scope::files() )->withConfiguredNouns()->keys();
 
         $orphaned = array_diff_key( $catalogue->all(), $extracted );
+        $extraNotes = [];
+
+        if( $notesFile = $this->option( 'notes' ) ) {
+            if( !is_readable( (string)$notesFile ) ) {
+                $this->error( "Cannot read {$notesFile}" );
+                return self::FAILURE;
+            }
+
+            $extraNotes = json_decode( (string)file_get_contents( (string)$notesFile ), true );
+
+            if( !is_array( $extraNotes ) ) {
+                $this->error( "{$notesFile} is not a JSON object of \"key\": \"note\" pairs" );
+                return self::FAILURE;
+            }
+        }
+
         $rows     = [];
 
         foreach( $extracted as $key => $sites ) {
@@ -115,6 +132,10 @@ class Export extends IXPCommand
 
             if( !$translated && ( $suggestion = $this->suggest( $key, $orphaned ) ) ) {
                 $notes[] = 'Previously, for very similar English, we had: "' . $suggestion . '"';
+            }
+
+            if( isset( $extraNotes[ $key ] ) ) {
+                $notes[] = (string)$extraNotes[ $key ];
             }
 
             if( $placeholders = Extractor::placeholders( $key ) ) {
