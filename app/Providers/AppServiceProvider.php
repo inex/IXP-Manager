@@ -83,9 +83,6 @@ class AppServiceProvider extends ServiceProvider
     #[\Override]
     public function register(): void
     {
-        $this->app->bind(
-            'Illuminate\Contracts\Auth\Registrar',
-            'IXP\Services\Registrar'
-        );
+
     }
 }
