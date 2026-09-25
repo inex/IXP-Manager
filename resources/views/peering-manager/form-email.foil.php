@@ -95,6 +95,8 @@
 
 <script type="module">
 
+    let notesIntro = "### <?= $t->ee( date("Y-m-d" ) . ' - ' . Auth::getUser()->username, "js") ?> \n\n\n";
+
     /**
      * Adds a prefix when a user goes to add/edit notes (typically name and date).
      */
