@@ -23,7 +23,7 @@
         </div>
     </div>
 
-    <div class="row"
+    <div class="row">
          <div class="col-12">
              <div class="tw:w-full tw:max-w-sm tw:mx-auto">
                 <?= Former::open()->method( 'POST' )
