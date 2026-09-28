@@ -123,10 +123,30 @@ class SettingsControllerTest extends DuskTestCase
             $this->assertStringNotContainsString( 'IXP_RPKI_RTR1_PORT=3323', $nenv );
             $this->assertStringContainsString( 'IXP_RPKI_RTR1_PORT=12345', $nenv );
 
+            // Test unsetting a text value, should be removed from the .env
+            $browser->press( 'Route Servers' )
+                ->waitForText( 'Minimum IPv4 Subnet Size' )
+                ->clear( 'rs_rpki_rtr1_port' )
+                ->driver->executeScript( 'window.scrollTo(0, 3000);' );
+            $browser->press( 'Save Changes' )
+                ->waitForText( 'Settings have been successfully updated' );
+
+            $nenv = file_get_contents( __DIR__ . '/../../.env' );
+            $this->assertStringNotContainsString( 'IXP_RPKI_RTR1_PORT', $nenv );
+
+            // the env var is empty, it'll go back to the configured default
+            $browser->press( 'Route Servers' )
+                ->waitForText( 'Minimum IPv4 Subnet Size' );
+            $element = $browser->element("#rs_rpki_rtr1_port");
+            $this->assertEquals("3323", $element->getAttribute('value'));
+
             // Test out changing a boolean setting, since we write true/false to config now
             $this->assertStringContainsString( 'IXP_FE_FRONTEND_DISABLED_APP_PASSWORD=0', $nenv );
 
-            $browser->uncheck('app-passwords')
+            $browser
+                ->press( 'Features' )
+                ->waitForText('Application-Specific Passwords')
+                ->uncheck('app-passwords')
                 ->driver->executeScript( 'window.scrollTo(0, 3000);' );
             $browser->press( 'Save Changes' )
                 ->waitForText( 'Settings have been successfully updated' );
