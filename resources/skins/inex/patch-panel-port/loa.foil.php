@@ -100,8 +100,8 @@
             associated with such cross-connect services.
         </p>
         <p>
-            The <?= config( 'ixp_fe.lang.customer.one' ) ?> agrees that should INEX issue a request to have this cross connect disconnected at any time,
-            the <?= config( 'ixp_fe.lang.customer.one' ) ?> will arrange to have the cross connect decommissioned within 30 days and accept associated
+            The <?= $t->ee( config( 'ixp_fe.lang.customer.one' ) ) ?> agrees that should INEX issue a request to have this cross connect disconnected at any time,
+            the <?= $t->ee( config( 'ixp_fe.lang.customer.one' ) ) ?> will arrange to have the cross connect decommissioned within 30 days and accept associated
             disconnection costs where applicable.
         </p>
         <p>

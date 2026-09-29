@@ -9,7 +9,7 @@ $this->layout( 'layouts/ixpv4' );
 
 <?php $this->section( 'title' ) ?>
     <a href="<?= route( 'customer@list' )?>">
-        <?= ucfirst( config( 'ixp_fe.lang.customer.many' ) ) ?>
+        <?= $t->ee( ucfirst( config( 'ixp_fe.lang.customer.many' ) ) ) ?>
     </a>
 <?php $this->append() ?>
 

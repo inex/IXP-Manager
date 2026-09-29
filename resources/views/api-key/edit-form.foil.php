@@ -23,7 +23,7 @@
                     ->value( now()->add( config('ixp_fe.api_keys.max_expires_duration' ) )->format( "Y-m-d" ) )
                     ->min( now()->add( "1 day" )->format( "Y-m-d" ) )
                     ->max( now()->add( config('ixp_fe.api_keys.max_expires_duration' ) )->format( "Y-m-d" ) )
-                    ->blockHelp( 'Required expiry date for the API key. Maximum allowed duration is ' . config('ixp_fe.api_keys.max_expires_duration' ) . '.' );
+                    ->blockHelp( 'Required expiry date for the API key. Maximum allowed duration is ' . $t->ee( config('ixp_fe.api_keys.max_expires_duration' ) ) . '.' );
             ?>
 
         <?php endif; ?>

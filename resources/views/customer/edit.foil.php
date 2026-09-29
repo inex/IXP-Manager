@@ -9,12 +9,12 @@ $this->layout( 'layouts/ixpv4' );
 
 <?php $this->section( 'title' ) ?>
     <a href="<?= route( 'customer@list' )?>">
-        <?= ucfirst( config( 'ixp_fe.lang.customer.many' ) ) ?>
+        <?= $t->ee( ucfirst( config( 'ixp_fe.lang.customer.many' ) ) ) ?>
     </a>
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-    <?= ucfirst( config( 'ixp_fe.lang.customer.many' ) ) ?> / <?= $t->cust ? 'Edit' : 'Create' ?>
+    <?= $t->ee( ucfirst( config( 'ixp_fe.lang.customer.many' ) ) ) ?> / <?= $t->cust ? 'Edit' : 'Create' ?>
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
@@ -37,7 +37,7 @@ $this->layout( 'layouts/ixpv4' );
         ?>
 
         <div id="instructions-alert" class="alert alert-info collapse">
-            Official <b>IXP Manager</b> documentation for adding / editing <?= config( 'ixp_fe.lang.customer.many' ) ?> can be found at <a href="https://docs.ixpmanager.org/latest/usage/customers/">https://docs.ixpmanager.org/</a>.
+            Official <b>IXP Manager</b> documentation for adding / editing <?= $t->ee( config( 'ixp_fe.lang.customer.many' ) ) ?> can be found at <a href="https://docs.ixpmanager.org/latest/usage/customers/">https://docs.ixpmanager.org/</a>.
         </div>
 
         <div class="bg-light shadow-sm p-4">
@@ -59,7 +59,7 @@ $this->layout( 'layouts/ixpv4' );
         <div class="mt-4 row">
             <div class="col-lg-6 col-md-12 mb-4 mb-sm-0">
                 <h3>
-                    <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?> Details
+                    <?= $t->ee( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ) ?> Details
                 </h3>
                 <hr class="tw:mb-6">
 
@@ -166,7 +166,7 @@ $this->layout( 'layouts/ixpv4' );
 
                 <?= Former::number( 'maxprefixes' )
                     ->label( 'IPv4 Max Prefixes' )
-                    ->placeholder( config( 'ixp.default_maxprefixes.v4' ) )
+                    ->placeholder( $t->ee( config( 'ixp.default_maxprefixes.v4' ), "attr" ) )
                     ->blockHelp( "IPv4 Max Prefixes is known as <em>the global ipv4 max prefixes</em> value. It is used to work out the appropriate "
                         . "max prefixes value to apply to all router configurations in the stock / default templates (route collector and "
                         . "servers, AS112). The calculated value is also included in emails from the Peering Manager from customer to customer.<br><br>"
@@ -176,7 +176,7 @@ $this->layout( 'layouts/ixpv4' );
 
                 <?= Former::number( 'maxprefixesv6' )
                         ->label( 'IPv6 Max Prefixes' )
-                        ->placeholder( config( 'ixp.default_maxprefixes.v6' ) )
+                        ->placeholder( $t->ee( config( 'ixp.default_maxprefixes.v6' ), "attr" ) )
                         ->blockHelp( "IPv6 Max Prefixes is known as <em>the global ipv6 max prefixes</em> value. See details above re the IPv4 version." );
                 ?>
 
@@ -244,14 +244,14 @@ $this->layout( 'layouts/ixpv4' );
 
                 <?= Former::phone( 'nocphone' )
                     ->label( 'Phone' )
-                    ->placeholder( config( 'ixp_fe.customer.form.placeholders.phone' ) )
+                    ->placeholder( $t->ee( config( 'ixp_fe.customer.form.placeholders.phone' ), "attr" ) )
                     ->blockHelp( 'Working hours phone number for contacting the customer NOC.<br><br>'
                         . 'This is available to all other customers.' );
                 ?>
 
                 <?= Former::phone( 'noc24hphone' )
                     ->label( '24h Phone' )
-                    ->placeholder( config( 'ixp_fe.customer.form.placeholders.phone' ) )
+                    ->placeholder( $t->ee( config( 'ixp_fe.customer.form.placeholders.phone' ), "attr" ) )
                     ->blockHelp( '24/7 emergency phone number for contacting the customer NOC..<br><br>'
                         . 'This is available to all other customers.' );
                 ?>

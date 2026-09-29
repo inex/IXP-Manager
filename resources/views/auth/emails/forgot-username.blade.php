@@ -2,7 +2,7 @@
 
 To whom it may concern,
 
-You, or someone entering your email address, has requested a username reminder for your email address for <?= config( "identity.sitename" ) ?>.
+You, or someone entering your email address, has requested a username reminder for your email address for {{ config( "identity.sitename" ) }}.
 
 The usernames linked to your account are:
 

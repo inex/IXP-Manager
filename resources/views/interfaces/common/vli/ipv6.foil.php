@@ -21,7 +21,7 @@
 
         <?= Former::text( 'ipv6hostname' )
             ->label( 'IPv6 Hostname' )
-            ->blockHelp( 'The PTR ARPA record that should be associated with this IP address. Normally selected by the ' . config( 'ixp_fe.lang.customer.one' ) . '. E.g. <code>' . config( 'ixp_fe.lang.customer.one' ) . '.ixpname.net</code>.' );
+            ->blockHelp( 'The PTR ARPA record that should be associated with this IP address. Normally selected by the ' . $t->ee( config( 'ixp_fe.lang.customer.one' ) ) . '. E.g. <code>' . $t->ee( config( 'ixp_fe.lang.customer.one' ) ) . '.ixpname.net</code>.' );
         ?>
 
         <?= Former::text( 'ipv6bgpmd5secret' )
@@ -33,7 +33,6 @@
         <?php if( config('ixp_fe.vlaninterfaces.max_prefix_enabled') || ( $t->vli && $t->vli->ipv6maxbgpprefix ) ): ?>
             <?= Former::number( 'ipv6maxbgpprefix' )
                     ->label( 'Max BGP Prefixes' )
-                    ->title( 'Per VLAN interface max. prefix disabled. Update via Edit ' . ucfirst(config( 'ixp_fe.lang.customer.one' )) . ' Details page.' )
                     ->blockHelp( 'The maximum IPv6 prefixes that any router configured via IXP Manager should accept for this endpoint. '
                             . 'See <a href="https://docs.ixpmanager.org/latest/usage/customers/#peering-details">the official documentation</a> for more details.' );
             ?>
@@ -42,7 +41,7 @@
         <?= Former::checkbox( 'ipv6canping' )
             ->label( '&nbsp;' )
             ->text( 'IPv6 Ping Allowed / Possible' )
-            ->blockHelp( "IXP's typically monitor " . config( 'ixp_fe.lang.customer.one' ) . " interfaces for reachability / latency using pings. If the " . config( 'ixp_fe.lang.customer.one' ) ." has asked you not to do this, uncheck this box." )
+            ->blockHelp( "IXP's typically monitor " . $t->ee( config( 'ixp_fe.lang.customer.one' ) ) . " interfaces for reachability / latency using pings. If the " . $t->ee( config( 'ixp_fe.lang.customer.one' ) ) ." has asked you not to do this, uncheck this box." )
             ->value( 1 )
             ->inline()
         ?>
@@ -50,7 +49,7 @@
         <?= Former::checkbox( 'ipv6monitorrcbgp' )
             ->label( '&nbsp;' )
             ->text( 'IPv6 Monitor Route Collector BGP' )
-            ->blockHelp( "IXP's often monitor a " . config( 'ixp_fe.lang.customer.owner' ) . " route collector BGP session. If this is not possible / unsuitable for this " . config( 'ixp_fe.lang.customer.one' ) . ", uncheck this box." )
+            ->blockHelp( "IXP's often monitor a " . $t->ee( config( 'ixp_fe.lang.customer.owner' ) ). " route collector BGP session. If this is not possible / unsuitable for this " . $t->ee( config( 'ixp_fe.lang.customer.one' ) ) . ", uncheck this box." )
             ->value( 1 )
             ->inline()
         ?>

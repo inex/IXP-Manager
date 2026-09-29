@@ -83,7 +83,7 @@
                         Latency graphs are a tool for monitoring network latency and are an invaluable asset when diagnosing some IXP issues.
                         <b>While they should never be used as a tool for monitoring IXP latency or packet loss</b> (as routers de-prioritise ICMP requests
                         and/or may not have a suitably powerful management plane), they can act as an extremely useful tool for identifying and diagnosing
-                        <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?> issues. What we really look for here is recent changes over time.
+                        <?= $t->ee( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ) ?> issues. What we really look for here is recent changes over time.
                     </div>
                 </div>
             </div>

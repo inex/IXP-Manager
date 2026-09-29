@@ -18,7 +18,7 @@
 <?php $this->section( 'content' ) ?>
 
     <div class="alert alert-info mt-4 mb-4" role="alert">
-        This page shows the last update times of each <?= config( 'ixp_fe.lang.customer.many' ) ?> IRRDB entries.
+        This page shows the last update times of each <?= $t->ee( config( 'ixp_fe.lang.customer.many' ) ) ?> IRRDB entries.
         Entries are considered stale if they have not been updated in the last 24 hours.
     </div>
 
@@ -30,7 +30,7 @@
             <table id="ixpDataTable" class="table table-striped table-bordered collapse" style="width:100%">
                 <thead class="thead-dark">
                     <tr>
-                        <th><?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?></th>
+                        <th><?= $t->ee( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ) ?></th>
                         <th class="tw:text-center">V4 Prefixes</th>
                         <th class="tw:text-center">V6 Prefixes</th>
                         <th class="tw:text-center">V4 ASNs</th>

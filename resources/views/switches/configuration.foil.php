@@ -119,7 +119,7 @@
                             ID
                         </th>
                         <th>
-                            <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?>
+                            <?= $t->ee( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ) ?>
                         </th>
                         <th>
                             Switch

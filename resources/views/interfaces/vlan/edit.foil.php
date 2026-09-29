@@ -90,7 +90,7 @@
                                 ->label('&nbsp;')
                                 ->text( 'Busy host' )
                                 ->value( 1 )
-                                ->blockHelp( "This was created at INEX to quieten our monitoring systems. It is used to indicate that the " . config( 'ixp_fe.lang.customer.owner' ) . " router is unusually slow "
+                                ->blockHelp( "This was created at INEX to quieten our monitoring systems. It is used to indicate that the " . $t->ee( config( 'ixp_fe.lang.customer.owner' ) ) . " router is unusually slow "
                                     . "to reply to ICMP echo requests and that when monitoring, the configuration should allow for warnings after a 5sec RTT rather than 1sec "
                                     . "(for example)." )
 
@@ -127,7 +127,7 @@
                                 ->text( 'Apply IRRDB Filtering' )
                                 ->value( 1 )
                                 ->check()
-                                ->blockHelp( 'If Apply IRRDB Filtering is <b>not</b> set, then the route servers will accept any prefixes advertised by the  ' . config( 'ixp_fe.lang.customer.one' )
+                                ->blockHelp( 'If Apply IRRDB Filtering is <b>not</b> set, then the route servers will accept any prefixes advertised by the  ' . $t->ee( config( 'ixp_fe.lang.customer.one' ) )
                                     . '(note that the default templates will filter martians and apply a max prefix limit). Generally speaking this is a very bad idea '
                                     . 'and should only be used in exceptional cases. INEX never uses this setting - but demand from other IX\'s had it added. '
                                     . 'See <a href=""https://docs.ixpmanager.org/latest/features/irrdb/">the documentation</a> for more information.' )

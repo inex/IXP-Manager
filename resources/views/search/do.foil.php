@@ -35,7 +35,7 @@
                             switch( $t->type ) {
                                 case 'asn':       echo ' - AS Number'; break;
                                 case 'asmacro':   echo ' - AS Macro'; break;
-                                case 'cust_wild': echo ' - Wildcard ' . config( 'ixp_fe.lang.customer.one' ) . ' Search'; break;
+                                case 'cust_wild': echo ' - Wildcard ' . $t->ee( config( 'ixp_fe.lang.customer.one' ) ) . ' Search'; break;
                                 case 'email':     echo ' - Email Address'; break;
                                 case 'ipv4':      echo ' - IPv4 Addresses'; break;
                                 case 'ipv6':      echo ' - IPv6 Addresses'; break;

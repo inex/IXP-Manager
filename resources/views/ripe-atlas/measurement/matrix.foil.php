@@ -28,7 +28,7 @@ $this->layout( 'layouts/ixpv4' );
                 <thead>
                 <tr>
                     <th class="border-right-0 pl-2">
-                        <?= ucfirst( config( 'ixp_fe.lang.customer.many' ) ) ?>
+                        <?= $t->ee( ucfirst( config( 'ixp_fe.lang.customer.many' ) ) ) ?>
                     </th>
                     <th class="border-left-0">
 

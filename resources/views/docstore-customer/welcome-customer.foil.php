@@ -2,12 +2,12 @@
 
     <?php if( Auth::getUser()->isSuperUser() ): ?>
         <h3 class="tw:mb-8">
-          Welcome to the <?= ucfirst( config( 'ixp_fe.lang.customer.one') ) ?> Document Store for <?= $t->ee( $t->cust->name ) ?>
+          Welcome to the <?= $t->ee( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ) ?> Document Store for <?= $t->ee( $t->cust->name ) ?>
         </h3>
 
         <p>
-            This is <b>IXP Manager's</b> <b><u>per-<?= config( 'ixp_fe.lang.customer.one') ?></u></b> document store allowing
-            administrators to upload documents into individual <?= config( 'ixp_fe.lang.customer.one') ?>-silos.
+            This is <b>IXP Manager's</b> <b><u>per-<?= $t->ee( config( 'ixp_fe.lang.customer.one' ) ) ?></u></b> document store allowing
+            administrators to upload documents into individual <?= $t->ee( config( 'ixp_fe.lang.customer.one' ) ) ?>-silos.
         </p>
 
         <p>
@@ -24,7 +24,7 @@
         <h3 class="tw:mb-8">Welcome To Your Document Store for <?= $t->ee( $t->cust->name ) ?></h3>
 
         <p>
-            If <?= config( 'identity.orgname' ) ?> has uploaded any files that are accessible by you then they will appear here.
+            If <?= $t->ee( config( 'identity.orgname' ) ) ?> has uploaded any files that are accessible by you then they will appear here.
         </p>
 
         <p>

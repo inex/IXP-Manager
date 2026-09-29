@@ -4,7 +4,7 @@
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-    <?= config( 'identity.orgname' ) ?> Public Traffic Statistics
+    <?= $t->ee( config( 'identity.orgname' ) ) ?> Public Traffic Statistics
 <?php $this->append() ?>
 
 <?php $this->section( 'content' ) ?>

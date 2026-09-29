@@ -24,11 +24,11 @@
 
         <?= Former::select( 'custid' )
             ->id( 'cust' )
-            ->label( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) )
-            ->placeholder( 'Select a ' . config( 'ixp_fe.lang.customer.one' ) )
+            ->label( $t->ee( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ) )
+            ->placeholder( 'Select a ' . $t->ee( config( 'ixp_fe.lang.customer.one' ), "attr" ) )
             ->fromQuery( $t->data[ 'params'][ 'custs' ], fn ($model) => $t->ee( $model->name ) )
             ->addClass( 'chzn-select' )
-            ->blockHelp( 'This field exists as you may co-locate some equipment for your ' . config( 'ixp_fe.lang.customer.one' )  . '. Ordinarily, just pick your IXP ' . config( 'ixp_fe.lang.customer.one' ) . '.' );
+            ->blockHelp( 'This field exists as you may co-locate some equipment for your ' . $t->ee( config( 'ixp_fe.lang.customer.one' ) ) . '. Ordinarily, just pick your IXP ' . $t->ee( config( 'ixp_fe.lang.customer.one' ) ) . '.' );
         ?>
 
         <?= Former::text( 'port' )

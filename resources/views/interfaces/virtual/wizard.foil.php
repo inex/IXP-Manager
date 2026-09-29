@@ -49,9 +49,9 @@ $this->layout( 'layouts/ixpv4' );
                         <hr>
 
                         <?= Former::select( 'custid' )
-                            ->label( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) )
+                            ->label( $t->ee( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ) )
                             ->fromQuery( $t->custs , fn ( $model ) => $t->ee( $model->name ) )
-                            ->placeholder( 'Choose a ' . config( 'ixp_fe.lang.customer.one' ) )
+                            ->placeholder( $t->ee( 'Choose a ' . config( 'ixp_fe.lang.customer.one' ), "attr" ) )
                             ->addClass( 'chzn-select' )
                             ->disabled( $t->selectedCust ? true : false )
                             ->blockHelp( '' );
@@ -123,7 +123,7 @@ $this->layout( 'layouts/ixpv4' );
                             ->label( 'Switch Port' )
                             ->placeholder( 'Choose a switch port' )
                             ->addClass( 'chzn-select' )
-                            ->blockHelp( 'Shows ports that have a type of <em>Peering</em> or <em>Unknown</em> and have not been associated with any other ' . config( 'ixp_fe.lang.customer.one' ) . ' / virtual interface.' );
+                            ->blockHelp( 'Shows ports that have a type of <em>Peering</em> or <em>Unknown</em> and have not been associated with any other ' . $t->ee( config( 'ixp_fe.lang.customer.one' ) ) . ' / virtual interface.' );
                         ?>
 
                         <?= Former::hidden( 'original-switch-port')
@@ -187,7 +187,7 @@ $this->layout( 'layouts/ixpv4' );
                         <?= Former::checkbox( 'irrdbfilter' )
                             ->label('&nbsp')
                             ->text( 'Apply IRRDB Filtering' )
-                            ->blockHelp( "<strong>Strongly recommended!</strong> Filter routes learned on route servers based on the " . config( 'ixp_fe.lang.customer.owner' ) . " IRRDB entries." )
+                            ->blockHelp( "<strong>Strongly recommended!</strong> Filter routes learned on route servers based on the " . $t->ee( config( 'ixp_fe.lang.customer.owner' ) ) . " IRRDB entries." )
                             ->value( 1 )
                             ->check( true )
                             ->inline()

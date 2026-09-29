@@ -19,7 +19,7 @@
                         </div>
                         <div class="col-sm-12">
                             <strong>Test mode enabled.</strong>
-                            All peering requests will only be sent to <code><?= config( 'ixp.peering_manager.testemail' ) ?></code>.
+                            All peering requests will only be sent to <code><?= $t->ee( config( 'ixp.peering_manager.testemail' ) ) ?></code>.
                             The CC/BCC recipients will be ignored.
                             This can be changed in your <code>.env</code> configuration file.
                         </div>

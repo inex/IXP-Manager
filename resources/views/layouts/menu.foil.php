@@ -15,12 +15,12 @@
             <hr class="w-100 tw:my-0" style="margin-left: -10px ">
 
             <h6>
-                <span>IXP <?= strtoupper( config( 'ixp_fe.lang.customer.one' ) ) ?> ACTIONS</span>
+                <span>IXP <?= $t->ee( strtoupper( config( 'ixp_fe.lang.customer.one' ) ) ) ?> ACTIONS</span>
             </h6>
 
             <li class="<?= ( request()->is( 'admin/customer/*' ) || request()->is( 'customer-logo/*' ) ) ? 'active' : '' ?>">
                 <a class="nav-link" href="<?= route( 'customer@list' ) ?>">
-                    <?= ucfirst( config( 'ixp_fe.lang.customer.many' ) ) ?>
+                    <?= $t->ee( ucfirst( config( 'ixp_fe.lang.customer.many' ) ) ) ?>
                 </a>
             </li>
 
@@ -29,7 +29,7 @@
                     <?php if( !config( 'ixp_fe.frontend.disabled.logo', true ) ): ?>
                         <li class="nav-sub-menu-item <?= !request()->is( 'customer-logo/logos' ) ?: 'active' ?>">
                             <a href="<?= route('logo@logos' ) ?>" class="nav-link">
-                                <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?> Logos
+                                <?= $t->ee( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ) ?> Logos
                             </a>
                         </li>
                     <?php endif; ?>
@@ -165,14 +165,14 @@
                 <?php if( !config( 'ixp_fe.frontend.disabled.docstore_customer' ) && request()->is( 'docstore*' ) ): ?>
                     <li class="nav-sub-menu-item <?= request()->is( 'docstorec*' ) ? 'active' : '' ?>" >
                         <a href="<?= route('docstore-c-dir@customers' ) ?>" class="nav-link">
-                            <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?> Documents
+                            <?= $t->ee( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ) ?> Documents
                         </a>
                     </li>
                 <?php endif; ?>
             <?php elseif( !config( 'ixp_fe.frontend.disabled.docstore_customer' ) ): ?>
                 <li class="<?= request()->is( 'docstorec*' ) ? 'active' : '' ?>" >
                     <a href="<?= route('docstore-c-dir@customers' ) ?>" class="nav-link">
-                        <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?> Document Store
+                        <?= $t->ee( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ) ?> Document Store
                     </a>
                 </li>
             <?php endif; ?>
@@ -376,7 +376,7 @@
 
             <li class="<?= !request()->is( 'statistics/members', 'admin/statistics/members' ) ?: 'active' ?>" >
                 <a href="<?= route( 'statistics@members' ) ?>" class="nav-link">
-                    <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?> Statistics
+                    <?= $t->ee( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ) ?> Statistics
                 </a>
             </li>
 
@@ -527,7 +527,7 @@
                             </dd>
                             <dt>Wildcard</dt>
                             <dd>
-                                Any other text is searched as <code>%xxx%</code> on <?= config( 'ixp_fe.lang.customer.one' ) ?> details
+                                Any other text is searched as <code>%xxx%</code> on <?= $t->ee( config( 'ixp_fe.lang.customer.one' ) ) ?> details
                             </dd>
                         </dl>
                     </div>

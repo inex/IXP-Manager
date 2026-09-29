@@ -39,11 +39,11 @@
                 <?php if( $isSuperUser ):?>
                     <?= Former::select( 'custid' )
                         ->id( 'cust' )
-                        ->label( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) )
-                        ->placeholder( 'Select a ' . config( 'ixp_fe.lang.customer.one' ) )
+                        ->label( $t->ee( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ) )
+                        ->placeholder( 'Select a ' . $t->ee( config( 'ixp_fe.lang.customer.one' ), "attr" ) )
                         ->fromQuery( $t->data[ 'params'][ 'custs' ], fn ($model) => $t->ee( $model->name ) )
                         ->addClass( 'chzn-select' )
-                        ->blockHelp( ucfirst( config( 'ixp_fe.lang.customer.one' ) )  . ' to assign this contact to.' );
+                        ->blockHelp( $t->ee( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ) . ' to assign this contact to.' );
                     ?>
                 <?php endif; ?>
 
@@ -55,13 +55,13 @@
 
                 <?= Former::text( 'phone' )
                     ->label( 'Phone' )
-                    ->placeholder( config( 'ixp_fe.customer.form.placeholders.phone' ) )
+                    ->placeholder( $t->ee( config( 'ixp_fe.customer.form.placeholders.phone' ), "attr" ) )
                     ->blockHelp( "Office / landline phone number of the contact." );
                 ?>
 
                 <?= Former::text( 'mobile' )
                     ->label( 'Mobile' )
-                    ->placeholder( config( 'ixp_fe.customer.form.placeholders.phone' ) )
+                    ->placeholder( $t->ee( config( 'ixp_fe.customer.form.placeholders.phone' ), "attr" ) )
                     ->blockHelp( "Mobile phone / cell number of the contact." );
                 ?>
             </div>

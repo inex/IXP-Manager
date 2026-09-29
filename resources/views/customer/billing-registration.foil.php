@@ -26,7 +26,7 @@
                             <div class="col-sm-12">
                                 <b>NB:</b> Billing update notifications have been enabled. As such, any changes to the below form will be
                                 emailed to
-                                <a href="mailto:<?= config( 'ixp_fe.customer.billing_updates_notify' ) ?>"><?= config( 'ixp_fe.customer.billing_updates_notify' ) ?></a>
+                                <a href="mailto:<?= $t->ee( config( 'ixp_fe.customer.billing_updates_notify' ), "attr" ) ?>"><?= $t->ee( config( 'ixp_fe.customer.billing_updates_notify' ) ) ?></a>
                                 on submission.
                             </div>
                         </div>

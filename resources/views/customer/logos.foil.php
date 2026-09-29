@@ -3,7 +3,7 @@
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-    <?= ucfirst( config( 'ixp_fe.lang.customer.many' ) ) ?> / Logos
+    <?= $t->ee( ucfirst( config( 'ixp_fe.lang.customer.many' ) ) ) ?> / Logos
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>

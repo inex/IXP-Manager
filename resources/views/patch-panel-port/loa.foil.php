@@ -101,8 +101,8 @@
             <?= env( 'IDENTITY_LEGALNAME' ) ?>  to pay any fees or charges associated with such cross-connect services.
         </p>
         <p>
-            The <?= config( 'ixp_fe.lang.customer.one' ) ?> agrees that should the applicable service to which this LoA was issued be requested
-            to be cancelled at any time during service, the <?= config( 'ixp_fe.lang.customer.one' ) ?> must prior to contract cease date arrange
+            The <?= $t->ee( config( 'ixp_fe.lang.customer.one' ) ) ?> agrees that should the applicable service to which this LoA was issued be requested
+            to be cancelled at any time during service, the <?= $t->ee( config( 'ixp_fe.lang.customer.one' ) ) ?> must prior to contract cease date arrange
             to have the associated cross connects decommissioned from the equipment / ports and accept any associated
             disconnection costs where applicable.
         </p>

@@ -9,7 +9,7 @@
     <a href="<?= route( 'customer@overview', [ 'cust' => $t->cust->id ] ) ?>">
         <?= $t->ee( $t->cust->name ) ?>
     </a> ::
-    Document Store :: <?= $t->file ? 'Edit' : 'Upload' ?> <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?> File
+    Document Store :: <?= $t->file ? 'Edit' : 'Upload' ?> <?= $t->ee( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ) ?> File
 <?php $this->append() ?>
 
 <?php $this->section('content') ?>

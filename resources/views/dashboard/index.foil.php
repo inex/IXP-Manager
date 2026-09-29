@@ -7,7 +7,7 @@
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-  Your <?= config('identity.sitename' ) ?> Dashboard
+  Your <?= $t->ee( config('identity.sitename' ) ) ?> Dashboard
 <?php $this->append() ?>
 
 <?php $this->section('content') ?>

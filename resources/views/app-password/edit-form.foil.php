@@ -12,12 +12,12 @@
             <?php if( config('ixp_fe.app_passwords.encryption.user_can_change') ): ?>
                 <?= Former::select( 'algorithm' )
                     ->label( 'Encryption Algorithm' )
-                    ->options( config('ixp_fe.app_passwords.encryption.available_algorithms') )
-                    ->value( config('ixp_fe.app_passwords.encryption.default_algorithm') )
+                    ->options( config( 'ixp_fe.app_passwords.encryption.available_algorithms' ) )
+                    ->value( $t->ee( config( 'ixp_fe.app_passwords.encryption.default_algorithm' ), "attr" )  )
                     ->blockHelp( 'Select the hashing algorithm to use.' );
                 ?>
             <?php else: ?>
-                <?= Former::hidden( 'algorithm' )->value( config('ixp_fe.app_passwords.encryption.default_algorithm') ); ?>
+                <?= Former::hidden( 'algorithm' )->value( $t->ee( config('ixp_fe.app_passwords.encryption.default_algorithm' ), "attr" ) ); ?>
             <?php endif; ?>
         <?php endif; ?>
 
@@ -33,7 +33,7 @@
                 ->value( now()->add( config('ixp_fe.app_passwords.max_expires_duration' ) )->format( "Y-m-d" ) )
                 ->min( now()->add( "1 day" )->format( "Y-m-d" ) )
                 ->max( now()->add( config('ixp_fe.app_passwords.max_expires_duration' ) )->format( "Y-m-d" ) )
-                ->blockHelp( 'Required expiry date for the password. Maximum allowed duration is ' . config('ixp_fe.app_passwords.max_expires_duration' ) . '.' );
+                ->blockHelp( 'Required expiry date for the password. Maximum allowed duration is ' . $t->ee( config('ixp_fe.app_passwords.max_expires_duration' ) ) . '.' );
             ?>
         <?php endif; ?>
 

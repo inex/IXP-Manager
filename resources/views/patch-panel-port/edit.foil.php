@@ -72,8 +72,8 @@ $this->layout( 'layouts/ixpv4' );
                 . 'Just enough to help explain the port\'s purpose. Detailed information should be '
                 . 'placed in the notes below. Can also be used to explain a reserved / broken / '
                 . 'other port. Note that this is parsed as Markdown.<br><br>'
-                . '<b>NB: A description is discouraged for ' . config( 'ixp_fe.lang.customer.one' ) . ' ports connected to a switch. '
-                . 'The ' . config( 'ixp_fe.lang.customer.one' ) . ' name and switch port <em>are the description</em></b>.' );
+                . '<b>NB: A description is discouraged for ' . $t->ee( config( 'ixp_fe.lang.customer.one' ) ) . ' ports connected to a switch. '
+                . 'The ' . $t->ee( config( 'ixp_fe.lang.customer.one' ) ) . ' name and switch port <em>are the description</em></b>.' );
     ?>
 
     <?php if (!$t->prewired): ?>
@@ -118,19 +118,19 @@ $this->layout( 'layouts/ixpv4' );
                 You have a number of options when assigning a port:
                 <ul>
                     <li>
-                        If you have pre-wired the patch panel to a port, enter the switch and port here. So long as no <?= config( 'ixp_fe.lang.customer.one' ) ?> has been
+                        If you have pre-wired the patch panel to a port, enter the switch and port here. So long as no <?= $t->ee( config( 'ixp_fe.lang.customer.one' ) ) ?> has been
                         assigned to the switch port, the patch panel port will remain available but will be marked as connected to
                         the given switch port in the patch panel port list.
                     </li>
                     <li>
-                        If the switch port has been allocated to a <?= config( 'ixp_fe.lang.customer.one' ) ?>, then this patch panel port will also be allocated to that <?= config( 'ixp_fe.lang.customer.one' ) ?>.
-                        The backend logic will detect if this is the case and update the <?= config( 'ixp_fe.lang.customer.one' ) ?> field. Conversely, if you choose a <?= config( 'ixp_fe.lang.customer.one' ) ?>
-                        first, the switch / switch port dropdowns will be populated with only that <?= config( 'ixp_fe.lang.customer.owner' ) ?> assigned ports.
+                        If the switch port has been allocated to a <?= $t->ee( config( 'ixp_fe.lang.customer.one' ) ) ?>, then this patch panel port will also be allocated to that <?= $t->ee( config( 'ixp_fe.lang.customer.one' ) ) ?>.
+                        The backend logic will detect if this is the case and update the <?= $t->ee( config( 'ixp_fe.lang.customer.one' ) ) ?> field. Conversely, if you choose a <?= $t->ee( config( 'ixp_fe.lang.customer.one' ) ) ?>
+                        first, the switch / switch port dropdowns will be populated with only that <?= $t->ee( config( 'ixp_fe.lang.customer.owner' ) ) ?> assigned ports.
                     </li>
                     <li>
                         Sometimes you will get cross connects that are not intended to be connected to peering switches (e.g. connections to
-                        co-located <?= config( 'ixp_fe.lang.customer.one' ) ?> equipment, IXP metro connections, etc.). In these cases, just select the <?= config( 'ixp_fe.lang.customer.one' ) ?> (and if it's the IXP
-                        itself, select the IXP <?= config( 'ixp_fe.lang.customer.one' ) ?>) and leave switch / switch port unselected.
+                        co-located <?= $t->ee( config( 'ixp_fe.lang.customer.one' ) ) ?> equipment, IXP metro connections, etc.). In these cases, just select the <?= $t->ee( config( 'ixp_fe.lang.customer.one' ) ) ?> (and if it's the IXP
+                        itself, select the IXP <?= $t->ee( config( 'ixp_fe.lang.customer.one' ) ) ?>) and leave switch / switch port unselected.
                     </li>
                 </ul>
 
@@ -173,8 +173,8 @@ $this->layout( 'layouts/ixpv4' );
             <div class="card-body d-flex">
                 <div class="mr-auto col-lg-11 col-md-10">
                     <?= Former::select( 'customer_id' )
-                        ->label( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) )
-                        ->addOption( 'Choose a ' . config( 'ixp_fe.lang.customer.one' ), '', [ 'disabled' => 'disabled' ] )
+                        ->label( $t->ee( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ) )
+                        ->addOption( 'Choose a ' . $t->ee( config( 'ixp_fe.lang.customer.one' ) ), '', [ 'disabled' => 'disabled' ] )
                         ->fromQuery( $t->customers , fn ( $model ) => $t->ee( $model->name ) )
                         ->addClass( 'chzn-select' )
                         ->append(  $ppp->customer ? "<span class='badge badge-info'> Was " . $t->ee( $ppp->customer->name ). " </span>" : '' );

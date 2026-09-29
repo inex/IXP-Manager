@@ -52,7 +52,7 @@ $this->layout( 'layouts/ixpv4' )
                         ->label( '&nbsp;' )
                         ->text( 'Enter decimal values only' )
                         ->value( 1 )
-                        ->blockHelp( 'Typically IXs allocate a ' . config( 'ixp_fe.lang.customer.one' ) . ' an IPv6 address such that the last block matches the last block of the IPv4 address. '
+                        ->blockHelp( 'Typically IXs allocate a ' . $t->ee( config( 'ixp_fe.lang.customer.one' ) ) . ' an IPv6 address such that the last block matches the last block of the IPv4 address. '
                             . "If you check this, IXP Manager will add the number of addresses as indicated by the CIDR block size but will skip over any "
                             . "addresses containing <code>a-f</code> characters."
                         )

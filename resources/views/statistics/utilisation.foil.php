@@ -79,7 +79,7 @@
             <table id="ixpDataTable" class="table table-striped table-bordered collapse" style="width:100%">
                 <thead class="thead-dark">
                     <tr>
-                        <th><?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?></th>
+                        <th><?= $t->ee( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ) ?></th>
                         <th>Switch</th>
                         <th class="tw:text-center">Ports</th>
                         <th class="tw:text-center">Capacity</th>

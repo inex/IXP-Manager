@@ -16,7 +16,7 @@
                         <i class="fa fa-info-circle fa-2x"></i>
                     </div>
                     <div class="col-sm-12">
-                        You can create sflow receivers via the <?= config( 'ixp_fe.lang.customer.many' ) ?> virtual interface edit page.
+                        You can create sflow receivers via the <?= $t->ee( config( 'ixp_fe.lang.customer.many' ) ) ?> virtual interface edit page.
                     </div>
                 </div>
             </div>
@@ -26,7 +26,7 @@
                 <thead class="thead-dark">
                     <tr>
                         <th>
-                            <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?>
+                            <?= $t->ee( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ) ?>
                         </th>
                         <th>
                             Source Switch

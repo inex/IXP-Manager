@@ -331,7 +331,8 @@
      * reset the customer dropdown
      */
     function resetCustomer() {
-        let options = `<option value='' disabled selected> Choose a <?= config( 'ixp_fe.lang.customer.one' ) ?></option>`;
+        let userType = "<?= $t->ee( $t->ee( config( 'ixp_fe.lang.customer.one' ), "html" ), "js" ) ?>";
+        let options = `<option value='' disabled selected> Choose a ${userType}</option>`;
 
         <?php foreach ( $t->customers as $c ): ?>
             options += `<option value='<?= $c->id ?>'><?= $t->ee( $c->name ) ?></option>`;
