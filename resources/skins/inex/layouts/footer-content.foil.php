@@ -21,15 +21,15 @@
                 </a>
 
                 <a href="https://www.linkedin.com/company/inex---internet-neutral-exchange/">
-                    <i class="fa fa-linkedin fa-inverse mx-1"></i>
+                    <i class="fa-brands fa-linkedin fa-inverse mx-1"></i>
                 </a>
 
                 <a href="https://www.facebook.com/comepeerwithme/">
-                    <i class="fa fa-facebook fa-inverse mx-1" ></i>
+                    <i class="fa-brands fa-facebook fa-inverse mx-1" ></i>
                 </a>
 
                 <a  href="https://github.com/inex">
-                    <i class="fa fa-github fa-inverse mx-1"></i>
+                    <i class="fa-brands fa-github fa-inverse mx-1"></i>
                 </a>
 
             </small>
