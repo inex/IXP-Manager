@@ -64,10 +64,13 @@ class AdminController extends Controller
      */
     public function dashboard( Request $r ): View
     {
+        $period       = Graph::processParameterPeriod( $r->query( 'graph_period', config( 'ixp_fe.admin_dashboard.default_graph_period' ) ) );
+        $refreshCache = (bool) $r->query( 'refresh_cache' );
+
         return view( 'admin/dashboard' )->with([
-            'stats'                 => $this->dashboardStats( $r ),
-            'graphs'                => $this->publicPeeringGraphs( $r ),
-            'graph_period'          => $r->query( 'graph_period', config( 'ixp_fe.admin_dashboard.default_graph_period' ) ),
+            'stats'                 => $this->dashboardStats( $refreshCache ),
+            'graphs'                => $this->publicPeeringGraphs( $period, $refreshCache ),
+            'graph_period'          => $period,
             'graph_periods'         => Graph::PERIOD_DESCS,
         ]);
     }
@@ -75,14 +78,12 @@ class AdminController extends Controller
     /**
      * Get type counts statistics
      *
-     * @param Request $r
-     *
      * @return array array of statistics
      */
-    private function dashboardStats( Request $r ): array
+    private function dashboardStats( bool $refreshCache ): array
     {
         // only do this once every 60 minutes
-        if( $r->query( 'refresh_cache' ) || !( $cTypes = Cache::get( 'admin_ctypes' ) ) ) {
+        if( $refreshCache || !( $cTypes = Cache::get( 'admin_ctypes' ) ) ) {
             // Full / Associate / Probono / Internal
             $cTypes[ 'types' ] = Customer::selectRaw('type AS ctype, COUNT( type ) AS cnt')
                 ->whereRaw(Customer::SQL_CUST_CURRENT)
@@ -250,21 +251,15 @@ class AdminController extends Controller
     }
 
     /**
-     * Get public peering graphs
+     * Get array of public peering graphs
      *
-     * @param Request $r
-     *
-     * @return array array of graphs
-     *
-     * @throws
+     * @return array<Graph>
      */
-    private function publicPeeringGraphs( Request $r ): array
+    private function publicPeeringGraphs( string $period, bool $refreshCache ): array
     {
         $grapher = App::make( Grapher::class );
 
-        $period   = Graph::processParameterPeriod( $r->query( 'graph_period', config( 'ixp_fe.admin_dashboard.default_graph_period' ) ) );
-
-        if( $r->query( 'refresh_cache' ) || !( $graphs = Cache::get( 'admin_stats_'.$period ) ) ) {
+        if( $refreshCache || !( $graphs = Cache::get( 'admin_stats_'.$period ) ) ) {
             $graphs = [];
 
             $graphs['ixp'] = $grapher->ixp()
