@@ -24,16 +24,12 @@ namespace IXP\Services\Auth;
  */
 
 use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Contracts\Auth\UserProvider as IlluminateUserProvider;
 use Illuminate\Contracts\Hashing\Hasher;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Str;
 
-use Illuminate\Contracts\Auth\UserProvider as IlluminateUserProvider;
-
-use IXP\Models\{
-    User,
-    UserRememberToken
-};
+use IXP\Models\UserRememberToken;
 
 use IXP\Utils\IpAddress;
 
@@ -81,8 +77,6 @@ class EloquentUserProvider implements IlluminateUserProvider
      * @param  string   $token
      *
      * @return Authenticatable|null
-     *
-     * @throws
      */
     #[\Override]
     public function retrieveByToken( $identifier, #[\SensitiveParameter] $token ): ?Authenticatable
@@ -99,18 +93,16 @@ class EloquentUserProvider implements IlluminateUserProvider
     /**
      * Add a new user remember token for a "remember me" session.
      *
-     * @param User|Authenticatable $user
+     * @param Authenticatable $user
      *
      * @return UserRememberToken
-     *
-     * @throws
      */
-    public function addRememberToken( $user ): UserRememberToken
+    public function addRememberToken( Authenticatable $user ): UserRememberToken
     {
         $browser = new BrowserDetection();
 
         return UserRememberToken::create([
-            'user_id'   => $user->id,
+            'user_id'   => $user->getAuthIdentifier(),
             'token'     => Str::random(60),
             'device'    => $browser->getPlatform() . " " . $browser->getPlatformVersion(true) . " / " . $browser->getName() . " " . $browser->getVersion() ,
             'ip'        => IpAddress::getIp(),
@@ -121,13 +113,12 @@ class EloquentUserProvider implements IlluminateUserProvider
     /**
      * Purge old or expired "remember me" tokens.
      *
-     * @param  User $user
+     * @param  Authenticatable $user
      *
-     * @throws
      */
-    public function purgeExpiredRememberTokens( User $user ): void
+    public function purgeExpiredRememberTokens( Authenticatable $user ): void
     {
-        UserRememberToken::where( 'user_id', $user->id )
+        UserRememberToken::where( 'user_id', $user->getAuthIdentifier() )
             ->where( 'expires', '<=', now()->format( 'Y-m-d H:i:s' ) )
             ->delete();
     }
