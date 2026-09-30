@@ -63,7 +63,7 @@ class User2FA extends Model
         'enabled' => 'boolean',
     ];
 
-    public static function setupForUser( User $user, string $secret ): User2FA
+    public static function setupForUser( User $user, #[\SensitiveParameter] string $secret ): User2FA
     {
         $user2fa = new self();
         $user2fa->user_id = $user->id;

@@ -26,7 +26,6 @@ namespace IXP\Services\Auth;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Hashing\Hasher;
 use Illuminate\Contracts\Support\Arrayable;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
 use Illuminate\Contracts\Auth\UserProvider as IlluminateUserProvider;
@@ -86,7 +85,7 @@ class EloquentUserProvider implements IlluminateUserProvider
      * @throws
      */
     #[\Override]
-    public function retrieveByToken( $identifier, $token ): ?Authenticatable
+    public function retrieveByToken( $identifier, #[\SensitiveParameter] $token ): ?Authenticatable
     {
         $urt = UserRememberToken::where( [ 'user_id' => $identifier ] )->where( [ 'token' => $token ] )->first();
 
@@ -155,7 +154,7 @@ class EloquentUserProvider implements IlluminateUserProvider
      * @return void
      */
     #[\Override]
-    public function updateRememberToken( Authenticatable $user, $token ){}
+    public function updateRememberToken( Authenticatable $user, #[\SensitiveParameter] $token ){}
 
     /**
      * Retrieve a user by the given credentials.
@@ -165,7 +164,7 @@ class EloquentUserProvider implements IlluminateUserProvider
      * @return Authenticatable|null
      */
     #[\Override]
-    public function retrieveByCredentials( array $credentials ): ?Authenticatable
+    public function retrieveByCredentials( #[\SensitiveParameter] array $credentials ): ?Authenticatable
     {
         // First we will add each credential element to the query as a where clause.
         // Then we can execute the query and, if we found a user, return it in a
@@ -196,7 +195,7 @@ class EloquentUserProvider implements IlluminateUserProvider
      * @return bool
      */
     #[\Override]
-    public function validateCredentials( Authenticatable $user, array $credentials ): bool
+    public function validateCredentials( Authenticatable $user, #[\SensitiveParameter] array $credentials ): bool
     {
         return $this->hasher->check( $credentials['password'], $user->getAuthPassword() );
     }
@@ -211,7 +210,7 @@ class EloquentUserProvider implements IlluminateUserProvider
      * @return void
      */
     #[\Override]
-    public function rehashPasswordIfRequired( Authenticatable $user, array $credentials, bool $force = false )
+    public function rehashPasswordIfRequired( Authenticatable $user, #[\SensitiveParameter] array $credentials, bool $force = false )
     {
         // TODO: Implement rehashPasswordIfRequired() method.
     }
