@@ -29,6 +29,7 @@
 
 use IXP\Rules\IsCountry;
 use IXP\Rules\NoIllegalChars;
+use IXP\Rules\IpOrHostname;
 
 return [
 
@@ -830,7 +831,7 @@ return [
                     'config_key' => 'ixp.rpki.rtr1.host',
                     'dotenv_key' => 'IXP_RPKI_RTR1_HOST',
                     'type'       => 'text',
-                    'rules'      => 'nullable|max:255',
+                    'rules'      => ['nullable', 'string', 'max:255', new IpOrHostname],
                     'name'       => 'RPKI Validator #1 Host',
                     'docs_url'   => 'https://docs.ixpmanager.org/latest/features/rpki/',
                     'help'       => 'IP address of the first RPKI local cache / validator. This will be inserted into the generated route server configuration if RPKI is enabled.',
@@ -840,7 +841,7 @@ return [
                     'config_key' => 'ixp.rpki.rtr1.port',
                     'dotenv_key' => 'IXP_RPKI_RTR1_PORT',
                     'type'       => 'text',
-                    'rules'      => 'nullable|integer|between:1,65535',
+                    'rules'      => ['nullable', 'integer', 'between:1,65535'],
                     'name'       => 'RPKI Validator #1 Port',
                     'docs_url'   => 'https://docs.ixpmanager.org/latest/features/rpki/',
                     'help'       => 'Port to connect to on the first RPKI local cache / validator. This will be inserted into the generated route server configuration if RPKI is enabled.',
@@ -850,7 +851,7 @@ return [
                     'config_key' => 'ixp.rpki.rtr2.host',
                     'dotenv_key' => 'IXP_RPKI_RTR2_HOST',
                     'type'       => 'text',
-                    'rules'      => 'nullable|max:255',
+                    'rules'      => ['nullable', 'string', 'max:255', new IpOrHostname],
                     'name'       => 'RPKI Validator #2 Host',
                     'docs_url'   => 'https://docs.ixpmanager.org/latest/features/rpki/',
                     'help'       => 'IP address of the second RPKI local cache / validator. This will be inserted into the generated route server configuration if RPKI is enabled.',
@@ -860,7 +861,7 @@ return [
                     'config_key' => 'ixp.rpki.rtr2.port',
                     'dotenv_key' => 'IXP_RPKI_RTR2_PORT',
                     'type'       => 'text',
-                    'rules'      => 'nullable|integer|between:1,65535',
+                    'rules'      => ['nullable', 'integer', 'between:1,65535'],
                     'name'       => 'RPKI Validator #2 Port',
                     'docs_url'   => 'https://docs.ixpmanager.org/latest/features/rpki/',
                     'help'       => 'Port to connect to on the second RPKI local cache / validator. This will be inserted into the generated route server configuration if RPKI is enabled.',
