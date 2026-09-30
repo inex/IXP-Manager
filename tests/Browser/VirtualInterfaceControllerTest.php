@@ -58,7 +58,7 @@ class VirtualInterfaceControllerTest extends DuskTestCase
     public function testAddWizard(): void
     {
         $this->browse( function ( Browser $browser ) {
-            $browser->maximize()
+            $browser->resize( 1600, 1200 )
                 ->visit('/logout' )
                 ->visit('/login' )
                 ->type('username', 'travis' )
@@ -209,7 +209,8 @@ class VirtualInterfaceControllerTest extends DuskTestCase
                 ->check('fastlacp'          )
                 ->type('name',          'name-test'         )
                 ->type('description',   'description-test'  )
-                ->type('channelgroup', '666'               )
+                ->type('channelgroup', '666'                )
+                ->waitFor('#mtu')
                 ->type('mtu', '666' )
                 ->press('Save Changes'  )
                 ->waitForLocation( route( 'virtual-interface@edit', $vi->id ) )
@@ -959,7 +960,7 @@ class VirtualInterfaceControllerTest extends DuskTestCase
     public function testViRateLimitAndAutoneg()
     {
         $this->browse( function ( Browser $browser ) {
-            $browser->maximize()
+            $browser->resize( 1600, 1200 )
                 ->visit('/logout' )
                 ->visit('/login' )
                 ->type('username', 'travis' )
