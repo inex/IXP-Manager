@@ -860,10 +860,12 @@ class VirtualInterfaceControllerTest extends DuskTestCase
                 ->check( "rsclient"         )
                 ->check( 'irrdbfilter'      )
                 ->check( 'rsmorespecifics'  )
-                ->check( 'ipv6enabled'     )
-                ->waitFor( "#ipv6-area"  )
                 ->check( 'ipv4enabled'     )
+                ->check( 'ipv6enabled'     )
                 ->waitFor( "#ipv4-area")
+                ->waitFor( "#ipv6-area"  )
+                ->waitFor( '#ipv4address' )
+                ->waitFor( '#ipv6address' )
                 ->select( 'ipv4address', "10.2.0.1"        )
                 ->select( 'ipv6address', '2001:db8:2::1'   )
                 ->type( 'ipv4hostname', 'v4.example.com'   )
@@ -1063,9 +1065,14 @@ class VirtualInterfaceControllerTest extends DuskTestCase
             $this->assertEquals("1000", $pi->rate_limit);
             $this->assertTrue($pi->autoneg);
 
-            $browser
-                ->press('#advanced-options')
-                ->press( "#delete-vi-" . $vi->id )
+            // Delete Virtual interface
+            $browser->visit( route( 'virtual-interface@edit', $vi->id ) )
+                ->assertSee('Edit Virtual Interface');
+
+            $browser->press('#advanced-options')
+                ->waitForText('Delete Interface');
+
+            $browser->press( "#delete-vi-" . $vi->id )
                 ->waitForText( 'Do you really want to delete this Virtual Interface?' )
                 ->press( "Delete" )
                 ->waitForLocation( route( 'customer@overview', [ 'cust' => $vi->custid, 'tab' => 'ports' ] ) )
@@ -1118,9 +1125,15 @@ class VirtualInterfaceControllerTest extends DuskTestCase
             $this->assertNull($pi->rate_limit);
             $this->assertFalse($pi->autoneg);
 
-            $browser
-                ->press('#advanced-options')
-                ->press( "#delete-vi-" . $vi->id )
+
+            // Delete Virtual interface
+            $browser->visit( route( 'virtual-interface@edit', $vi->id ) )
+                ->assertSee('Edit Virtual Interface');
+
+            $browser->press('#advanced-options')
+                ->waitForText('Delete Interface');
+
+            $browser->press( "#delete-vi-" . $vi->id )
                 ->waitForText( 'Do you really want to delete this Virtual Interface?' )
                 ->press( "Delete" )
                 ->waitForLocation( route( 'customer@overview', [ 'cust' => $vi->custid, 'tab' => 'ports' ] ) )
