@@ -25,9 +25,9 @@ namespace Tests\Rules;
 
 use IXP\Rules\IPv4Cidr;
 use PHPUnit\Framework\Attributes\DataProvider;
-use Tests\TestCase;
+use Tests\LiteTestCase;
 
-class IPv4CidrTest extends TestCase
+class IPv4CidrTest extends LiteTestCase
 {
 
     public static function acceptedInput(): array
