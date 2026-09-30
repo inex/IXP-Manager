@@ -26,6 +26,7 @@ namespace IXP\Http\Controllers;
 use Countries, Former;
 
 use Illuminate\Database\Eloquent\Builder;
+use IXP\Utils\CountryUtils;
 use Illuminate\Http\{
     Request,
     RedirectResponse
@@ -34,6 +35,8 @@ use Illuminate\Http\{
 use IXP\Models\{
     Infrastructure
 };
+
+use IXP\Rules\IsCountry;
 
 use IXP\Utils\View\Alert\{
     Alert,
@@ -177,7 +180,7 @@ class InfrastructureController extends Eloquent2Frontend
             'name'             => request()->old( 'name',      $this->object->name          ),
             'shortname'        => request()->old( 'shortname', $this->object->shortname     ),
             'isPrimary'        => request()->old( 'isPrimary', $this->object->isPrimary     ),
-            'country'          => request()->old( 'country', in_array( $this->object->country,  array_values( Countries::getListForSelect( 'iso_3166_2' ) ), false ) ? $this->object->country : null ),
+            'country'          => request()->old( 'country',   CountryUtils::isKnownBy($this->object->country) ? $this->object->country : null ),
             'exclude_from_ixf_export'
                                => request()->old( 'exclude_from_ixf_export', $this->object->exclude_from_ixf_export  ),
             'notes'            => request()->old( 'notes',                   $this->object->notes                    ),
@@ -284,7 +287,7 @@ class InfrastructureController extends Eloquent2Frontend
         $r->validate( [
             'name'          => 'required|string|max:255|unique:infrastructure,name' . ( $r->id ? ','. $r->id : '' ),
             'shortname'     => 'required|string|max:255',
-            'country'       => 'required|string|max:2|in:' . implode( ',', array_values( Countries::getListForSelect( 'iso_3166_2' ) ) ),
+            'country'       => ['required', 'string', 'max:2', new IsCountry],
         ] );
     }
 }

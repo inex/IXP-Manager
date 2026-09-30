@@ -21,15 +21,14 @@
  */
 
 declare(strict_types=1);
+
 namespace Tests\Rules;
 
-use IXP\Rules\IPv4Cidr;
-use IXP\Rules\Ipv4SubnetSize;
 use IXP\Rules\Ipv6SubnetSize;
 use PHPUnit\Framework\Attributes\DataProvider;
-use Tests\TestCase;
+use Tests\LiteTestCase;
 
-class Ipv6SubnetSizeTest extends TestCase
+class Ipv6SubnetSizeTest extends LiteTestCase
 {
 
     public static function acceptedInput(): array

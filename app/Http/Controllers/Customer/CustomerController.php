@@ -30,6 +30,7 @@ use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Database\Eloquent\Builder;
 
 use IXP\Exceptions\GeneralException;
+use IXP\Utils\CountryUtils;
 use Illuminate\Http\{
     JsonResponse,
     RedirectResponse,
@@ -323,7 +324,7 @@ class CustomerController extends Controller
             'address3'                  => $r->old( 'address3',                   $crd->address3 ) ,
             'townCity'                  => $r->old( 'townCity',                   $crd->townCity ),
             'postcode'                  => $r->old( 'postcode',                   $crd->postcode ),
-            'country'                   => $r->old( 'country',            in_array( $crd->country,  array_values( Countries::getListForSelect( 'iso_3166_2' ) ), false ) ? $crd->country : null ),
+            'country'                   => $r->old( 'country',                    CountryUtils::isKnownBy($crd->country) ? $crd->country : null ),
             'notes'                     => $r->old( 'notes',                      $crd->notes ),
         ];
 

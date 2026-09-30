@@ -21,13 +21,14 @@
  */
 
 declare(strict_types=1);
+
 namespace Tests\Rules;
 
 use IXP\Rules\IPv6Cidr;
 use PHPUnit\Framework\Attributes\DataProvider;
-use Tests\TestCase;
+use Tests\LiteTestCase;
 
-class IPv6CidrTest extends TestCase
+class IPv6CidrTest extends LiteTestCase
 {
 
     public static function acceptedInput(): array

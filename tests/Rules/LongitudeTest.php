@@ -24,9 +24,9 @@ declare(strict_types=1);
 namespace Tests\Rules;
 
 use IXP\Rules\Longitude;
-use Tests\TestCase;
+use Tests\LiteTestCase;
 
-class LongitudeTest extends TestCase
+class LongitudeTest extends LiteTestCase
 {
     public function testFailure()
     {

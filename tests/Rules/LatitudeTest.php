@@ -24,9 +24,9 @@ declare(strict_types=1);
 namespace Tests\Rules;
 
 use IXP\Rules\Latitude;
-use Tests\TestCase;
+use Tests\LiteTestCase;
 
-class LatitudeTest extends TestCase
+class LatitudeTest extends LiteTestCase
 {
     public function testFailure()
     {

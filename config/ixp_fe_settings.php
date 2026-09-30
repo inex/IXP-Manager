@@ -27,8 +27,7 @@
 // determines what .env elements are configurable via the frontend and sets up the
 // form for this.
 
-use Illuminate\Validation\Rule;
-use IXP\Rules\ExistsAndExecutable;
+use IXP\Rules\IsCountry;
 
 return [
 
@@ -337,7 +336,7 @@ return [
                     'dotenv_key' => 'IDENTITY_COUNTRY',
                     'type'       => 'select',
                     'options'    => [ 'type' => 'countries' ], // special option list for countries
-                    'rules'      => 'nullable|size:2',
+                    'rules'      => ['nullable', 'string', 'size:2', new IsCountry()],
                     'name'       => 'Country',
                     'docs_url'   => null,
                     'help'       => 'This is a fallback location, typically only used if it cannot be inferred from your facility settings.',
