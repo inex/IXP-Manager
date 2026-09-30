@@ -269,11 +269,6 @@
       <code><![CDATA[$c]]></code>
     </UndefinedDocblockClass>
   </file>
-  <file src="app/Http/Controllers/Auth/ResetPasswordController.php">
-    <MissingDocblockType>
-      <code><![CDATA[protected function resetPassword( User $user, string $password ): void]]></code>
-    </MissingDocblockType>
-  </file>
   <file src="app/Http/Controllers/CabinetController.php">
     <InvalidReturnStatement>
       <code><![CDATA[$okay]]></code>

@@ -147,8 +147,6 @@ class ResetPasswordController extends Controller
      * @param  string   $password
      *
      * @return void
-     *
-     * @throws
      */
     protected function resetPassword( User $user, #[\SensitiveParameter] string $password ): void
     {
@@ -158,6 +156,7 @@ class ResetPasswordController extends Controller
         event( new PasswordResetEvent( $user ) );
         $this->redirectTo = route("login@showForm" ) . '?username=' . $user->username ;
     }
+
     /**
      * Get the response for a failed password reset.
      *
