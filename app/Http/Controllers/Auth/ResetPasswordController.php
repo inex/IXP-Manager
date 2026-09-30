@@ -97,7 +97,7 @@ class ResetPasswordController extends Controller
      *
      * @return View
      */
-    public function showResetForm( Request $request, ?string $token = null ): View
+    public function showResetForm( Request $request, #[\SensitiveParameter] ?string $token = null ): View
     {
         Former::populate( [
             'username'      => request()->old( 'username',  $request->username    ),
@@ -150,7 +150,7 @@ class ResetPasswordController extends Controller
      *
      * @throws
      */
-    protected function resetPassword( User $user, string $password ): void
+    protected function resetPassword( User $user, #[\SensitiveParameter] string $password ): void
     {
         $user->password = Hash::make( $password );
         $user->save();

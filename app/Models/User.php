@@ -401,7 +401,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
      * @return void
      */
     #[\Override]
-    public function sendPasswordResetNotification( $token ): void
+    public function sendPasswordResetNotification( #[\SensitiveParameter] $token ): void
     {
         event( new ForgotPasswordEvent( $token, $this ) );
     }
@@ -427,7 +427,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     /**
      * Mark users remember me token (if there is any) as having completed 2FA
      */
-    public function markRememberToken2faComplete(string $token): bool
+    public function markRememberToken2faComplete(#[\SensitiveParameter] string $token): bool
     {
         return $this->userRememberTokens()->whereToken($token)->first()
             ?->record2faIsComplete() ?? false;
