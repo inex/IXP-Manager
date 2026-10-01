@@ -488,6 +488,8 @@ class VirtualInterfaceControllerTest extends DuskTestCase
                 ->waitFor( "#ipv6-area"  )
                 ->check( 'ipv4enabled'     )
                 ->waitFor( "#ipv4-area"  )
+                ->waitFor('#ipv4maxbgpprefix')
+                ->waitFor('#ipv6maxbgpprefix')
                 ->check( "rsclient"         )
                 ->check( 'irrdbfilter'      )
                 ->check( 'rsmorespecifics'  )
@@ -495,7 +497,7 @@ class VirtualInterfaceControllerTest extends DuskTestCase
                 ->select( 'ipv6address', '2001:db8:2::1'   )
                 ->type( 'ipv4hostname', 'v4.example.com'   )
                 ->type( 'ipv6hostname', 'v6.example.com'   )
-                ->type( "ipv4maxbgpprefix", '250' )
+                ->type( "ipv4maxbgpprefix", '250' )  # possible fixme
                 ->type( "ipv6maxbgpprefix", '150' )
                 ->type( 'ipv4bgpmd5secret', 'soopersecret' )
                 ->type( 'ipv6bgpmd5secret', 'soopersecret' )
@@ -1012,9 +1014,10 @@ class VirtualInterfaceControllerTest extends DuskTestCase
             $this->assertNull($pi->rate_limit);
             $this->assertTrue($pi->autoneg);
 
-            $browser
-                ->press('#advanced-options')
-                ->press( "#delete-vi-" . $vi->id )
+            $browser->press('#advanced-options')
+                ->waitForText('Delete Interface');
+
+            $browser->press( "#delete-vi-" . $vi->id )
                 ->waitForText( 'Do you really want to delete this Virtual Interface?' )
                 ->press( "Delete" )
                 ->waitForLocation( route( 'customer@overview', [ 'cust' => $vi->custid, 'tab' => 'ports' ] ) )
