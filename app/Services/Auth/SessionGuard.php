@@ -50,10 +50,17 @@ use PragmaRX\Google2FALaravel\Support\Authenticator as GoogleAuthenticator;
  */
 class SessionGuard extends BaseGuard
 {
+    protected ?UserRememberToken $userRememberToken = null;
+
     /**
-     * @var UserRememberToken;
+     * Used to indicate that a remember-me token integrity check failed.
      */
-    protected $userRememberToken;
+    private bool $rememberMeIntegrityFailed = false;
+
+    public function isRememberMeIntegrityFailed(): bool
+    {
+        return $this->rememberMeIntegrityFailed;
+    }
 
     /**
      * Get the currently authenticated user.
@@ -69,14 +76,14 @@ class SessionGuard extends BaseGuard
     #[\Override]
     public function user()
     {
-        if( $this->loggedOut ){
+        if( $this->loggedOut ) {
             return;
         }
 
         // If we've already retrieved the user for the current request we can just
         // return it back immediately. We do not want to fetch the user data on
         // every call to this method because that would be tremendously slow.
-        if (! is_null( $this->user ) ) {
+        if( !is_null( $this->user ) ) {
             return $this->user;
         }
 
@@ -86,18 +93,24 @@ class SessionGuard extends BaseGuard
         // First we will try to load the user using the identifier in the session if
         // one exists. Otherwise we will check for a "remember me" cookie in this
         // request, and if one exists, attempt to retrieve the user using that.
-        if (! is_null( $id ) && $this->user = $this->provider->retrieveById( $id ) ) {
+        if( !is_null( $id ) && $this->user = $this->provider->retrieveById( $id ) ) {
             // User has local session - make sure it hasn't been invalidated if a remember me cookie exists.
             // This is the bit we added to allow a user to invalidate other sessions via the UI.
+
             if( $recaller ) {
-                if( !$recaller->valid() || (int)$recaller->id() !== $this->user->getAuthIdentifier() ) {
-                    $this->logout();
-                    return null;
+                // NB: If the user has used the switch-user feature, the session user id will be
+                //     that of the target user, but their remember me token will only be reachable
+                //     using their original user id.
+                $originalUserId = $this->session->get( 'switched_user_from' ) ?? $id;
+
+                $urt = null;
+                if( $recaller->valid() && (int)$recaller->id() === (int)$originalUserId ) {
+                    $urt = UserRememberToken::whereUserId( $originalUserId )->whereToken( $recaller->token() )->first();
                 }
 
-                $urt = UserRememberToken::whereUserId($this->user->getAuthIdentifier())->whereToken( $recaller->token() )->first();
-
+                // If recaller is invalid, or doesn't match originalUserId, or was deleted, or is expired, log out the user.
                 if( !$urt || $urt->expired() ) {
+                    $this->rememberMeIntegrityFailed = true;
                     $this->logout();
                     return null;
                 }
@@ -109,7 +122,8 @@ class SessionGuard extends BaseGuard
         // If the user is null, but we decrypt a "recaller" cookie we can attempt to
         // pull the user data on that cookie which serves as a remember cookie on
         // the application. Once we have a user we can return it to the caller.
-        if( is_null( $this->user ) && ! is_null( $recaller ) ) {
+        if( is_null( $this->user ) && !is_null( $recaller ) ) {
+            // This method calls EloquentUserProvider::retrieveByToken which enforces expiration
             $this->user = $this->userFromRecaller( $recaller );
 
             if( $this->user ) {
@@ -117,7 +131,7 @@ class SessionGuard extends BaseGuard
 
                 // Get the UserRememberToken and, if 2fa has been completed, don't redo it:
                 if( $this->user->user2FA && $this->user->user2FA->enabled ) {
-                    $urt = UserRememberToken::whereUserId($this->user->getAuthIdentifier())->whereToken( $recaller->token() )->first();
+                    $urt = UserRememberToken::whereUserId( $this->user->getAuthIdentifier() )->whereToken( $recaller->token() )->first();
 
                     if( $urt && $urt->is_2fa_complete ) {
                         $authenticator = new GoogleAuthenticator( $this->request );
@@ -125,12 +139,12 @@ class SessionGuard extends BaseGuard
                     }
                 }
 
-                $this->fireLoginEvent( $this->user, true);
+                $this->fireLoginEvent( $this->user, true );
             }
         }
+
         return $this->user;
     }
-
 
     /**
      * Create a "remember me" token for the user.
@@ -206,13 +220,10 @@ class SessionGuard extends BaseGuard
     #[\Override]
     protected function cycleRememberToken( AuthenticatableContract $user ): void
     {
-        if( $this->recaller() && $this->recaller()->token() ) {
-            foreach( $this->user()->userRememberTokens as $urt ) {
-                if( $urt->token === $this->recaller()->token() ) {
-                    $urt->delete();
-                    break;
-                }
-            }
+        if( $this->recaller() && $this->recaller()->valid() ) {
+            /** @var User $user */
+            $user = $this->user();
+            $user->userRememberTokens()->whereToken( $this->recaller()->token() )->delete();
         }
     }
 }
