@@ -198,7 +198,7 @@ class VirtualInterfaceControllerTest extends DuskTestCase
                 ->click(        "#advanced-options" )
                 ->assertInputValue('name', ''           )
                 ->assertInputValue('description',   ''  )
-                ->assertInputValue('channelgroup', ''  )
+                ->assertInputValue('channelgroup', ''   )
                 ->assertInputValue('mtu',           ''  );
 
         // Edit the virtual Interface with new values
@@ -239,7 +239,7 @@ class VirtualInterfaceControllerTest extends DuskTestCase
                 ->assertChecked('lag_framing'   )
                 ->assertInputValue('name',          'name-test'         )
                 ->assertInputValue('description',   'description-test'  )
-                ->assertInputValue('channelgroup', '666'               )
+                ->assertInputValue('channelgroup', '666'                )
                 ->assertInputValue('mtu',           '666'               );
 
 
