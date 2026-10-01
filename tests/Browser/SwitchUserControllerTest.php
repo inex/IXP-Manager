@@ -23,6 +23,7 @@ declare(strict_types=1);
 
 namespace Tests\Browser;
 
+use Illuminate\Support\Facades\Auth;
 use IXP\Models\User;
 use IXP\Models\User2FA;
 use Laravel\Dusk\Browser;
@@ -229,4 +230,49 @@ class SwitchUserControllerTest extends DuskTestCase
         } );
     }
 
+    /**
+     * Test that switching user while we have a remember me token set doesn't cause us to be logged out
+     */
+    public function testSwitchUserWithRememberMe(): void
+    {
+        $this->browse( function( Browser $browser ) {
+            $browser->resize( 1600, 1200 )
+                ->visit( '/logout' )
+                ->visit( '/login' )
+                ->type( 'username', 'travis' )
+                ->type( 'password', 'travisci' )
+                ->check( 'remember' )
+                ->press( '#login-btn' )
+                ->waitForLocation( '/admin/dashboard' );
+
+            $browser->assertHasCookie( Auth::getRecallerName() );
+
+            // Create a new user also a superuser
+            $browser->visit( 'user/list' )
+                ->click( "#add-user" )
+                ->waitForText( 'Users / Create' )
+                ->type( "#email", "test13@example.com" )
+                ->click( '.btn-primary' )
+                ->waitForText( 'Privilege' )
+                ->type( 'name', 'Test User 13' )
+                ->type( 'username', 'testuser13' )
+                ->select( 'privs', 3 )
+                ->select( 'custid', 1 )
+                ->check( 'disabled' )
+                ->type( 'authorisedMobile', '12125551000' )
+                ->press( 'Create' )
+                ->waitForText( "Please note that you have given this user full administrative access" );
+
+            // Attempt to switch to that user
+            $testSuperUser = User::whereUsername( "testuser13" )->get()->first();
+
+            $browser->visit( 'user/list' )
+                ->waitForText( "Users" )
+                ->click( "#d2f-more-options-" . $testSuperUser->id )
+                ->click( '#d2f-option-login-as-' . $testSuperUser->id )
+                ->assertPathIs( "/admin/dashboard" )
+                ->assertSee( "Switch Back" )
+                ->assertSee( "You are now logged in as " . $testSuperUser->username . " (" . $testSuperUser->name . ") for the " . config( 'ixp_fe.lang.customer.one' ) . " " . $testSuperUser->customer->name );
+        } );
+    }
 }

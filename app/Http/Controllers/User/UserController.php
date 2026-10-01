@@ -489,14 +489,17 @@ class UserController extends Controller
 
         $u->delete();
 
-        AlertContainer::push('User deleted.', Alert::SUCCESS );
         Log::notice( $us->username." deleted user" . $u->username );
 
         // If the user delete itself and is loggued as the same customer logout
         if( Auth::id() === $u->id ) {
             Auth::logout();
+            // Note: logout triggers session invalidation so push this log after.
+            AlertContainer::push('User deleted.', Alert::SUCCESS );
             return redirect( route( "login@showForm" ) );
         }
+
+        AlertContainer::push('User deleted.', Alert::SUCCESS );
 
         if( $us->isSuperUser() && strpos( request()->headers->get('referer', "" ), "customer/overview" ) ) {
             return redirect( route( "customer@overview", [ 'cust' => $u->custid , "tab" => "users"] ) );

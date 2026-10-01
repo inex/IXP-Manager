@@ -206,14 +206,17 @@ class CustomerToUserController extends Controller
             $disassociatedUser->save();
         }
 
-        AlertContainer::push( $disassociatedUser->name  . '/' . $disassociatedUser->username . ' deleted from ' . $disassociatedCust->name, Alert::SUCCESS );
         Log::notice( Auth::getUser()->username." deleted customer2user" . $disassociatedCust->name . '/' . $disassociatedUser->name );
 
         // If the user deleted itself and is logged in as the same customer:
         if( $r->user()->id === $disassociatedUser->id && $initialCust->id === $disassociatedCust->id ) {
             Auth::logout();
+            // note: Auth::logout performs session invalidation, so push this message here too
+            AlertContainer::push( $disassociatedUser->name  . '/' . $disassociatedUser->username . ' deleted from ' . $disassociatedCust->name, Alert::SUCCESS );
             return redirect( route( "login@showForm" ) );
         }
+
+        AlertContainer::push( $disassociatedUser->name  . '/' . $disassociatedUser->username . ' deleted from ' . $disassociatedCust->name, Alert::SUCCESS );
 
         // retrieve the customer ID
         if( strpos( $r->headers->get( 'referer', "" ), "customer/overview" ) !== false ) {

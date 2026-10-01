@@ -52,9 +52,7 @@ use Illuminate\Session\Middleware\AuthenticateSession;
 
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 
-use IXP\Http\Middleware\{
-    PreventRequestsDuringMaintenance,
-    Authenticate};
+use IXP\Http\Middleware\{HandleFailedRememberMeIntegrityCheck, PreventRequestsDuringMaintenance, Authenticate};
 use Illuminate\Http\Middleware\TrustProxies;
 
 class Kernel extends HttpKernel
@@ -87,6 +85,7 @@ class Kernel extends HttpKernel
             AddQueuedCookiesToResponse::class,
             StartSession::class,
             ShareErrorsFromSession::class,
+            HandleFailedRememberMeIntegrityCheck::class,
             Middleware\VerifyCsrfToken::class,
             SubstituteBindings::class,
             Middleware\ControllerEnabled::class,
@@ -97,6 +96,7 @@ class Kernel extends HttpKernel
             AddQueuedCookiesToResponse::class,
             StartSession::class,
             ShareErrorsFromSession::class,
+            HandleFailedRememberMeIntegrityCheck::class,
             SubstituteBindings::class,
             Middleware\ControllerEnabled::class,
             //'throttle:60,1',
@@ -177,6 +177,7 @@ class Kernel extends HttpKernel
     protected $middlewarePriority = [
         StartSession::class,
         ShareErrorsFromSession::class,
+        HandleFailedRememberMeIntegrityCheck::class,
         Authenticate::class,
         ThrottleRequests::class,
         AuthenticateSession::class,

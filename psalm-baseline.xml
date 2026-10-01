@@ -1302,13 +1302,12 @@
       <code><![CDATA[getCompiler]]></code>
     </UndefinedInterfaceMethod>
   </file>
-  <file src="app/Services/Auth/SessionGuard.php">
-    <InvalidDocblock>
-      <code><![CDATA[protected $userRememberToken;]]></code>
-    </InvalidDocblock>
-    <NoInterfaceProperties>
-      <code><![CDATA[$this->user()->userRememberTokens]]></code>
-    </NoInterfaceProperties>
+  <file src="app/Services/Auth/EloquentUserProvider.php">
+    <MissingDocblockType>
+      <code><![CDATA[#[\Override]]]></code>
+      <code><![CDATA[public function addRememberToken( $user ): UserRememberToken]]></code>
+      <code><![CDATA[public function purgeExpiredRememberTokens( User $user ): void]]></code>
+    </MissingDocblockType>
   </file>
   <file src="app/Services/Diagnostics/Suites/PhysicalInterfaceDiagnosticSuite.php">
     <RedundantCondition>
