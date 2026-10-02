@@ -131,6 +131,12 @@ class DotEnvContainer
             throw new DotEnvInvalidSettingException( 'Duplicate key exception: ' . $key );
         }
 
+        if ($value) {
+            if (preg_match('/["\r\n\x00\\\\]/', $value)) {
+                throw new DotEnvInvalidSettingException( 'Illegal characters in value' );
+            }
+        }
+
         $this->settings[] = [
             'key'     => $key,
             'value'   => $value === null ? null : DotEnvParser::parseValue( $value ),
@@ -157,6 +163,12 @@ class DotEnvContainer
             throw new DotEnvInvalidSettingException( 'Cannot replace a key that does not exist: ' . $key );
         }
 
+        if ($value) {
+            if (preg_match('/["\r\n\x00\\\\]/', $value)) {
+                throw new DotEnvInvalidSettingException( 'Illegal characters in value' );
+            }
+        }
+
         $this->settings[ $idx ] = [
             'key'     => $key,
             'value'   => DotEnvParser::parseValue( $value ),
@@ -181,7 +193,13 @@ class DotEnvContainer
         if( ( $idx = $this->indexOf( $key ) ) === null ) {
             throw new DotEnvInvalidSettingException( 'Cannot update a key that does not exist: ' . $key );
         }
-        
+
+        if ($value) {
+            if (preg_match('/["\r\n\x00\\\\]/', $value)) {
+                throw new DotEnvInvalidSettingException( 'Illegal characters in value' );
+            }
+        }
+
         $this->settings[ $idx ][ 'value' ] = DotEnvParser::parseValue( $value );
         
         return $this;
