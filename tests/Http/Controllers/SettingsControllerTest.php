@@ -25,7 +25,10 @@ declare(strict_types=1);
 namespace Tests\Http\Controllers;
 
 use Dotenv\Dotenv;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Testing\TestResponse;
+use IXP\Rules\IsCountry;
+use IXP\Rules\NoIllegalChars;
 use Tests\TestCase;
 use Tests\Trait\ModifiesEnv;
 
@@ -52,6 +55,9 @@ class SettingsControllerTest extends TestCase
         }
     }
 
+    /**
+     * Test that we can successfully submit the settings controller update with no changes.
+     */
     public function testChangesNone(): void
     {
         $originalEnvFile = file_get_contents( base_path( '.env' ) );
@@ -64,6 +70,9 @@ class SettingsControllerTest extends TestCase
         $after = file_get_contents( base_path( '.env' ) );
         $this->assertEquals( $originalEnvFile, $after );
     }
+
+    // What follows is a test of different text fields - a rejection, and a successful acceptance.
+    // 'boolean'
 
     public function testIdentityEmailMustBeEmail(): void
     {
@@ -453,24 +462,88 @@ class SettingsControllerTest extends TestCase
         $this->assertEquals('bgpq4', $updatedEnv[ $this->getEnvVarForId('bgpq4_path') ] );
     }
 
-//    public function testTextFieldsHaveValidationOrNoIllegalChars(): void
-//    {
-//        foreach (config('ixp_fe_settings.panels') as $panel) {
-//            foreach ($panel['fields'] as $fieldName => $field) {
-//                if ($field['type'] != 'text') {
-//                    continue;
-//                }
-//
-//                // Really putting trust in the validation here, that they don't contain any illegal chars..
-//                $rules = is_array($field['rules']) ? $field['rules'] : explode("|", $field['rules']);
-//                if (array_any($rules, fn($rule) => in_array($rule, ['email', 'url', 'integer']))) {
-//                    continue;
-//                }
-//
-//                $this->assertTrue(array_any($rules, fn($rule) => $rule instanceof NoIllegalChars), $fieldName . " contains NoIllegalChars rule");
-//            }
-//        }
-//    }
+    /**
+     * Safeguard - for text fields we require the NoIllegalChars.
+     */
+    public function testTextFieldsHaveValidationOrNoIllegalChars(): void
+    {
+        foreach (config('ixp_fe_settings.panels') as $panel) {
+            foreach ($panel['fields'] as $fieldName => $field) {
+                if ($field['type'] != 'text') {
+                    continue;
+                }
+
+                $rules = is_array($field['rules'])
+                    ? $field['rules']
+                    : explode("|", $field['rules']);
+
+                $this->assertTrue(array_any($rules, fn($rule) => $rule instanceof NoIllegalChars), "Text field " . $fieldName . " contains NoIllegalChars rule");
+            }
+        }
+    }
+
+    /**
+     * Test that every radio field has a boolean rule
+     */
+    public function testEveryRadioFieldHasBoolean(): void
+    {
+        foreach (config('ixp_fe_settings.panels') as $panel) {
+            foreach ($panel['fields'] as $fieldName => $field) {
+                if ($field['type'] != 'radio') {
+                    continue;
+                }
+
+                $rules = is_array($field['rules'])
+                    ? $field['rules']
+                    : explode("|", $field['rules']);
+
+                $this->assertTrue(in_array('boolean', $rules), "Radio field " . $fieldName . " contains 'boolean' rule");
+            }
+        }
+    }
+
+    /**
+     * Test that every select field has an in: rule, or uses a whitelisted validation rule that performs a similar function
+     */
+    public function testEverySelectFieldHasInOrRule(): void
+    {
+        $whitelistRule = [IsCountry::class];
+
+        foreach (config('ixp_fe_settings.panels') as $panel) {
+            foreach ($panel['fields'] as $fieldName => $field) {
+                if ($field['type'] != 'select') {
+                    continue;
+                }
+
+                $rules = is_array($field['rules'])
+                    ? $field['rules']
+                    : explode("|", $field['rules']);
+
+                if (array_any($rules, fn($rule) => array_any($whitelistRule, fn($wlRule) => $rule instanceof $wlRule))) {
+                    // One of the rules is a rule from the whitelist Rule array so the check can be skipped
+                    continue;
+                }
+
+                $this->assertTrue(array_any($rules, fn($rule) => str_starts_with($rule, 'in:')), "Select field " . $fieldName . " contains 'in:' rule, or a whitelisted rule");
+            }
+        }
+    }
+
+    /**
+     * This test is essentially a demonstration - the integer validation rule cannot be relied on to
+     * reject illegal characters by itself.
+     */
+    public function testIllegalInteger(): void
+    {
+        $ok = true;
+        foreach (["\n", "\r", "\0", "\"", "\\"] as $illegal) {
+            $validatorEnd = Validator::make(['input' => "123$illegal"], ['input' => 'integer']);
+            $validatorMiddle = Validator::make(['input' => "12{$illegal}3"], ['input' => 'integer']);
+            $ok = $ok && $validatorEnd->passes() && $validatorMiddle->passes();
+        }
+        $this->assertFalse($ok, "integer rule does not reject all illegal characters");
+    }
+
 
     private function submitSettings(array $changes = [] ): TestResponse
     {
