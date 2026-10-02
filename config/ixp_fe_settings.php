@@ -891,7 +891,7 @@ return [
                     'help'       => 'Software to use for IRRDB lookups. This defaults to bgpq3.',
                 ],
 
-                'bgpq3' => [
+                'bgpq3_path' => [
                     'config_key' => 'ixp.irrdb.bgpq3.path',
                     'dotenv_key' => 'IXP_IRRDB_BGPQ3_PATH',
                     'type'       => 'text',
@@ -905,7 +905,7 @@ return [
                     'help'       => 'Full path to the bgpq3 executable, or an executable in $PATH.',
                 ],
 
-                'bgpq4' => [
+                'bgpq4_path' => [
                     'config_key' => 'ixp.irrdb.bgpq4.path',
                     'dotenv_key' => 'IXP_IRRDB_BGPQ4_PATH',
                     'type'       => 'text',
