@@ -45,6 +45,23 @@ use Throwable;
 class LoginTest extends DuskTestCase
 {
     /**
+     * Test invalid credentials are rejected with a generic message
+     */
+    public function testLoginFailed(): void
+    {
+        $this->browse(function (Browser $browser) {
+            $browser->visit('/logout')
+                ->visit('/login')
+                ->type( 'username', 'invalid' )
+                ->type( 'password', 'invalid' )
+                ->press( '#login-btn' )
+                ->waitForLocation( '/login' )
+                ->assertSee('Invalid username or password. Please try again.')
+            ;
+        });
+    }
+
+    /**
      * Test the superuser can login and see the dashboard
      */
     public function testLoginToDashboard(): void
