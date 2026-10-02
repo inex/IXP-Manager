@@ -504,7 +504,7 @@ return [
                     'type'       => 'select',
                     'options'    => [ 'type' => 'array', 'list' => \IXP\Models\User::$PRIVILEGES_TEXT + [ 4 => 'Do not enforce for any user' ] ],
                     'name'       => "Enforce 2FA for Users >=",
-                    'rules'      => 'required_if_accepted:2fa_enabled|string|in:1,2,3,4',
+                    'rules'      => 'required_if_accepted:2fa_enabled|integer|in:1,2,3,4',
                     'docs_url'   => 'https://docs.ixpmanager.org/usage/authentication/#enforcing-2fa-for-users',
                     'help'       => 'Choose between allowing users to opt into 2fa, or requiring all users with minimum selected privilege.',
                 ],
@@ -812,7 +812,6 @@ return [
                     'docs_url'   => 'https://docs.ixpmanager.org/7.0/features/route-servers/',
                     'help'       => 'Minimum IPv6 subnet size accepted by route servers. Should be no more specific than a /48.',
                 ],
-
 
                 'rs-filters-ttl' => [
                     // this via config() will give default value
