@@ -580,7 +580,7 @@
                                                                 <tr id="file_row_<?=$file->id?>">
                                                                     <td class="d-flex">
                                                                         <div class="mr-auto">
-                                                                            <?= $file->nameTruncated() ?>
+                                                                            <?= $t->ee( $file->nameTruncated() ) ?>
                                                                         </div>
                                                                         <div>
                                                                             <i id="file-private-state-<?= $file->id ?>"
@@ -588,7 +588,7 @@
                                                                         </div>
                                                                     </td>
                                                                     <td>
-                                                                        <?= $file->sizeFormated() ?>
+                                                                        <?= $t->ee( $file->sizeFormated() ) ?>
                                                                     </td>
                                                                     <td>
                                                                         <i title='<?= $file->type?>' class='fa <?= $file->typeAsIcon()?> fa-lg'></i>
