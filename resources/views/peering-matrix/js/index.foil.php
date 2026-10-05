@@ -1,9 +1,6 @@
 <script type="module">
     //////////////////////////////////////////////////////////////////////////////////////
     // we'll need these handles to html elements in a few places:
-    sessions  = <?= json_encode( $t->sessions, JSON_THROW_ON_ERROR ) ?>;
-    custs     = <?= json_encode( $t->custs, JSON_THROW_ON_ERROR ) ?>;
-
     const table       = $( "#table-pm" );
 
     $( 'document' ).ready( function(){
@@ -11,7 +8,7 @@
         let columnClicked, mouseLocked   = false;
 
         table.delegate( 'td', 'mouseover mouseout click', function( event ) {
-            console.log(this.id.indexOf( 'td-asn-' ))
+             console.log(this.id.indexOf( 'td-asn-' ))
              if( columnClicked ) return;
              if( this.id.indexOf( 'td-asn-' ) === 0   ) return;
              if( this.id.indexOf( 'td-name-' ) === 0  ) return;
