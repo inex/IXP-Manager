@@ -64,29 +64,28 @@
             <em>This is the public looking glass. Uncached results and additional routers available when logged in.&nbsp;&nbsp;&nbsp;&nbsp;</em>
         </div>
     <?php endif; ?>
-
     <?php if( $t->lg ): ?>
         <div class="card mb-4">
             <div class="card-body bg-light d-flex">
                 <div class="mr-auto">
-                    <?= $t->lg->router()->software() ?>
-                    <?= $t->status->status->version ?>
+                    <?= $t->ee( $t->lg->router()->software() ) ?>
+                    <?= $t->ee( $t->status->status->version ) ?>
                     &nbsp;&nbsp;|&nbsp;&nbsp;
-                    API: <?= $t->status->api->version ?>
+                    API: <?= $t->ee( $t->status->api->version ) ?>
 
                     <?php if( isset( $t->status->status->router_id ) ): ?>
                         &nbsp;&nbsp;|&nbsp;&nbsp;
-                        Router ID: <?= $t->status->status->router_id ?>
+                        Router ID: <?= $t->ee( $t->status->status->router_id ) ?>
                     <?php endif; ?>
                     &nbsp;&nbsp;|&nbsp;&nbsp;
                     Uptime: <?= (new DateTime)->diff( DateTime::createFromFormat( 'Y-m-d\TH:i:sO', $t->status->status->last_reboot ) )->days ?> days.
                     &nbsp;&nbsp;|&nbsp;&nbsp;
                     Last Reconfigure: <?= DateTime::createFromFormat( 'Y-m-d\TH:i:sO', $t->status->status->last_reconfig )->format( 'Y-m-d H:i:s' ) ?>
 
-                    <?php if( isset( $t->content->api->from_cache ) and $t->content->api->from_cache ): ?>
+                    <?php if( isset( $t->content->api->from_cache ) && $t->content->api->from_cache ): ?>
                         &nbsp;&nbsp;|&nbsp;&nbsp;
                         <span class="badge badge-info">
-                            Cached data. Maximum age: <?= $t->content->api->ttl_mins ?> mins.
+                            Cached data. Maximum age: <?= $t->ee( $t->content->api->ttl_mins ) ?> mins.
                         </span>
                     <?php endif; ?>
 
