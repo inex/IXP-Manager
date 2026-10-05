@@ -19,7 +19,7 @@ TMP=/tmp
 
 ############################################
 
-# Set default subsciption settings for any new IXP Manager users
+# Set default subscription settings for any new IXP Manager users
 <?= config( 'mailinglists.mailman.cmds.list_members', 'XXX' ) ?> <?= $name ?> > $TMP/ml-<?= $name ?>.txt
 curl -sf -H "X-IXP-Manager-API-Key: $KEY" \
     -X POST --data-urlencode addresses@$TMP/ml-<?= $name ?>.txt \

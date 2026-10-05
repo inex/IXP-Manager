@@ -21,7 +21,7 @@ IXPROOT=/srv/ixpmanager
 ## <?= $name ?> - <?= $ml['name'] . "\n" ?>
 ##
 
-# Set default subsciption settings for any new IXP Manager users
+# Set default subscription settings for any new IXP Manager users
 <?= config( 'mailinglists.mailman.cmds.list_members', 'XXX' ) ?> <?= $name ?> | php $IXPROOT/artisan mailing-list:init <?= $name . "\n" ?>
 
 # Add new subscriptions to the list

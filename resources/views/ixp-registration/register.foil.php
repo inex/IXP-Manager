@@ -70,13 +70,13 @@ Register on IXP Manager Community
                     <?= Former::text( 'website' )
                             ->label( "Your IXP's Homepage" )
                             ->required()
-                            ->value( config('identity.corporate_url') )
+                            ->value( $t->ee( config( 'identity.corporate_url' ), "attr" ) )
                             ->blockHelp( "This is the homepage / website for your IXP, not the location of IXP Manager. Please enter as a complete URL such as: http://www.example.com" );
                     ?>
 
                     <?= Former::text( 'ixpmurl' )
                             ->label( "IXP Manager URL" )
-                            ->value( config('identity.url') )
+                            ->value( $t->ee( config( 'identity.url' ), "attr" ) )
                             ->blockHelp( "If your installation of IXP Manager is publicly accessible,
                                                then provide the base URL here. We will use this to routinely pull
                                                the version you are running and other stats via the IX-F Member Export
