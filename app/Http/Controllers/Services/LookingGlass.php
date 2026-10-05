@@ -249,7 +249,8 @@ class LookingGlass extends Controller
 
         $view = view('services/lg/routes' )->with([
             'content'   => json_decode($routes, false, 512, JSON_THROW_ON_ERROR),
-            'source'    => 'table', 'name' => $table
+            'source'    => 'table',
+            'name'      => $table
         ]);
 
         return $this->addCommonParams( $view );
@@ -267,7 +268,8 @@ class LookingGlass extends Controller
             // get bgp protocol summary
             $view = view('services/lg/routes' )->with([
                 'content' => json_decode( $this->lg()->routesForProtocol( $protocol ), false, 512, JSON_THROW_ON_ERROR),
-                'source' => 'protocol', 'name' => $protocol
+                'source'  => 'protocol',
+                'name'    => $protocol
             ]);
             return $this->addCommonParams( $view );
         } catch( \Exception $e ){
@@ -313,7 +315,7 @@ class LookingGlass extends Controller
             'source'  => 'protocol',
             'name'    => $protocol,
             'lg'      => $this->lg(),
-            'net' => urldecode( $network.'/'.$mask ),
+            'net'     => urldecode( $network.'/'.$mask ),
         ]);
     }
 
