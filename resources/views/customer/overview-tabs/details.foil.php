@@ -198,7 +198,7 @@
                             P/O Number
                         </th>
                         <td>
-                            <?= $bdetails->purchaseOrderNumber ?>
+                            <?= $t->ee( $bdetails->purchaseOrderNumber ) ?>
                         </td>
                     </tr>
                     <tr>
