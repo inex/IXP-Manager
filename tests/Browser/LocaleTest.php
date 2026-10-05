@@ -23,8 +23,6 @@ namespace Tests\Browser;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use IXP\Models\User;
-
 use Laravel\Dusk\Browser;
 
 use Tests\DuskTestCase;
@@ -37,6 +35,10 @@ use Tests\DuskTestCase;
  * takes: choose a language on the profile page, see the interface change, and
  * change it back.
  *
+ * No cleanup is needed: since v7.4.1 DuskTestCase uses RefreshDatabase with
+ * CiTestDataSeeder, so the preference this test sets cannot leak into the rest
+ * of the suite.
+ *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @category   IXP
  * @package    Tests\Browser
@@ -45,20 +47,6 @@ use Tests\DuskTestCase;
  */
 class LocaleTest extends DuskTestCase
 {
-    /**
-     * Leave no preference behind - the rest of the browser suite asserts on
-     * English and shares this database.
-     */
-    protected function tearDown(): void
-    {
-        if( $u = User::whereUsername( 'imcustadmin' )->first() ) {
-            $u->setLocale( null );
-            $u->save();
-        }
-
-        parent::tearDown();
-    }
-
     /**
      * Choose French on the profile page, confirm the interface is French, and
      * change back.

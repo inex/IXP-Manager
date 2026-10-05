@@ -23,8 +23,6 @@ namespace Tests\Http;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use IXP\Models\User;
-
 use Tests\TestCase;
 
 /**
@@ -38,23 +36,6 @@ use Tests\TestCase;
  */
 class ProfileLocaleTest extends TestCase
 {
-    /**
-     * Reset any preference left behind by a test so they do not leak into
-     * each other or into the rest of the suite.
-     */
-    protected function tearDown(): void
-    {
-        $u = User::where( 'username', 'imcustuser' )->first();
-        $u->setLocale( null );
-        $u->save();
-
-        $c = $u->customer;
-        $c->setLocale( null );
-        $c->save();
-
-        parent::tearDown();
-    }
-
     /**
      * The profile page should offer a language selector.
      */

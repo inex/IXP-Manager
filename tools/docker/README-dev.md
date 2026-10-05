@@ -130,10 +130,18 @@ DOCKER_UID=$(id -u) DOCKER_GID=$(id -g) docker compose -f tools/docker/docker-co
 `/etc/chromium.d/` in the image rather than by patching `tests/DuskTestCase.php`
 (an upstream file that is correct as-is for CI).
 
-**ChromeDriver must match Chromium.** The image installs Debian's `chromium` and
-`chromium-driver` together, so they always match. `php artisan dusk:chrome-driver`
-downloads a version tied to upstream Chrome and will usually *not* match - if you
-run it, point Dusk back at the system driver:
+**ChromeDriver must match Chromium, and gets wiped easily.** The image installs
+Debian's `chromium` and `chromium-driver` together, so they always match. Two
+things remove the binary Dusk actually uses:
+
+- `php artisan dusk:chrome-driver`, which downloads a version tied to upstream
+  Chrome and will usually *not* match;
+- **any `composer update`/`require` that reinstalls `laravel/dusk`**, which
+  replaces `vendor/laravel/dusk/bin/` wholesale.
+
+The symptom of the second is every Dusk class erroring at once with
+`Invalid path to Chromedriver`. In either case, point Dusk back at the system
+driver:
 
 ```bash
 docker compose -f tools/docker/docker-compose.dev.yml exec www \
