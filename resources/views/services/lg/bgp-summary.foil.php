@@ -1,4 +1,9 @@
-<?php $this->layout('services/lg/layout') ?>
+<?php
+use Illuminate\Support\Js;
+
+$this->layout('services/lg/layout')
+
+?>
     <?php $this->section('title') ?>
         <small>BGP Protocol Summary</small>
     <?php $this->append() ?>
@@ -156,7 +161,7 @@
         $(e.target).removeData('bs.modal');
     });
 
-    let protocols = <?= json_encode($t->content->protocols) ?>;
+    let protocols = <?= Js::from( $t->content->protocols ) ?>;
     function spacifyNumber( n, s ) {
         return "" + ' '.repeat( s - n.length ) + "" + String(n);
     }
@@ -186,78 +191,78 @@
         });
     });
 
-    $('a[id|="sourceSelector"]').on( 'click', function(){
-        // Unused JS?
-        if( $("#net").val().trim() == "" ) {
-            return;
-        }
-        $("#submit").prop('disabled', true);
-        $.get('<?= url('/lg') . '/' . $t->ee( $t->lg->router()->handle, "js" ) ?>/route/' + encodeURIComponent($("#net").val().trim()) + '/' +
-                source + '/' + encodeURIComponent( $("#source").val() ), function(html) {
-            $('#route-modal .modal-content').html(html);
-            $('#route-modal').modal('show', {backdrop: 'static'});
-         });
-        $("#submit").prop('disabled', false);
-    });
+    // $('a[id|="sourceSelector"]').on( 'click', function(){
+         // Unused JS?
+        // if( $("#net").val().trim() == "" ) {
+        //     return;
+        // }
+        // $("#submit").prop('disabled', true);
+        //$.get('<?php //= url('/lg') . '/' . $t->ee( $t->lg->router()->handle, "js" ) ?>///route/' + encodeURIComponent($("#net").val().trim()) + '/' +
+        //         source + '/' + encodeURIComponent( $("#source").val() ), function(html) {
+        //     $('#route-modal .modal-content').html(html);
+        //     $('#route-modal').modal('show', {backdrop: 'static'});
+        //  });
+        // $("#submit").prop('disabled', false);
+    // });
 
     $('a[id|="protocol_details"]').on( 'click', function(){
         let pname = $(this).attr('data-protocol');
         let p = protocols[pname];
-        $('#title_p_name'   ).html( pname );
-        $('#p_name'         ).html( pname );
-        $('#p_bird_protocol').html( p.bird_protocol );
-        $('#p_table'        ).html( p.table );
-        $('#p_state '       ).html( p.state );
-        $('#p_state_changed').html( p.state_changed );
-        $('#p_connection'   ).html( p.connection );
-        $('#p_description'  ).html( p.description );
-        $('#p_preference'   ).html( p.preference );
-        $('#p_input_filter' ).html( p.input_filter );
-        $('#p_output_filter').html( p.output_filter );
+        $('#title_p_name'   ).text( pname );
+        $('#p_name'         ).text( pname );
+        $('#p_bird_protocol').text( p.bird_protocol );
+        $('#p_table'        ).text( p.table );
+        $('#p_state '       ).text( p.state );
+        $('#p_state_changed').text( p.state_changed );
+        $('#p_connection'   ).text( p.connection );
+        $('#p_description'  ).text( p.description );
+        $('#p_preference'   ).text( p.preference );
+        $('#p_input_filter' ).text( p.input_filter );
+        $('#p_output_filter').text( p.output_filter );
         if( p.import_limit ) {
-            $('#p_import_limit').html(p.import_limit);
+            $('#p_import_limit').text(p.import_limit);
         } else {
             $('#p_o_import_limit').hide();
             $('#p_o_route_limit_at').hide();
         }
-        $('#p_limit_action' ).html( p.limit_action );
-        $('#p_routes_imported'  ).html( p.routes ? ( p.routes.imported ?? 0 ) : 0 );
-        $('#p_routes_exported'  ).html( p.routes ? ( p.routes.exported ?? 0 ) : 0 );
-        $('#p_routes_preferred' ).html( p.routes ? ( p.routes.preferred ?? 0 ) : 0 );
-        $('#p_import_updates_received'  ).html( spacifyNumber( p.route_changes ? (p.route_changes.import_updates.received ?? 0) : 0, 10 ) );
-        $('#p_import_updates_rejected'  ).html( spacifyNumber( p.route_changes ? (p.route_changes.import_updates.rejected ?? 0) : 0, 10 ) );
-        $('#p_import_updates_filtered'  ).html( spacifyNumber( p.route_changes ? (p.route_changes.import_updates.filtered ?? 0) : 0, 10 ) );
-        $('#p_import_updates_ignored'   ).html( spacifyNumber( p.route_changes ? (p.route_changes.import_updates.ignored ?? 0) : 0, 10 ) );
-        $('#p_import_updates_accepted'  ).html( spacifyNumber( p.route_changes ? (p.route_changes.import_updates.accepted ?? 0) : 0, 10 ) );
-        $('#p_import_withdraws_received').html( spacifyNumber( p.route_changes ? (p.route_changes.import_withdraws.received ?? 0) : 0, 10 ) );
-        $('#p_import_withdraws_rejected').html( spacifyNumber( p.route_changes ? (p.route_changes.import_withdraws.rejected ?? 0) : 0, 10 ) );
-        $('#p_import_withdraws_ignored' ).html( spacifyNumber( p.route_changes ? (p.route_changes.import_withdraws.ignored ?? 0) : 0, 10 ) );
-        $('#p_import_withdraws_accepted').html( spacifyNumber( p.route_changes ? (p.route_changes.import_withdraws.accepted ?? 0) : 0, 10 ) );
-        $('#p_export_updates_received'  ).html( spacifyNumber( p.route_changes ? (p.route_changes.export_updates.received ?? 0) : 0, 10 ) );
-        $('#p_export_updates_rejected'  ).html( spacifyNumber( p.route_changes ? (p.route_changes.export_updates.rejected ?? 0) : 0, 10 ) );
-        $('#p_export_updates_filtered'  ).html( spacifyNumber( p.route_changes ? (p.route_changes.export_updates.filtered ?? 0) : 0, 10 ) );
-        $('#p_export_updates_accepted'  ).html( spacifyNumber( p.route_changes ? (p.route_changes.export_updates.accepted ?? 0) : 0, 10 ) );
-        $('#p_export_withdraws_received').html( spacifyNumber( p.route_changes ? (p.route_changes.export_withdraws.received ?? 0) : 0, 10 ) );
-        $('#p_export_withdraws_accepted').html( spacifyNumber( p.route_changes ? (p.route_changes.export_withdraws.accepted ?? 0) : 0, 10 ) );
-        $('#p_bgp_state'            ).html( p.bgp_state );
-        $('#p_neighbor_address'     ).html( p.neighbor_address );
-        $('#p_neighbor_as'          ).html( p.neighbor_as );
-        $('#p_neighbor_id'          ).html( p.neighbor_id );
+        $('#p_limit_action' ).text( p.limit_action );
+        $('#p_routes_imported'  ).text( p.routes ? ( p.routes.imported ?? 0 ) : 0 );
+        $('#p_routes_exported'  ).text( p.routes ? ( p.routes.exported ?? 0 ) : 0 );
+        $('#p_routes_preferred' ).text( p.routes ? ( p.routes.preferred ?? 0 ) : 0 );
+        $('#p_import_updates_received'  ).text( spacifyNumber( p.route_changes ? (p.route_changes.import_updates.received ?? 0) : 0, 10 ) );
+        $('#p_import_updates_rejected'  ).text( spacifyNumber( p.route_changes ? (p.route_changes.import_updates.rejected ?? 0) : 0, 10 ) );
+        $('#p_import_updates_filtered'  ).text( spacifyNumber( p.route_changes ? (p.route_changes.import_updates.filtered ?? 0) : 0, 10 ) );
+        $('#p_import_updates_ignored'   ).text( spacifyNumber( p.route_changes ? (p.route_changes.import_updates.ignored ?? 0) : 0, 10 ) );
+        $('#p_import_updates_accepted'  ).text( spacifyNumber( p.route_changes ? (p.route_changes.import_updates.accepted ?? 0) : 0, 10 ) );
+        $('#p_import_withdraws_received').text( spacifyNumber( p.route_changes ? (p.route_changes.import_withdraws.received ?? 0) : 0, 10 ) );
+        $('#p_import_withdraws_rejected').text( spacifyNumber( p.route_changes ? (p.route_changes.import_withdraws.rejected ?? 0) : 0, 10 ) );
+        $('#p_import_withdraws_ignored' ).text( spacifyNumber( p.route_changes ? (p.route_changes.import_withdraws.ignored ?? 0) : 0, 10 ) );
+        $('#p_import_withdraws_accepted').text( spacifyNumber( p.route_changes ? (p.route_changes.import_withdraws.accepted ?? 0) : 0, 10 ) );
+        $('#p_export_updates_received'  ).text( spacifyNumber( p.route_changes ? (p.route_changes.export_updates.received ?? 0) : 0, 10 ) );
+        $('#p_export_updates_rejected'  ).text( spacifyNumber( p.route_changes ? (p.route_changes.export_updates.rejected ?? 0) : 0, 10 ) );
+        $('#p_export_updates_filtered'  ).text( spacifyNumber( p.route_changes ? (p.route_changes.export_updates.filtered ?? 0) : 0, 10 ) );
+        $('#p_export_updates_accepted'  ).text( spacifyNumber( p.route_changes ? (p.route_changes.export_updates.accepted ?? 0) : 0, 10 ) );
+        $('#p_export_withdraws_received').text( spacifyNumber( p.route_changes ? (p.route_changes.export_withdraws.received ?? 0) : 0, 10 ) );
+        $('#p_export_withdraws_accepted').text( spacifyNumber( p.route_changes ? (p.route_changes.export_withdraws.accepted ?? 0) : 0, 10 ) );
+        $('#p_bgp_state'            ).text( p.bgp_state );
+        $('#p_neighbor_address'     ).text( p.neighbor_address );
+        $('#p_neighbor_as'          ).text( p.neighbor_as );
+        $('#p_neighbor_id'          ).text( p.neighbor_id );
         if( p.neighbor_capabilities instanceof Array && p.neighbor_capabilities.length ) {
-            $('#p_neighbor_capabilities').html( p.neighbor_capabilities.join(' ') );
+            $('#p_neighbor_capabilities').text( p.neighbor_capabilities.join(' ') );
         } else {
-            $('#p_neighbor_capabilities').html( 'n/a' );
+            $('#p_neighbor_capabilities').text( 'n/a' );
         }
         if( p.bgp_session instanceof Array && p.bgp_session.length ) {
-            $('#p_bgp_session').html( p.bgp_session.join(' ') );
+            $('#p_bgp_session').text( p.bgp_session.join(' ') );
         } else {
-            $('#p_bgp_session').html( 'n/a' );
+            $('#p_bgp_session').text( 'n/a' );
         }
-        $('#p_source_address'   ).html( p.source_address );
-        $('#p_route_limit_at'   ).html( p.route_limit_at );
-        $('#p_import_limit2'    ).html( p.import_limit );
-        $('#p_hold_timer'       ).html( p.hold_timer );
-        $('#p_keepalive'        ).html( p.keepalive );
+        $('#p_source_address'   ).text( p.source_address );
+        $('#p_route_limit_at'   ).text( p.route_limit_at );
+        $('#p_import_limit2'    ).text( p.import_limit );
+        $('#p_hold_timer'       ).text( p.hold_timer );
+        $('#p_keepalive'        ).text( p.keepalive );
         $('#protocol-info-modal').modal('show', {backdrop: 'static'});
     });
 </script>
