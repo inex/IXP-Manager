@@ -52,17 +52,19 @@ Log in with any user from the seed data, e.g. `travis` / `travisci` (superuser),
 
 ## Running the tests
 
-The Dusk suite is **destructive** - it writes to the database and does not roll
-back. Reseed before each run or you will get cascading, misleading failures:
+Since v7.4.1 the suites seed themselves: `tests/TestCase.php` and
+`tests/DuskTestCase.php` use `RefreshDatabase` with `CiTestDataSeeder`, which
+loads `data/ci/ci_test_db_data.sql`. You no longer need to reseed by hand
+between runs, and tests no longer inherit each other's writes.
+
+The database does need to exist and be migrated once:
 
 ```bash
-# reseed
-docker compose -f tools/docker/docker-compose.dev.yml exec -T mysql \
-    mysql -uroot -e "DROP DATABASE IF EXISTS ixp_ci; CREATE DATABASE ixp_ci DEFAULT CHARACTER SET utf8mb4;"
-docker compose -f tools/docker/docker-compose.dev.yml exec -T mysql \
-    sh -c 'mysql --default-character-set=utf8mb4 -uroot ixp_ci' < data/ci/ci_test_db.sql
 docker compose -f tools/docker/docker-compose.dev.yml exec www php artisan migrate --force
 ```
+
+Note this makes the suites considerably slower than they were in v7.4.0, since
+each test refreshes the database.
 
 ```bash
 C="docker compose -f tools/docker/docker-compose.dev.yml exec www"
@@ -80,26 +82,53 @@ with `Undefined constant "DOCUMENTATION_VERSION"`. `.github/workflows/ci-dusk.ym
 uses the default `phpunit.xml` with `--testsuite 'Dusk / Browser Test Suite'`,
 and so should you.
 
-### Known-failing tests at v7.4.0
+### Known-failing tests at v7.4.1
 
-These fail on a clean `v7.4.0` checkout with a freshly seeded database. They are
-**pre-existing upstream failures**, not caused by local changes - use this as
-your baseline:
+The Dusk suite is substantially broken in this environment on a clean upstream
+checkout - not by anything local. Measured on plain `v7.4.1`:
 
 ```
-Tests: 35, Assertions: 1822, Errors: 8, Failures: 1
-
-Errors:
-  RsFilterControllerTest::testSuperUser / testCustAdmin / testCustUser
-  SettingsControllerTest::testSettings
-  SwitchControllerTest::testAdd
-  UserControllerTest::testAdd
-  VirtualInterfaceControllerTest::testDisabledMaxPrefixesPerVlan
-  VirtualInterfaceControllerTest::testViRateLimitAndAutoneg
-Failure:
-  ExampleTest::test_basic_example   (Laravel's stock scaffold test - expects the
-                                     text "Laravel" on the home page)
+Tests: 37, Assertions: ~1240-1340, Errors: 20-21, Failures: 1, Risky: 8
 ```
+
+The error count varies by one between runs of identical code, so compare
+**failing test names**, not counts. The set is stable:
+
+```
+ApiKeyControllerTest::test
+RsFilterControllerTest::testSuperUser / testCustAdmin / testCustUser
+SettingsControllerTest::testSettings
+SwitchControllerTest::testAdd
+SwitchPortControllerTest::testSwitchPort
+SwitchUserControllerTest::testLoginAs / testLoginAs2FA
+User2FAControllerTest::test / testWithRememberMe
+UserControllerTest::testAdd / testAddCustAdmin / testSuperAdminPrivs
+UserRememberTokenControllerTest::testAdd
+ValidationControllerTest::testRunValidations
+VendorControllerTest::testVendor
+VirtualInterfaceControllerTest::testAddWizard
+    / testDisabledMaxPrefixesPerVlan / testViRateLimitAndAutoneg
+VlanControllerTest::testAdd
+Failure: ExampleTest::test_basic_example   (Laravel's stock scaffold test)
+```
+
+**Always re-measure the baseline back to back with the branch**, on the same
+day and the same container. Four separate comparisons during the v7.4.1
+integration produced confident-looking but meaningless numbers, each for a
+different reason:
+
+- a `git checkout` that **aborted** on uncommitted changes, so the "baseline"
+  was actually the branch;
+- `.env` reverting to `DB_HOST=127.0.0.1`, so an entire run executed with no
+  database and failed 37/37 on `Connection refused` - `.env` is gitignored, so
+  nothing restores it;
+- a `grep` anchored to `^Tests:` that never matched, because PHPUnit wraps the
+  summary in ANSI colour codes - use `--colors=never`;
+- `composer update` reinstalling `laravel/dusk` and deleting the chromedriver.
+
+A comparison script should assert its own preconditions - which ref is checked
+out, that the server answers, that the database has rows - and print them, so
+the output carries its own proof. Silence is not success.
 
 ## Gotchas worth knowing
 
