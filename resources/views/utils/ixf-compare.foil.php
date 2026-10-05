@@ -15,7 +15,7 @@
     The comparison results are shown below:
     </p>
 
-    <h3><?= count( $t->results['aonly'] ) ?> Network(s) only at <?= request()->input( 'sourcea_dd' ) ?>:</h3>
+    <h3><?= count( $t->results['aonly'] ) ?> Network(s) only at <?= $t->ee( request()->input( 'sourcea_dd' ) ) ?>:</h3>
 
     <table id="aonly" class="table table-striped table-responsive-ixp-with-header w-100">
         <thead class="thead-dark">
@@ -33,7 +33,7 @@
                 <tr>
                     <td><?= $t->ee( $details['name'] ) ?> <a class="tw:text-gray-500 tw:text-xs tw:border-1 tw:border-gray-500 tw:rounded-md tw:ml-4" target="_blank" href="https://www.peeringdb.com/asn/<?= $asn ?>">PDB</a></td>
                     <td><?= $t->asNumber( $asn ) ?></td>
-                    <td><?= $t->scaleSpeed( $details['speed'] ) ?></td>
+                    <td><?= $t->ee( $t->scaleSpeed( $details['speed'] ) ) ?></td>
                 </tr>
 
             <?php endforeach; ?>
@@ -43,7 +43,7 @@
     </table>
 
     <br><br><br>
-    <h3><?= count( $t->results['bonly'] ) ?> Network(s) only at <?= request()->input( 'sourceb_dd' ) ?>:</h3>
+    <h3><?= count( $t->results['bonly'] ) ?> Network(s) only at <?= $t->ee( request()->input( 'sourceb_dd' ) ) ?>:</h3>
 
     <table id="bonly" class="table table-striped table-responsive-ixp-with-header w-100">
         <thead class="thead-dark">
@@ -61,7 +61,7 @@
             <tr>
                 <td><?= $t->ee( $details['name'] ) ?> <a class="tw:text-gray-500 tw:text-xs tw:border-1 tw:border-gray-500 tw:rounded-md tw:ml-4" target="_blank" href="https://www.peeringdb.com/asn/<?= $asn ?>">PDB</a></td></td>
                 <td><?= $t->asNumber( $asn ) ?></td>
-                <td><?= $t->scaleSpeed( $details['speed'] ) ?></td>
+                <td><?= $t->ee( $t->scaleSpeed( $details['speed'] ) ) ?></td>
             </tr>
 
         <?php endforeach; ?>
@@ -71,15 +71,15 @@
     </table>
 
     <br><br><br>
-    <h3><?= count( $t->results['shared'] ) ?> Network(s) at both <?= request()->input( 'sourcea_dd' ) ?> and <?= request()->input( 'sourceb_dd' ) ?>:</h3>
+    <h3><?= count( $t->results['shared'] ) ?> Network(s) at both <?= $t->ee( request()->input( 'sourcea_dd' ) ) ?> and <?= $t->ee( request()->input( 'sourceb_dd' ) ) ?>:</h3>
 
     <table id="shared" class="table table-striped table-responsive-ixp-with-header w-100">
         <thead class="thead-dark">
             <tr>
                 <th>Name</th>
                 <th>ASN</th>
-                <th><?= request()->input( 'sourcea_dd' ) ?></th>
-                <th><?= request()->input( 'sourceb_dd' ) ?></th>
+                <th><?= $t->ee( request()->input( 'sourcea_dd' ) ) ?></th>
+                <th><?= $t->ee( request()->input( 'sourceb_dd' ) ) ?></th>
             </tr>
         </thead>
 
@@ -90,8 +90,8 @@
             <tr>
                 <td><?= $t->ee( $details['name'] ) ?> <a class="tw:text-gray-500 tw:text-xs tw:border-1 tw:border-gray-500 tw:rounded-md tw:ml-4" target="_blank" href="https://www.peeringdb.com/asn/<?= $asn ?>">PDB</a></td></td>
                 <td><?= $t->asNumber( $asn ) ?></td>
-                <td><?= $t->scaleSpeed( $details['aspeed'] ) ?></td>
-                <td><?= $t->scaleSpeed( $details['bspeed'] ) ?></td>
+                <td><?= $t->ee( $t->scaleSpeed( $details['aspeed'] ) ) ?></td>
+                <td><?= $t->ee( $t->scaleSpeed( $details['bspeed'] ) ) ?></td>
             </tr>
 
         <?php endforeach; ?>
