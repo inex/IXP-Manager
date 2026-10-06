@@ -41,10 +41,14 @@ readonly class IsCountry implements ValidationRule
     #[\Override]
     public function validate( string $attribute, mixed $value, Closure $fail ): void
     {
-        if( CountryUtils::isKnownBy($value, $this->key) ) {
+        if (!is_string($value)) {
+            $fail( "The selected :attribute is invalid" );
             return;
         }
 
-        $fail( "The selected :attribute is invalid" );
+        if( !CountryUtils::isKnownBy($value, $this->key) ) {
+            $fail( "The selected :attribute is invalid" );
+            return;
+        }
     }
 }

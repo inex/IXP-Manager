@@ -38,6 +38,23 @@ class IsCountryTest extends LiteTestCase
         new IsCountry("gibberish");
     }
 
+    public function testHandlesWrongInputTypes(): void
+    {
+        // Test default which is iso_3166_2
+        $rule = new IsCountry();
+        $rule->validate("", 1, ($fails = new ValidationErrorLogger)(...));
+        $this->assertEquals("The selected :attribute is invalid", $fails->fails[0]);
+
+        $rule->validate("", [], ($fails = new ValidationErrorLogger)(...));
+        $this->assertEquals("The selected :attribute is invalid", $fails->fails[0]);
+
+        $rule->validate("", true, ($fails = new ValidationErrorLogger)(...));
+        $this->assertEquals("The selected :attribute is invalid", $fails->fails[0]);
+
+        $rule->validate("", null, ($fails = new ValidationErrorLogger)(...));
+        $this->assertEquals("The selected :attribute is invalid", $fails->fails[0]);
+    }
+
     public function testRule(): void
     {
         // Test default which is iso_3166_2
