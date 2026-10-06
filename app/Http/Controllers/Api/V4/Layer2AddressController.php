@@ -25,6 +25,7 @@ namespace IXP\Http\Controllers\Api\V4;
 
 use Auth;
 
+use Illuminate\Support\Facades\Log;
 use Illuminate\Http\{
     JsonResponse,
     Request
@@ -85,6 +86,13 @@ class Layer2AddressController extends Controller
                 !$showFeMessage ?: AlertContainer::push( 'The maximum possible MAC addresses have been configured. Please delete a MAC before adding.' , Alert::DANGER );
                 return response()->json( [ 'danger' => false, 'message' => 'The maximum possible MAC addresses have been configured. Please delete a MAC before adding.' ] );
             }
+        }
+
+        $shouldSendEmail = $user->isSuperUser() ? config('ixp_fe.layer2-addresses.email_on_superuser_change') : config('ixp_fe.layer2-addresses.email_on_customer_change');
+        if ( $shouldSendEmail && ! filter_var( config( 'ixp_fe.layer2-addresses.email_on_change_dest' ), FILTER_VALIDATE_EMAIL) ) {
+            Log::error("Mandatory email on layer2 address on change by " . ($user->isSuperUser() ? "superuser" : "customer") .
+                " but destination email address is not valid");
+            abort(401, "Mandatory email on layer2 address change in place, however email is invalid.");
         }
 
         $mac = preg_replace( "/[^a-f0-9]/i", '' , strtolower( $r->mac ) );
@@ -150,6 +158,13 @@ class Layer2AddressController extends Controller
                 !$showFeMessage ?: AlertContainer::push( 'The minimum possible MAC addresses have been configured. Please add a MAC before deleting.' , Alert::DANGER );
                 return response()->json( [ 'danger' => false, 'message' => 'The minimum possible MAC addresses have been configured. Please add a MAC before deleting.' ] );
             }
+        }
+
+        $shouldSendEmail = $user->isSuperUser() ? config('ixp_fe.layer2-addresses.email_on_superuser_change') : config('ixp_fe.layer2-addresses.email_on_customer_change');
+        if ( $shouldSendEmail && ! filter_var( config( 'ixp_fe.layer2-addresses.email_on_change_dest' ), FILTER_VALIDATE_EMAIL) ) {
+            Log::error("Mandatory email on layer2 address on change by " . ($user->isSuperUser() ? "superuser" : "customer") .
+                " but destination email address is not valid");
+            abort(401, "Mandatory email on layer2 address change in place, however email is invalid.");
         }
 
         $l2a->delete();
