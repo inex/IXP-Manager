@@ -28,9 +28,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use IXP\Events\Auth\PasswordReset as PasswordResetEvent;
 use IXP\Listeners\Auth\PasswordReset;
-use IXP\Listeners\Auth\PasswordReset as PasswordResetListener;
 use IXP\Mail\Auth\PasswordReset as PasswordResetMail;
-use IXP\Models\User;
 use Tests\TestCase;
 
 class PasswordResetTest extends TestCase

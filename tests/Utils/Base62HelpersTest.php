@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Utils;
 
 /*
@@ -23,7 +25,7 @@ namespace Tests\Utils;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Tests\TestCase;
+use Illuminate\Foundation\Testing\TestCase;
 
 class Base62HelpersTest extends TestCase
 {

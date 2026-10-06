@@ -28,13 +28,12 @@ namespace Tests\Utils\BgpTools;
 use Illuminate\Http\Client\Request;
 use IXP\Exceptions\GeneralException;
 use IXP\Utils\BgpTools\FileFetcher;
-use Tests\TestCase;
 
 /**
  * FileFetcherTest
  * @author     Thomas Kerin <thomas@islandbridgenetworks.ie>
  */
-class FileFetcherTest extends TestCase
+class FileFetcherTest extends \Illuminate\Foundation\Testing\TestCase
 {
     public function testMissingFileError()
     {

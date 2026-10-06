@@ -28,7 +28,6 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use IXP\Events\Auth\ForgotUsername as ForgotUsernameEvent;
 use IXP\Listeners\Auth\ForgotUsername;
-use IXP\Listeners\Auth\ForgotUsername as ForgotUsernameListener;
 use IXP\Mail\Auth\ForgotUsername as ForgotUsernameMail;
 use Tests\TestCase;
 

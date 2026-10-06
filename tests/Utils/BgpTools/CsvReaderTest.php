@@ -32,7 +32,7 @@ use IXP\Utils\BgpTools\CsvReader;
  * CsvReaderTest
  * @author     Thomas Kerin <thomas@islandbridgenetworks.ie>
  */
-class CsvReaderTest extends \Tests\TestCase
+class CsvReaderTest extends \Illuminate\Foundation\Testing\TestCase
 {
     public function testReadSuccessfully()
     {

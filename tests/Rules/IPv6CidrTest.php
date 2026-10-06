@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (C)lat 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -24,11 +24,11 @@ declare(strict_types=1);
 
 namespace Tests\Rules;
 
+use Illuminate\Foundation\Testing\TestCase;
 use IXP\Rules\IPv6Cidr;
 use PHPUnit\Framework\Attributes\DataProvider;
-use Tests\LiteTestCase;
 
-class IPv6CidrTest extends LiteTestCase
+class IPv6CidrTest extends TestCase
 {
 
     public static function acceptedInput(): array
