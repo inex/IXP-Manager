@@ -27,7 +27,6 @@ namespace Tests\Listeners\Auth;
 use Auth;
 use IXP\Listeners\Auth\Google2FALoginSucceeded;
 use IXP\Models\UserRememberToken;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Request;
 use PragmaRX\Google2FALaravel\Events\LoginSucceeded;
 use Tests\TestCase;

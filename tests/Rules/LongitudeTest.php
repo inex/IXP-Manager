@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (C)lat 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,10 +23,10 @@
 declare(strict_types=1);
 namespace Tests\Rules;
 
+use Illuminate\Foundation\Testing\TestCase;
 use IXP\Rules\Longitude;
-use Tests\LiteTestCase;
 
-class LongitudeTest extends LiteTestCase
+class LongitudeTest extends TestCase
 {
     public function testFailure()
     {

@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (C)lat 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -24,11 +24,11 @@ declare(strict_types=1);
 
 namespace Tests\Utils;
 
+use Illuminate\Foundation\Testing\TestCase;
 use IXP\Utils\CountryUtils;
-use Tests\LiteTestCase;
 use Webpatser\Countries\CountriesFacade;
 
-class CountryUtilsTest extends LiteTestCase
+class CountryUtilsTest extends TestCase
 {
     /**
      * Check each key has a unique value for each country

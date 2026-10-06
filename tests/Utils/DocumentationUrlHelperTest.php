@@ -24,7 +24,7 @@ declare(strict_types = 1);
 
 namespace Tests\Utils;
 
-use Tests\TestCase;
+use Illuminate\Foundation\Testing\TestCase;
 
 class DocumentationUrlHelperTest extends TestCase
 {

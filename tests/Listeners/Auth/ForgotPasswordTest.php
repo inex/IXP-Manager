@@ -28,7 +28,6 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use IXP\Events\Auth\ForgotPassword as ForgotPasswordEvent;
 use IXP\Listeners\Auth\ForgotPassword;
-use IXP\Listeners\Auth\ForgotPassword as ForgotPasswordListener;
 use IXP\Mail\Auth\ForgotPassword as ForgotPasswordMail;
 use Ramsey\Uuid\Uuid;
 use Tests\TestCase;

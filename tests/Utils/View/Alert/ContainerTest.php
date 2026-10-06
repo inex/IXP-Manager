@@ -21,11 +21,13 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+declare(strict_types=1);
+
 namespace Tests\Utils\View\Alert;
 
+use Illuminate\Foundation\Testing\TestCase;
 use IXP\Utils\View\Alert\Alert;
 use IXP\Utils\View\Alert\Container;
-use Tests\TestCase;
 
 /**
  * PHPUnit test class to test the configuration generation of IX-F Member Exports

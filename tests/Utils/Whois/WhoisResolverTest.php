@@ -26,7 +26,6 @@ declare(strict_types=1);
 namespace Tests\Utils\Whois;
 
 use IXP\Exceptions\Utils\Whois\WhoisException;
-use IXP\Utils\Whois\Whois;
 use IXP\Utils\Whois\WhoisResolver;
 use Illuminate\Foundation\Testing\TestCase;
 
