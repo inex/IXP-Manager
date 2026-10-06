@@ -342,7 +342,7 @@
                             </a>
                             <br/>
                             <span class="tw:text-xs">
-                                (max size <?= $t->maxFileUploadSize() ?>
+                                (max size <?= $t->maxFileUploadSize() ?>)
                             </span>
                             <input type="file" class="tw:hidden" name="file" multiple />
                         </div>
