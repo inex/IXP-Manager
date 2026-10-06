@@ -32,9 +32,19 @@ class NoIllegalChars implements ValidationRule
     #[\Override]
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
+        if (null === $value || '' === $value) {
+            return;
+        }
+
+        if (!is_string($value)) {
+            $fail('The :attribute must be a string.');
+            return;
+        }
+
         // Ban ", \r, \n, \x00, and \
         if (preg_match('/["\r\n\x00\\\\]/', $value)) {
             $fail('The :attribute contains invalid characters (double quotes, black-slashes, and new lines are not allowed).');
+            return;
         }
     }
 }
