@@ -3,7 +3,7 @@
 
 To whom it may concern,
 
-You, or someone entering your email address, has requested a password reset for <?= config( "identity.sitename" ) ?>.
+You, or someone entering your username, has requested a password reset for <?= config( "identity.sitename" ) ?>.
 
 If you wish to proceed, please click on the following link:
 
