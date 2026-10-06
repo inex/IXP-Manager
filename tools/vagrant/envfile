@@ -42,7 +42,7 @@ DB_DATABASE="ixp"
 DB_USERNAME="ixp"
 DB_PASSWORD="password"
 
-CACHE_DRIVER=array
+CACHE_DRIVER=file
 SESSION_DRIVER=file
 
 
