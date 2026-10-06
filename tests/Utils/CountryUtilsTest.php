@@ -74,6 +74,9 @@ class CountryUtilsTest extends TestCase
 
     public function testIsKnownBy()
     {
+        // Test null is not known
+        $this->assertFalse(CountryUtils::isKnownBy(null));
+
         // Test default which is iso_3166_2
         $this->assertTrue(CountryUtils::isKnownBy("IE"));
         $this->assertTrue(CountryUtils::isKnownBy("YT"));

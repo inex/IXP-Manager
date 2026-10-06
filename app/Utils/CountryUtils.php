@@ -38,10 +38,14 @@ class CountryUtils
         'name',
     ];
 
-    public static function isKnownBy( string $identifier, string $key = "iso_3166_2"): bool
+    public static function isKnownBy( ?string $identifier, string $key = "iso_3166_2"): bool
     {
         if (!in_array($key, self::UNIQUE_KEYS)) {
             throw new \InvalidArgumentException(  "Provided key is not a unique country identifier: {$key}" );
+        }
+
+        if (null === $identifier || '' === $identifier) {
+            return false;
         }
 
         return array_any( CountriesFacade::getList(), fn( $country ) => $country[ $key ] === $identifier );
