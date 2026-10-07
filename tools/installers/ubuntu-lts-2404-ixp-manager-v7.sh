@@ -61,7 +61,7 @@ on Ubuntu LTS 24.04 **only**.
 This script should only be run on a newly installed Ubuntu
 system.
 
-If you do not meet these criteria, please Ctrl-c not to
+If you do not meet these criteria, please Ctrl-c now to
 end this script.
 
 If you want to follow progress, open a new session and (as root):
