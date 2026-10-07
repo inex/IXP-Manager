@@ -90,7 +90,9 @@ class Layer2AddressController extends Controller
         $mac = preg_replace( "/[^a-f0-9]/i", '' , strtolower( $r->mac ) );
 
         if( strlen( $mac ) !== 12 ) {
-            !$showFeMessage ?: AlertContainer::push( 'Invalid or missing MAC addresses.' , Alert::DANGER );
+            if ($showFeMessage) {
+                AlertContainer::push( 'Invalid or missing MAC addresses.' , Alert::DANGER );
+            }
             return response()->json( [ 'danger' => false, 'message' => 'Invalid or missing MAC addresses' ] );
         }
 
@@ -103,7 +105,9 @@ class Layer2AddressController extends Controller
             ->count();
 
         if( $exist ) {
-            !$showFeMessage ?: AlertContainer::push( 'The MAC address already exists within this IXP VLAN.' , Alert::DANGER );
+            if ($showFeMessage) {
+                AlertContainer::push( 'The MAC address already exists within this IXP VLAN.' , Alert::DANGER );
+            }
             return response()->json( [ 'danger' => false, 'message' => 'The MAC address already exists within this IXP VLAN' ] );
         }
 
@@ -113,7 +117,9 @@ class Layer2AddressController extends Controller
         ] );
 
         event( new Layer2AddressAddedEvent( $l2a, User::find( Auth::id() ) ) );
-        !$showFeMessage ?: AlertContainer::push( 'MAC address created.' , Alert::SUCCESS );
+        if ($showFeMessage) {
+            AlertContainer::push( 'MAC address created.' , Alert::SUCCESS );
+        }
         return response()->json( [ 'success' => true, 'message' => 'MAC address created.' ] );
     }
 
