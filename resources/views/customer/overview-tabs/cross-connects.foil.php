@@ -75,7 +75,7 @@
                             </td>
                         <?php endif; ?>
                         <td>
-                            <?= $ppp->assigned_at ?>
+                            <?= $t->ee( $ppp->assigned_at ) ?>
                         </td>
                         <td>
                             <?= $ppp->chargeable() ?>

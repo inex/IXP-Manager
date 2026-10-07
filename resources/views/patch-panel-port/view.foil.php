@@ -47,7 +47,7 @@
                         ?>
                             <li class="nav-item">
                                 <a href="#ppp-<?= $history->id ?>" data-toggle="tab" class="nav-link <?php if( $current ): ?> active current-ppp<?php endif; ?>" >
-                                    <?php if( $current ): ?>Current<?php else: ?> <?= $history->ceased_at; ?> <?php endif; ?>
+                                    <?php if( $current ): ?>Current<?php else: ?> <?= $t->ee( $history->ceased_at ) ?> <?php endif; ?>
                                 </a>
                             </li>
 
@@ -211,7 +211,7 @@
                                                         </td>
                                                         <td>
                                                             <div class="float-left my-2 badge badge-<?= PatchPanelPort::stateCssClass( $history->state, $isSuperUser ) ?>">
-                                                                <?= $history->states() ?>
+                                                                <?= $t->ee( $history->states() ) ?>
                                                             </div>
 
                                                                 <?php if( $isSuperUser ): ?>
@@ -335,7 +335,7 @@
                                                     </b>
                                                 </td>
                                                 <td>
-                                                    <?= $history->created_at ?>
+                                                    <?= $t->ee( $history->created_at ) ?>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -345,7 +345,7 @@
                                                     </b>
                                                 </td>
                                                 <td>
-                                                    <?= $history->updated_at ?>
+                                                    <?= $t->ee( $history->updated_at ) ?>
                                                 </td>
                                             </tr>
                                         </table>
@@ -374,7 +374,7 @@
                                                     </b>
                                                 </td>
                                                 <td>
-                                                    <?= $history->assigned_at; ?>
+                                                    <?= $t->ee( $history->assigned_at ) ?>
                                                 </td>
                                             </tr>
 
@@ -386,7 +386,7 @@
                                                         </b>
                                                     </td>
                                                     <td>
-                                                        <?= $history->connected_at; ?>
+                                                        <?= $t->ee( $history->connected_at ) ?>
                                                     </td>
                                                 </tr>
                                             <?php endif; ?>
@@ -399,7 +399,7 @@
                                                         </b>
                                                     </td>
                                                     <td>
-                                                        <?= $history->cease_requested_at; ?>
+                                                        <?= $t->ee( $history->cease_requested_at ) ?>
                                                     </td>
                                                 </tr>
                                             <?php endif; ?>
@@ -412,7 +412,7 @@
                                                         </b>
                                                     </td>
                                                     <td>
-                                                        <?= $history->ceased_at; ?>
+                                                        <?= $t->ee( $history->ceased_at ) ?>
                                                     </td>
                                                 </tr>
                                             <?php endif; ?>
@@ -437,7 +437,7 @@
                                                     </b>
                                                 </td>
                                                 <td>
-                                                    <?= $history->chargeable() ?>
+                                                    <?= $t->ee( $history->chargeable() ) ?>
                                                 </td>
                                             </tr>
 
@@ -448,7 +448,7 @@
                                                     </b>
                                                 </td>
                                                 <td>
-                                                    <?= $history->ownedBy() ?>
+                                                    <?= $t->ee( $history->ownedBy() ) ?>
                                                 </td>
                                             </tr>
 
@@ -591,7 +591,7 @@
                                                                         <?= $t->ee( $file->sizeFormated() ) ?>
                                                                     </td>
                                                                     <td>
-                                                                        <i title='<?= $file->type?>' class='fa <?= $file->typeAsIcon()?> fa-lg'></i>
+                                                                        <i title='<?= $t->ee( $file->type, "attr" ) ?>' class='fa <?= $file->typeAsIcon()?> fa-lg'></i>
                                                                     </td>
                                                                     <td>
                                                                         <?= $t->ee( $file->uploaded_at ) ?>

@@ -169,7 +169,7 @@
                                     <?php endif; ?>
                                 </td>
                                 <td>
-                                    <?= $ppp->assigned_at ?>
+                                    <?= $t->ee( $ppp->assigned_at ) ?>
                                 </td>
                                 <td>
                                     <span title="" class="badge badge-<?= \IXP\Models\PatchPanelPort::stateCssClass( $ppp->state, $isSuperUser ) ?>">
