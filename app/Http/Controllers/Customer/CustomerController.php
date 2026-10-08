@@ -29,6 +29,7 @@ use Carbon\Carbon;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Database\Eloquent\Builder;
 
+use Illuminate\Support\Facades\Log;
 use IXP\Exceptions\GeneralException;
 use IXP\Utils\CountryUtils;
 use Illuminate\Http\{
@@ -550,6 +551,7 @@ class CustomerController extends Controller
         }
 
         Mail::send( $mailable );
+        Log::notice("Welcome email sent for {$cust->id}|{$cust->name}");
         AlertContainer::push( "Welcome email sent.", Alert::SUCCESS );
         return redirect( route( "customer@overview", [ "cust" => $cust->id ] ) );
     }

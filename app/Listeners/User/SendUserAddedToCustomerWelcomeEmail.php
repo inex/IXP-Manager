@@ -25,7 +25,7 @@ declare(strict_types=1);
 namespace IXP\Listeners\User;
 
 use Illuminate\Support\Facades\Log;
-use Mail;
+use Illuminate\Support\Facades\Mail;
 
 use IXP\Events\User\UserAddedToCustomer as UserAddedToCustomerEvent;
 

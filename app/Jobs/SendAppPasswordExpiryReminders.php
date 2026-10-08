@@ -30,6 +30,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use IXP\Mail\AppPassword\ExpiringSoon;
 use IXP\Models\AppPassword;
@@ -62,5 +63,8 @@ class SendAppPasswordExpiryReminders extends Job implements ShouldQueue
 
             Mail::to( $user->email )->send( new ExpiringSoon( $user, $userPasswords ) );
         }
+
+        Log::notice("Sent " . count($passwords) . " App Password expiry email(s)");
+
     }
 }
