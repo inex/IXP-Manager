@@ -1,9 +1,6 @@
 <?php
-
-namespace IXP\Http\Controllers\PatchPanel\Port;
-
 /*
- * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,6 +20,10 @@ namespace IXP\Http\Controllers\PatchPanel\Port;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+declare(strict_types=1);
+
+namespace IXP\Http\Controllers\PatchPanel\Port;
+
 use Auth, Storage;
 
 use Exception;
@@ -36,7 +37,6 @@ use Illuminate\Http\{
 use IXP\Models\{
     PatchPanelPort,
     PatchPanelPortFile,
-    User
 };
 
 use IXP\Utils\View\Alert\{
