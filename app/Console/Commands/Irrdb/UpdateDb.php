@@ -25,6 +25,7 @@ namespace IXP\Console\Commands\Irrdb;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use IXP\Console\Commands\Command;
 use IXP\Mail\Alert;
@@ -160,9 +161,10 @@ abstract class UpdateDb extends Command
             return;
         }
 
+        /** @var string $recipient */
         Mail::to( [ [ 'name' => config( 'mail.alerts_recipient.name' ), 'email' => $recipient ] ] )
             ->send( new Alert("IRRDB {$type} update failed for {$c->name}/AS{$c->autsys}", $e ) );
-
+        Log::notice("Sent IRRDB {$type} update alert email to {$recipient}");
         $this->info( "Alert email sent to " . $recipient );
     }
 

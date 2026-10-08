@@ -29,6 +29,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use IXP\Mail\ApiKey\ExpiringSoon;
 use IXP\Models\ApiKey;
@@ -62,5 +63,7 @@ class SendApiKeyExpiryReminders extends Job implements ShouldQueue
 
             Mail::to( $user->email )->send( new ExpiringSoon( $user, $userKeys ) );
         }
+
+        Log::notice("Sent " . count($keys) . " API key expiry reminder email(s)");
     }
 }

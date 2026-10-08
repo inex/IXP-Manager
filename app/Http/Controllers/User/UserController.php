@@ -521,6 +521,7 @@ class UserController extends Controller
         $us = Auth::user();
 
         Mail::to( $u->email )->send( new UserCreatedeMailable( $u, true ) );
+        Log::notice("The user welcome email has been resent to {$u->email}");
         AlertContainer::push( sprintf( 'The welcome email has been resent' ), Alert::SUCCESS );
 
         if( $us->isSuperUser() && strpos( request()->headers->get('referer', "" ), "customer/overview" ) ) {
