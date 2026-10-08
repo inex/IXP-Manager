@@ -40,7 +40,7 @@ use Illuminate\Database\Eloquent\{
  * @property string $uploaded_at
  * @property string $uploaded_by
  * @property int $size
- * @property int $is_private
+ * @property bool $is_private
  * @property string $storage_location
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -85,6 +85,10 @@ class PatchPanelPortHistoryFile extends Model
         'size',
         'is_private',
         'storage_location',
+    ];
+
+    protected $casts = [
+        'is_private' => 'boolean',
     ];
 
     /**
@@ -196,5 +200,11 @@ class PatchPanelPortHistoryFile extends Model
     {
         return PatchPanelPortFile::UPLOAD_PATH . '/' . $this->storage_location[ 0 ] . '/'
             . $this->storage_location[ 1 ] . '/' . $this->storage_location;
+    }
+
+    public function togglePrivacy(): bool
+    {
+        $this->is_private = !$this->is_private;
+        return $this->save();
     }
 }

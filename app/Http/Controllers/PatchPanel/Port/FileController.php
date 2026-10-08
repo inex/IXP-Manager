@@ -69,7 +69,7 @@ class FileController extends Controller
      */
     public function togglePrivacy( PatchPanelPortFile $file ): JsonResponse
     {
-        $file->update( [ 'is_private' => !$file->is_private ] );
+        $file->togglePrivacy();
         return response()->json( [ 'success' => true, 'isPrivate' => $file->is_private ] );
     }
 

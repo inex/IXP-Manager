@@ -359,7 +359,7 @@ class PatchPanelPort extends Model
     public function patchPanelPortFilesPublic(): HasMany
     {
         return $this->hasMany(PatchPanelPortFile::class, 'patch_panel_port_id' )
-            ->where( 'is_private', 0 );
+            ->where( 'is_private', false );
     }
 
     /**
