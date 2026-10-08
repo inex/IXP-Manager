@@ -23,16 +23,17 @@ namespace IXP\Http\Controllers\PatchPanel\Port;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Auth, Log, Storage;
+use Auth, Storage;
 
 use Exception;
 use Illuminate\Http\{
     RedirectResponse,
-    JsonResponse
+    JsonResponse,
+    Request
 };
+use Illuminate\Support\Facades\Log;
 
 use IXP\Models\{
-    PatchPanelPortFile,
     PatchPanelPortHistoryFile,
     User
 };
@@ -44,7 +45,7 @@ use IXP\Utils\View\Alert\{
 
 use IXP\Http\Controllers\Controller;
 
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 /**
  * History File Controller
@@ -74,22 +75,26 @@ class HistoryFileController extends Controller
     /**
      * Delete a patch panel port history file
      *
+     * @param  Request                    $r     HTTP request
      * @param  PatchPanelPortHistoryFile  $file  patch panel port history file
      *
      * @return  RedirectResponse
      *
      * @throws Exception
      */
-    public function delete( PatchPanelPortHistoryFile $file ): RedirectResponse
+    public function delete( Request $r, PatchPanelPortHistoryFile $file ): RedirectResponse
     {
         $path = 'files/' . $file->path();
 
         if( Storage::exists( $path ) && Storage::delete( $path ) ) {
             $file->delete();
-            AlertContainer::push( 'Patch Panel Port File deleted.', Alert::SUCCESS );
+            AlertContainer::push( 'Patch Panel Port History File deleted.', Alert::SUCCESS );
         } else {
-            AlertContainer::push( 'Patch Panel Port File could not be deleted.', Alert::DANGER );
+            AlertContainer::push( 'Patch Panel Port History File could not be deleted.', Alert::DANGER );
         }
+
+        $ppp = $file->patchPanelPortHistory->patchPanelPort;
+        Log::notice( sprintf( "History file [%d|%s] deleted by %s for the patch panel port [%d|%s] history %d", $file->id, $file->name, $r->user()->username, $ppp->id, $ppp->name(), $file->patchPanelPortHistory->id ) );
 
         return redirect( route( 'patch-panel-port@view', [ 'ppp' => $file->patchPanelPortHistory->patch_panel_port_id ] ) . '#ppp-' . $file->patch_panel_port_history_id );
     }
@@ -99,9 +104,9 @@ class HistoryFileController extends Controller
      *
      * @param   PatchPanelPortHistoryFile $file the Patch panel port file
      *
-     * @return  BinaryFileResponse
+     * @return  StreamedResponse
      */
-    public function download( PatchPanelPortHistoryFile $file ): BinaryFileResponse
+    public function download( PatchPanelPortHistoryFile $file ): StreamedResponse
     {
         $u = User::find( Auth::id() );
         if( !$u->isSuperUser() ) {
@@ -113,6 +118,9 @@ class HistoryFileController extends Controller
             }
         }
 
-        return response()->file( storage_path() . '/files/' . $file->path(), [ 'Content-Type' => $file->type ] );
+        return Storage::download( '/files/' . $file->path(), $file->name, [
+            'Content-Type' => 'application/octet-stream',
+            'X-Content-Type-Options' => 'nosniff',
+        ] );
     }
 }
