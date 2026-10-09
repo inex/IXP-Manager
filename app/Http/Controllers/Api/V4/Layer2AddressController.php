@@ -83,7 +83,9 @@ class Layer2AddressController extends Controller
             }
 
             if( $vli->layer2addresses()->count() >= config( 'ixp_fe.layer2-addresses.customer_params.max_addresses' ) ) {
-                !$showFeMessage ?: AlertContainer::push( 'The maximum possible MAC addresses have been configured. Please delete a MAC before adding.' , Alert::DANGER );
+                if ($showFeMessage) {
+                    AlertContainer::push( 'The maximum possible MAC addresses have been configured. Please delete a MAC before adding.' , Alert::DANGER );
+                }
                 return response()->json( [ 'danger' => false, 'message' => 'The maximum possible MAC addresses have been configured. Please delete a MAC before adding.' ] );
             }
         }
@@ -155,7 +157,9 @@ class Layer2AddressController extends Controller
             }
 
             if( $l2a->vlanInterface->layer2addresses->count() <= config( 'ixp_fe.layer2-addresses.customer_params.min_addresses' ) ) {
-                !$showFeMessage ?: AlertContainer::push( 'The minimum possible MAC addresses have been configured. Please add a MAC before deleting.' , Alert::DANGER );
+                if ($showFeMessage) {
+                    AlertContainer::push( 'The minimum possible MAC addresses have been configured. Please add a MAC before deleting.' , Alert::DANGER );
+                }
                 return response()->json( [ 'danger' => false, 'message' => 'The minimum possible MAC addresses have been configured. Please add a MAC before deleting.' ] );
             }
         }
@@ -170,7 +174,9 @@ class Layer2AddressController extends Controller
         $l2a->delete();
 
         event( new Layer2AddressDeletedEvent( $l2a->macFormatted( ':' ), $l2a->vlanInterface, User::find( Auth::id() ) ) );
-        !$showFeMessage ?: AlertContainer::push( 'MAC address deleted.' , Alert::SUCCESS );
+        if ($showFeMessage) {
+            AlertContainer::push( 'MAC address deleted.' , Alert::SUCCESS );
+        }
         return response()->json( [ 'success' => true, 'message' => 'MAC address deleted.' ] );
     }
 }
