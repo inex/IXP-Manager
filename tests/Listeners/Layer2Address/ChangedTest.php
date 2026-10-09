@@ -34,7 +34,7 @@ use Tests\TestCase;
 
 class ChangedTest extends TestCase
 {
-    public function testConfiguredToNotNotifyOnSuperUserChange(): void
+    public function testConfiguredToNotNotifyAnyone(): void
     {
         Mail::fake();
 
@@ -48,24 +48,12 @@ class ChangedTest extends TestCase
         config()->set('ixp_fe.layer2-addresses.email_on_superuser_change', false);
         config()->set('ixp_fe.layer2-addresses.email_on_customer_change', false);
 
+        // doesn't send on superuser change
         new Changed()->handle(new Added($l2a, $this->getSuperUser()));
-
         Mail::assertNothingSent();
-    }
 
-    public function testConfiguredToNotNotifyOnCustomerChange(): void
-    {
-        Mail::fake();
-
-        $user = $this->getCustAdminUser();
-
-        $vlanInterface = $user->customer->vlanInterfaces()->first();
-
-        config()->set('ixp_fe.layer2-addresses.email_on_superuser_change', false);
-        config()->set('ixp_fe.layer2-addresses.email_on_customer_change', false);
-
-        new Changed()->handle(new Deleted("42:42:42:42:42:42", $vlanInterface, $user));
-
+        // doesn't send on customer change
+        new Changed()->handle(new Deleted($l2a->mac, $vlanInterface, $this->getCustAdminUser()));
         Mail::assertNothingSent();
     }
 
@@ -84,6 +72,11 @@ class ChangedTest extends TestCase
         config()->set('ixp_fe.layer2-addresses.email_on_superuser_change', true);
         config()->set('ixp_fe.layer2-addresses.email_on_customer_change', false);
 
+        // doesn't send on customer change
+        new Changed()->handle(new Deleted($l2a->mac, $vlanInterface, $this->getCustAdminUser()));
+        Mail::assertNothingSent();
+
+        // sends on superuser change
         $event = new Added($l2a, $this->getSuperUser());
         new Changed()->handle($event);
 
@@ -103,9 +96,14 @@ class ChangedTest extends TestCase
         $vlanInterface = $user->customer->vlanInterfaces()->first();
 
         config()->set('ixp_fe.layer2-addresses.email_on_change_dest', 'notifications@ixp.local');
-        config()->set('ixp_fe.layer2-addresses.email_on_superuser_change', true);
-        config()->set('ixp_fe.layer2-addresses.email_on_customer_change', false);
+        config()->set('ixp_fe.layer2-addresses.email_on_superuser_change', false);
+        config()->set('ixp_fe.layer2-addresses.email_on_customer_change', true);
 
+        // doesn't notify on superuser change
+        new Changed()->handle(new Deleted("42:42:42:42:42:42", $vlanInterface, $this->getSuperUser()));
+        Mail::assertNothingSent();
+
+        // does send on customer change
         $event = new Deleted("42:42:42:42:42:42", $vlanInterface, $user);
         new Changed()->handle($event);
 
@@ -116,24 +114,34 @@ class ChangedTest extends TestCase
         });
     }
 
-    public function testDontEmailOnSupervisorChange(): void
+    public function testConfiguredToNotifyOnBoth(): void
     {
         Mail::fake();
 
         $vlanInterface = $this->getCustAdminUser()->customer->vlanInterfaces()->first();
 
-        $l2a = new Layer2Address();
-        $l2a->vlanInterface()->associate( $vlanInterface );
-        $l2a->mac = "42:42:42:42:42:42";
-        $l2a->save();
-
         config()->set('ixp_fe.layer2-addresses.email_on_change_dest', 'notifications@ixp.local');
-        config()->set('ixp_fe.layer2-addresses.email_on_superuser_change', false);
+        config()->set('ixp_fe.layer2-addresses.email_on_superuser_change', true);
         config()->set('ixp_fe.layer2-addresses.email_on_customer_change', true);
 
-        new Changed()->handle(new Added($l2a, $this->getSuperUser()));
+        // notifies on superuser change
+        $event1 = new Deleted("42:42:42:42:42:42", $vlanInterface, $this->getSuperUser());
+        new Changed()->handle($event1);
 
-        Mail::assertNothingSent();
+        Mail::assertSent(ChangedMail::class, function (ChangedMail $mail) use ($event1) {
+            return $mail->hasTo( 'notifications@ixp.local' ) &&
+                $mail->event === $event1
+                ;
+        });
+
+        // notifies on customer change
+        $event2 = new Deleted("42:42:42:42:42:42", $vlanInterface, $this->getCustAdminUser());
+        new Changed()->handle($event2);
+
+        Mail::assertSent(ChangedMail::class, function (ChangedMail $mail) use ($event2) {
+            return $mail->hasTo( 'notifications@ixp.local' ) &&
+                $mail->event === $event2
+                ;
+        });
     }
-
 }
