@@ -23,23 +23,24 @@ namespace IXP\Http\Controllers\Api\V4;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Auth;
 
-use Illuminate\Support\Facades\Log;
 use Illuminate\Http\{
     JsonResponse,
     Request
+};
+
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+
+use IXP\Events\Layer2Address\{
+    Added as Layer2AddressAddedEvent,
+    Deleted as Layer2AddressDeletedEvent
 };
 
 use IXP\Models\{
     Layer2Address,
     User,
     VlanInterface
-};
-
-use IXP\Events\Layer2Address\{
-    Added       as Layer2AddressAddedEvent,
-    Deleted     as Layer2AddressDeletedEvent
 };
 
 use IXP\Utils\View\Alert\{
@@ -73,28 +74,18 @@ class Layer2AddressController extends Controller
         $vli = VlanInterface::findOrFail( $r->vlan_interface_id );
         /** @var User $user */
         $user = Auth::getUser();
+
+        $this->ensureUserCanManageLayer2Addresses( $user );
+        $this->ensureAuthorizedForVLI( $user, $vli );
+        $this->ensureEmailIsCorrectIfRequired($user);
+
         if( !$user->isSuperUser() ) {
-            if( !config( 'ixp_fe.layer2-addresses.customer_can_edit' ) ) {
-                abort( 404 );
-            }
-
-            if( $user->custid !== $vli->virtualInterface->custid ) {
-                abort( 403, 'VLI / Customer mismatch' );
-            }
-
             if( $vli->layer2addresses()->count() >= config( 'ixp_fe.layer2-addresses.customer_params.max_addresses' ) ) {
                 if ($showFeMessage) {
                     AlertContainer::push( 'The maximum possible MAC addresses have been configured. Please delete a MAC before adding.' , Alert::DANGER );
                 }
                 return response()->json( [ 'danger' => false, 'message' => 'The maximum possible MAC addresses have been configured. Please delete a MAC before adding.' ] );
             }
-        }
-
-        $shouldSendEmail = $user->isSuperUser() ? config('ixp_fe.layer2-addresses.email_on_superuser_change') : config('ixp_fe.layer2-addresses.email_on_customer_change');
-        if ( $shouldSendEmail && ! filter_var( config( 'ixp_fe.layer2-addresses.email_on_change_dest' ), FILTER_VALIDATE_EMAIL) ) {
-            Log::error("Mandatory email on layer2 address on change by " . ($user->isSuperUser() ? "superuser" : "customer") .
-                " but destination email address is not valid");
-            abort(401, "Mandatory email on layer2 address change in place, however email is invalid.");
         }
 
         $mac = preg_replace( "/[^a-f0-9]/i", '' , strtolower( $r->mac ) );
@@ -147,28 +138,18 @@ class Layer2AddressController extends Controller
     {
         /** @var User $user */
         $user = Auth::getUser();
+
+        $this->ensureUserCanManageLayer2Addresses( $user );
+        $this->ensureAuthorizedForVLI( $user, $l2a->vlanInterface );
+        $this->ensureEmailIsCorrectIfRequired($user);
+
         if( !$user->isSuperUser() ) {
-            if( !config( 'ixp_fe.layer2-addresses.customer_can_edit' ) ) {
-                abort( 404 );
-            }
-
-            if( $user->custid !== $l2a->vlanInterface->virtualInterface->custid ) {
-                abort( 403, 'MAC address / Customer mismatch' );
-            }
-
             if( $l2a->vlanInterface->layer2addresses->count() <= config( 'ixp_fe.layer2-addresses.customer_params.min_addresses' ) ) {
                 if ($showFeMessage) {
                     AlertContainer::push( 'The minimum possible MAC addresses have been configured. Please add a MAC before deleting.' , Alert::DANGER );
                 }
                 return response()->json( [ 'danger' => false, 'message' => 'The minimum possible MAC addresses have been configured. Please add a MAC before deleting.' ] );
             }
-        }
-
-        $shouldSendEmail = $user->isSuperUser() ? config('ixp_fe.layer2-addresses.email_on_superuser_change') : config('ixp_fe.layer2-addresses.email_on_customer_change');
-        if ( $shouldSendEmail && ! filter_var( config( 'ixp_fe.layer2-addresses.email_on_change_dest' ), FILTER_VALIDATE_EMAIL) ) {
-            Log::error("Mandatory email on layer2 address on change by " . ($user->isSuperUser() ? "superuser" : "customer") .
-                " but destination email address is not valid");
-            abort(401, "Mandatory email on layer2 address change in place, however email is invalid.");
         }
 
         $l2a->delete();
@@ -178,5 +159,46 @@ class Layer2AddressController extends Controller
             AlertContainer::push( 'MAC address deleted.' , Alert::SUCCESS );
         }
         return response()->json( [ 'success' => true, 'message' => 'MAC address deleted.' ] );
+    }
+
+    /**
+     * Customer users may only manage layer2 addresses if configuration allows. Reject with 404 if they are not allowed.
+     */
+    private function ensureUserCanManageLayer2Addresses( User $user ): void
+    {
+        if( !$user->isSuperUser() ) {
+            if( !config( 'ixp_fe.layer2-addresses.customer_can_edit' ) ) {
+                abort( 404 );
+            }
+        }
+    }
+
+    /**
+     * Ensure customer user is authorised to manage Layer2Addresses for this VLI
+     */
+    private function ensureAuthorizedForVLI( User $user, VlanInterface $vli ) :void
+    {
+        // todo: this could be a policy?
+        if( !$user->isSuperUser() ) {
+            if( $user->custid !== $vli->virtualInterface->custid ) {
+                abort( 403, 'VLI / Customer mismatch' );
+            }
+        }
+    }
+
+    /**
+     * If it's mandatory to send an email on change, reject requests if the configured email is invalid.
+     */
+    private function ensureEmailIsCorrectIfRequired( User $user ): void
+    {
+        /** @var ?string $destination */
+        $destination = config( 'ixp_fe.layer2-addresses.email_on_change_dest' );
+        $shouldSendEmail = $user->isSuperUser() ? config('ixp_fe.layer2-addresses.email_on_superuser_change') : config('ixp_fe.layer2-addresses.email_on_customer_change');
+
+        if ( $shouldSendEmail && ! filter_var( $destination, FILTER_VALIDATE_EMAIL) ) {
+            Log::error("Mandatory email on layer2 address on change by " . ($user->isSuperUser() ? "superuser" : "customer") .
+                " but destination email address is not valid");
+            abort(401, "Mandatory email on layer2 address change in place, however email is invalid.");
+        }
     }
 }
