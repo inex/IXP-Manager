@@ -330,7 +330,7 @@
     /**
      * Display a drag'n'drop popup to attached files to patch panel ports.
      *
-     * @param pppid The ID of the patch panel port
+     * @param url The URL to upload files to
      */
     function uploadPopup( url ) {
         let html = `<form id="upload" class="col-lg-12 tw:bg-gray-100 tw:border-gray-300 tw:border-1 tw:rounded-sm" method="post" action='${url}' enctype='multipart/form-data'>
@@ -435,16 +435,33 @@
                     // Update the hidden input field and trigger a change
                     // so that the jQuery knob plugin knows to update the dial
                     data.context.find( 'input' ).val( progress ).change();
-                    if( progress == 100 ){
+                    if( progress === 100 ){
                         data.context.removeClass('working');
                     }
                 },
 
                 fail:function(e, data){
+                    // Check if the request was aborted by client/user
+                    if (data.errorThrown === 'abort' || data.jqXHR.statusText === 'abort') {
+                        console.log('Upload was cancelled by user/client. Ignoring error display.');
+                        return;
+                    }
+
                     // Something has gone wrong!
                     data.context.addClass('error');
-                }
 
+                    let error;
+                    if (data.jqXHR.status > 0) {
+                        error = 'Server Error (' + data.jqXHR.status + '): ';
+                        error += data.errorThrown || "Unknown error occurred.";
+                    } else {
+                        error = "Unable to reach the server.";
+                    }
+
+                    data.context.find('.info-area').append( `<p class="col-md-2 tw:self-center"><i class="fa fa-times tw:text-red-600"></i></p>`);
+
+                    data.context.find('.info-text').addClass( 'tw:text-red-600' ).append('<i class="tw:text-red-600 "> Upload Error: ' + error + '</i>' );
+                }
             });
 
             // Prevent the default action when a file is dropped on the window
