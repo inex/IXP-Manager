@@ -116,6 +116,8 @@ class FileController extends Controller
     {
         if( !( $file = $r->file( 'file' ) ) ) {
             return response()->json( [ 'success' => false, 'message' => 'You need to upload a file.' ] );
+        } else if ( !$file->isValid() ) {
+            return response()->json( [ 'success' => false, 'message' => 'File upload failed. Check the file size.' ] );
         }
 
         $hash = hash('sha256', $ppp->id . '-' . $file->getClientOriginalName() );
