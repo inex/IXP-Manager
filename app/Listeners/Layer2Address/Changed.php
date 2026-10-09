@@ -53,11 +53,11 @@ final class Changed
      */
     public function handle(Layer2AddressAddedEvent|Layer2AddressDeletedEvent $e ): void
     {
-        if( !( config( 'ixp_fe.layer2-addresses.email_on_superuser_change' ) || config( 'ixp_fe.layer2-addresses.email_on_customer_change' ) ) ) {
-            return;
-        }
+        $isNotifyRequired = $e->user->isSuperUser()
+            ? config( 'ixp_fe.layer2-addresses.email_on_superuser_change' )
+            : config( 'ixp_fe.layer2-addresses.email_on_customer_change' );
 
-        if( !config( 'ixp_fe.layer2-addresses.email_on_superuser_change' ) && $e->user->isSuperUser() ) {
+        if ( ! $isNotifyRequired ) {
             return;
         }
 
