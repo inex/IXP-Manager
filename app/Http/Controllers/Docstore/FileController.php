@@ -1,9 +1,6 @@
 <?php
-
-namespace IXP\Http\Controllers\Docstore;
-
 /*
- * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,7 +20,10 @@ namespace IXP\Http\Controllers\Docstore;
  * http://www.gnu.org/licenses/gpl-2.0.html
 */
 
-use Auth;
+declare(strict_types=1);
+
+namespace IXP\Http\Controllers\Docstore;
+
 use Former\Facades\Former;
 
 use Illuminate\Auth\Access\AuthorizationException;
@@ -32,31 +32,29 @@ use Illuminate\Http\{
     RedirectResponse,
     Request
 };
-
 use Illuminate\Support\Facades\{
+    Auth,
     Log,
     Storage
 };
-
-use Illuminate\Validation\Rule;
-
 use Illuminate\View\View;
 
-use League\Flysystem\FilesystemException;
-
 use IXP\Http\Controllers\Controller;
-
+use IXP\Http\Requests\Docstore\StoreDocstoreFileRequest;
+use IXP\Http\Requests\Docstore\UpdateDocstoreFileRequest;
 use IXP\Models\{
     DocstoreDirectory,
     DocstoreFile,
     DocstoreLog,
     User
 };
-
 use IXP\Utils\View\Alert\{
     Alert,
     Container as AlertContainer
 };
+
+use League\Flysystem\FilesystemException;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 /**
  * FileController Controller
@@ -96,34 +94,32 @@ class FileController extends Controller
     /**
      * Store a docstore file uploaded
      *
-     * @param Request $r
+     * @param StoreDocstoreFileRequest $r
      *
      * @return RedirectResponse
      *
      * @throws AuthorizationException
      */
-    public function store( Request $r ): RedirectResponse
+    public function store( StoreDocstoreFileRequest $r ): RedirectResponse
     {
-        $this->authorize( 'create', DocstoreFile::class );
-
-        $this->checkForm( $r );
+        // Policy check performed in StoreDocstoreFileRequest
         $file = $r->file('uploadedFile');
         $path = $file->store( '', 'docstore' );
 
         /** @psalm-suppress InvalidArgument */
         $file = DocstoreFile::create( [
-            'name'                  => $r->name,
-            'description'           => $r->description,
-            'docstore_directory_id' => $r->docstore_directory_id,
-            'min_privs'             => $r->min_privs,
+            'name'                  => $r->validated('name'),
+            'description'           => $r->validated('description'),
+            'docstore_directory_id' => $r->validated('docstore_directory_id'),
+            'min_privs'             => $r->validated('min_privs'),
             'path'                  => $path,
-            'sha256'                => hash_file( 'sha256', $file ),
+            'sha256'                => hash_file( 'sha256', $file->getRealPath() ),
             'created_by'            => Auth::id(),
             'file_last_updated'     => now(),
         ] );
 
         Log::info( sprintf( "DocStore: file [%d|%s] uploaded by %s", $file->id, $file->name, Auth::user()->username ) );
-        AlertContainer::push( "File <em>{$r->name}</em> uploaded.", Alert::SUCCESS );
+        AlertContainer::push( "File <em>{$file->name}</em> uploaded.", Alert::SUCCESS );
         return redirect( route( 'docstore-dir@list', [ 'dir' => $file->docstore_directory_id ] ) );
     }
 
@@ -158,22 +154,20 @@ class FileController extends Controller
     /**
      * Update a docstore file uploaded
      *
-     * @param  Request  $r
+     * @param  UpdateDocstoreFileRequest  $r
      * @param  DocstoreFile  $file
      *
      * @return RedirectResponse
      *
      * @throws AuthorizationException
      */
-    public function update( Request $r , DocstoreFile $file ): RedirectResponse
+    public function update( UpdateDocstoreFileRequest $r , DocstoreFile $file ): RedirectResponse
     {
-        $this->authorize( 'update', $file );
-        $this->checkForm( $r, $file );
-
+        // Policy check performed in UpdateDocstoreFileRequest
         $user = Auth::user();
 
         // if a new file is updated
-        if( $r->uploadedFile ) {
+        if( $r->file('uploadedFile') ) {
             // get path of the old file in order to delete it later
             $oldPath        = $file->path;
             $uploadedFile   = $r->file('uploadedFile');
@@ -182,7 +176,7 @@ class FileController extends Controller
             /** @psalm-suppress InvalidArgument */
             $file->update([
                 'path'                  => $path,
-                'sha256'                => hash_file( 'sha256', $uploadedFile ),
+                'sha256'                => hash_file( 'sha256', $uploadedFile->getRealPath() ),
                 'file_last_updated'     => now(),
             ]);
 
@@ -191,16 +185,16 @@ class FileController extends Controller
         }
 
         // Purge the logs of the file
-        if( $r->purgeLogs ) {
+        if( $r->validated(  'purgeLogs' ) ) {
             Log::info( sprintf( "DocStore: all download logs for file [%d|%s] purged by %s", $file->id, $file->name, $user->username ) );
             $file->logs()->delete();
         }
 
         $file->update( [
-            'name'                  => $r->name,
-            'description'           => $r->description,
-            'docstore_directory_id' => $r->docstore_directory_id,
-            'min_privs'             => $r->min_privs
+            'name'                  => $r->validated('name'),
+            'description'           => $r->validated('description'),
+            'docstore_directory_id' => $r->validated('docstore_directory_id'),
+            'min_privs'             => $r->validated('min_privs')
         ] );
 
         Log::info( sprintf( "DocStore: file [%d|%s] edited by %s", $file->id, $file->name, $user->username ) );
@@ -209,7 +203,7 @@ class FileController extends Controller
     }
 
     /**
-     * View a docstore file apply to allowed mimetype ( DocstoreFile::$
+     * View a docstore file apply to allowed mimetype ( DocstoreFile::$extensionViewable )
      *
      * @param  DocstoreFile  $file
      *
@@ -240,11 +234,11 @@ class FileController extends Controller
      *
      * @param  DocstoreFile  $file
      *
-     * @return mixed
+     * @return StreamedResponse|RedirectResponse
      *
      * @throws AuthorizationException
      */
-    public function download( DocstoreFile $file ): mixed
+    public function download( DocstoreFile $file ): StreamedResponse|RedirectResponse
     {
         $this->authorize( 'download', $file );
 
@@ -253,8 +247,10 @@ class FileController extends Controller
         }
 
         try {
-            /** @psalm-suppress UndefinedInterfaceMethod */
-            return Storage::disk( $file->disk )->download( $file->path, $file->name );
+            return Storage::disk( $file->disk )->download( $file->path, $file->name, [
+                'Content-Type' => 'application/octet-stream',
+                'X-Content-Type-Options' => 'nosniff',
+            ] );
         } catch( FilesystemException $e ) {
             AlertContainer::push( "This file could not be found / downloaded. Please report this error to the support team.", Alert::DANGER );
             return redirect()->back();
@@ -284,27 +280,5 @@ class FileController extends Controller
         AlertContainer::push( "File <em>{$file->name}</em> deleted.", Alert::SUCCESS );
         Log::info( sprintf( "DocStore: file [%d|%s] deleted by %s", $file->id, $file->name, $r->user()->username ) );
         return redirect( route( 'docstore-dir@list', [ 'dir' => $dir ] ) );
-    }
-
-    /**
-     * Check if the form is valid
-     *
-     * @param Request               $r
-     * @param DocstoreFile|null     $file
-     *
-     * @return void
-     */
-    private function checkForm( Request $r, ?DocstoreFile $file = null ): void
-    {
-        /** @psalm-suppress InvalidArgument */
-        $r->validate( [
-            'name'                  => 'required|max:100',
-            'uploadedFile'          => Rule::requiredIf( function() use ( $r, $file ) {
-                return !$file;
-            }),
-            'sha256'                => 'nullable|max:64' . ( $r->file( 'uploadedFile' ) ? '|in:' . hash_file( 'sha256', $r->file( 'uploadedFile' ) ) : '' ) ,
-            'min_privs'             => 'required|integer|in:' . implode( ',', array_keys( User::$PRIVILEGES_TEXT_ALL ) ),
-            'docstore_directory_id' => 'nullable|integer|exists:docstore_directories,id',
-        ] );
     }
 }

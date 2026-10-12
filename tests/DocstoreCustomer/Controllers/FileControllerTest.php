@@ -362,6 +362,79 @@ class FileControllerTest extends TestCase
         ] );
     }
 
+    public function testStoreWithCorrectSha256(): void
+    {
+        $uploadedFile = UploadedFile::fake()->create( self::testInfo[ 'fileName2' ], '2000' );
+
+        $user = $this->getSuperUser( 'travis' );
+
+        $this->actingAs( $user )
+            ->post( route( 'docstore-c-file@store', [ 'cust' => self::testInfo[ 'customerId' ] ] ), [
+                'name' => self::testInfo[ 'fileName2' ],
+                'description' => self::testInfo[ 'fileDescription2' ],
+                'docstore_customer_directory_id' => null,
+                'min_privs' => self::testInfo[ 'filePrivs2' ],
+                'uploadedFile'  => $uploadedFile,
+                'sha256' => hash('sha256', $uploadedFile->getContent())
+            ] )
+            ->assertRedirectToRoute('docstore-c-dir@list', [ 'cust' => self::testInfo[ 'customerId' ] , 'dir' => self::testInfo[ 'parentDirId' ]]);
+
+        $this->assertDatabaseHas( 'docstore_customer_files', [
+            'docstore_customer_directory_id' => null, 'name' =>  self::testInfo[ 'fileName2' ], 'sha256' => hash('sha256', $uploadedFile->getContent())
+        ] );
+    }
+
+    /**
+     * Test update an object with a bad sha256
+     *
+     * @return void
+     */
+    public function testUpdateWithWrongSha256(): void
+    {
+        $uploadedFile = UploadedFile::fake()->create( self::testInfo[ 'fileName' ], '2000' );
+        $file = $this->insertDocstoreCustomerFileFixture1($uploadedFile);
+
+        $newFile = UploadedFile::fake()->create( self::testInfo[ 'fileName' ], '2000' );
+        $this->actingAs( $user = $this->getSuperUser( 'travis' ) )
+            ->put( route( 'docstore-c-file@update', ['cust' => self::testInfo[ 'customerId'] , 'file' => $file ] ), [
+                'name'                  => self::testInfo[ 'fileName2' ],
+                'description'           => self::testInfo[ 'fileDescription2' ],
+                'docstore_customer_directory_id' => null,
+                'min_privs'             => self::testInfo[ 'filePrivs2' ],
+                'uploadedFile'          => $newFile,
+                'sha256'                => '4242424242424242424242424242424242424242424242424242424242424242',
+            ] )
+            ->assertRedirectBackWithErrors(['sha256' => 'The sha256 checksum calculated on the server does not match the one you provided.']);
+    }
+
+
+    /**
+     * Test update an object with a correct sha256
+     *
+     * @return void
+     */
+    public function testUpdateWithCorrectSha256(): void
+    {
+        $uploadedFile = UploadedFile::fake()->create( self::testInfo[ 'fileName' ], '2000' );
+        $file = $this->insertDocstoreCustomerFileFixture1($uploadedFile);
+
+        $newFile = UploadedFile::fake()->create( self::testInfo[ 'fileName' ], '2000' );
+        $this->actingAs( $user = $this->getSuperUser( 'travis' ) )
+            ->put( route( 'docstore-c-file@update', [ 'cust' => self::testInfo[ 'customerId'] , 'file' => $file ] ), [
+                'name'                  => self::testInfo[ 'fileName2' ],
+                'description'           => self::testInfo[ 'fileDescription2' ],
+                'docstore_customer_directory_id' => null,
+                'min_privs'             => self::testInfo[ 'filePrivs2' ],
+                'uploadedFile'          => $newFile,
+                'sha256'                => hash('sha256', $newFile->getContent())
+            ] )
+            ->assertRedirectToRoute('docstore-c-dir@list', [ 'cust' => self::testInfo[ 'customerId' ] ]);
+
+        $this->assertDatabaseHas( 'docstore_customer_files', [
+            'id' => $file->id, 'docstore_customer_directory_id' => null, 'name' =>  self::testInfo[ 'fileName2' ], 'sha256' => hash('sha256', $newFile->getContent())
+        ] );
+    }
+
     /**
      * Test store an object with a wrong min priv
      *
