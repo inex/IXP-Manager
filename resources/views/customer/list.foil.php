@@ -70,6 +70,28 @@
             </ul>
         </div>
 
+        <?php if( $t->resellerMode() ): ?>
+            <div class="btn-group btn-group-sm">
+                <button class="btn btn-white dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <?= $t->resellerType ? 'Reseller Type: ' . ucfirst( $t->resellerType ) : 'Limit to reseller type...' ?>
+                </button>
+                <div class="dropdown-menu dropdown-menu-right">
+                    <a class="dropdown-item <?= $t->resellerType ?: 'active' ?>" href="<?= route( 'customer@list', [ 'reseller-type' => 'all' ] ) ?>">
+                        All
+                    </a>
+
+                    <div class="dropdown-divider"></div>
+
+                    <a class="dropdown-item <?= $t->resellerType === 'resold' ? 'active' : '' ?>" href="<?= route( 'customer@list', [ 'reseller-type' => 'resold' ] ) ?>">
+                        Resold
+                    </a>
+                    <a class="dropdown-item <?= $t->resellerType === 'reseller' ? 'active' : '' ?>" href="<?= route( 'customer@list', [ 'reseller-type' => 'reseller' ] ) ?>">
+                        Reseller
+                    </a>
+                </div>
+            </div>
+        <?php endif; ?>
+
         <a class="btn btn-white" href="<?= route( 'customer@create' ) ?>">
             <span class="fa fa-plus"></span>
         </a>
