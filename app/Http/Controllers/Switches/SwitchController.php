@@ -628,16 +628,13 @@ class SwitchController extends EloquentController
     {
         $infra  = $location = $speed = $switch = $vlan = $summary = false;
 
-        $speeds = PhysicalInterface::selectRaw( 'DISTINCT physicalinterface.speed AS speed' )
-            ->orderBy( 'speed' )->get()->pluck( 'speed' )->toArray();
-
-        $rate_limits = PhysicalInterface::selectRaw( 'DISTINCT physicalinterface.rate_limit AS rate_limit' )
-            ->whereNotNull( 'rate_limit' )
-            ->orderBy( 'rate_limit' )->get()->pluck( 'rate_limit' )->toArray();
-
-        $speeds = array_merge( $speeds, $rate_limits );
-        asort( $speeds, SORT_NUMERIC );
-        $speeds = array_values($speeds);
+        $speeds = PhysicalInterface::select('speed as value')
+            ->union(
+                PhysicalInterface::select('rate_limit as value')->whereNotNull('rate_limit')
+            )
+            ->orderBy('value', 'asc')
+            ->pluck('value')
+            ->toArray();
 
         if( $r->switch !== null ) {
             if(  $switch = Switcher::find( $r->switch ) ) {
@@ -734,9 +731,9 @@ class SwitchController extends EloquentController
             'location'                  => $location,
             'summary'                   => $summary,
             'speeds'                    => $speeds,
-            'infras'                    => $switch ? [ Infrastructure::find( $switch->infrastructure ) ] : Infrastructure::orderBy( 'name' )->get(),
+            'infras'                    => $switch ? collect([$switch->infrastructureModel]) : Infrastructure::orderBy( 'name' )->get(),
             'vlans'                     => Vlan::orderBy( 'name' )->get(),
-            'locations'                 => $switch ? [ Location::find( $switch->cabinet->locationid ) ] : Location::orderBy( 'name' )->get(),
+            'locations'                 => $switch ? collect([$switch->cabinet->location]) : Location::orderBy( 'name' )->get(),
             'switches'                  => SwitcherAggregator::getByLocationInfrastructureSpeed( $infra ? $infra->id : null, $location ? $location->id : null, $speed ?: null ),
             'config'                    => $config,
         ]);
