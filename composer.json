@@ -17,12 +17,6 @@
             "homepage": "https://www.ixpmanager.org/"
         }
     ],
-    "repositories":[
-        {
-            "type": "vcs",
-            "url": "git@github.com:barryo/Purifier.git"
-        }
-    ],
     "require": {
         "php": "^8.4",
         "ext-json": "*",

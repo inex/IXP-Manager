@@ -1608,11 +1608,6 @@
       <code><![CDATA[fake]]></code>
     </TooManyArguments>
   </file>
-  <file src="app/Services/Purifier.php">
-    <TypeDoesNotContainType>
-      <code><![CDATA[is_string($config)]]></code>
-    </TypeDoesNotContainType>
-  </file>
   <file src="app/Services/RipeAtlas/ApiCall.php">
     <MissingDocblockType>
       <code><![CDATA[public function myAtlasMeasurements(): array]]></code>
