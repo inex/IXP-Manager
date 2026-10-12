@@ -33,8 +33,8 @@ use IXP\Services\Grapher as GrapherService;
  * @author     Barry O'Donovan  <barry@islandbridgenetworks.ie>
  * @author     Yann Robin       <yann@islandbridgenetworks.ie>
  * @category   IXP
- * @package    IXP\Support\Facedes
- * @see        IXP\Contracts\Grapher
+ * @package    \IXP\Support\Facades
+ * @see        \IXP\Contracts\Grapher
  * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
