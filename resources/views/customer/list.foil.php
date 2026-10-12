@@ -73,7 +73,7 @@
         <?php if( $t->resellerMode() ): ?>
             <div class="btn-group btn-group-sm">
                 <button class="btn btn-white dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <?= $t->resellerType ? 'Reseller Type: ' . ucfirst( $t->resellerType ) : 'Limit to reseller type...' ?>
+                    <?= $t->resellerType ? 'Reseller Type: ' . $t->resellerTypes[ $t->resellerType ] : 'Limit to reseller type...' ?>
                 </button>
                 <div class="dropdown-menu dropdown-menu-right">
                     <a class="dropdown-item <?= $t->resellerType ?: 'active' ?>" href="<?= route( 'customer@list', [ 'reseller-type' => 'all' ] ) ?>">
@@ -82,12 +82,11 @@
 
                     <div class="dropdown-divider"></div>
 
-                    <a class="dropdown-item <?= $t->resellerType === 'resold' ? 'active' : '' ?>" href="<?= route( 'customer@list', [ 'reseller-type' => 'resold' ] ) ?>">
-                        Resold
-                    </a>
-                    <a class="dropdown-item <?= $t->resellerType === 'reseller' ? 'active' : '' ?>" href="<?= route( 'customer@list', [ 'reseller-type' => 'reseller' ] ) ?>">
-                        Reseller
-                    </a>
+                    <?php foreach( $t->resellerTypes as $resellerType => $resellerTypeLabel ): ?>
+                        <a class="dropdown-item <?= $t->resellerType === $resellerType ? 'active' : '' ?>" href="<?= route( 'customer@list', [ 'reseller-type' => $resellerType ] ) ?>">
+                            <?= $t->ee( $resellerTypeLabel ) ?>
+                        </a>
+                    <?php endforeach; ?>
                 </div>
             </div>
         <?php endif; ?>

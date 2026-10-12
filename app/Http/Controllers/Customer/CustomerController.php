@@ -112,13 +112,19 @@ class CustomerController extends Controller
             $type = $r->session()->get( "cust-list-type" );
         }
 
-        $resellerTypes = [ 'resold', 'reseller' ];
+        $resellerTypes = [
+            'resold'               => 'Resold',
+            'reseller'             => 'Reseller',
+            'not-resold'           => 'Not resold',
+            'not-reseller'         => 'Not reseller',
+            'not-resold-reseller'  => 'Not resold/reseller',
+        ];
 
         if( !$this->resellerMode() ) {
             $resellerType = false;
             $r->session()->remove( 'cust-list-reseller-type' );
         } elseif( ( $resellerType = $r->input( 'reseller-type' ) ) !== null ) {
-            if( in_array( $resellerType, $resellerTypes, true ) ) {
+            if( isset( $resellerTypes[ $resellerType ] ) ) {
                 $r->session()->put( 'cust-list-reseller-type', $resellerType );
             } else {
                 $resellerType = false;
@@ -158,6 +164,7 @@ class CustomerController extends Controller
             'state'                 => $state           ?? false,
             'type'                  => $type            ?? false,
             'resellerType'          => $resellerType,
+            'resellerTypes'         => $resellerTypes,
             'showCurrentOnly'       => $showCurrentOnly ?? false,
             'tag'                   => $tid ?? false,
             'tags'                  => $tags,
@@ -173,6 +180,13 @@ class CustomerController extends Controller
                     return $q->whereNotNull( 'cust.reseller' );
                 } )->when( $resellerType === 'reseller', function( Builder $q ) {
                     return $q->where( 'cust.isReseller', true );
+                } )->when( $resellerType === 'not-resold', function( Builder $q ) {
+                    return $q->whereNull( 'cust.reseller' );
+                } )->when( $resellerType === 'not-reseller', function( Builder $q ) {
+                    return $q->where( 'cust.isReseller', false );
+                } )->when( $resellerType === 'not-resold-reseller', function( Builder $q ) {
+                    return $q->whereNull( 'cust.reseller' )
+                        ->where( 'cust.isReseller', false );
                 } )->when( $showCurrentOnly, function( Builder $q ) {
                     return $q->whereRaw( Customer::SQL_CUST_CURRENT );
                 } )->orderByRaw( 'cust.name' )->get(),
