@@ -140,7 +140,7 @@ class ConsoleServerConnection extends Model
     /**
      * Get the customer that own the console server connection
      *
-     * @return BelongsTo<CustomerTag, ConsoleServerConnection>
+     * @psalm-return BelongsTo<CustomerTag, self>
      */
     public function customer(): BelongsTo
     {
@@ -148,9 +148,19 @@ class ConsoleServerConnection extends Model
     }
 
     /**
+     * Get the customer that own the console server connection
+     *
+     * @psalm-return BelongsTo<Switcher, self>
+     */
+    public function switcher(): BelongsTo
+    {
+        return $this->belongsTo(Switcher::class, 'switchid' );
+    }
+
+    /**
      * Get the console server that own the console server connection
      *
-     * @return BelongsTo<ConsoleServer, ConsoleServerConnection>
+     * @psalm-return BelongsTo<ConsoleServer, self>
      */
     public function consoleServer(): BelongsTo
     {

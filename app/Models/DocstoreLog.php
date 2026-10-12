@@ -70,7 +70,7 @@ class DocstoreLog extends Model
     /**
      * Get the file that owns this log.
      *
-     * @return BelongsTo<DocstoreFile, DocstoreLog>
+     * @psalm-return BelongsTo<DocstoreFile, self>
      */
     public function file(): BelongsTo
     {

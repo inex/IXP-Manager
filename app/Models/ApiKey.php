@@ -85,7 +85,7 @@ class ApiKey extends Model
     /**
      * Get the user
      *
-     * @return BelongsTo<User, ApiKey>
+     * @psalm-return BelongsTo<User, self>
      */
     public function user(): BelongsTo
     {

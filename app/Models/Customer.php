@@ -351,7 +351,7 @@ class Customer extends Model
     /**
      * Get the customer equipments for the customer
      *
-     * @return HasMany<CustomerEquipment, Customer>
+     * @psalm-return HasMany<CustomerEquipment, self>
      */
     public function customerEquipments(): HasMany
     {
@@ -361,7 +361,7 @@ class Customer extends Model
     /**
      * Get the virtual interfaces for the customer
      *
-     * @return HasMany<VirtualInterface,Customer>
+     * @psalm-return HasMany<VirtualInterface, self>
      */
     public function virtualInterfaces(): HasMany
     {
@@ -371,7 +371,7 @@ class Customer extends Model
     /**
      * Get the virtual interfaces for the customer
      *
-     * @return HasOne<IrrdbUpdateLog, Customer>
+     * @psalm-return HasOne<IrrdbUpdateLog, self>
      */
     public function irrdbUpdateLog(): HasOne
     {
@@ -383,7 +383,7 @@ class Customer extends Model
     /**
      * Get the peers for the customer
      *
-     * @return HasMany<PeeringManager, Customer>
+     * @psalm-return HasMany<PeeringManager, self>
      */
     public function peers(): HasMany
     {
@@ -393,7 +393,7 @@ class Customer extends Model
     /**
      * Get the peers with for the customer
      *
-     * @return HasMany<PeeringManager, Customer>
+     * @psalm-return HasMany<PeeringManager, self>
      */
     public function peersWith(): HasMany
     {
@@ -403,7 +403,7 @@ class Customer extends Model
     /**
      * Get the virtual interfaces for the customer
      *
-     * @psalm-return HasManyThrough<VlanInterface>
+     * @psalm-return HasManyThrough<VlanInterface, VirtualInterface, self>
      */
     public function vlanInterfaces(): HasManyThrough
     {
@@ -415,7 +415,7 @@ class Customer extends Model
     /**
      * Get the docstore customer directories for the customer
      *
-     * @return HasMany<DocstoreCustomerDirectory, Customer>
+     * @psalm-return HasMany<DocstoreCustomerDirectory, self>
      */
     public function docstoreCustomerDirectories(): HasMany
     {
@@ -425,7 +425,7 @@ class Customer extends Model
     /**
      * Get the docstore customer files for the customer
      *
-     * @return HasMany<DocstoreCustomerFile, Customer>
+     * @psalm-return HasMany<DocstoreCustomerFile, self>
      */
     public function docstoreCustomerFiles(): HasMany
     {
@@ -435,7 +435,7 @@ class Customer extends Model
     /**
      * Get the contacts for the customer
      *
-     * @return HasMany<Contact, Customer>
+     * @psalm-return HasMany<Contact, self>
      */
     public function contacts(): HasMany
     {
@@ -445,7 +445,7 @@ class Customer extends Model
     /**
      * Get the console server connections for the customer
      *
-     * @return HasMany<ConsoleServerConnection, Customer>
+     * @psalm-return HasMany<ConsoleServerConnection, self>
      */
     public function consoleServerConnections(): HasMany
     {
@@ -455,7 +455,7 @@ class Customer extends Model
     /**
      * Get the route server filters for the customer
      *
-     * @return HasMany<RouteServerFilter,Customer>
+     * @psalm-return HasMany<RouteServerFilter, self>
      */
     public function routeServerFilters(): HasMany
     {
@@ -465,7 +465,7 @@ class Customer extends Model
     /**
      * Get the route server filters for the customer (in production)
      *
-     * @return HasMany<RouteServerFilterProd,Customer>
+     * @psalm-return HasMany<RouteServerFilterProd, self>
      */
     public function routeServerFiltersInProduction(): HasMany
     {
@@ -475,7 +475,7 @@ class Customer extends Model
     /**
      * Get the peer route server filters for the customer
      *
-     * @return HasMany<RouteServerFilter,Customer>
+     * @psalm-return HasMany<RouteServerFilter, self>
      */
     public function peerRouteServerFilters(): HasMany
     {
@@ -485,7 +485,7 @@ class Customer extends Model
     /**
      * Get the irrdb Prefixes for the customer
      *
-     * @return HasMany<IrrdbPrefix,Customer>
+     * @psalm-return HasMany<IrrdbPrefix, self>
      */
     public function irrdbPrefixes(): HasMany
     {
@@ -495,7 +495,7 @@ class Customer extends Model
     /**
      * Get the traffic dailies for the customer
      *
-     * @return HasMany<TrafficDaily,Customer>
+     * @psalm-return HasMany<TrafficDaily, self>
      */
     public function trafficDailies(): HasMany
     {
@@ -505,7 +505,7 @@ class Customer extends Model
     /**
      * Get the patch panel portss for the customer
      *
-     * @return HasMany<PatchPanelPort,Customer>
+     * @psalm-return HasMany<PatchPanelPort, self>
      */
     public function patchPanelPorts(): HasMany
     {
@@ -515,7 +515,7 @@ class Customer extends Model
     /**
      * Get the patch panel port histories for the customer
      *
-     * @return HasMany<PatchPanelPortHistory,Customer>
+     * @psalm-return HasMany<PatchPanelPortHistory, self>
      */
     public function patchPanelPortHistories(): HasMany
     {
@@ -523,9 +523,19 @@ class Customer extends Model
     }
 
     /**
+     * Get the rsPrefixes for the customer
+     *
+     * @psalm-return HasMany<RsPrefix, self>
+     */
+    public function rsPrefixes(): HasMany
+    {
+        return $this->hasMany(RsPrefix::class, 'custid' );
+    }
+
+    /**
      * Get the customer notes for the customer
      *
-     * @return HasMany<CustomerNote, Customer>
+     * @psalm-return HasMany<CustomerNote, self>
      */
     public function customerNotes(): HasMany
     {
@@ -535,7 +545,7 @@ class Customer extends Model
     /**
      * Get the atlas probes for the customer
      *
-     * @return HasMany<AtlasProbe, Customer>
+     * @psalm-return HasMany<AtlasProbe, self>
      */
     public function AtlasProbes(): HasMany
     {
@@ -545,7 +555,7 @@ class Customer extends Model
     /**
      * Get the atlas measurement source for the customer
      *
-     * @return HasMany<AtlasMeasurement, Customer>
+     * @psalm-return HasMany<AtlasMeasurement, self>
      */
     public function AtlasMeasurementsSource(): HasMany
     {
@@ -555,7 +565,7 @@ class Customer extends Model
     /**
      * Get the atlas measurement destination for the customer
      *
-     * @return HasMany<AtlasMeasurement, Customer>
+     * @psalm-return HasMany<AtlasMeasurement, self>
      */
     public function AtlasMeasurementsDest(): HasMany
     {
@@ -565,7 +575,7 @@ class Customer extends Model
     /**
      * Get the logo for the customer
      *
-     * @return HasOne<Logo, Customer>
+     * @psalm-return HasOne<Logo, self>
      */
     public function logo(): HasOne
     {
@@ -575,7 +585,7 @@ class Customer extends Model
     /**
      * Get the billing details for the customer
      *
-     * @return BelongsTo<CompanyBillingDetail, Customer>
+     * @psalm-return BelongsTo<CompanyBillingDetail, self>
      */
     public function companyBillingDetail(): BelongsTo
     {
@@ -585,7 +595,7 @@ class Customer extends Model
     /**
      * Get the registered detail for the customer
      *
-     * @return BelongsTo<CompanyRegisteredDetail, Customer>
+     * @psalm-return BelongsTo<CompanyRegisteredDetail, self>
      */
     public function companyRegisteredDetail(): BelongsTo
     {
@@ -595,7 +605,7 @@ class Customer extends Model
     /**
      * Get the resold customers for the customer
      *
-     * @return HasMany<Customer, Customer>
+     * @psalm-return HasMany<self, self>
      */
     public function resoldCustomers(): HasMany
     {
@@ -605,7 +615,7 @@ class Customer extends Model
     /**
      * Get the reseller for the customer
      *
-     * @return BelongsTo<Customer, Customer>
+     * @psalm-return BelongsTo<self, self>
      */
     public function resellerObject(): BelongsTo
     {
@@ -615,7 +625,7 @@ class Customer extends Model
     /**
      * Get the irrdbconfig that own the customer
      *
-     * @return BelongsTo<IrrdbConfig, Customer>
+     * @psalm-return BelongsTo<IrrdbConfig, self>
      */
     public function irrdbConfig(): BelongsTo
     {
@@ -625,7 +635,7 @@ class Customer extends Model
     /**
      * Get all the users for the customer
      *
-     * @return BelongsToMany<User,Customer>
+     * @psalm-return BelongsToMany<User, self>
      */
     public function users(): BelongsToMany
     {
@@ -635,7 +645,7 @@ class Customer extends Model
     /**
      * Get all the customer to user for the customer
      *
-     * @return HasMany<CustomerToUser, Customer>
+     * @psalm-return HasMany<CustomerToUser, self>
      */
     public function customerToUser(): HasMany
     {
@@ -645,7 +655,7 @@ class Customer extends Model
     /**
      * The tags that belong to the customer.
      *
-     * @return BelongsToMany<CustomerTag,Customer>
+     * @psalm-return BelongsToMany<CustomerTag, self>
      */
     public function tags(): BelongsToMany
     {

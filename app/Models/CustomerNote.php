@@ -70,7 +70,7 @@ class CustomerNote extends Model
     /**
      * Get the customer that own the customer note
      *
-     * @return BelongsTo<Customer, CustomerNote>
+     * @psalm-return BelongsTo<Customer, self>
      */
     public function customer(): BelongsTo
     {

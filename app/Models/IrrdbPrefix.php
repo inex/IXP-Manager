@@ -79,7 +79,7 @@ class IrrdbPrefix extends Model
     /**
      * Get the customer for the irrdb prefix
      *
-     * @return BelongsTo<Customer, IrrdbPrefix>
+     * @psalm-return BelongsTo<Customer, self>
      */
     public function customer(): BelongsTo
     {

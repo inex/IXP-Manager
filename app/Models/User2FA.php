@@ -76,7 +76,7 @@ class User2FA extends Model
     /**
      * Return the user to which this 2FA record belongs
      *
-     * @return BelongsTo<User, User2FA>
+     * @psalm-return BelongsTo<User, self>
      */
     public function user(): BelongsTo
     {

@@ -99,7 +99,7 @@ class Log extends Model
     /**
      * Get the user record associated with this log
      *
-     * @return HasOne<User, Log>
+     * @psalm-return HasOne<User, self>
      */
     public function user(): HasOne
     {

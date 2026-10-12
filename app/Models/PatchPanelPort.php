@@ -294,7 +294,7 @@ class PatchPanelPort extends Model
     /**
      * Get the Patch Panel that owns this patch panel port
      *
-     * @return BelongsTo<PatchPanel, PatchPanelPort>
+     * @psalm-return BelongsTo<PatchPanel, self>
      */
     public function patchPanel(): BelongsTo
     {
@@ -304,7 +304,7 @@ class PatchPanelPort extends Model
     /**
      * Get the switch port that owns this patch panel port
      *
-     * @return BelongsTo<SwitchPort, PatchPanelPort>
+     * @psalm-return BelongsTo<SwitchPort, self>
      */
     public function switchPort(): BelongsTo
     {
@@ -314,7 +314,7 @@ class PatchPanelPort extends Model
     /**
      * Get the customer that owns this patch panel port
      *
-     * @return BelongsTo<Customer, PatchPanelPort>
+     * @psalm-return BelongsTo<Customer, self>
      */
     public function customer(): BelongsTo
     {
@@ -324,7 +324,7 @@ class PatchPanelPort extends Model
     /**
      * Get the duplex master port that owns this patch panel port
      *
-     * @psalm-return BelongsTo<self, PatchPanelPort>
+     * @psalm-return BelongsTo<self, self>
      */
     public function duplexMasterPort(): BelongsTo
     {
@@ -334,7 +334,7 @@ class PatchPanelPort extends Model
     /**
      * Get the patch panel port files for this patch panel port
      *
-     * @return HasMany<PatchPanelPortFile, PatchPanelPort>
+     * @psalm-return HasMany<PatchPanelPortFile, self>
      */
     public function patchPanelPortFiles(): HasMany
     {
@@ -344,7 +344,7 @@ class PatchPanelPort extends Model
     /**
      * Get the patch panel port histories for this patch panel port
      *
-     * @return HasMany<PatchPanelPortHistory, PatchPanelPort>
+     * @psalm-return HasMany<PatchPanelPortHistory, self>
      */
     public function patchPanelPortHistories(): HasMany
     {
@@ -365,7 +365,7 @@ class PatchPanelPort extends Model
     /**
      * Get the duplex slaves ports for this patch panel port
      *
-     * @return HasMany<PatchPanelPort, PatchPanelPort>
+     * @psalm-return HasMany<self, self>
      */
     public function duplexSlavePorts(): HasMany
     {

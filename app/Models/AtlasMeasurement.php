@@ -103,7 +103,7 @@ class AtlasMeasurement extends Model
     /**
      * Get the atlas run
      *
-     * @return BelongsTo<AtlasRun,AtlasMeasurement>
+     * @psalm-return BelongsTo<AtlasRun, self>
      */
     public function atlasRun(): BelongsTo
     {
@@ -113,7 +113,7 @@ class AtlasMeasurement extends Model
     /**
      * Get the customer source
      *
-     * @return BelongsTo<Customer,AtlasMeasurement>
+     * @psalm-return BelongsTo<Customer, self>
      */
     public function custSource(): BelongsTo
     {
@@ -123,7 +123,7 @@ class AtlasMeasurement extends Model
     /**
      * Get the customer destination
      *
-     * @return BelongsTo<Customer,AtlasMeasurement>
+     * @psalm-return BelongsTo<Customer, self>
      */
     public function custDest(): BelongsTo
     {
@@ -133,7 +133,7 @@ class AtlasMeasurement extends Model
     /**
      * Get the atlas result for a measurement
      *
-     * @return HasOne<AtlasResult,AtlasMeasurement>
+     * @psalm-return HasOne<AtlasResult, self>
      */
     public function atlasResult(): HasOne
     {

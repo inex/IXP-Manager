@@ -114,7 +114,7 @@ class Infrastructure extends Model
     /**
      * Get the vlans for the infrastructure
      *
-     * @return HasMany<Vlan, Infrastructure>
+     * @psalm-return HasMany<Vlan, self>
      */
     public function vlans(): HasMany
     {
@@ -124,7 +124,7 @@ class Infrastructure extends Model
     /**
      * Get the switchers for the infrastructure
      *
-     * @return HasMany<Switcher, Infrastructure>
+     * @psalm-return HasMany<Switcher, self>
      */
     public function switchers(): HasMany
     {

@@ -96,7 +96,7 @@ class ConsoleServer extends Model
     /**
      * Get the vendor that own the console server
      *
-     * @return BelongsTo<Vendor, ConsoleServer>
+     * @psalm-return BelongsTo<Vendor, self>
      */
     public function vendor(): BelongsTo
     {
@@ -106,7 +106,7 @@ class ConsoleServer extends Model
     /**
      * Get the cabinet that own the console server
      *
-     * @return BelongsTo<Cabinet, ConsoleServer>
+     * @psalm-return BelongsTo<Cabinet, self>
      */
     public function cabinet(): BelongsTo
     {
@@ -116,7 +116,7 @@ class ConsoleServer extends Model
     /**
      * Get the console server connections for the console server
      *
-     * @return HasMany<ConsoleServerConnection, ConsoleServer>
+     * @psalm-return HasMany<ConsoleServerConnection, self>
      */
     public function consoleServerConnections(): HasMany
     {

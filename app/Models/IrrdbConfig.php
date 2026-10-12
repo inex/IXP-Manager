@@ -78,7 +78,7 @@ class IrrdbConfig extends Model
     /**
      * Get the customers for the Irrdb Config
      *
-     * @return HasMany<Customer, IrrdbConfig>
+     * @psalm-return HasMany<Customer, self>
      */
     public function customers(): HasMany
     {

@@ -207,7 +207,7 @@ class SwitchPort extends Model
     /**
      * Get the switcher that own the switch port
      *
-     * @return BelongsTo<Switcher, SwitchPort>
+     * @psalm-return BelongsTo<Switcher, self>
      */
     public function switcher(): BelongsTo
     {
@@ -217,7 +217,7 @@ class SwitchPort extends Model
     /**
      * Get the patch panel ports for this switch port
      *
-     * @return HasOne<PhysicalInterface, SwitchPort>
+     * @psalm-return HasOne<PhysicalInterface, self>
      */
     public function physicalInterface(): HasOne
     {
@@ -227,7 +227,7 @@ class SwitchPort extends Model
     /**
      * Get the patch panel ports for this switch port
      *
-     * @return HasOne<PatchPanelPort, SwitchPort>
+     * @psalm-return HasOne<PatchPanelPort, self>
      */
     public function patchPanelPort(): HasOne
     {

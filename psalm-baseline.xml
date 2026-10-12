@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="6.16.1@f1f5de594dc76faf8784e02d3dc4716c91c6f6ac">
+<files psalm-version="dev-master@61825735c8947955cb56b198e233d09bb72fdc99">
   <file src="app/Console/Commands/Grapher/EmailPortsWithCounts.php">
     <MissingDocblockType>
       <code><![CDATA[private function emailPortsWithCounts( string $category ): array]]></code>
@@ -64,6 +64,12 @@
     <RedundantCondition>
       <code><![CDATA[!config( 'mailinglists.enabled' )]]></code>
     </RedundantCondition>
+    <TaintedHtml>
+      <code><![CDATA[echo json_encode( $result, JSON_THROW_ON_ERROR );]]></code>
+    </TaintedHtml>
+    <TaintedTextWithQuotes>
+      <code><![CDATA[echo json_encode( $result, JSON_THROW_ON_ERROR );]]></code>
+    </TaintedTextWithQuotes>
   </file>
   <file src="app/Console/Commands/MailingList/SyncScript.php">
     <NullArgument>
@@ -73,26 +79,25 @@
       <code><![CDATA[!config( 'mailinglists.enabled' )]]></code>
     </RedundantCondition>
   </file>
+  <file src="app/Console/Commands/PeeringDB/AsnLookup.php">
+    <TaintedHtml>
+      <code><![CDATA[echo $pdb->netAsAscii($net);]]></code>
+    </TaintedHtml>
+    <TaintedTextWithQuotes>
+      <code><![CDATA[echo $pdb->netAsAscii($net);]]></code>
+    </TaintedTextWithQuotes>
+  </file>
   <file src="app/Console/Commands/RipeAtlas/CompleteRequests.php">
-    <InvalidArgument>
-      <code><![CDATA[$ar]]></code>
-    </InvalidArgument>
     <MissingDocblockType>
       <code><![CDATA[public function handle(): int]]></code>
     </MissingDocblockType>
   </file>
   <file src="app/Console/Commands/RipeAtlas/CreateMeasurements.php">
-    <InvalidArgument>
-      <code><![CDATA[$ar]]></code>
-    </InvalidArgument>
     <MissingDocblockType>
       <code><![CDATA[public function handle(): int]]></code>
     </MissingDocblockType>
   </file>
   <file src="app/Console/Commands/RipeAtlas/RunMeasurements.php">
-    <InvalidArgument>
-      <code><![CDATA[$am]]></code>
-    </InvalidArgument>
     <MissingDocblockType>
       <code><![CDATA[public function handle(): int]]></code>
     </MissingDocblockType>
@@ -103,9 +108,6 @@
     </MissingDocblockType>
   </file>
   <file src="app/Console/Commands/RipeAtlas/UpdateMeasurements.php">
-    <InvalidArgument>
-      <code><![CDATA[$am]]></code>
-    </InvalidArgument>
     <MissingDocblockType>
       <code><![CDATA[public function handle(): int]]></code>
     </MissingDocblockType>
@@ -120,10 +122,10 @@
       <code><![CDATA[public function handle(): int]]></code>
     </MissingDocblockType>
   </file>
-  <file src="app/Console/Commands/SetupWizard.php">
-    <InvalidOperand>
-      <code><![CDATA[config( $attributes[ 'config' ] )]]></code>
-    </InvalidOperand>
+  <file src="app/Console/Commands/Router/GenerateConfiguration.php">
+    <InvalidCast>
+      <code><![CDATA[( new RouterConfigurationGenerator( $router ) )->render()]]></code>
+    </InvalidCast>
   </file>
   <file src="app/Console/Commands/Switches/ReindexIfIndex.php">
     <MissingDocblockType>
@@ -155,6 +157,14 @@
       <code><![CDATA[$option !== 'send-welcome-email']]></code>
       <code><![CDATA[$option !== 'send-welcome-email']]></code>
     </RedundantCondition>
+  </file>
+  <file src="app/Console/Commands/Utils/SmtpMailTest.php">
+    <TaintedHtml>
+      <code><![CDATA[echo $e->getTraceAsString();]]></code>
+    </TaintedHtml>
+    <TaintedTextWithQuotes>
+      <code><![CDATA[echo $e->getTraceAsString();]]></code>
+    </TaintedTextWithQuotes>
   </file>
   <file src="app/Console/Commands/Utils/UpdateOuiDatabase.php">
     <MissingDocblockType>
@@ -190,6 +200,9 @@
     <RedundantCondition>
       <code><![CDATA[!config( 'mailinglists.enabled' )]]></code>
     </RedundantCondition>
+    <TaintedHtml>
+      <code><![CDATA[$output]]></code>
+    </TaintedHtml>
   </file>
   <file src="app/Http/Controllers/Api/V4/Provisioner/YamlController.php">
     <MissingDocblockType>
@@ -203,6 +216,10 @@
       <code><![CDATA[public function showSwitchByName( string $switchname, string $format ): Response]]></code>
       <code><![CDATA[public function vlansForSwitch( Switcher $switch, string $format ): Response]]></code>
     </MissingDocblockType>
+    <TaintedHtml>
+      <code><![CDATA[$output]]></code>
+      <code><![CDATA[$output]]></code>
+    </TaintedHtml>
   </file>
   <file src="app/Http/Controllers/Api/V4/PublicController.php">
     <MissingDocblockType>
@@ -268,6 +285,11 @@
     <UndefinedDocblockClass>
       <code><![CDATA[$c]]></code>
     </UndefinedDocblockClass>
+  </file>
+  <file src="app/Http/Controllers/Auth/SwitchUserController.php">
+    <TaintedHeader>
+      <code><![CDATA[$redirect]]></code>
+    </TaintedHeader>
   </file>
   <file src="app/Http/Controllers/CabinetController.php">
     <InvalidReturnStatement>
@@ -443,16 +465,6 @@
       <code><![CDATA[$r->nocphone]]></code>
       <code><![CDATA[$r->nocwww]]></code>
     </UndefinedMagicPropertyFetch>
-  </file>
-  <file src="app/Http/Controllers/Api/V4/Docstore/FileController.php">
-    <InvalidOperand>
-      <code><![CDATA[config( 'filesystems.disks.' . $file->disk . '.root', '*** UNKNOWN LOCATION ***' )]]></code>
-    </InvalidOperand>
-  </file>
-  <file src="app/Http/Controllers/Api/V4/DocstoreCustomer/FileController.php">
-    <InvalidOperand>
-      <code><![CDATA[config( 'filesystems.disks.' . $file->disk . '.root', '*** UNKNOWN LOCATION ***' )]]></code>
-    </InvalidOperand>
   </file>
   <file src="app/Http/Controllers/DocstoreCustomer/FileController.php">
     <InvalidArgument>
@@ -714,6 +726,9 @@
     <RedundantCast>
       <code><![CDATA[(int)config( 'ixp.peering-matrix.lookback_days' )]]></code>
     </RedundantCast>
+    <TaintedSql>
+      <code><![CDATA["vli.ipv{$proto}enabled"]]></code>
+    </TaintedSql>
     <TypeDoesNotContainType>
       <code><![CDATA[!is_int( $lookback_days )]]></code>
       <code><![CDATA[!is_int( $lookback_days ) || $lookback_days < 1]]></code>
@@ -791,6 +806,16 @@
       <code><![CDATA[array{results: array<''|int, Customer|mixed|null>, interfaces: array<''|int, non-empty-list<Illuminate\Database\Eloquent\Model|null>>}]]></code>
     </UndefinedDocblockClass>
   </file>
+  <file src="app/Http/Controllers/Services/Grapher.php">
+    <TaintedCallable>
+      <code><![CDATA[[ $this->graph(), $this->graph()->type() ]]]></code>
+    </TaintedCallable>
+    <TaintedHeader>
+      <code><![CDATA[sprintf( 'inline; filename="grapher-%s-%s-%s-%s.%s"',
+                    $this->graph()->backend()->name(), $this->graph()->category(),
+                    $this->graph()->period(), $this->graph()->protocol(), $this->graph()->type() )]]></code>
+    </TaintedHeader>
+  </file>
   <file src="app/Http/Controllers/Services/LookingGlass.php">
     <MissingDocblockType>
       <code><![CDATA[private function addCommonParams( View $view ): View]]></code>
@@ -824,6 +849,9 @@
     <RedundantCondition>
       <code><![CDATA[$vlan]]></code>
     </RedundantCondition>
+    <TaintedSql>
+      <code><![CDATA['vli.' . $requestProtocol . 'enabled']]></code>
+    </TaintedSql>
     <TypeDoesNotContainNull>
       <code><![CDATA[false]]></code>
     </TypeDoesNotContainNull>
@@ -917,6 +945,10 @@
     <RedundantFunctionCall>
       <code><![CDATA[sprintf]]></code>
     </RedundantFunctionCall>
+    <TaintedHeader>
+      <code><![CDATA[$this->postStoreRedirect()]]></code>
+      <code><![CDATA[$this->postStoreRedirect()]]></code>
+    </TaintedHeader>
     <UndefinedMagicPropertyFetch>
       <code><![CDATA[$r->authorisedMobile]]></code>
       <code><![CDATA[$r->authorisedMobile]]></code>
@@ -1097,7 +1129,20 @@
       <code><![CDATA[$this->u]]></code>
     </UndefinedThisPropertyFetch>
   </file>
+  <file src="app/Mail/Customer/WelcomeEmail.php">
+    <TaintedHeader>
+      <code><![CDATA[$r->subject]]></code>
+    </TaintedHeader>
+  </file>
+  <file src="app/Mail/PatchPanelPort/Email.php">
+    <TaintedHeader>
+      <code><![CDATA[$request->email_subject]]></code>
+    </TaintedHeader>
+  </file>
   <file src="app/Mail/PeeringManager/RequestPeeringManager.php">
+    <TaintedHeader>
+      <code><![CDATA[$r->subject]]></code>
+    </TaintedHeader>
     <UndefinedMagicPropertyFetch>
       <code><![CDATA[$r->sendtome]]></code>
     </UndefinedMagicPropertyFetch>
@@ -1135,6 +1180,26 @@
       <code><![CDATA[$firstip + 1]]></code>
     </InvalidScalarArgument>
   </file>
+  <file src="app/Models/Aggregators/TrafficDailyPhysIntAggregator.php">
+    <TaintedSql>
+      <code><![CDATA["c.id AS cid, c.abbreviatedName AS cname, ANY_VALUE( s.name ) as switch,
+                        vi.id AS viid,
+                        SUM( tdpi.{$period}_max_in ) AS max_in,
+                        SUM( tdpi.{$period}_max_out ) AS max_out,
+                        COUNT( pi.id ) AS num_ports_in_lag,
+                        SUM( COALESCE( pi.rate_limit, pi.speed ) ) AS vi_speed,
+                        ROUND( GREATEST( (MAX( tdpi.{$period}_max_in )/1000000/MAX( COALESCE( pi.rate_limit, pi.speed ) ))*100, (MAX( tdpi.{$period}_max_out )/1000000/MAX( COALESCE( pi.rate_limit, pi.speed ) ))*100 ), 2) AS util"]]></code>
+      <code><![CDATA[self::selectRaw(
+            "c.id AS cid, c.abbreviatedName AS cname, ANY_VALUE( s.name ) as switch,
+                        vi.id AS viid,
+                        SUM( tdpi.{$period}_max_in ) AS max_in,
+                        SUM( tdpi.{$period}_max_out ) AS max_out,
+                        COUNT( pi.id ) AS num_ports_in_lag,
+                        SUM( COALESCE( pi.rate_limit, pi.speed ) ) AS vi_speed,
+                        ROUND( GREATEST( (MAX( tdpi.{$period}_max_in )/1000000/MAX( COALESCE( pi.rate_limit, pi.speed ) ))*100, (MAX( tdpi.{$period}_max_out )/1000000/MAX( COALESCE( pi.rate_limit, pi.speed ) ))*100 ), 2) AS util"
+        )]]></code>
+    </TaintedSql>
+  </file>
   <file src="app/Models/Aggregators/UserAggregator.php">
     <UndefinedDocblockClass>
       <code><![CDATA[array{user: User|mixed|null, added_to: list<mixed>, removed_from: list<IXP\Models\Customer>}]]></code>
@@ -1160,7 +1225,7 @@
   </file>
   <file src="app/Models/ContactGroup.php">
     <MissingTemplateParam>
-      <code><![CDATA[BelongsToMany<Contact>]]></code>
+      <code><![CDATA[BelongsToMany<Contact, self>]]></code>
     </MissingTemplateParam>
   </file>
   <file src="app/Models/CoreBundle.php">
@@ -1176,9 +1241,8 @@
       <code><![CDATA[public function routeServerClient( ?int $proto = null ): bool]]></code>
     </MissingDocblockType>
     <MissingTemplateParam>
-      <code><![CDATA[BelongsToMany<CustomerTag,Customer>]]></code>
-      <code><![CDATA[BelongsToMany<User,Customer>]]></code>
-      <code><![CDATA[HasManyThrough<VlanInterface>]]></code>
+      <code><![CDATA[BelongsToMany<CustomerTag, self>]]></code>
+      <code><![CDATA[BelongsToMany<User, self>]]></code>
     </MissingTemplateParam>
     <TypeDoesNotContainNull>
       <code><![CDATA[( $fmt = config('ixp_fe.customer_name_format') ) === null]]></code>
@@ -1189,7 +1253,7 @@
   </file>
   <file src="app/Models/CustomerTag.php">
     <MissingTemplateParam>
-      <code><![CDATA[BelongsToMany<Customer, CustomerTag>]]></code>
+      <code><![CDATA[BelongsToMany<Customer, self>]]></code>
     </MissingTemplateParam>
   </file>
   <file src="app/Models/DocstoreCustomerDirectory.php">
@@ -1204,9 +1268,6 @@
     </MissingDocblockType>
   </file>
   <file src="app/Models/IrrdbUpdateLog.php">
-    <InvalidDocblock>
-      <code><![CDATA[IrrdbUpdateLog]]></code>
-    </InvalidDocblock>
     <RedundantCondition>
       <code><![CDATA[!$oldest]]></code>
       <code><![CDATA[!$oldest]]></code>
@@ -1302,13 +1363,6 @@
       <code><![CDATA[getCompiler]]></code>
     </UndefinedInterfaceMethod>
   </file>
-  <file src="app/Services/Auth/EloquentUserProvider.php">
-    <MissingDocblockType>
-      <code><![CDATA[#[\Override]]]></code>
-      <code><![CDATA[public function addRememberToken( $user ): UserRememberToken]]></code>
-      <code><![CDATA[public function purgeExpiredRememberTokens( User $user ): void]]></code>
-    </MissingDocblockType>
-  </file>
   <file src="app/Services/Diagnostics/Suites/PhysicalInterfaceDiagnosticSuite.php">
     <RedundantCondition>
       <code><![CDATA["Configured MTU is null/0 but switch port reports " . $this->pi->switchPort->ifMtu]]></code>
@@ -1349,6 +1403,11 @@
       <code><![CDATA[list<IXP\Services\Diagnostics\DiagnosticResult>]]></code>
     </UndefinedDocblockClass>
   </file>
+  <file src="app/Services/Diagnostics/Suites/VlanInterfaceL3DiagnosticSuite.php">
+    <TaintedShell>
+      <code><![CDATA[sprintf( config( "ixp.exec.ping{$protocol}" ),  $vli->getIPAddress($protocol)->address )]]></code>
+    </TaintedShell>
+  </file>
   <file src="app/Services/Grapher.php">
     <MissingDocblockType>
       <code><![CDATA[public function backendForGraph( Graph $graph, array $backends = [] ): BackendContract]]></code>
@@ -1376,6 +1435,12 @@
       <code><![CDATA[#[\Override]]]></code>
       <code><![CDATA[private function resolveFilePath( Graph $graph, string $type ): string]]></code>
     </MissingDocblockType>
+    <TaintedFile>
+      <code><![CDATA[file_get_contents( $this->resolveFilePath( $graph, 'png' ) )]]></code>
+    </TaintedFile>
+    <TaintedSSRF>
+      <code><![CDATA[file_get_contents( $this->resolveFilePath( $graph, 'png' ) )]]></code>
+    </TaintedSSRF>
   </file>
   <file src="app/Services/Grapher/Backend/Mrtg.php">
     <MissingDocblockType>
@@ -1383,6 +1448,16 @@
       <code><![CDATA[#[\Override]]]></code>
       <code><![CDATA[public function resolveFilePath( Graph $graph, string $type ): string]]></code>
     </MissingDocblockType>
+    <TaintedFile>
+      <code><![CDATA[file_get_contents( $rrd->png() )]]></code>
+      <code><![CDATA[file_get_contents( $this->resolveFilePath( $graph, 'png' ) )]]></code>
+      <code><![CDATA[file_get_contents( $this->resolveFilePath( $graph, 'rrd' ) )]]></code>
+    </TaintedFile>
+    <TaintedSSRF>
+      <code><![CDATA[file_get_contents( $rrd->png() )]]></code>
+      <code><![CDATA[file_get_contents( $this->resolveFilePath( $graph, 'png' ) )]]></code>
+      <code><![CDATA[file_get_contents( $this->resolveFilePath( $graph, 'rrd' ) )]]></code>
+    </TaintedSSRF>
     <UndefinedDocblockClass>
       <code><![CDATA[$cb->corelinks]]></code>
       <code><![CDATA[$cb->id]]></code>
@@ -1395,12 +1470,35 @@
       <code><![CDATA[private function resolveFileName( Graph $graph, string $type ): string]]></code>
       <code><![CDATA[private function resolveFilePath( Graph $graph, string $type ): string]]></code>
     </MissingDocblockType>
+    <TaintedFile>
+      <code><![CDATA[file_get_contents( $rrd->png() )]]></code>
+      <code><![CDATA[file_get_contents( $rrd->png() )]]></code>
+    </TaintedFile>
+    <TaintedSSRF>
+      <code><![CDATA[file_get_contents( $rrd->png() )]]></code>
+      <code><![CDATA[file_get_contents( $rrd->png() )]]></code>
+    </TaintedSSRF>
   </file>
   <file src="app/Services/Grapher/Backend/Smokeping.php">
     <MissingDocblockType>
       <code><![CDATA[#[\Override]]]></code>
       <code><![CDATA[private function resolveFilePath( Graph $graph ): string]]></code>
     </MissingDocblockType>
+    <TaintedFile>
+      <code><![CDATA[file_get_contents( $this->resolveFilePath( $graph ) )]]></code>
+    </TaintedFile>
+    <TaintedInclude>
+      <code><![CDATA[View::make( $tmpl, [
+                'vlan'     => $v,
+                'vlis'     => $orderedVlis,
+                'probe'    => $probe,
+                'level'    => $options[ 'level' ] ?? '+++',
+                'protocol' => $options['protocol'] === Graph::PROTOCOL_IPV4 ? 4 : 6,
+            ] )]]></code>
+    </TaintedInclude>
+    <TaintedSSRF>
+      <code><![CDATA[file_get_contents( $this->resolveFilePath( $graph ) )]]></code>
+    </TaintedSSRF>
   </file>
   <file src="app/Services/Grapher/Graph.php">
     <MissingDocblockType>
@@ -1626,6 +1724,36 @@
       <code><![CDATA[public function interpret( AtlasMeasurement $atlasMeasurement ): AtlasResult]]></code>
     </MissingDocblockType>
   </file>
+  <file src="app/Utils/Grapher/Mrtg.php">
+    <TaintedFile>
+      <code><![CDATA[fopen( $this->file, "r" )]]></code>
+      <code><![CDATA[fopen( $this->file, "r" )]]></code>
+    </TaintedFile>
+    <TaintedSSRF>
+      <code><![CDATA[fopen( $this->file, "r" )]]></code>
+      <code><![CDATA[fopen( $this->file, "r" )]]></code>
+    </TaintedSSRF>
+  </file>
+  <file src="app/Utils/Grapher/MultiRrd.php">
+    <TaintedFile>
+      <code><![CDATA[file_get_contents( $file )]]></code>
+      <code><![CDATA[file_put_contents( $localname, $r )]]></code>
+    </TaintedFile>
+    <TaintedSSRF>
+      <code><![CDATA[file_get_contents( $file )]]></code>
+    </TaintedSSRF>
+  </file>
+  <file src="app/Utils/Grapher/Rrd.php">
+    <TaintedFile>
+      <code><![CDATA[file_get_contents( $this->realfile )]]></code>
+      <code><![CDATA[file_get_contents($this->file)]]></code>
+      <code><![CDATA[file_put_contents( $this->localfile, $r )]]></code>
+    </TaintedFile>
+    <TaintedSSRF>
+      <code><![CDATA[file_get_contents( $this->realfile )]]></code>
+      <code><![CDATA[file_get_contents($this->file)]]></code>
+    </TaintedSSRF>
+  </file>
   <file src="data/SocialiteProviders/src/PeeringDB/Provider.php">
     <ImplicitToStringCast>
       <code><![CDATA[$response->getBody()]]></code>
@@ -1669,5 +1797,15 @@
                 'bundle_name'   => $vendor[3] ?? null,
             ])]]></code>
     </UndefinedMagicMethod>
+  </file>
+  <file src="vendor/psalm/plugin-laravel/stubs/common/Database/Schema/IndexDefinition.phpstub">
+    <InvalidDocblock>
+      <code><![CDATA[IndexDefinition]]></code>
+    </InvalidDocblock>
+  </file>
+  <file src="vendor/psalm/plugin-laravel/stubs/common/Foundation/Application.phpstub">
+    <InvalidDocblock>
+      <code><![CDATA[public function getProviders($provider) {}]]></code>
+    </InvalidDocblock>
   </file>
 </files>

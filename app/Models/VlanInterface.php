@@ -134,7 +134,7 @@ class VlanInterface extends Model
     /**
      * Get the customer that owns the virtual interfaces.
      *
-     * @return BelongsTo<VirtualInterface, VlanInterface>
+     * @psalm-return BelongsTo<VirtualInterface, self>
      */
     public function virtualInterface(): BelongsTo
     {
@@ -144,7 +144,7 @@ class VlanInterface extends Model
     /**
      * Get the vlan that holds the vlan interface.
      *
-     * @return BelongsTo<Vlan, VlanInterface>
+     * @psalm-return BelongsTo<Vlan, self>
      */
     public function vlan(): BelongsTo
     {
@@ -154,7 +154,7 @@ class VlanInterface extends Model
     /**
      * Get the layer2addresses for the vlan interface
      *
-     * @return HasMany<Layer2Address, VlanInterface>
+     * @psalm-return HasMany<Layer2Address, self>
      */
     public function layer2addresses(): HasMany
     {
@@ -164,7 +164,7 @@ class VlanInterface extends Model
     /**
      * Get the ipv4address associated with the vlaninterface.
      *
-     * @return BelongsTo<IPv4Address, VlanInterface>
+     * @psalm-return BelongsTo<IPv4Address, self>
      */
     public function ipv4address(): BelongsTo
     {
@@ -174,7 +174,7 @@ class VlanInterface extends Model
     /**
      * Get the ipv6address associated with the vlaninterface.
      *
-     * @return BelongsTo<IPv6Address, VlanInterface>
+     * @psalm-return BelongsTo<IPv6Address, self>
      */
     public function ipv6address(): BelongsTo
     {

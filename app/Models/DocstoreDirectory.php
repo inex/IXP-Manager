@@ -94,7 +94,7 @@ class DocstoreDirectory extends Model
     /**
      * Get the parent directory
      *
-     * @return BelongsTo<self, DocstoreDirectory>
+     * @psalm-return BelongsTo<self, self>
      */
     public function parentDirectory(): BelongsTo
     {
@@ -104,7 +104,7 @@ class DocstoreDirectory extends Model
     /**
      * Get the files in this directory
      *
-     * @return HasMany<DocstoreFile, DocstoreDirectory>
+     * @psalm-return HasMany<DocstoreFile, self>
      */
     public function files(): HasMany
     {

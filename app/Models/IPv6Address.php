@@ -61,7 +61,7 @@ class IPv6Address extends Model
     /**
      * Get the vlan that own the ipv6address
      *
-     * @return BelongsTo<Vlan, IPv6Address>
+     * @psalm-return BelongsTo<Vlan, self>
      */
     public function vlan(): BelongsTo
     {
@@ -71,7 +71,7 @@ class IPv6Address extends Model
     /**
      * Get the vlan interface associated with the ipv6.
      *
-     * @return HasOne<VlanInterface, IPv6Address>
+     * @psalm-return HasOne<VlanInterface, self>
      */
     public function vlanInterface(): HasOne
     {

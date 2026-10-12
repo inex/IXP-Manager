@@ -248,7 +248,7 @@ class Router extends Model
     /**
      * Get the vlan that own the router
      *
-     * @return BelongsTo<Vlan, Router>
+     * @psalm-return BelongsTo<Vlan, self>
      */
     public function vlan(): BelongsTo
     {
@@ -258,7 +258,7 @@ class Router extends Model
     /**
      * Get the router's configuration / isolation pair
      *
-     * @return BelongsTo<Router, Router>
+     * @psalm-return BelongsTo<self, self>
      */
     public function pair(): BelongsTo
     {

@@ -140,7 +140,7 @@ class CompanyBillingDetail extends Model
     /**
      * Get the customer for the company billing detail
      *
-     * @return HasOne<Customer, CompanyBillingDetail>
+     * @psalm-return HasOne<Customer, self>
      */
     public function customer(): HasOne
     {

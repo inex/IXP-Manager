@@ -94,7 +94,7 @@ class PatchPanelPortHistoryFile extends Model
     /**
      * Get the Patch Panel Port history that owns this patch panel port history file
      *
-     * @return BelongsTo<PatchPanelPortHistory, PatchPanelPortHistoryFile>
+     * @psalm-return BelongsTo<PatchPanelPortHistory, self>
      */
     public function patchPanelPortHistory(): BelongsTo
     {

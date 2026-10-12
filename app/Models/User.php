@@ -196,7 +196,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     /**
      * Get the remember tokens for the user
      *
-     * @return HasMany<UserRememberToken, User>
+     * @psalm-return HasMany<UserRememberToken, self>
      */
     public function userRememberTokens(): HasMany
     {
@@ -206,7 +206,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     /**
      * Get the remember tokens for the user
      *
-     * @return HasOne<User2FA, User>
+     * @psalm-return HasOne<User2FA, self>
      */
     public function user2FA(): HasOne
     {
@@ -216,7 +216,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     /**
      * Get the customer
      *
-     * @return BelongsTo<Customer, User>
+     * @psalm-return BelongsTo<Customer, self>
      */
     public function customer(): BelongsTo
     {
@@ -226,7 +226,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     /**
      * Get the api keys for the user
      *
-     * @return HasMany<ApiKey, User>
+     * @psalm-return HasMany<ApiKey, self>
      */
     public function apiKeys(): HasMany
     {
@@ -256,7 +256,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     /**
      * Get all the customers for the user
      *
-     * @return HasMany<CustomerToUser, User>
+     * @psalm-return HasMany<CustomerToUser, self>
      */
     public function customerToUser(): HasMany
     {
