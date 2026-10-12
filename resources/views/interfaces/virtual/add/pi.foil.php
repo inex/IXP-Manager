@@ -30,7 +30,7 @@
                 </div>
             <?php endif; ?>
 
-            <table id="table-pi" class="table table-striped table-responsive-ixp-no-header">
+            <table id="table-pi" class="table table-striped table-responsive-ixp-no-header w-100">
                 <thead class="thead-dark">
                     <tr>
                         <th>
