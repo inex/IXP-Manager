@@ -4,7 +4,7 @@
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-    VLAN Graphs - <?= $t->vlan->name ?> (<?= IXP\Services\Grapher\Graph::resolveProtocol( $t->protocol ) ?>)
+    VLAN Graphs - <?= $t->ee( $t->vlan->name ) ?> (<?= IXP\Services\Grapher\Graph::resolveProtocol( $t->protocol ) ?>)
 <?php $this->append() ?>
 
 <?php $this->section( 'content' ) ?>
@@ -42,7 +42,7 @@
                                     <label class="col-4 col-md-4 col-lg-3" for="form-select-vlanid">VLAN:</label>
                                     <select id="form-select-vlanid" name="vlanid" class="form-control" >
                                         <?php foreach( $t->vlans as $v ): ?>
-                                            <option value="<?= $v->id ?>" <?= $t->vlan->id !== $v->id ?: 'selected="selected"' ?>><?= $v->name ?></option>
+                                            <option value="<?= $v->id ?>" <?= $t->vlan->id !== $v->id ?: 'selected="selected"' ?>><?= $t->ee( $v->name ) ?></option>
                                         <?php endforeach; ?>
                                     </select>
                                 </div>
@@ -96,7 +96,7 @@
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>
-    <script>
+    <script type="module">
         let base_route   = "<?= route( 'statistics@vlan' ) ?>";
         let sel_vlanid   = $("#form-select-vlanid");
         let sel_protocol = $("#form-select-protocol");

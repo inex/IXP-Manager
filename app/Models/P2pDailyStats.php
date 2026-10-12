@@ -24,7 +24,6 @@ namespace IXP\Models;
  */
 
 
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -33,9 +32,9 @@ use IXP\Traits\Observable;
 
 /**
  * @property int $id
- * @property int $cust_id
  * @property string $day
- * @property string $peer_id
+ * @property int $cust_id
+ * @property int $peer_id
  * @property int|null $ipv4_total_in
  * @property int|null $ipv4_total_out
  * @property int|null $ipv6_total_in
@@ -46,24 +45,24 @@ use IXP\Traits\Observable;
  * @property int|null $ipv6_max_out
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @method static \Illuminate\Database\Eloquent\Builder|P2pDailyStats newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|P2pDailyStats newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|P2pDailyStats query()
- * @method static \Illuminate\Database\Eloquent\Builder|P2pDailyStats whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|P2pDailyStats whereCustId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|P2pDailyStats whereDay($value)
- * @method static \Illuminate\Database\Eloquent\Builder|P2pDailyStats whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|P2pDailyStats whereIpv4MaxIn($value)
- * @method static \Illuminate\Database\Eloquent\Builder|P2pDailyStats whereIpv4MaxOut($value)
- * @method static \Illuminate\Database\Eloquent\Builder|P2pDailyStats whereIpv4TotalIn($value)
- * @method static \Illuminate\Database\Eloquent\Builder|P2pDailyStats whereIpv4TotalOut($value)
- * @method static \Illuminate\Database\Eloquent\Builder|P2pDailyStats whereIpv6MaxIn($value)
- * @method static \Illuminate\Database\Eloquent\Builder|P2pDailyStats whereIpv6MaxOut($value)
- * @method static \Illuminate\Database\Eloquent\Builder|P2pDailyStats whereIpv6TotalIn($value)
- * @method static \Illuminate\Database\Eloquent\Builder|P2pDailyStats whereIpv6TotalOut($value)
- * @method static \Illuminate\Database\Eloquent\Builder|P2pDailyStats wherePeerId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|P2pDailyStats whereUpdatedAt($value)
  * @property-read \IXP\Models\Customer|null $peer
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|P2pDailyStats newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|P2pDailyStats newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|P2pDailyStats query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|P2pDailyStats whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|P2pDailyStats whereCustId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|P2pDailyStats whereDay($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|P2pDailyStats whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|P2pDailyStats whereIpv4MaxIn($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|P2pDailyStats whereIpv4MaxOut($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|P2pDailyStats whereIpv4TotalIn($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|P2pDailyStats whereIpv4TotalOut($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|P2pDailyStats whereIpv6MaxIn($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|P2pDailyStats whereIpv6MaxOut($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|P2pDailyStats whereIpv6TotalIn($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|P2pDailyStats whereIpv6TotalOut($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|P2pDailyStats wherePeerId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|P2pDailyStats whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class P2pDailyStats extends Model
@@ -111,7 +110,7 @@ class P2pDailyStats extends Model
      */
     public function total_traffic(): int
     {
-        return $this->ipv4_total_out + $this->ipv4_total_in + $this->ipv6_total_out + $this->ipv6_total_in;
+        return ($this->ipv4_total_out ?? 0) + ($this->ipv4_total_in ?? 0) + ($this->ipv6_total_out ?? 0) + ($this->ipv6_total_in ?? 0);
     }
 
 
@@ -138,8 +137,6 @@ class P2pDailyStats extends Model
 
     /**
      * Get the latest n P2pDailyStats for this customer.
-     *
-     * @param Customer $c
      */
     public static function latestN( Customer $c, int $n = 5 ): Collection
     {

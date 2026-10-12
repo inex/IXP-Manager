@@ -40,25 +40,25 @@ use Illuminate\Database\Eloquent\{
  * @property string $uploaded_at
  * @property string $uploaded_by
  * @property int $size
- * @property int $is_private
+ * @property bool $is_private
  * @property string $storage_location
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \IXP\Models\PatchPanelPortHistory|null $patchPanelPortHistory
- * @method static \Illuminate\Database\Eloquent\Builder|PatchPanelPortHistoryFile newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|PatchPanelPortHistoryFile newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|PatchPanelPortHistoryFile query()
- * @method static \Illuminate\Database\Eloquent\Builder|PatchPanelPortHistoryFile whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PatchPanelPortHistoryFile whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PatchPanelPortHistoryFile whereIsPrivate($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PatchPanelPortHistoryFile whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PatchPanelPortHistoryFile wherePatchPanelPortHistoryId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PatchPanelPortHistoryFile whereSize($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PatchPanelPortHistoryFile whereStorageLocation($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PatchPanelPortHistoryFile whereType($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PatchPanelPortHistoryFile whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PatchPanelPortHistoryFile whereUploadedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PatchPanelPortHistoryFile whereUploadedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PatchPanelPortHistoryFile newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PatchPanelPortHistoryFile newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PatchPanelPortHistoryFile query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PatchPanelPortHistoryFile whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PatchPanelPortHistoryFile whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PatchPanelPortHistoryFile whereIsPrivate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PatchPanelPortHistoryFile whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PatchPanelPortHistoryFile wherePatchPanelPortHistoryId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PatchPanelPortHistoryFile whereSize($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PatchPanelPortHistoryFile whereStorageLocation($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PatchPanelPortHistoryFile whereType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PatchPanelPortHistoryFile whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PatchPanelPortHistoryFile whereUploadedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PatchPanelPortHistoryFile whereUploadedBy($value)
  * @mixin Eloquent
  */
 
@@ -85,6 +85,10 @@ class PatchPanelPortHistoryFile extends Model
         'size',
         'is_private',
         'storage_location',
+    ];
+
+    protected $casts = [
+        'is_private' => 'boolean',
     ];
 
     /**
@@ -163,22 +167,22 @@ class PatchPanelPortHistoryFile extends Model
     {
         switch ( $this->type ) {
             case 'image/jpeg':
-                $icon = 'fa-file-image-o';
+                $icon = 'fa-file-image';
                 break;
             case 'image/png':
-                $icon = 'fa-file-image-o';
+                $icon = 'fa-file-image';
                 break;
             case 'image/bmp':
-                $icon = 'fa-file-image-o';
+                $icon = 'fa-file-image';
                 break;
             case 'application/pdf':
-                $icon = 'fa-file-pdf-o';
+                $icon = 'fa-file-pdf';
                 break;
             case 'application/zip':
-                $icon = 'fa-file-archive-o';
+                $icon = 'fa-file-zipper';
                 break;
             case 'text/plain':
-                $icon = 'fa-file-text';
+                $icon = 'fa-file-lines';
                 break;
             default:
                 $icon = 'fa-file';
@@ -196,5 +200,11 @@ class PatchPanelPortHistoryFile extends Model
     {
         return PatchPanelPortFile::UPLOAD_PATH . '/' . $this->storage_location[ 0 ] . '/'
             . $this->storage_location[ 1 ] . '/' . $this->storage_location;
+    }
+
+    public function togglePrivacy(): bool
+    {
+        $this->is_private = !$this->is_private;
+        return $this->save();
     }
 }

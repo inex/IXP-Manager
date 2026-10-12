@@ -24,7 +24,7 @@ IXP Manager Settings
         <?= $t->alerts() ?>
 
         <?php if( count( $t->errors ) ): ?>
-            <div class="tw-bg-red-100 tw-border-l-4 tw-border-red-500 tw-text-red-700 p-4 alert-dismissible mb-4" role="alert">
+            <div class="tw:bg-red-100 tw:border-l-4 tw:border-red-500 tw:text-red-700 p-4 alert-dismissible mb-4" role="alert">
                 <div class="d-flex align-items-center">
                     <div class="text-center"><i class="fa fa-exclamation-triangle fa-2x "></i></div>
                     <div class="col-sm-12">
@@ -56,11 +56,13 @@ IXP Manager Settings
                 <ul class="tabNavMenu" id="envFormTabs">
 
                     <?php
-                        $first = true;
+                        $firstTab = array_keys( $t->settings["panels"] )[0];
                         foreach( $t->settings["panels"] as $panel => $content ): ?>
 
                         <li>
-                            <button class="tabButton <?php if( $first ) { echo 'active'; $first = false; } ?>"
+                            <button class="tabButton <?php
+                            echo $panel === ($t->tab ?: $firstTab) ? 'active' : ''
+                             ?>"
                                 id="<?= $panel ?>-tab" data-target="#<?= $panel ?>-content" type="button"
                             ><?= $content["title"] ?></button>
                         </li>
@@ -71,10 +73,11 @@ IXP Manager Settings
 
                 <div class="tabContent" id="envFormTabContents">
 
-                    <?php $first = true;
+                    <?php
+                        $firstTab = array_keys( $t->settings["panels"] )[0];
                         foreach( $t->settings["panels"] as $panel => $content ) { ?>
 
-                        <div class="tabPanel <?php if( $first ) { echo 'active'; $first = false; } ?>" id="<?= $panel ?>-content" role="tabpanel" aria-labelledby="<?= $panel ?>-content">
+                        <div class="tabPanel <?php echo $panel === ($t->tab ?: $firstTab) ? 'active' : '' ?>" id="<?= $panel ?>-content" role="tabpanel" aria-labelledby="<?= $panel ?>-content">
 
                             <?php if( isset( $content["description"] ) && $content["description"] !== "" ): ?>
 
@@ -136,7 +139,7 @@ IXP Manager Settings
                                     } // switch type
 
                                     if( isset( $param["help"] ) && $param["help"] !== ''): ?>
-                                        <div class="small"><i class="fa fa-info-circle tw-text-blue-600"></i> <?= $param["help"] ?></div>
+                                        <div class="small"><i class="fa fa-info-circle tw:text-blue-600"></i> <?= $param["help"] ?></div>
                                     <?php endif;
 
                                 echo "</div>\n";
@@ -151,9 +154,13 @@ IXP Manager Settings
 
                     <?=
                         Former::actions(
-                            Former::primary_submit( 'Save Changes' )->id('updateButton')->class( "mb-2 mb-sm-0" )
+                            Former::primary_submit( 'Save Changes' )->id('updateButton')->class( "mb-2 mb-sm-0" )->disabled( $t->readOnly )
                         )
                    ?>
+
+                    <div class="text-muted small mt-2">
+                        <code>.env</code> last modified: <?= $t->lastModified ?>
+                    </div>
 
                    <?= Former::close() ?>
 

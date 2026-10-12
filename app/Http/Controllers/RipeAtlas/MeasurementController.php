@@ -57,6 +57,7 @@ use IXP\Utils\View\Alert\{
  * Measurement Controller
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @author     Thomas Kerin <thomas@islandbridgenetworks.ie>
  * @category   IXP
  * @package    IXP\Http\Controllers\RipeAtlas
  * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
@@ -181,10 +182,10 @@ class MeasurementController extends Eloquent2Frontend
     protected static function additionalRoutes( string $route_prefix ): void
     {
         Route::group( [ 'prefix' => $route_prefix ], function() use ( $route_prefix ) {
-            Route::get( 'matrix/{atlasRun}',            'RipeAtlas\MeasurementController@matrix'                )->name( $route_prefix . '@matrix'              );
-            Route::post('run/{atlasrun}',               'RipeAtlas\MeasurementController@runMeasurements'       )->name( $route_prefix . '@run-measurements'    );
-            Route::put( 'update/{atlasrun}',            'RipeAtlas\MeasurementController@updateMeasurements'    )->name( $route_prefix . '@update-measurements' );
-            Route::put( 'stop-measurements/{atlasrun}', 'RipeAtlas\MeasurementController@stopMeasurements'      )->name( $route_prefix . '@stop-measurements'   );
+            Route::get( 'matrix/{atlasRun}',            [self::class, 'matrix']                )->name( $route_prefix . '@matrix'              );
+            Route::post('run/{atlasrun}',               [self::class, 'runMeasurements']       )->name( $route_prefix . '@run-measurements'    );
+            Route::put( 'update/{atlasrun}',            [self::class, 'updateMeasurements']    )->name( $route_prefix . '@update-measurements' );
+            Route::put( 'stop-measurements/{atlasrun}', [self::class, 'stopMeasurements']      )->name( $route_prefix . '@stop-measurements'   );
         });
     }
 
@@ -215,12 +216,12 @@ class MeasurementController extends Eloquent2Frontend
     /**
      * Provide array of rows for the list action and view action
      *
-     * @param int $id The `id` of the row to load for `view` action`. `null` if `listAction`
+     * @param int|null $id The `id` of the row to load for `view` action`. `null` if `listAction`
      *
      * @return array
      */
     #[\Override]
-    protected function listGetData( $id = null ): array
+    protected function listGetData( ?int $id = null ): array
     {
         $rid        = $this->data[ 'params' ][ 'rid' ] ?? null;
         $feParams   = $this->feParams;

@@ -28,7 +28,6 @@ use IXP\Models\{
     CoreInterface,
     CoreLink,
     PhysicalInterface,
-    Switcher,
     SwitchPort,
     VirtualInterface
 };
@@ -521,7 +520,10 @@ class CoreBundleControllerTest extends DuskTestCase
                 $this->assertEquals( 3, $cb->corelinks->count() );
 
                 /** @var $cl3 CoreLink */
+                /** @var SwitchPort $cl3SwitchPort */
                 $this->assertInstanceOf( CoreLink::class, $cl3 = $cb->corelinks->last() );
+                $cl3SwitchPort = $cl3->coreInterfaceSideA->physicalInterface->switchPort;
+
                 $this->assertEquals( $coreBundle[ 'switch-port-a-3-name' ], $cl3->coreInterfaceSideA->physicalInterface->switchPort->name );
                 $this->assertEquals( $coreBundle[ 'switch-port-b-3-name' ], $cl3->coreInterfaceSideB->physicalInterface->switchPort->name );
                 $this->assertEquals( $coreBundle[ 'bfd-cl-3' ], $cl3->bfd );
@@ -538,8 +540,14 @@ class CoreBundleControllerTest extends DuskTestCase
                     ->pause(500);
 
                 $this->assertEquals( null, CoreLink::find( $cl3id ) );
+                $cl3SwitchPort->refresh();
+                $this->assertEquals( SwitchPort::TYPE_UNSET, $cl3SwitchPort->type );
+                $this->assertEquals(2, $cb->coreLinks()->count());
 
                 $cbid = $cb->id;
+
+                $cbVis = $cb->virtualInterfaces();
+                $this->assertCount(2, $cbVis);
 
                 $browser->visit( route( 'core-bundle@edit', $cb->id ) )
                     ->waitForLocation( route( 'core-bundle@edit', $cb->id ) );
@@ -550,6 +558,15 @@ class CoreBundleControllerTest extends DuskTestCase
                     ->pause(500);
 
                 $this->assertEquals( null, CoreBundle::find( $cbid ) );
+                $this->assertEquals(0, CoreLink::whereCoreBundleId($cbid)->count() );
+
+                // VI's get deleted too
+                foreach ($cbVis as $oldVi) {
+                    $this->assertNull(VirtualInterface::find($oldVi->id));
+                    // and physical interfaces
+                    $this->assertNull(PhysicalInterface::whereVirtualinterfaceid($oldVi->id)->first());
+                }
+
             }
         } );
     }

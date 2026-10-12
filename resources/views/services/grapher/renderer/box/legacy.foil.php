@@ -4,7 +4,9 @@
 
 // RRD graphs already have all the information embedded:
 
-if( config('grapher.backends.mrtg.dbtype') === 'rrd' || $t->graph->classType() === "Smokeping" ): ?>
+if( ( $t->graph->backend()->name() === "mrtg" && config( 'grapher.backends.mrtg.dbtype' ) === 'rrd' ) ||
+        $t->graph->backend()->name() === "sflow" ||
+        $t->graph->classType() === "Smokeping" ): ?>
 
     <img width="100%" border="0" src="data:image/png;base64,<?=base64_encode( $t->graph->png() )?>" />
 

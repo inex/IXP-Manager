@@ -4,7 +4,7 @@
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-    Infrastructure Aggregate Graphs - <?= $t->infra->name ?> (<?= IXP\Services\Grapher\Graph::resolveCategory( $t->category ) ?>)
+    Infrastructure Aggregate Graphs - <?= $t->ee( $t->infra->name ) ?> (<?= IXP\Services\Grapher\Graph::resolveCategory( $t->category ) ?>)
 <?php $this->append() ?>
 
 
@@ -29,7 +29,7 @@
                                     <label for="category" class="col-lg-6 col-sm-4">Infrastructure:</label>
                                     <select id="form-select-infraid" name="infraid" class="form-control" >
                                         <?php foreach( $t->infras as $i ): ?>
-                                            <option value="<?= $i->id ?>" <?= $t->infra->id !== $i->id ?: 'selected="selected"' ?>><?= $i->name ?></option>
+                                            <option value="<?= $i->id ?>" <?= $t->infra->id !== $i->id ?: 'selected="selected"' ?>><?= $t->ee( $i->name ) ?></option>
                                         <?php endforeach; ?>
                                     </select>
                                 </div>
@@ -71,7 +71,7 @@
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>
-    <script>
+    <script type="module">
         let base_route   = "<?= route( 'statistics@infrastructure' ) ?>";
         let sel_infraid  = $("#form-select-infraid");
         let sel_category = $("#form-select-category");

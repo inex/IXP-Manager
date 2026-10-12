@@ -5,7 +5,7 @@ declare( strict_types = 1 );
 namespace IXP\Http\Controllers;
 
 /*
- * Copyright (C) 2009 - 2025 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -30,6 +30,8 @@ use Exception;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use IXP\Exceptions\Utils\DotEnvParserException;
 use IXP\Utils\DotEnv\DotEnvContainer;
 use IXP\Utils\DotEnv\DotEnvParser;
@@ -49,8 +51,8 @@ use IXP\Utils\View\Alert\Container as AlertContainer;
 class SettingsController extends Controller
 {
     protected array $fe_settings;
-    
-    
+
+
     public function __construct()
     {
         $this->fe_settings = config( 'ixp_fe_settings' );
@@ -65,7 +67,7 @@ class SettingsController extends Controller
     private function gatherRules(): array
     {
         $rules = [];
-        
+
         foreach( $this->fe_settings[ "panels" ] as $panel ) {
             foreach( $panel[ "fields" ] as $label => $field ) {
                 if( isset( $field[ "rules" ] ) && $field[ "rules" ] !== '' ) {
@@ -73,53 +75,65 @@ class SettingsController extends Controller
                 }
             }
         }
-        
+
         return $rules;
     }
-    
-    
+
+
     /**
      * Display the form to edit an object
      */
-    protected function index(): View
+    protected function index(?string $tab = null): View
     {
         try {
             $this->checkIfDotEnvIsCompatible();
+            $readOnly = !$this->isDotEnvWritable();
         } catch( Exception $e ) {
-            
+
             AlertContainer::push( $e->getMessage(), Alert::DANGER );
-            
+
             return view( 'settings.compatibility' )->with( [
                 'exception' => $e,
             ] );
         }
-        
+
+        if( $readOnly ) {
+            AlertContainer::push( 'Server has no write permissions for .env file. Changes disabled.', Alert::WARNING );
+        }
+
         return view( 'settings.index' )->with( [
-            'settings' => $this->fe_settings,
-            'rules'    => [], //$this->gatherRules(),
+            'tab'          => $tab ?? false, // hack to work around foils isset support..
+            'settings'     => $this->fe_settings,
+            'rules'        => [], //$this->gatherRules(),
+            'readOnly'     => $readOnly,
+            'lastModified' => date( 'Y-m-d H:i:s T', filemtime( base_path( '.env' ) ) ),
         ] );
     }
-    
-    
+
+
     /**
      * @throws DotEnvParserException
      * @throws Exception
      */
-    private function checkIfDotEnvIsCompatible()
+    private function checkIfDotEnvIsCompatible(): void
     {
         if( !file_exists( base_path( '.env' ) ) ) {
             throw new Exception( "The .env file is missing. Please create it and try again." );
         }
-        
-        if( !is_writable( base_path( '.env' ) ) ) {
-            throw new Exception( "The .env file is can not be written to. Please check the file permissions and try again." );
-        }
-        
+
         if( !( $env = file_get_contents( base_path( '.env' ) ) ) ) {
             throw new Exception( "The .env file is empty. Please add some settings and try again." );
         }
-        
+
         new DotEnvParser( $env )->parse();
+    }
+
+    /**
+     * Check whether the .env settings can be changed through the UI.
+     */
+    private function isDotEnvWritable(): bool
+    {
+        return is_writable( base_path( '.env' ) );
     }
     
     /**
@@ -131,12 +145,12 @@ class SettingsController extends Controller
         if( !file_exists( base_path( '.env' ) ) ) {
             throw new Exception( "The .env file is missing. Please create it and try again." );
         }
-        
+
         if( !( $env = file_get_contents( base_path( '.env' ) ) ) ) {
             throw new Exception( "The .env file is empty. Please add some settings and try again." );
         }
-        
-        
+
+
         return new DotEnvContainer( new DotEnvParser( $env )->parse()->settings() );
     }
     
@@ -148,11 +162,11 @@ class SettingsController extends Controller
         if( !file_exists( base_path( '.env' ) ) ) {
             throw new Exception( "The .env file is missing. Please create it and try again." );
         }
-        
+
         if( !is_writable( base_path( '.env' ) ) ) {
-            throw new Exception( "The .env file is can not be written to. Please check the file permissions and try again." );
+            throw new Exception( "The .env file cannot be written to. Please check the file permissions and try again." );
         }
-        
+
         if( !( file_put_contents( base_path( '.env' ), $dotEnv ) ) ) {
             throw new Exception( "Could not write to the .env file. Please check the file permissions and try again." );
         }
@@ -167,45 +181,64 @@ class SettingsController extends Controller
     public function update( Request $request ): RedirectResponse
     {
         $validated = $request->validate( $this->gatherRules() );
-        
+        $changes = (object) ['new' => [], 'changed' => [], 'cleared' => []];
+
         try {
             // only interested in saving settings where the value has changed
             $dotenv = $this->loadDotEnv();
-            
+
             foreach( $this->fe_settings[ "panels" ] as $panel ) {
                 foreach( $panel[ "fields" ] as $fname => $fconfig ) {
 
                     $orig = config( $fconfig[ "config_key" ] );
-                    
+
                     if( isset( $fconfig[ "invert" ] ) && $fconfig[ "invert" ] ) {
                         $validated[ $fname ] = $validated[ $fname ] === "1" ? "0" : "1";
                     }
-                    
-                    if( !isset( $validated[ $fname ] ) || $validated[ $fname ] == $orig ) {
+
+                    if( !isset( $validated[ $fname ] ) ) {
+                        if ( $dotenv->indexOf( $fconfig[ 'dotenv_key' ] ) ) {
+                            $dotenv->unset( $fconfig[ 'dotenv_key' ] );
+                            $changes->cleared[] = $fconfig[ 'dotenv_key' ];
+                        }
+                        continue;
+                    }
+
+                    if( $fconfig[ 'type' ] === 'radio' ) {
+                        $value = filter_var( $validated[ $fname ], FILTER_VALIDATE_BOOLEAN );
+
+                        if( $value === (bool)$orig ) {
+                            continue;
+                        }
+
+                        $validated[ $fname ] = $value ? 'true' : 'false';
+                    } else if( $validated[ $fname ] == $orig ) {
                         continue;
                     }
 
                     // update dotenv container
                     if( $dotenv->isset( $fconfig[ 'dotenv_key' ] ) ) {
+                        $changes->changed[] = $fconfig[ 'dotenv_key' ];
                         $dotenv->updateValue( $fconfig[ 'dotenv_key' ], $validated[ $fname ] );
                     } else {
                         // include blank line
                         $dotenv->set( null, null, null );
                         $dotenv->set( $fconfig[ 'dotenv_key' ], $validated[ $fname ] );
+                        $changes->new[] = $fconfig[ 'dotenv_key' ];
                     }
-                    
                 }
             }
 
             $this->saveDotEnv( new DotEnvWriter( $dotenv->settings() )->generateContent() );
-            
+
         } catch( DotEnvParserException|Exception $e ) {
             AlertContainer::push( $e->getMessage(), Alert::DANGER );
             return redirect()->back();
         }
-        
+
         AlertContainer::push( 'Settings have been successfully updated', Alert::SUCCESS );
+        Log::notice( Auth::user()->username . ' updated .env file', ['new' => $changes->new, 'changed' => $changes->changed, 'cleared' => $changes->cleared]);
         return redirect( route( 'settings@index') );
     }
-    
+
 }

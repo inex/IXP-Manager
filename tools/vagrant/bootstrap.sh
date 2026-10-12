@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Copyright (C) 2009 - 2024 Internet Neutral Exchange Association Company Limited By Guarantee.
+# Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
 # All Rights Reserved.
 #
 # This file is part of IXP Manager.
@@ -41,8 +41,8 @@
 #######
 
 echo "Updating packages...."
-apt-get update &>/dev/null
-apt-get dist-upgrade -y
+DEBIAN_FRONTEND=noninteractive apt-get update &>/dev/null
+DEBIAN_FRONTEND=noninteractive apt-get dist-upgrade -y
 
 # Defaults for MySQL and phpMyAdmin:
 echo 'mysql-server mysql-server/root_password password password' | debconf-set-selections
@@ -57,18 +57,18 @@ echo 'mrtg mrtg/create_www boolean true' | debconf-set-selections
 echo 'mrtg mrtg/fix_permissions boolean true' | debconf-set-selections
 
 # ensure basic tools are installed
-apt-get install -yq ubuntu-minimal openssl wget net-tools
+DEBIAN_FRONTEND=noninteractive apt-get install -yq ubuntu-minimal openssl wget net-tools
 
 # We need PHP 8.4 for IXP Manager v7 and we need to get this from
 # Ondrej's super PPA:
-apt-get install -yq software-properties-common
+DEBIAN_FRONTEND=noninteractive apt-get install -yq software-properties-common
 add-apt-repository -y ppa:ondrej/php
 
 echo "Installing mysql, apache, php, etc..."
-apt-get install -y apache2 php8.4 php8.4-intl php8.4-mysql php8.4-rrd php8.4-cgi php8.4-cli \
+DEBIAN_FRONTEND=noninteractive apt-get install -y apache2 php8.4 php8.4-intl php8.4-mysql php8.4-rrd php8.4-cgi php8.4-cli \
     php8.4-snmp php8.4-curl  php8.4-memcached libapache2-mod-php8.4 mysql-server            \
-    mysql-client memcached snmp php8.4-mbstring php8.4-xml php8.4-gd bgpq3 unzip git joe    \
-    php8.4-bcmath bgpq3 php8.4-memcache unzip php8.4-zip git php8.4-yaml phpmyadmin         \
+    mysql-client memcached snmp php8.4-mbstring php8.4-xml php8.4-gd bgpq3 bgpq4 unzip git  \
+    joe php8.4-bcmath php8.4-memcache unzip php8.4-zip git php8.4-yaml phpmyadmin     \
     php8.4-ds libconfig-general-perl libnetaddr-ip-perl mrtg  libconfig-general-perl        \
     php8.4-mcrypt libnetaddr-ip-perl rrdtool librrds-perl curl bash-completion &>/dev/null
 
@@ -77,11 +77,11 @@ apt-get install -y apache2 php8.4 php8.4-intl php8.4-mysql php8.4-rrd php8.4-cgi
 
 # apt-get -y install bird2 &>/dev/null
 
-apt-get -y install apt-transport-https ca-certificates wget
+DEBIAN_FRONTEND=noninteractive apt-get -y install apt-transport-https ca-certificates wget
 wget -O /usr/share/keyrings/cznic-labs-pkg.gpg https://pkg.labs.nic.cz/gpg
 echo "deb [signed-by=/usr/share/keyrings/cznic-labs-pkg.gpg] https://pkg.labs.nic.cz/bird2 noble main" > /etc/apt/sources.list.d/cznic-labs-bird2.list
-apt-get update
-apt-get install bird2
+DEBIAN_FRONTEND=noninteractive apt-get update
+DEBIAN_FRONTEND=noninteractive apt-get install bird2
 
 
 ## Setup bird3 repo on Ubuntu 24.04 LTS
@@ -92,7 +92,7 @@ apt-get install bird2
 #apt-get install -yq bird3
 
 
-apt-get install -y
+DEBIAN_FRONTEND=noninteractive apt-get install -y
 
 
 ####################################################################################
@@ -141,15 +141,18 @@ GRANT SUPER,SYSTEM_USER ON *.* TO ixp_ci@`%`;
 FLUSH PRIVILEGES;
 END_SQL
 
-
-
+SEEDED=0
 if [[ -f /vagrant/ixpmanager-preferred.sql.bz2 ]]; then
+    echo "Importing ixpmanager-preferred.sql.bz2 - Full database dump expected."
     bzcat /vagrant/ixpmanager-preferred.sql.bz2 | mysql --defaults-extra-file=/etc/mysql/root-client.cnf ixp
-elif [[ -f /vagrant/tools/vagrant/vagrant-base.sql ]]; then
-    cat /vagrant/tools/vagrant/vagrant-base.sql | mysql --defaults-extra-file=/etc/mysql/root-client.cnf ixp
+    SEEDED=1
+elif [[ -f /vagrant/ixpmanager-preferred.sql ]]; then
+    echo "Importing ixpmanager-preferred.sql - Full database dump expected."
+    cat /vagrant/ixpmanager-preferred.sql | mysql --defaults-extra-file=/etc/mysql/root-client.cnf ixp
+    SEEDED=1
+else
+    echo "No full schema dumps (vagrant) to import"
 fi
-
-cat /vagrant/data/ci/ci_test_db.sql  | mysql --defaults-extra-file=/etc/mysql/root-client.cnf ixp_ci
 
 
 ####################################################################################
@@ -171,9 +174,13 @@ cd /vagrant
 echo "Installing composer packages..."
 su - vagrant -c "cd /vagrant && COMPOSER_ALLOW_SUPERUSER=1 composer install" &>/dev/null
 
-echo "Installing / migrating database..." &>/dev/null
+echo "Installing / migrating database..."
 php /vagrant/artisan migrate --force &>/dev/null
 
+if [ "$SEEDED" == "0" ]; then
+    echo "Importing vagrant sample data"
+    cat /vagrant/tools/vagrant/vagrant-base-data.sql  | mysql --defaults-extra-file=/etc/mysql/root-client.cnf ixp
+fi
 
 
 ####################################################################################
@@ -241,11 +248,11 @@ END_SCREEN
 #######
 
 echo "Setting up snmpsim..."
-apt-get install -y python3-pip python3-venv python3-full &>/dev/null
+DEBIAN_FRONTEND=noninteractive apt-get install -y python3-pip python3-venv python3-full &>/dev/null
 mkdir /srv/venv
 python3 -m venv /srv/venv/ &>/dev/null
 cd /srv/venv/
-./bin/pip install snmpsim &>/dev/null
+./bin/pip install snmpsim pysmi &>/dev/null
 mkdir /srv/snmpclients
 cp /vagrant/tools/vagrant/snmpwalks/*snmprec /srv/snmpclients/
 chown -R vagrant: /srv/snmpclients
@@ -289,7 +296,7 @@ nameserver 2001:4860:4860::8844
 END_RESOLV
 
 # install powerdns
-apt-get -y install pdns-server pdns-backend-bind &>/dev/null
+DEBIAN_FRONTEND=noninteractive apt-get -y install pdns-server pdns-backend-bind &>/dev/null
 systemctl stop pdns.service
 
 rm -rf /etc/powerdns/*
@@ -313,7 +320,7 @@ chown -R pdns: /etc/powerdns/
 systemctl start pdns.service
 
 # for testing
-apt-get -y install php-net-dns2 &>/dev/null
+DEBIAN_FRONTEND=noninteractive apt-get -y install php-net-dns2 &>/dev/null
 
 
 
@@ -364,6 +371,7 @@ Listen 81
 
 <VirtualHost *:81>
     DocumentRoot /srv/birdseye/public
+    AllowEncodedSlashes NoDecode
 
     <Directory /srv/birdseye/public>
         Options FollowSymLinks

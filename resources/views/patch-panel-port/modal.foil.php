@@ -7,11 +7,11 @@
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
             </div>
             <div class="modal-body" id="notes-modal-body">
-                <p id="notes-modal-body-intro" class="tw-mb-2" >
+                <p id="notes-modal-body-intro" class="tw:mb-2" >
                     Consider adding details to the notes such as a internal ticket reference to the cease request / whom you have been dealing with / expected cease date / etc.
                 </p>
 
-                <div id="notes-modal-body-div-pi-status" class="tw-mb-2">
+                <div id="notes-modal-body-div-pi-status" class="tw:mb-2">
                     <label>Update Physical Port State To: </label>
                     <div class="col-md-6">
                         <select title="Physical Interface States" id="notes-modal-body-pi-status" class="chzn-select">
@@ -22,9 +22,9 @@
                     </div>
                 </div>
 
-                <div id="notes-modal-body-div-colo-ref" class="tw-mb-2">
+                <div id="notes-modal-body-div-colo-ref" class="tw:mb-2">
                     <label>Colocation Reference:</label>
-                    <input type="text" id="notes-modal-body-colo-ref" class="col-md-6 form-control tw-ml-4">
+                    <input type="text" id="notes-modal-body-colo-ref" class="col-md-6 form-control tw:ml-4">
                 </div>
 
                 <div class="card mt-4 mb-4">
@@ -39,7 +39,7 @@
                         </ul>
                     </div>
 
-                    <div class="tab-content card-body tw-pt-0">
+                    <div class="tab-content card-body tw:pt-0">
                         <div role="tabpanel" class="tab-pane show active" id="public-note-tab">
                             <div class="card mt-4 mb-4">
                                 <div class="card-header">

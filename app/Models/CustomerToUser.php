@@ -39,49 +39,35 @@ use IXP\Traits\Observable;
  * @property int $customer_id
  * @property int $user_id
  * @property int $privs
- * @property array|null $extra_attributes
- * @property string|null $last_login_date
+ * @property array<array-key, mixed>|null $extra_attributes (DC2Type:json)
+ * @property \Illuminate\Support\Carbon|null $last_login_date
  * @property string|null $last_login_from
  * @property string|null $last_login_via
- * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \IXP\Models\Customer $customer
  * @property-read \IXP\Models\User $user
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\UserLoginHistory> $userLoginHistories
  * @property-read int|null $user_login_histories_count
- * @method static Builder|CustomerToUser custAdmin()
- * @method static Builder|CustomerToUser newModelQuery()
- * @method static Builder|CustomerToUser newQuery()
- * @method static Builder|CustomerToUser query()
- * @method static Builder|CustomerToUser whereCreatedAt($value)
- * @method static Builder|CustomerToUser whereCustomerId($value)
- * @method static Builder|CustomerToUser whereExtraAttributes($value)
- * @method static Builder|CustomerToUser whereId($value)
- * @method static Builder|CustomerToUser whereLastLoginDate($value)
- * @method static Builder|CustomerToUser whereLastLoginFrom($value)
- * @method static Builder|CustomerToUser whereLastLoginVia($value)
- * @method static Builder|CustomerToUser wherePrivs($value)
- * @method static Builder|CustomerToUser whereUpdatedAt($value)
- * @method static Builder|CustomerToUser whereUserId($value)
+ * @method static Builder<static>|CustomerToUser custAdmin()
+ * @method static Builder<static>|CustomerToUser newModelQuery()
+ * @method static Builder<static>|CustomerToUser newQuery()
+ * @method static Builder<static>|CustomerToUser query()
+ * @method static Builder<static>|CustomerToUser whereCreatedAt($value)
+ * @method static Builder<static>|CustomerToUser whereCustomerId($value)
+ * @method static Builder<static>|CustomerToUser whereExtraAttributes($value)
+ * @method static Builder<static>|CustomerToUser whereId($value)
+ * @method static Builder<static>|CustomerToUser whereLastLoginDate($value)
+ * @method static Builder<static>|CustomerToUser whereLastLoginFrom($value)
+ * @method static Builder<static>|CustomerToUser whereLastLoginVia($value)
+ * @method static Builder<static>|CustomerToUser wherePrivs($value)
+ * @method static Builder<static>|CustomerToUser whereUpdatedAt($value)
+ * @method static Builder<static>|CustomerToUser whereUserId($value)
  * @mixin \Eloquent
  */
 class CustomerToUser extends Model
 {
     use Observable;
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'customer_id',
-        'user_id',
-        'privs',
-        'extra_attributes',
-        'last_login_date',
-        'last_login_from',
-        'last_login_via',
-    ];
 
     /**
      * The attributes that should be cast.
@@ -90,6 +76,7 @@ class CustomerToUser extends Model
      */
     protected $casts = [
         'extra_attributes' => 'json',
+        'last_login_date' => 'datetime',
     ];
 
     /**
@@ -142,6 +129,18 @@ class CustomerToUser extends Model
     public function scopeCustAdmin( Builder $query ): Builder
     {
         return $query->where('privs', User::AUTH_CUSTADMIN );
+    }
+
+    /**
+     * Called during a login or a switch customer operation to reflect the last time
+     * the customer account was accessed, and how
+     */
+    public function updateLastLoginInfo( string $ip, string $via ): bool
+    {
+        $this->last_login_date = now();
+        $this->last_login_from = $ip;
+        $this->last_login_via = $via;
+        return $this->save();
     }
 
     /**

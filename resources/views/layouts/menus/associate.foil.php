@@ -14,7 +14,7 @@ use PragmaRX\Google2FALaravel\Support\Authenticator as GoogleAuthenticator;
         // hide most things until 2fa complete:
         $authenticator = new GoogleAuthenticator( request() );
 
-        if( !Auth::getUser()->user2FA || !Auth::getUser()->user2FA->enabled || $authenticator->isAuthenticated() ):
+        if( !Auth::getUser()->user2FA || !Auth::getUser()->user2FA->isEnabled() || $authenticator->isAuthenticated() ):
     ?>
 
 
@@ -158,7 +158,7 @@ use PragmaRX\Google2FALaravel\Support\Authenticator as GoogleAuthenticator;
 
             <li class="nav-item">
                 <?php if( session()->exists( "switched_user_from" ) ): ?>
-                    <a class="nav-link" href="<?= route( 'switch-user@switchBack' ) ?>">
+                    <a id="nav-item-switch-user-back" class="nav-link" href="<?= route( 'switch-user@switchBack' ) ?>">
                         Switch Back
                     </a>
                 <?php else: ?>

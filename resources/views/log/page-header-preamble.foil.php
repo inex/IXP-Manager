@@ -10,7 +10,7 @@
         <div class="dropdown-divider"></div>
         <?php foreach( $t->data[ 'params'][ 'models' ] as $model ): ?>
             <a class="dropdown-item <?= $t->data[ 'params'][ 'model' ] !== $model ?: "active" ?>" href="<?= route( 'log@list', [ 'model' => $model ] ) ?>">
-                <?= $model ?>
+                <?= $t->ee( $model ) ?>
             </a>
         <?php endforeach; ?>
     </ul>
@@ -28,7 +28,7 @@
         <div class="dropdown-divider"></div>
         <?php foreach( $t->data[ 'params'][ 'users' ] as  $user ): ?>
             <a class="dropdown-item <?= $t->data[ 'params'][ 'user' ] !== $user ?: "active" ?>" href="<?= route( 'log@list', [ 'user' => $user ] ) ?>">
-                <?= $user ?>
+                <?= $t->ee( $user ) ?>
             </a>
         <?php endforeach; ?>
     </ul>

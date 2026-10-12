@@ -9,7 +9,7 @@
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-    Patch Panel Port / Cross Connect - <?= $t->ee( $ppp->patchPanel->name ) ?> :: <?= $t->ee( $ppp->name() ) ?>
+    Patch Panel Port / Cross Connect - <?= $t->ee( $ppp->patchPanel->name ) ?> <?php if( !$ppp->patchPanel->active ): ?>[Inactive]<?php endif; ?> :: <?= $t->ee( $ppp->name() ) ?>
 <?php $this->append() ?>
 
 
@@ -28,7 +28,7 @@
                     'isSuperUser' => $isSuperUser ] ); ?>
 
             <a class="btn btn-white" href="<?= route('patch-panel-port@list-for-patch-panel' , [ "pp" => $ppp->patch_panel_id ] ) ?>" title="list">
-                <span class="fa fa-th-list"></span>
+                <span class="fa fa-table-list"></span>
             </a>
         </div>
     <?php $this->append() ?>
@@ -101,7 +101,7 @@
                                                     </b>
                                                 </td>
                                                 <td>
-                                                    <?= @parsedown( $t->ee( $history->description ) ) ?>
+                                                    <?= clean( @parsedown( $history->description ) ) ?>
                                                 </td>
                                             </tr>
                                             <?php if( $current ): ?>
@@ -480,13 +480,13 @@
                                                 <div class="card-header">
                                                     Public Notes:
                                                     <?php if( $current ): ?>
-                                                        <a class="btn btn-white btn-sm pull-right btn-edit-notes" data-object-id="<?= $ppp->id ?>" href="<?= url()->current() ?>" title="edit note" >
+                                                        <a class="btn btn-white btn-sm pull-right btn-edit-notes" data-notes-target="#public-note-tab" data-object-id="<?= $ppp->id ?>" href="<?= url()->current(); ?>" title="edit note" >
                                                             <i class="fa fa-pencil"></i>
                                                         </a>
                                                     <?php endif; ?>
                                                 </div>
                                                 <div class="card-body" id="public-note-display">
-                                                    <?= @parsedown( $history->notes ) ?>
+                                                    <?= clean( @parsedown( $history->notes ) ) ?>
                                                 </div>
                                             </div>
                                         </div>
@@ -495,13 +495,13 @@
                                                 <div class="card-header">
                                                         Private Notes:
                                                     <?php if( $current ): ?>
-                                                        <a class="btn btn-white btn-sm pull-right btn-edit-notes" data-object-id="<?= $ppp->id ?>" href="<?= url()->current() ?>" title="edit note" >
+                                                        <a class="btn btn-white btn-sm pull-right btn-edit-notes" data-notes-target="#private-note-tab" data-object-id="<?= $ppp->id ?>" href="<?= url()->current(); ?>" title="edit note" >
                                                             <i class="fa fa-pencil"></i>
                                                         </a>
                                                     <?php endif; ?>
                                                 </div>
                                                 <div class="card-body" id="private-note-display">
-                                                    <?=  @parsedown( $history->private_notes ) ?>
+                                                    <?= clean( @parsedown( $history->private_notes ) ) ?>
                                                 </div>
                                             </div>
                                         </div>
@@ -513,7 +513,7 @@
                                                         Notes:
                                                     </div>
                                                     <div class="card-body">
-                                                        <?= @parsedown( $history->notes ) ?>
+                                                        <?= clean( @parsedown( $history->notes ) ) ?>
                                                     </div>
                                                 </div>
                                             <?php endif; ?>

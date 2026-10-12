@@ -53,6 +53,7 @@ use IXP\Utils\View\Alert\{
  * PhysicalInterface Controller
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @author     Thomas Kerin <thomas@islandbridgenetworks.ie>
  * @category   IXP
  * @package    IXP\Http\Controllers\Interfaces
  * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
@@ -195,7 +196,7 @@ class PhysicalInterfaceController extends Common
      *
      * @return View|RedirectResponse
      */
-    public function edit( Request $r,  PhysicalInterface $pi, VirtualInterface $vi = null, CoreBundle $cb = null )
+    public function edit( Request $r,  PhysicalInterface $pi, ?VirtualInterface $vi = null, ?CoreBundle $cb = null )
     {
         // we never edit a fanout port:
         if( $pi->switchPort->typeFanout() ) {
@@ -329,8 +330,8 @@ class PhysicalInterfaceController extends Common
             $redirect = route( "virtual-interface@edit", [ "vi" => $pi->virtualinterfaceid ] );
         }
 
-        if( $pi->coreInterface ) {
-            AlertContainer::push( 'You cannot delete this physical interface as there is a core bundle linked with it.', Alert::DANGER );
+        if( $ci = $pi->coreInterface ) {
+            AlertContainer::push( 'This physical interface is member of a core link. You can manage it on <a href="' . route( "core-bundle@edit", [ "cb" => $ci->coreLink()->coreBundle->id ] ) . '">the core bundle page</a>', Alert::DANGER );
             return Redirect::to( $redirect );
         }
 

@@ -16,7 +16,7 @@
                         <?php $vlanid = $vlan->number ?>
                         <?php if( isset( $t->me[ 'vlan_interfaces' ][ $vlanid ] ) ): ?>
                             <th>
-                                <?= $vlan->name ?>
+                                <?= $t->ee( $vlan->name ) ?>
                             </th>
                         <?php endif; ?>
                     <?php endforeach; ?>
@@ -33,13 +33,13 @@
                     <?php if( $p ): ?>
                         <tr>
                             <td id="peer-name-<?= $cid ?>">
-                                <?= $c[ "name" ] ?>
+                                <?= $t->ee( $c[ "name" ] ) ?>
                             </td>
                             <td>
                                 <?= $c[ "autsys" ] ?>
                             </td>
                             <td>
-                                <?= $c[ "peeringpolicy" ] ?>
+                                <?= $t->ee( $c[ "peeringpolicy" ] ) ?>
                             </td>
                             <?php foreach( $t->vlans as $avlan ): ?>
                                 <?php $vlan = $avlan->number ?>
@@ -64,7 +64,7 @@
                                             data-days="<?= isset( $t->peers[ $cid ] ) ? $t->peers[ $cid ][ "email_days" ] : -1 ?>"
                                             class="btn btn-white btn-sm peering-request" <?= !$c[ "ispotential" ] ? "disabled" : "" ?>>
                                         <i id="peering-request-icon-<?= $cid ?>"
-                                           class="fa  <?= isset( $t->peers[ $cid ][ "emails_sent"] ) && $t->peers[ $cid ][ "emails_sent" ] ? "fa-repeat" : "fa-envelope" ?>"></i> Request Peering
+                                           class="fa  <?= isset( $t->peers[ $cid ][ "emails_sent"] ) && $t->peers[ $cid ][ "emails_sent" ] ? "fa-rotate-right" : "fa-envelope" ?>"></i> Request Peering
                                     </button>
 
                                     <button id="peering-notes-<?= $cid ?>" class="btn btn-white btn-sm peering-note" data-object-id="<?= $cid ?>">

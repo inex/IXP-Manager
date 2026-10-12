@@ -312,7 +312,7 @@ class RouterController extends Controller
             AlertContainer::push( 'You are strongly advised to use / request a dedicated 16-bit ASN from your RIR '
                 . 'for route server use and in our experience, all RIRs understand this and accommodate it. The route server '
                 . 'configurations will support an asn32 but to our knowledge, this has never been used in production. '
-                . 'Also, withouot an asn16, you will be unable to offer your members standard community based filtering. ',
+                . 'Also, without an asn16, you will be unable to offer your members standard community based filtering. ',
          Alert::WARNING
             );
         }

@@ -24,7 +24,7 @@
     </td>
     <td>
         <a href="<?= route( 'vlan@view' , [ 'id' => $row[ 'vlanid' ] ])?>">
-            <?= $row['vlan'] ?>
+            <?= $t->ee( $row['vlan'] ) ?>
         </a>
     </td>
     <td>

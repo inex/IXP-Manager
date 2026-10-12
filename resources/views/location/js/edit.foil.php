@@ -1,4 +1,4 @@
-<script>
+<script type="module">
 
     let dd_pdb = $( '#pdb_facility_id' );
     let errorOption = `<option value="0">AJAX / API Error</option>\n`;
@@ -27,7 +27,8 @@
                     if( selectedpdb === parseInt(pdb.id) ){
                         selectNow = 'selected="selected" ';
                     }
-                    options += `<option ${selectNow}value="${pdb.id}">${pdb.name}</option>\n`;
+                    let pdbName = htmlEntities(pdb.name);
+                    options += `<option ${selectNow}value="${pdb.id}">${pdbName}</option>\n`;
                 });
                 dd_pdb.html( options );
             })

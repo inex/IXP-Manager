@@ -48,6 +48,7 @@ use IXP\Utils\View\Alert\{
  *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @author     Thomas Kerin <thomas@islandbridgenetworks.ie>
  * @category   IXP
  * @package    IXP\Http\Controllers\Interfaces
  * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
@@ -74,7 +75,7 @@ class SflowReceiverController extends Common
      *
      * @return View
      */
-    public function create( VirtualInterface $vi = null ): View
+    public function create( ?VirtualInterface $vi = null ): View
     {
         return view( 'interfaces/sflow-receiver/edit' )->with([
             'sflr'      => false,
@@ -105,7 +106,7 @@ class SflowReceiverController extends Common
      *
      * @return View
      */
-    public function edit( Request $r, SflowReceiver $sflr, VirtualInterface $vi = null ): View
+    public function edit( Request $r, SflowReceiver $sflr, ?VirtualInterface $vi = null ): View
     {
         Former::populate([
             'dst_ip'        => $r->old( 'dst_ip',      $sflr->dst_ip    ),

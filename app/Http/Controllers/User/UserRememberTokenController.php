@@ -29,6 +29,8 @@ use Illuminate\Auth\Recaller;
 
 use Illuminate\Database\Eloquent\Builder;
 
+use IXP\Utils\View\Alert\Alert;
+use IXP\Utils\View\Alert\Container as AlertContainer;
 use IXP\Models\{
     User,
     UserRememberToken
@@ -134,7 +136,7 @@ class UserRememberTokenController extends EloquentController
     {
         // NB: this route is marked as 'read-only' to disable normal CRUD operations. It's not really read-only.
         Route::group( [  'prefix' => $route_prefix ], static function() use ( $route_prefix ) {
-            Route::delete(  'delete',   'User\UserRememberTokenController@delete' )->name( $route_prefix."@delete" );
+            Route::delete(  'delete',   [self::class, 'delete'] )->name( $route_prefix."@delete" );
         });
     }
 
@@ -204,7 +206,10 @@ class UserRememberTokenController extends EloquentController
         if( $r = request()->cookies->get( Auth::getRecallerName() ) ) {
             $recaller = new Recaller( $r );
             if( $this->object->token === $recaller->token() ) {
-                return route('login@logout');
+                // Since we've deleted our token, logout directly and redirect with the appropriate message.
+                Auth::logout();
+                AlertContainer::push( "You deleted your active remember me token and have been logged out." , Alert::SUCCESS );
+                return route('login@showForm');
             }
         }
         return null;

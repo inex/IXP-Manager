@@ -74,9 +74,9 @@
 
             <div class="col-12">
                 <h4>Your Top Peers</h4>
-                <div class="mb-4 tw-text-sm">
+                <div class="mb-4 tw:text-sm">
                     Your top peers <?= \Carbon\Carbon::parse( $t->p2pstats[0]->day )->diffForHumans() ?>.
-                    See all <a href="<?= route( 'statistics@p2ps-get', [ 'customer' => $t->c->id ] ) ?>">here</a>.
+                    See all <a href="<?= route( 'statistics@p2p-table' ) ?>">here</a>.
                 </div>
 
                 <table  class="table table-sm table-hover" >
@@ -85,7 +85,7 @@
                         <th>
                             Peer
                         </th>
-                        <th class="tw-text-right">
+                        <th class="tw:text-right">
                             Total Traffic
                         </th>
                         <th>
@@ -99,14 +99,14 @@
                 ?>
                     <tr>
                         <td>
-                            <?= $p2p->peer->abbreviatedName ?>
+                            <?= $t->ee( $p2p->peer->abbreviatedName ) ?>
                         </td>
-                        <td class="tw-text-right tw-font-mono">
-                            <?= \IXP\IXP::scaleBytes( $p2p->total_traffic() ) ?>
+                        <td class="tw:text-right tw:font-mono">
+                            <?= \IXP\IXP::scaleBytes( (float) $p2p->total_traffic() ) ?>
                         </td>
                         <td>
-                            <a class="btn btn-white btn-sm my-auto" href="<?= route( "statistics@p2p-get", [ 'srcVli' => $t->c->virtualInterfaces[0]->vlanInterfaces[0]->id,
-                                         'dstVli' => $p2p->peer->virtualInterfaces[0]->vlanInterfaces[0]->id ] )?>">
+                            <a class="btn btn-white btn-sm my-auto" href="<?= route( "statistics@p2p-totals", [ 'srcCust' => $t->c->id,
+                                         'dstCust' => $p2p->peer->id ] )?>">
                                 <i class="fa fa-search"></i>
                             </a>
                         </td>

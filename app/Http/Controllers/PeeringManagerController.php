@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers;
 
 /*
- * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -34,6 +34,7 @@ use IXP\Models\{
 };
 
 use Exception;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Http\{
     RedirectResponse,
     JsonResponse
@@ -61,9 +62,10 @@ use IXP\Mail\PeeringManager\RequestPeeringManager;
  *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @author     Thomas Kerin <thomas@islandbridgenetworks.ie>
  * @category   IXP
  * @package    IXP\Http\Controllers
- * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class PeeringManagerController extends Controller
@@ -90,7 +92,7 @@ class PeeringManagerController extends Controller
 
         if( !count( $peers ) ) {
             AlertContainer::push( 'No peers have been found for the peering manager. Please see <a href="'
-                . 'https://github.com/inex/IXP-Manager/wiki/Peering-Manager">these instructions</a>'
+                . 'https://docs.ixpmanager.org/latest/features/peering-manager/">these instructions</a>'
                 . ' / ensure your database is populating with peering information.', Alert::DANGER );
             return redirect( '' );
         }
@@ -194,6 +196,7 @@ class PeeringManagerController extends Controller
 
         if( !$marksent ) {
             Mail::send( $mailable );
+            Log::notice( sprintf("%s sent peering request email from customer [%d|%s] to peer [%d|%s]", Auth::getUser()->username, $cust->id, $cust->name, $peer->id, $peer->name ) );
         }
 
         if( !$sendtome ) {

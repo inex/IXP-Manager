@@ -60,7 +60,7 @@ return [
         'web' => [
             'driver'    => 'session',
             'provider'  => 'users',
-            'expire'    => env( 'AUTH_TOKEN_EXPIRE', 43200 ), // optional token expiration time, in minutes (30 days is the default)
+            'expire'    => (int) env( 'AUTH_TOKEN_EXPIRE', 43200 ), // optional token expiration time, in minutes (30 days is the default)
         ],
 
         'api' => [

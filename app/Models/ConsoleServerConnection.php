@@ -49,32 +49,29 @@ use IXP\Traits\Observable;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \IXP\Models\ConsoleServer|null $consoleServer
  * @property-read \IXP\Models\CustomerTag|null $customer
- * @property-read \IXP\Models\Switcher|null $switcher
- * @method static Builder|ConsoleServerConnection newModelQuery()
- * @method static Builder|ConsoleServerConnection newQuery()
- * @method static Builder|ConsoleServerConnection query()
- * @method static Builder|ConsoleServerConnection whereAutobaud($value)
- * @method static Builder|ConsoleServerConnection whereConsoleServerId($value)
- * @method static Builder|ConsoleServerConnection whereCreatedAt($value)
- * @method static Builder|ConsoleServerConnection whereCustid($value)
- * @method static Builder|ConsoleServerConnection whereDescription($value)
- * @method static Builder|ConsoleServerConnection whereFlowcontrol($value)
- * @method static Builder|ConsoleServerConnection whereId($value)
- * @method static Builder|ConsoleServerConnection whereNotes($value)
- * @method static Builder|ConsoleServerConnection whereParity($value)
- * @method static Builder|ConsoleServerConnection wherePort($value)
- * @method static Builder|ConsoleServerConnection whereSpeed($value)
- * @method static Builder|ConsoleServerConnection whereStopbits($value)
- * @method static Builder|ConsoleServerConnection whereUpdatedAt($value)
- * @property int|null $switchid
- * @method static Builder|ConsoleServerConnection whereSwitchid($value)
+ * @method static Builder<static>|ConsoleServerConnection newModelQuery()
+ * @method static Builder<static>|ConsoleServerConnection newQuery()
+ * @method static Builder<static>|ConsoleServerConnection query()
+ * @method static Builder<static>|ConsoleServerConnection whereAutobaud($value)
+ * @method static Builder<static>|ConsoleServerConnection whereConsoleServerId($value)
+ * @method static Builder<static>|ConsoleServerConnection whereCreatedAt($value)
+ * @method static Builder<static>|ConsoleServerConnection whereCustid($value)
+ * @method static Builder<static>|ConsoleServerConnection whereDescription($value)
+ * @method static Builder<static>|ConsoleServerConnection whereFlowcontrol($value)
+ * @method static Builder<static>|ConsoleServerConnection whereId($value)
+ * @method static Builder<static>|ConsoleServerConnection whereNotes($value)
+ * @method static Builder<static>|ConsoleServerConnection whereParity($value)
+ * @method static Builder<static>|ConsoleServerConnection wherePort($value)
+ * @method static Builder<static>|ConsoleServerConnection whereSpeed($value)
+ * @method static Builder<static>|ConsoleServerConnection whereStopbits($value)
+ * @method static Builder<static>|ConsoleServerConnection whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class ConsoleServerConnection extends Model
 {
     use Observable;
 
-    public static $SPEED = [
+    public static array $SPEED = [
         300     => 300,
         600     => 600,
         1200    => 1200,
@@ -90,27 +87,27 @@ class ConsoleServerConnection extends Model
         230400  => 230400
     ];
 
-    public const PARITY_EVEN       = 1;
-    public const PARITY_ODD        = 2;
-    public const PARITY_NONE       = 3;
+    public const int PARITY_EVEN       = 1;
+    public const int PARITY_ODD        = 2;
+    public const int PARITY_NONE       = 3;
 
-    public static $PARITY = [
+    public static array $PARITY = [
         self::PARITY_EVEN   => "even",
         self::PARITY_ODD    => "odd",
         self::PARITY_NONE   => "none"
     ];
 
-    public const FLOW_CONTROL_NONE         = 1;
-    public const FLOW_CONTROL_RTS_CTS      = 2;
-    public const FLOW_CONTROL_XON_XOFF     = 3;
+    public const int FLOW_CONTROL_NONE         = 1;
+    public const int FLOW_CONTROL_RTS_CTS      = 2;
+    public const int FLOW_CONTROL_XON_XOFF     = 3;
 
-    public static $FLOW_CONTROL = [
+    public static array $FLOW_CONTROL = [
         self::FLOW_CONTROL_NONE         => "none",
         self::FLOW_CONTROL_RTS_CTS      => "rts/cts",
         self::FLOW_CONTROL_XON_XOFF     => "xon/xoff"
     ];
 
-    public static $STOP_BITS = [
+    public static array $STOP_BITS = [
         1 => 1,
         2 => 2,
     ];

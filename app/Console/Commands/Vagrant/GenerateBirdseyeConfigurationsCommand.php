@@ -4,7 +4,6 @@ namespace IXP\Console\Commands\Vagrant;
 
 use Illuminate\Console\Command;
 use IXP\Models\Router;
-use IXP\Models\VlanInterface;
 
 class GenerateBirdseyeConfigurationsCommand extends Command
 {

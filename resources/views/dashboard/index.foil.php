@@ -54,7 +54,7 @@
                                     <a class="nav-link <?php if( $t->tab === 'notes' ): ?>active<?php endif; ?>" data-toggle="tab" href="#notes" id="tab-notes" data-toggle="tab">
                                         Notes
                                         <?php if( $t->notesInfo[ "unreadNotes"] > 0 ): ?>
-                                          <span id="notes-unread-indicator" class="badge badge-success"><?= $t->notesInfo[ "unreadNotes"] ?></span>
+                                          <span id="notes-unread-indicator" class="badge badge-success"><?= $t->ee( $t->notesInfo[ "unreadNotes"] ) ?></span>
                                         <?php endif ?>
                                     </a>
                                 </li>
@@ -68,13 +68,6 @@
 
                             <?php if( !$c->typeAssociate() && !$c->hasLeft() ): ?>
                                 <?php if( $c->routeServerClient() ): ?>
-                                    <?php if( !config( 'ixp_fe.frontend.disabled.rs-prefixes' ) ): ?>
-                                    <li class="nav-item" onclick="window.location.href = '<?= route( "rs-prefixes@view", [ 'cust' =>  $c->id ] ) ?>'">
-                                        <a class="nav-link" data-toggle="tab"  href="">
-                                            RS Prefixes &raquo;
-                                        </a>
-                                    </li>
-                                    <?php endif ?>
 
                                     <?php if( !config( 'ixp_fe.frontend.disabled.filtered-prefixes' ) ): ?>
                                         <li class="nav-item" onclick="window.location.href = '<?= route( "filtered-prefixes@list", [ 'cust' =>  $c->id ] ) ?>'">
@@ -109,7 +102,7 @@
 
                             <?php if( config( 'grapher.backends.sflow.enabled' )  ): ?>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="<?= route( "statistics@p2ps" , [ "customer" => $c->id ] ) ?>">
+                                    <a class="nav-link" href="<?= route( "statistics@p2p-table" ) ?>">
                                         Peer to Peer Traffic &raquo;
                                     </a>
                                 </li>
@@ -163,7 +156,7 @@
 
 <?php $this->section( 'scripts' ) ?>
 <?= $t->insert( 'customer/js/overview/notes', [ 'isSuperUser' => $isSuperUser ] ); ?>
-  <script>
+  <script type="module">
       $('.table-responsive-ixp').dataTable( {
           stateSave: true,
           stateDuration : DATATABLE_STATE_DURATION,

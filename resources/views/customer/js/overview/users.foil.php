@@ -1,4 +1,4 @@
-<script>
+<script type="module">
     $(document).ready( function() {
         $( '.btn-delete-usr' ).click( function( e ) {
             e.preventDefault();

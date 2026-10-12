@@ -59,7 +59,11 @@ class IPv4Cidr implements Rule
         }
 
         // mask:
-        $mask = (int)$parts[1];
+        if (false === filter_var( $parts[1], FILTER_VALIDATE_INT ) ) {
+            return false;
+        }
+
+        $mask = (int) $parts[1];
         if( $mask < 0 || $mask > 32 ) {
             return false;
         }

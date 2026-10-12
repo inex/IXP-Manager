@@ -60,7 +60,7 @@
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>
-    <script>
+    <script type="module">
         let base_route   = "<?= route( 'statistics@ixp' ) ?>";
         let sel_category = $("#form-select-category");
 

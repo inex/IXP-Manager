@@ -15,7 +15,7 @@
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>
-    <script type="text/javascript">
+    <script type="module">
         $( document ).ready(function() {
             $( "#if-phpinfo" ).css( 'height', $('#if-phpinfo,html')[ 0 ].scrollHeight + 'px' )
         });

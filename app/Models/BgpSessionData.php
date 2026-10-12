@@ -36,17 +36,17 @@ use Illuminate\Database\Eloquent\Model;
  * @property int|null $packetcount
  * @property string|null $timestamp
  * @property string|null $source
- * @method static Builder|BgpSessionDataAggregator newModelQuery()
- * @method static Builder|BgpSessionDataAggregator newQuery()
- * @method static Builder|BgpSessionDataAggregator query()
- * @method static Builder|BgpSessionDataAggregator whereDstipaddressid( $value )
- * @method static Builder|BgpSessionDataAggregator whereId( $value )
- * @method static Builder|BgpSessionDataAggregator wherePacketcount( $value )
- * @method static Builder|BgpSessionDataAggregator whereProtocol( $value )
- * @method static Builder|BgpSessionDataAggregator whereSource( $value )
- * @method static Builder|BgpSessionDataAggregator whereSrcipaddressid( $value )
- * @method static Builder|BgpSessionDataAggregator whereTimestamp( $value )
- * @method static Builder|BgpSessionDataAggregator whereVlan( $value )
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BgpSessionData newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BgpSessionData newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BgpSessionData query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BgpSessionData whereDstipaddressid($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BgpSessionData whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BgpSessionData wherePacketcount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BgpSessionData whereProtocol($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BgpSessionData whereSource($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BgpSessionData whereSrcipaddressid($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BgpSessionData whereTimestamp($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BgpSessionData whereVlan($value)
  * @mixin \Eloquent
  */
 class BgpSessionData extends Model

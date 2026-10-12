@@ -50,15 +50,15 @@ IDENTITY_LEGALNAME="Vagrant Dev Environment"
 IDENTITY_CITY="Dublin"
 IDENTITY_COUNTRY="Ireland"
 IDENTITY_IXFID=0
-IDENTITY_ORGNAME="${IDENTITY_LEGALNAME}"
-IDENTITY_NAME="${IDENTITY_LEGALNAME}"
+IDENTITY_ORGNAME="Vagrant Dev Environment"
+IDENTITY_NAME="Vagrant Dev Environment"
 IDENTITY_EMAIL="ixp@example.com"
-IDENTITY_TESTEMAIL="${IDENTITY_EMAIL}"
+IDENTITY_TESTEMAIL="ixp@example.com"
 IDENTITY_WATERMARK="Vagrant City IXP"
-IDENTITY_SUPPORT_EMAIL="${IDENTITY_EMAIL}"
+IDENTITY_SUPPORT_EMAIL="ixp@example.com"
 IDENTITY_SUPPORT_PHONE="+1 111 555 5555"
 IDENTITY_SUPPORT_HOURS="24x7"
-IDENTITY_BILLING_EMAIL="${IDENTITY_EMAIL}"
+IDENTITY_BILLING_EMAIL="ixp@example.com"
 IDENTITY_BILLING_PHONE="+1 111 555 5555"
 IDENTITY_BILLING_HOURS="24x7"
 IDENTITY_SITENAME="Vagrant Dev Environment"
@@ -186,7 +186,7 @@ GRAPHER_BACKEND_MRTG_LOGDIR="/srv/mrtg"
 ########################################################################################
 #### Skinning
 ##
-## See https://ixp-manager.readthedocs.io/en/latest/features/skinning.html
+## See https://docs.ixpmanager.org/latest/features/skinning/
 ##
 ## VIEW_SKIN="myskin"
 #
@@ -204,11 +204,10 @@ GRAPHER_BACKEND_MRTG_LOGDIR="/srv/mrtg"
 ## PeeringDB Authentication
 ##
 ## PeeringDb's API is used, for example, to pre-populate new customer details. If you
-## provide a working PeeringDb username/password then these will be used to get more
-## complete information.
+## provide a working PeeringDb API key then these will be used to get more complete
+## information.
 ##
-## IXP_API_PEERING_DB_USERNAME=username
-## IXP_API_PEERING_DB_PASSWORD=password
+## IXP_API_PEERING_DB_API_KEY=key
 #
 #
 #

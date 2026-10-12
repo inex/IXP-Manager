@@ -1,3 +1,9 @@
+<?php
+
+use IXP\Models\Cabinet;
+use IXP\Models\Vendor;
+
+?>
 <div class="card">
     <div class="card-body">
         <?= Former::open()->method(  $t->data['params']['isAdd'] ? 'POST' : 'PUT'  )
@@ -23,14 +29,14 @@
             ->label( 'Rack' )
             ->addClass( 'chzn-select' )
             ->placeholder( 'Choose a rack' )
-            ->fromQuery( $t->data[ 'params'][ 'cabinets' ], 'name' )
+            ->fromQuery( $t->data[ 'params'][ 'cabinets' ], fn (Cabinet $model) => $t->ee( $model->name ) )
             ->blockHelp( "The rack where the console server is located." );
         ?>
 
         <?= Former::select( 'vendor_id' )
             ->id( 'vendor' )
             ->placeholder( 'Choose a vendor' )
-            ->fromQuery( $t->data[ 'params'][ 'vendors' ], 'name' )
+            ->fromQuery( $t->data[ 'params'][ 'vendors' ], fn (Vendor $model) => $t->ee( $model->name ) )
             ->addClass( 'chzn-select' )
             ->label( 'Vendor' )
             ->blockHelp( "If the vendor is not listed here, you can "

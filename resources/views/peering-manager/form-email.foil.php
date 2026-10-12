@@ -74,7 +74,7 @@
 
                 <div class="tab-content card-body">
                     <div role="tabpanel" class="tab-pane show active" id="body">
-                        <textarea class="bootbox-input bootbox-input-textarea form-control" style="font-family:monospace;" rows="20" id="peering-manager-notes" name="peering-manager-notes"><?= $t->peeringManager->notes ?></textarea>
+                        <textarea class="bootbox-input bootbox-input-textarea form-control" style="font-family:monospace;" rows="20" id="peering-manager-notes" name="peering-manager-notes"><?= $t->ee( $t->peeringManager->notes ) ?></textarea>
                     </div>
                     <div role="tabpanel" class="tab-pane" id="preview">
                         <div class="bg-light p-4 well-preview">
@@ -93,7 +93,9 @@
 
 <?= Former::close() ?>
 
-<script>
+<script type="module">
+
+    let notesIntro = "### <?= $t->ee( date("Y-m-d" ) . ' - ' . Auth::getUser()->username, "js") ?> \n\n\n";
 
     /**
      * Adds a prefix when a user goes to add/edit notes (typically name and date).

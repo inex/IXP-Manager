@@ -107,8 +107,6 @@ class RouterController extends Controller
      * we can update the router.
      *
      * @param string $handle Handle of the router that we want
-     *
-     * @return JsonResponse|Response
      */
     public function getUpdateLock( string $handle ): Response|JsonResponse
     {

@@ -42,7 +42,7 @@
 
         <div class="btn-group btn-group-sm">
             <button type="button" class="btn btn-white btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <?= $t->data[ 'params'][ "switch" ] ? $t->data[ 'params'][ "switches" ][ $t->data[ 'params'][ "switch" ]->id ][ 'name' ]  : "All Switches" ?>
+                <?= $t->data[ 'params'][ "switch" ] ? $t->ee($t->data[ 'params'][ "switches" ][ $t->data[ 'params'][ "switch" ]->id ][ 'name' ])  : "All Switches" ?>
             </button>
             <div class="dropdown-menu dropdown-menu-right scrollable-dropdown">
                 <a class="dropdown-item <?= $t->data[ 'params'][ "switch" ] ?: "active" ?>" href="<?= route( "switch-port@list" , [ "switch" => 0 ] ) ?>">
@@ -50,7 +50,7 @@
                 </a>
                 <div class="dropdown-divider"></div>
                 <?php foreach( $t->data[ 'params'][ "switches" ] as $switch ): ?>
-                    <a class="dropdown-item <?= $t->data[ 'params'][ "switch" ] && $t->data[ 'params'][ "switch" ]->id  === $switch[ 'id' ] ? 'active' : '' ?>" href="<?= route( $t->feParams->route_prefix . "@" . $t->feParams->route_action, [ "switch" => $switch[ 'id' ] ] ) ?>"><?= $switch[ 'name' ] ?></a>
+                    <a class="dropdown-item <?= $t->data[ 'params'][ "switch" ] && $t->data[ 'params'][ "switch" ]->id  === $switch[ 'id' ] ? 'active' : '' ?>" href="<?= route( $t->feParams->route_prefix . "@" . $t->feParams->route_action, [ "switch" => $switch[ 'id' ] ] ) ?>"><?= $t->ee( $switch[ 'name' ] ) ?></a>
                 <?php endforeach; ?>
             </div>
         </div>

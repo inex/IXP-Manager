@@ -146,7 +146,6 @@ class Create extends Command
         $user->username         = strtolower( $options['username'] );
         $user->email            = strtolower( $options['email'] );
         $user->disabled         = false;
-        $user->privs            = (int) $options['priv'];
         $user->custid           = (int) $options['custid'];
         $user->save();
 
@@ -154,7 +153,7 @@ class Create extends Command
         $c2u = new CustomerToUser;
         $c2u->customer_id   = $user->custid;
         $c2u->user_id       = $user->id;
-        $c2u->privs         = $user->privs;
+        $c2u->privs         = (int) $options['priv'];
         $c2u->extra_attributes = [ "created_by" => [ "type" => "artisan" , "user_id" => $user->id ] ];
         $c2u->save();
 
@@ -199,11 +198,8 @@ class Create extends Command
      * This validator function takes a value (called $name), and attempts to validate
      * it against the provided rules. If the validation fails, it returns the error message.
      * If successful, true is returned.
-     * @param string     $name
-     * @param string     $rules
-     * @param mixed      $value
      *
-     * @return bool|string
+     * @return string|true
      */
     private function validateInput( string $name, string $rules, mixed $value ): bool|string
     {

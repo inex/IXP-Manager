@@ -1,4 +1,4 @@
-<script>
+<script type="module">
     $('.table-responsive-ixp-with-header').show();
 
     $('.table-responsive-ixp-with-header').DataTable( {

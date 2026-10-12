@@ -35,7 +35,8 @@ use Illuminate\Foundation\Http\Kernel as HttpKernel;
 use Illuminate\Foundation\Http\Middleware\{
     CheckForMaintenanceMode,
     ConvertEmptyStringsToNull,
-    ValidatePostSize
+    InvokeDeferredCallbacks,
+    ValidatePostSize,
 };
 
 use Illuminate\Http\Middleware\HandleCors;
@@ -51,9 +52,7 @@ use Illuminate\Session\Middleware\AuthenticateSession;
 
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 
-use IXP\Http\Middleware\{
-    PreventRequestsDuringMaintenance,
-    Authenticate};
+use IXP\Http\Middleware\{HandleFailedRememberMeIntegrityCheck, PreventRequestsDuringMaintenance, Authenticate};
 use Illuminate\Http\Middleware\TrustProxies;
 
 class Kernel extends HttpKernel
@@ -72,7 +71,7 @@ class Kernel extends HttpKernel
         ValidatePostSize::class,
         Middleware\TrimStrings::class,
         ConvertEmptyStringsToNull::class,
-
+        InvokeDeferredCallbacks::class,
     ];
 
     /**
@@ -86,6 +85,7 @@ class Kernel extends HttpKernel
             AddQueuedCookiesToResponse::class,
             StartSession::class,
             ShareErrorsFromSession::class,
+            HandleFailedRememberMeIntegrityCheck::class,
             Middleware\VerifyCsrfToken::class,
             SubstituteBindings::class,
             Middleware\ControllerEnabled::class,
@@ -96,6 +96,7 @@ class Kernel extends HttpKernel
             AddQueuedCookiesToResponse::class,
             StartSession::class,
             ShareErrorsFromSession::class,
+            HandleFailedRememberMeIntegrityCheck::class,
             SubstituteBindings::class,
             Middleware\ControllerEnabled::class,
             //'throttle:60,1',
@@ -161,7 +162,6 @@ class Kernel extends HttpKernel
         'eloquent2Frontend'     => Middleware\Eloquent2Frontend::class,
         'grapher'               => Middleware\Services\Grapher::class,
         'guest'                 => Middleware\RedirectIfAuthenticated::class,
-        'rs-prefixes'           => Middleware\RsPrefixes::class,
         'signed'                => Middleware\ValidateSignature::class,
         'throttle'              => ThrottleRequests::class,
         'verified'              => EnsureEmailIsVerified::class,
@@ -177,6 +177,7 @@ class Kernel extends HttpKernel
     protected $middlewarePriority = [
         StartSession::class,
         ShareErrorsFromSession::class,
+        HandleFailedRememberMeIntegrityCheck::class,
         Authenticate::class,
         ThrottleRequests::class,
         AuthenticateSession::class,

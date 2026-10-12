@@ -1,5 +1,5 @@
-<div class="tw-max-w-lg">
-    <h3 class="tw-mb-8">Welcome to the Document Store!</h3>
+<div class="tw:max-w-lg">
+    <h3 class="tw:mb-8">Welcome to the Document Store!</h3>
 
     <p>
         <b>IXP Manager</b> has a document store allowing administrators to upload documents to be made generally available

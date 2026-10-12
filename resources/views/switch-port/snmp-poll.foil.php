@@ -3,7 +3,7 @@
 <?php $this->section( 'page-header-preamble' ) ?>
     Switches
     /
-    Ports for <?= $t->s->name ?> (via SNMP)
+    Ports for <?= $t->ee( $t->s->name ) ?> (via SNMP)
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
@@ -110,21 +110,21 @@
                                     <input type="checkbox" class="sp-checkbox" name="switch-port[<?= $port[ "port"]->id ?>]" id="switch-port-<?= $port[ "port"]->id ?>" value="<?= $port[ "port"]->id ?>" />
                                 </td>
                                 <td>
-                                    <?= $port[ "port"]->ifName ?>
+                                    <?= $t->ee( $port[ "port"]->ifName ) ?>
                                 </td>
                                 <td>
                                     <?php if( $port[ "port"]->physicalInterface()->exists() ): ?>
                                         <?php $cust = $port[ "port"]->physicalInterface->virtualInterface->customer ?>
                                         <a href="<?= route( 'customer@overview', [ 'cust' => $cust->id , 'tab' => 'ports' ] ) ?>">
-                                            <?= $cust->shortname ?>
+                                            <?= $t->ee( $cust->shortname ) ?>
                                         </a>
                                     <?php endif; ?>
                                 </td>
                                 <td>
-                                    <?= $port[ "port"]->name ?>
+                                    <?= $t->ee( $port[ "port"]->name ) ?>
                                 </td>
                                 <td>
-                                    <?= $port[ "port"]->ifAlias ?>
+                                    <?= $t->ee( $port[ "port"]->ifAlias ) ?>
                                 </td>
                                 <td>
                                     <?= $port[ "port"]->active ? "Yes" : "No" ?>

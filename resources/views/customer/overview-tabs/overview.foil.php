@@ -26,7 +26,7 @@ $c = $t->c; /** @var \IXP\Models\Customer $c */
             </div>
         <?php endif; ?>
 
-        <div class="row tw-p-4 m-1 tw-shadow-md tw-border-1 tw-border-grey-light tw-rounded-sm">
+        <div class="row tw:p-4 m-1 tw:shadow-md tw:border-1 tw:border-grey-light tw:rounded-sm">
             <table class="table table-md table-no-border table-sm col-lg-6 col-sm-12">
                 <tbody>
                     <tr>
@@ -42,7 +42,7 @@ $c = $t->c; /** @var \IXP\Models\Customer $c */
                             <b>Corporate Site</b>
                         </td>
                         <td>
-                            <a target="_blank" href="<?= $t->ee( $c->corpwww )?>">
+                            <a target="_blank" href="<?= $t->ee( $c->corpwww, "attr" )?>">
                                 <?= $t->ee( $c->corpwww ) ?>
                             </a>
                         </td>
@@ -102,7 +102,7 @@ $c = $t->c; /** @var \IXP\Models\Customer $c */
                                     <?php if( $c->routeServerClient() && $c->irrdbFiltered() ): ?>
                                         (<a href="<?= route( "irrdb@list", [ "cust" => $c->id, "type" => 'prefix', "protocol" => $c->isIPvXEnabled( 4) ? 4 : 6 ] ) ?>">entries</a>)
 
-                                        <a type="button" class="tw-ml-2 tw-rounded tw-bg-white tw-px-2 tw-py-1 tw-text-xs tw-font-semibold tw-text-gray-900 tw-shadow-sm tw-ring-1 tw-ring-inset tw-ring-gray-300 hover:tw-bg-gray-50"
+                                        <a type="button" class="tw:ml-2 tw:rounded tw:bg-white tw:px-2 tw:py-1 tw:text-xs tw:font-semibold tw:text-gray-900 tw:shadow-sm tw:ring-1 tw:ring-inset tw:ring-gray-300 tw:hover:bg-gray-50"
                                             href="<?= route( 'diagnostics@irrdb', $c ) ?>"
                                         >
                                             <i class="fa fa-wrench" aria-hidden="true"></i>
@@ -124,7 +124,7 @@ $c = $t->c; /** @var \IXP\Models\Customer $c */
                                             }
                                         ?>
                                         Last updated:
-                                            <?= $lastUpdatedWarn ? '<span class="tw-inline-flex tw-items-center tw-rounded-md tw-ml-2  tw-px-2 tw-py-1 tw-text-xs tw-font-medium tw-bg-yellow-50 -text-yellow-800 tw-ring-yellow-600/20">' : '' ?>
+                                            <?= $lastUpdatedWarn ? '<span class="tw:inline-flex tw:items-center tw:rounded-md tw:ml-2  tw:px-2 tw:py-1 tw:text-xs tw:font-medium tw:bg-yellow-50 -text-yellow-800 tw:ring-yellow-600/20">' : '' ?>
                                             <?= $lastUpdated ?>
                                             <?= $lastUpdatedWarn ? '</span>' : '' ?>
                                     <?php endif; ?>
@@ -145,7 +145,7 @@ $c = $t->c; /** @var \IXP\Models\Customer $c */
                             <?php if( !$c->typeAssociate() ): ?>
                                 <?php if( $c->nochours      ): ?>   <?= $t->ee( $c->nochours ) ?> <br />    <?php endif; ?>
                                 <?php if( $c->nocemail      ): ?>   <a href="mailto:<?= $t->ee( $c->nocemail ) ?>"> <?= $t->ee( $c->nocemail ) ?> </a><br /><?php endif; ?>
-                                <?php if( $c->nocwww        ): ?>   <a href="<?= $t->ee( $c->nocwww ) ?>"> <?= $t->ee( $c->nocwww ) ?> </a><br /><?php endif; ?>
+                                <?php if( $c->nocwww        ): ?>   <a href="<?= $t->ee( $c->nocwww, "attr" ) ?>"> <?= $t->ee( $c->nocwww ) ?> </a><br /><?php endif; ?>
                                 <?php if( $c->nocphone      ): ?>   <?= $t->ee( $c->nocphone ) ?> <br />    <?php endif; ?>
                                 <?php if( $c->noc24hphone   ): ?>   <?= $t->ee( $c->noc24hphone ) ?> (24h) <?php endif; ?>
                             <?php endif; ?>

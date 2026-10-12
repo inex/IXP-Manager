@@ -34,9 +34,7 @@ use Illuminate\View\View;
 use IXP\Models\{
     Contact,
     Customer,
-    CustomerToUser,
     PatchPanelPort,
-    RsPrefix,
     User,
     VirtualInterface,
     VlanInterface};
@@ -46,6 +44,7 @@ use IXP\Models\{
  *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @author     Thomas Kerin <thomas@islandbridgenetworks.ie>
  * @category   IXP
  * @package    IXP\Http\Controllers
  * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
@@ -159,11 +158,6 @@ class SearchController extends Controller
                     ->with( 'customers' )->get();
                 $results[ 'contacts' ]  = Contact::where( 'email', $search )->get();
             }
-            else if( preg_match( '/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\/\d{1,2}$/', $search ) || preg_match( '/^[0-9a-fA-F]{1,4}:.*:[0-9a-fA-F]{0,4}\/\d{1,3}$/', $search ) ) {
-                // rsprefix search
-                $type       = 'rsprefix';
-                $results    = RsPrefix::wherePrefix( $search )->with( 'customer' )->get();
-            }
             else {
                 // wild card search
                 $type       = 'cust_wild';
@@ -207,13 +201,13 @@ class SearchController extends Controller
     /**
      * Process the mac address search
      *
-     * @param Collection|null  $is virtual interfaces list
+     * @param Collection  $is virtual interfaces list
      *
-     * @return ((VirtualInterface|mixed)[]|Customer|mixed)[][]
+     * @return ((\Illuminate\Database\Eloquent\Model|null)[]|Customer|mixed|null)[][]
      *
-     * @psalm-return array{results: array<int, Customer|mixed>, interfaces: array<int, non-empty-list<IXP\Models\VirtualInterface|mixed>>}
+     * @psalm-return array{results: array<''|int, Customer|mixed|null>, interfaces: array<''|int, non-empty-list<Illuminate\Database\Eloquent\Model|null>>}
      */
-    private function processMACSearch( Collection $is = null ): array
+    private function processMACSearch( Collection $is ): array
     {
         $results = $interfaces = [];
 

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateAtlasRuns extends Migration
+final class CreateAtlasRuns extends Migration
 {
     /**
      * Run the migrations.
@@ -14,7 +14,7 @@ class CreateAtlasRuns extends Migration
     public function up()
     {
         Schema::create('atlas_runs', function (Blueprint $table) {
-            $table->increments('id')->unsigned( false );
+            $table->integer('id', true, false);
             $table->integer('vlan_id' )->nullable();
             $table->integer('protocol' )->nullable();
             $table->dateTime('scheduled_at' )->nullable();

@@ -38,7 +38,7 @@ use IXP\Models\Router;
  * @author     Yann Robin       <yann@islandbridgenetworks.ie>
  * @category   LookingGlass
  * @package    IXP\Services\LookingGlass
- * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class LookingGlass

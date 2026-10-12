@@ -29,9 +29,10 @@ return [
 
     /* ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ;;
-    ;; Enables resller mode
+    ;; Enables reseller mode
     ;;
-    ;; See: https://github.com/inex/IXP-Manager/wiki/Reseller-Functionality
+    ;; See: https://docs.ixpmanager.org/latest/features/reseller/
+    ;;
     ;; */
     'reseller' => [
         'enabled' => env( 'IXP_RESELLER_ENABLED', false ),
@@ -45,7 +46,7 @@ return [
     /* ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ;; Specifies whether to display and enable control of AS112 functionality for customers
     ;;
-    ;; See https://github.com/inex/IXP-Manager/wiki/AS112
+    ;; See https://docs.ixpmanager.org/latest/features/as112/
     ;; */
     'as112' => [
         'ui_active' => env( 'IXP_AS112_UI_ACTIVE', false ),
@@ -55,7 +56,7 @@ return [
     /* ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
        ;; Peering Manager
        ;;
-       ;; See: https://github.com/inex/IXP-Manager/wiki/Peering-Manager
+       ;; See: https://docs.ixpmanager.org/latest/features/peering-manager/
        ;;
        ;; The Peering Manager allows your members to send peering requests to other members
        ;; that contain all the necessary peering details.
@@ -97,8 +98,23 @@ return [
        ;; */
 
     'irrdb' => [
+
+        // Which IRRDB query utility to use. Options are:
+        // - none
+        // - bgpq3
+        // - bgpq4
+        //
+        // In release v7.2, we maintain the legacy default of bgpq3.
+        'utility' => env( 'IXP_IRRDB_UTILITY', 'bgpq3' ),
+
         'bgpq3' => [
-            'path' => env( 'IXP_IRRDB_BGPQ3_PATH', false ),
+            // Filesystem path to bgpq3
+            'path' => env( 'IXP_IRRDB_BGPQ3_PATH', 'bgpq3' ),
+        ],
+
+        'bgpq4' => [
+            // Filesystem path to bgpq4
+            'path' => env( 'IXP_IRRDB_BGPQ4_PATH', false ),
         ],
 
         // ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -206,6 +222,5 @@ return [
             ];
         }),
     ],
-
 
 ];

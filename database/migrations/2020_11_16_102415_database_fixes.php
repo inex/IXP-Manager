@@ -26,7 +26,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use IXP\Models\PatchPanelPort;
 
-class DatabaseFixes extends Migration
+final class DatabaseFixes extends Migration
 {
     /**
      * Run the migrations.

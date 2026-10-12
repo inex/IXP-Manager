@@ -1,6 +1,10 @@
 <?php
-    /** @var Foil\Template\Template $t */
-    $this->layout( 'layouts/ixpv4' );
+/** @var Foil\Template\Template $t */
+
+use IXP\Models\Customer;
+use IXP\Models\IrrdbConfig;
+
+$this->layout( 'layouts/ixpv4' );
 ?>
 
 <?php $this->section( 'title' ) ?>
@@ -43,10 +47,10 @@
 
             <div class="form-group d-flex">
                 <input type="text" class="form-control col-lg-3" id="asn-search">
-                <button class="btn btn-primary tw-ml-2" onclick="return false;" id="btn-populate">
+                <button class="btn btn-primary tw:ml-2" onclick="return false;" id="btn-populate">
                     Populate
                 </button>
-                <button class="btn-success btn help-btn tw-ml-2" type="button">
+                <button class="btn-success btn help-btn tw:ml-2" type="button">
                     Help
                 </button>
             </div>
@@ -57,11 +61,12 @@
                 <h3>
                     <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?> Details
                 </h3>
-                <hr class="tw-mb-6">
+                <hr class="tw:mb-6">
 
                 <?= Former::text( 'name' )
                     ->label( 'Name' )
-                    ->placeholder( "Acme Intermet Access" )
+                    ->placeholder( "Acme Internet Access" )
+                    ->required()
                     ->blockHelp( "The customer's name as you/they typically want it to appear in IXP Manager. It is not necessarily "
                         . "their full legal entity name (that goes elsewhere). The <em>abbreviated name</em> is a shorter version "
                         . "of the name that is used in space constrained areas such as graph labels." );
@@ -71,6 +76,7 @@
                     ->label( 'Type' )
                     ->fromQuery( \IXP\Models\Customer::$CUST_TYPES_TEXT )
                     ->placeholder( 'Choose Type' )
+                    ->required()
                     ->addClass( 'chzn-select' )
                     ->blockHelp( 'Please see the external documentation referenced above for full details of customer types. For a normal IXP customer, you just want <code>Full</code>.' );
                 ?>
@@ -78,6 +84,7 @@
                 <?= Former::text( 'shortname' )
                     ->label( 'Short Name' )
                     ->placeholder( "acme" )
+                    ->required()
                     ->blockHelp( "Short name is something we are slowly removing. It is currently visible in some URLs and a couple other "
                         . "areas. It should be a lowercase single word (<code>[a-z0-9]</code>) and it should not be changed after it is set." );
                 ?>
@@ -92,6 +99,7 @@
 
                 <?= Former::date( 'datejoin' )
                     ->label( 'Date Joined' )
+                    ->required()
                     ->blockHelp( 'The data this customer joined the exchange.' );
                 ?>
 
@@ -106,6 +114,7 @@
                     ->label( 'Status' )
                     ->fromQuery( \IXP\Models\Customer::$CUST_STATUS_TEXT )
                     ->placeholder( 'Choose Status' )
+                    ->required()
                     ->addClass( 'chzn-select' )
                     ->blockHelp( "The state of the customer. The most important of which is <code>Normal</code> which is what you'll use nearly 100% of the "
                         . "time. Setting either of the other two options (<code>Suspended</code> / <code>Not Connected</code>) will have the same effect as "
@@ -123,6 +132,7 @@
 
                 <?= Former::text( 'abbreviatedName' )
                     ->label( 'Abbreviated Name' )
+                    ->required()
                     ->placeholder( "Acme" )
                     ->blockHelp( "The Abbreviated Name is a shorter version of the name that is used in space constrained areas such as graph labels." );
                 ?>
@@ -145,11 +155,12 @@
             old( 'type' ) === \IXP\Models\Customer::TYPE_ASSOCIATE || ( $t->cust && $t->cust->typeAssociate() ) ? 'display: none;' : ''
             ?>">
                 <h3>Peering Details</h3>
-                <hr class="tw-mb-6">
+                <hr class="tw:mb-6">
 
                 <?= Former::number( 'autsys' )
                     ->label( 'AS Number' )
                     ->placeholder('65500')
+                    ->required()
                     ->blockHelp( 'The AS Number is just the integer value without any AS prefix, etc.' );
                 ?>
 
@@ -172,6 +183,7 @@
                 <?= Former::email( 'peeringemail' )
                     ->label( 'Email' )
                     ->placeholder( "peering@example.com" )
+                    ->required()
                     ->blockHelp( "The Peering Email is used in member lists and by the Peering Manager for sending emails. We encourage "
                         . "using a role alias such as peering@example.com." );
                 ?>
@@ -182,7 +194,7 @@
                     ->blockHelp( "The IPv4 Peering Macro is used instead of the AS number when set to generate inbound prefix filters for the "
                         . "route servers based on the member's published IRR records. Must be a valid as-macro. One of:<br><code>ASNNNNN,  AS-MACRONAME, ASNNNNN:AS-MACRONAME</code><br>");
                 ?>
-                
+
                 <?= Former::text( 'peeringmacrov6' )
                     ->label( 'IPv6 Peering Macro' )
                     ->placeholder( "AS-ACME-V6-EXAMPLE" )
@@ -205,7 +217,7 @@
                 <?= Former::select( 'irrdb' )
                     ->label( 'IRRDB Source' )
                     ->placeholder( 'Choose a IRRDB Source' )
-                    ->fromQuery( $t->irrdbs, 'source' )
+                    ->fromQuery( $t->irrdbs, fn (IrrdbConfig $model ) => $t->ee( $model->source ) )
                     ->addClass( 'chzn-select-deselect' )
                     ->blockHelp( "The IRRDB source sets the database where IXP Manager queries the customer's IRR data from. See "
                         . '<a href="https://docs.ixpmanager.org/latest/features/irrdb/">the IRRDB feature page</a> for more information.' );
@@ -228,7 +240,7 @@
         ?>">
             <div class="col-lg-6 col-md-12">
                 <h3>NOC Details</h3>
-                <hr class="tw-mb-6">
+                <hr class="tw:mb-6">
 
                 <?= Former::phone( 'nocphone' )
                     ->label( 'Phone' )
@@ -247,6 +259,7 @@
                 <?= Former::email( 'nocemail' )
                     ->label( 'Email' )
                     ->placeholder( 'noc@example.com' )
+                    ->required()
                     ->blockHelp( 'The NOC email is used in customer lists. We encourage "
             . "the use of a role alias such as noc@example.com.<br><br>'
                         . 'This is available to all other customers.' );
@@ -270,7 +283,7 @@
             <?php if( $t->resellerMode() ): ?>
                 <div class="col-lg-6 col-md-12">
                     <h3>Reseller Details</h3>
-                    <hr class="tw-mb-6">
+                    <hr class="tw:mb-6">
 
                     <?= Former::checkbox( 'isReseller' )
                         ->label( '&nbsp;' )
@@ -291,7 +304,7 @@
                     <div id="reseller-area" class="collapse">
                         <?= Former::select( 'reseller' )
                             ->label( 'Reseller' )
-                            ->fromQuery( $t->resellers, 'name' )
+                            ->fromQuery( $t->resellers, fn ( Customer $model ) => $t->ee( $model->name ) )
                             ->placeholder( 'Choose an reseller' )
                             ->addClass( 'chzn-select' )
                             ->blockHelp( '' );

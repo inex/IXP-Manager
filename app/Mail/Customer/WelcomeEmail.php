@@ -1,9 +1,6 @@
 <?php
-
-namespace IXP\Mail\Customer;
-
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,6 +20,10 @@ namespace IXP\Mail\Customer;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+declare(strict_types=1);
+
+namespace IXP\Mail\Customer;
+
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
@@ -31,46 +32,23 @@ use IXP\Exceptions\Mailable as MailableException;
 
 use IXP\Http\Requests\Customer\WelcomeEmail as WelcomeEmailRequest;
 
+use IXP\Mail\Trait\MarkdownContent;
 use IXP\Models\Customer;
 
 /**
  * Mailable for Customer
  *
  * @author     Barry O'Donovan  <barry@islandbridgenetworks.ie>
- * @author     Yanm Robin       <yann@islandbridgenetworks.ie>
+ * @author     Yann Robin       <yann@islandbridgenetworks.ie>
+ * @author     Thomas Kerin     <thomas@islandbridgenetworks.ie>
  * @category   Customer
  * @package    IXP\Mail\Customer
- * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class WelcomeEmail extends Mailable
+final class WelcomeEmail extends Mailable
 {
-    use Queueable, SerializesModels;
-
-    /**
-     * @var Customer
-     */
-    public $c;
-
-    /**
-     * @var WelcomeEmailRequest
-     */
-    public $r;
-
-    /**
-     * @var string The template to use to create the email
-     */
-    protected $tmpl;
-
-    /**
-     * @var string Temporary view file
-     */
-    protected $tmpfile;
-
-    /**
-     * @var string Temporary view name
-     */
-    protected $tmpname;
+    use Queueable, SerializesModels, MarkdownContent;
 
     /**
      * Create a new message instance.
@@ -78,23 +56,12 @@ class WelcomeEmail extends Mailable
      * @param Customer              $c
      * @param WelcomeEmailRequest   $r
      */
-    public function __construct( Customer $c, WelcomeEmailRequest $r )
+    public function __construct(
+        public readonly Customer $c,
+        WelcomeEmailRequest $r )
     {
-        $this->c = $c;
-        $this->r = $r;
         $this->prepareFromRequest($r);
-        $this->prepareBody($r);
-    }
-
-    /**
-     * Destructor
-     */
-    public function __destruct()
-    {
-        // remove temporary file if it exists
-        if( $this->tmpfile && file_exists( $this->tmpfile ) ){
-            @unlink( $this->tmpfile );
-        }
+        $this->userMarkdown = $r->message;
     }
 
     /**
@@ -106,8 +73,10 @@ class WelcomeEmail extends Mailable
     {
         // recipients
         foreach( [ 'to', 'cc', 'bcc' ] as $p ) {
-            $hasFn = 'has' . ucfirst( $p );
-            foreach( explode(',', $r->input( $p ) ) as $emaddr ) {
+            if ( !( $field = $r->input( $p ) ) ) {
+                continue;
+            }
+            foreach( explode(',', $field ) as $emaddr ) {
                 $email = trim( $emaddr );
                 if( filter_var( $email, FILTER_VALIDATE_EMAIL ) ) {
                     $this->$p($email);
@@ -116,38 +85,7 @@ class WelcomeEmail extends Mailable
         }
 
         $this->subject( $r->subject );
-        return $this;
-    }
 
-    /**
-     * Set up Markdown body from a POST request.
-     *
-     * @param WelcomeEmailRequest $r
-     */
-    public function prepareBody( WelcomeEmailRequest $r ): static
-    {
-        // Templating is slightly awkward here as Laravel's Mailable is built around reading the
-        // body from a template file be we have it via post.
-        //
-        // To work around this, we'll use a temporary file in a new view namespace.
-
-        $body          = $r->message;
-        $this->tmpfile = tempnam( sys_get_temp_dir(), 'welcome_email_' );
-        $this->tmpname = basename( $this->tmpfile );
-        $this->tmpfile = $this->tmpfile . '.blade.php';
-        file_put_contents( $this->tmpfile, "@component('mail::message')\n\n" . $body . "\n\n@endcomponent\n" );
-        view()->addNamespace('welcome_emails', sys_get_temp_dir() );
-        $this->markdown( 'welcome_emails::' . $this->tmpname );
-        return $this;
-    }
-
-    /**
-     * Build the message.
-     *
-     * @return $this
-     */
-    public function build(): self
-    {
         return $this;
     }
 
@@ -162,8 +100,8 @@ class WelcomeEmail extends Mailable
             throw new MailableException( "No valid recipients" );
         }
 
-        if( !view()->exists( $this->markdown ) ) {
-            throw new MailableException( "Could not create / load temporary template" );
+        if ( strlen($this->userMarkdown) === 0) {
+            throw new MailableException( "Missing markdown email body" );
         }
     }
 }

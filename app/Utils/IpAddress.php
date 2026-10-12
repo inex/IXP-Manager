@@ -39,13 +39,6 @@ class IpAddress
      *
      * * 192.0.2.45  => 45.2.0.192.in-addr.arpa.
      * * 2001:db8::1 => 1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.8.b.d.0.1.0.0.2.ip6.arpa.
-     *
-     * @param string $ip The IP address
-     * @param int $protocol Either 4 (IPv4) or 6 (IPv6)
-     *
-     * @return string
-     *
-     * @throws
      */
     public static function toArpa( string $ip, int $protocol ): string
     {

@@ -61,7 +61,7 @@ class Profile extends FormRequest
     {
         return [
             'name'              => 'required|string|min:2|max:255',
-            'username'          => 'required|string|min:3|max:255|unique:user,username,' . Auth::id(),
+            'username'          => 'required|string|min:3|max:255|regex:/^[a-z0-9\-_\.]{3,255}$/|unique:user,username,' . Auth::id(),
             'email'             => 'required|email|max:255',
             'authorisedMobile'  => 'nullable|string|max:30',
             'actual_password'   => 'required|string|max:255',

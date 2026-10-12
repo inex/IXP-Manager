@@ -55,6 +55,7 @@ use IXP\Utils\View\Alert\{
  *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @author     Thomas Kerin <thomas@islandbridgenetworks.ie>
  * @category   IXP
  * @package    IXP\Http\Controllers\Interfaces
  * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
@@ -150,7 +151,7 @@ class VlanInterfaceController extends Common
      *
      * @return View
      */
-    public function edit( Request $r, VlanInterface $vli, VirtualInterface $vi = null, Vlan $duplicateTo = null ): View
+    public function edit( Request $r, VlanInterface $vli, ?VirtualInterface $vi = null, ?Vlan $duplicateTo = null ): View
     {
         $vlanId = $duplicateTo->id ?? $vli->vlanid;
         Former::populate( [

@@ -87,7 +87,8 @@ class GrapherServiceProvider extends ServiceProvider
             Route::get( 'virtualinterface',  'Grapher@virtualInterface'  ); // member LAG (of physint's)
             Route::get( 'customer',          'Grapher@customer'          ); // member agg over all physint's
             Route::get( 'vlaninterface',     'Grapher@vlanInterface'     ); // member vlan interface
-            Route::get( 'p2p',               'Grapher@p2p'               ); // member vlan interface
+            Route::get( 'p2p',               'Grapher@p2p'               ); // member p2p graph
+            Route::get( 'multip2p',          'Grapher@multip2p'          ); // member multip2p graph
             Route::get( 'latency',           'Grapher@latency'           );
         });
         
@@ -95,9 +96,9 @@ class GrapherServiceProvider extends ServiceProvider
             Route::group( [ 'middleware' => [ 'apideprecated', 'api/v4', 'assert.privilege:' . User::AUTH_SUPERUSER ],
                             'namespace'  => 'IXP\Http\Controllers\Services', ], function() {
                 
-                Route::get( 'api/v4/grapher/mrtg-config', 'Grapher\Api@generateConfiguration' );
-                Route::get( 'api/v4/grapher/config', 'Grapher\Api@generateConfiguration' );
-                Route::post( 'api/v4/grapher/config', 'Grapher\Api@generateConfiguration' );
+                Route::get(  'api/v4/grapher/mrtg-config', 'Grapher\Api@generateConfiguration' );
+                Route::get(  'api/v4/grapher/config',      'Grapher\Api@generateConfiguration' );
+                Route::post( 'api/v4/grapher/config',      'Grapher\Api@generateConfiguration' );
             } );
         }
         
@@ -108,8 +109,7 @@ class GrapherServiceProvider extends ServiceProvider
             Route::get(  'admin/api/v4/grapher/config',      'Grapher\Api@generateConfiguration' );
             Route::post( 'admin/api/v4/grapher/config',      'Grapher\Api@generateConfiguration' );
         });
-        
-        
+
         // we have a few rendering functions we want to include here:
         $this->app->make( Engine::class )->loadExtension( new GrapherRendererExtension(), [] );
     }

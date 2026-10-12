@@ -54,7 +54,7 @@
                             Action
                         </th>
                     </tr>
-                <thead>
+                </thead>
                 <tbody>
                     <?php foreach( $t->vis as $vi ): ?>
                         <tr>
@@ -75,7 +75,7 @@
 
                                     $sps = explode( ',', $vi[ 'switchport' ] );
                                     foreach( $sps as $sp ){
-                                      echo $sp . '<br/>';
+                                      echo $t->ee( $sp ). '<br/>';
                                     }
                                     ?>
                                 </td>
@@ -86,7 +86,7 @@
                                     <?php endif; ?>
                                 </td>
                                 <td>
-                                    <?= $vi['rate_limit'] ?: $vi[ 'speed' ] ?>
+                                    <?= $this->ee( $vi['rate_limit'] ?: $vi[ 'speed' ] ) ?>
                                 </td>
                             <?php else: ?>
                                 <td></td>
@@ -117,13 +117,15 @@
 <?php $this->section( 'scripts' ) ?>
     <?= $t->insert( 'interfaces/virtual/js/interface' ); ?>
 
-    <script>
-        /**
-         * on click even allow to delete a Virtual Interface
-         */
-        $( '.btn-delete' ).click( function( e ){
-            e.preventDefault();
-            deletePopup( $( this ), 'vi');
+    <script type="module">
+        $(document).ready(function() {
+            /**
+             * on click event to delete a Virtual Interface
+             */
+            $( '.btn-delete' ).click( function( e ){
+                e.preventDefault();
+                deletePopup( $( this ), 'vi');
+            });
         });
     </script>
 <?php $this->append() ?>

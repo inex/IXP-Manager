@@ -1,9 +1,9 @@
 <nav id="side-navbar" class="col-md-3 col-xl-2 d-none d-md-block sidebar border-r border-grey bg-grey-lightest text">
     <div class="sidebar-sticky">
         <ul class="nav d-inline ">
-            <form class="bd-search d-flex align-items-center tw-border-grey-lighter tw-border-r-4 tw-py-4" method="get" action="<?= route( 'search' ) ?>">
-                <div class="input-group tw-pr-4">
-                    <input type="text" class="form-control" placeholder="Search for..." name="search">
+            <form class="bd-search d-flex align-items-center tw:border-grey-lighter tw:border-r-4 tw:py-4" method="get" action="<?= route( 'search' ) ?>">
+                <div class="input-group tw:pr-4">
+                    <input type="text" class="form-control" aria-label="Search" placeholder="Search for..." name="search">
                     <div class="input-group-append">
                         <button class="btn btn-light input-group-text" type="button" id="searchHelp" data-toggle="modal" data-target="#searchHelpModal">
                             <i class="fa fa-question-circle"></i>
@@ -12,7 +12,7 @@
                 </div>
             </form>
 
-            <hr class="w-100 tw-my-0" style="margin-left: -10px ">
+            <hr class="w-100 tw:my-0" style="margin-left: -10px ">
 
             <h6>
                 <span>IXP <?= strtoupper( config( 'ixp_fe.lang.customer.one' ) ) ?> ACTIONS</span>
@@ -290,14 +290,6 @@
                 </a>
             </li>
 
-            <?php if( !config( 'ixp_fe.frontend.disabled.rs-prefixes', false ) ): ?>
-                <li class="<?= !request()->is( 'admin/rs-prefixes/*' ) ?: 'active' ?>">
-                    <a href="<?= route( 'rs-prefixes@list' ) ?>" class="nav-link">
-                        Route Server Prefixes
-                    </a>
-                </li>
-            <?php endif; ?>
-
             <li class="<?= request()->is( 'admin/router/*' ) && !request()->is( 'admin/router/status' ) ? 'active' : '' ?>" >
                 <a href="<?= route('router@list' ) ?>" class="nav-link" >
                     Routers
@@ -420,14 +412,20 @@
                 </li>
             <?php endif; ?>
 
+            <li class="<?= request()->is( 'admin/validation*' ) ? 'active' : ''?>">
+                <a href="<?= route( 'validation@start' ) ?>" class="nav-link">
+                    System Validation
+                </a>
+            </li>
+
             <?php if( Gate::allows( 'viewHorizon' ) && config( 'queue.default' ) === 'redis' ): ?>
                 <li>
                     <a href="<?= route( 'horizon.index' ) ?>" class="nav-link" target="_ixpm_horizon">
                         Laravel Horizon
                         <?php if( \IXP\Utils\Horizon::status() === \IXP\Utils\Horizon::STATUS_INACTIVE ): ?>
-                            <span class="tw-text-red-500"><i class="fa fa-exclamation-triangle"></i></span>
+                            <span class="tw:text-red-500"><i class="fa fa-exclamation-triangle"></i></span>
                         <?php elseif( \IXP\Utils\Horizon::status() === \IXP\Utils\Horizon::STATUS_PAUSED ): ?>
-                            <span class="tw-text-orange-500"><i class="fa fa-pause"></i></span>
+                            <span class="tw:text-orange-500"><i class="fa fa-pause"></i></span>
                         <?php endif; ?>
                     </a>
                 </li>

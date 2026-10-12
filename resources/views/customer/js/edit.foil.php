@@ -1,6 +1,6 @@
 <?php /** @var Foil\Template\Template $t */ ?>
 
-<script>
+<script type="module">
     //////////////////////////////////////////////////////////////////////////////////////
     // we'll need these handles to html elements in a few places:
 
@@ -19,6 +19,7 @@
 
     const dd_type                   = $( '#type' );
     const dd_peering_policy         = $( '#peeringpolicy' );
+    const dd_irrdb                  = $( '#irrdb' );
 
     const cb_isResold               = $( '#isResold' );
     const div_reseller_area         = $( '#reseller-area' );
@@ -87,7 +88,7 @@
     btn_populate.on( 'click', function( e ) {
         if( input_search.val() && /^\s*\d+\s*$/.test( input_search.val() ) ) {
             let peering_policy = '';
-            let url = " <?= url( "admin/api/v4/customer/query-peeringdb/asn" ) ?>/" + input_search.val().trim();
+            let url = "<?= url( "admin/api/v4/customer/query-peeringdb/asn" ) ?>/" + input_search.val().trim();
 
             btn_populate.attr( "disabled", "disabled" );
             $( '#error-message' ).remove();
@@ -97,33 +98,67 @@
                 .done( function( response ) {
                     if( typeof response.net !== "undefined" ) {
                         // fill inputs with info received
-                        input_name.val(             htmlEntities( response.net.name ) ).addClass( 'is-valid' );
-                        input_abbreviated_name.val( htmlEntities( response.net.name ) ).addClass( 'is-valid' );
-                        input_shortname.val(        htmlEntities( response.net.name ).replace( /[^a-zA-Z0-9]+/g, "" ).toLowerCase().substr( 0, 10 ) ).addClass( 'is-valid' );
+                        input_name.val(             response.net.name ).addClass( 'is-valid' );
+                        input_abbreviated_name.val( response.net.name ).addClass( 'is-valid' );
+                        input_shortname.val(        response.net.name.replace( /[^a-zA-Z0-9]+/g, "" ).toLowerCase().substr( 0, 10 ) ).addClass( 'is-valid' );
                         input_datejoin.val(         getCurrentDate() ).addClass( 'is-valid' );
-                        input_corp_www.val(         htmlEntities( response.net.website ) ).addClass( 'is-valid' );
-                        input_autsys.val(           htmlEntities( response.net.asn ) ).addClass( 'is-valid' );
-                        input_peeringmacro.val(     htmlEntities( response.net.irr_as_set ) ).addClass( 'is-valid' );
+                        input_corp_www.val(         response.net.website ).addClass( 'is-valid' );
+                        input_autsys.val(           response.net.asn ).addClass( 'is-valid' );
 
-                        if( response.net.info_prefixes4 !== "undefined" ) {
-                            input_maxprefixes.val( Math.ceil( htmlEntities( response.net.info_prefixes4 ) ) ).addClass( 'is-valid' );
+                        if ( typeof response.net.irr_as_set == "string" && response.net.irr_as_set.length > 0 ) {
+                            // https://docs.peeringdb.com/blog/data_quality_for_networks/
+                            if (response.net.irr_as_set.includes("::")) {
+                                const [irr, asSet] = response.net.irr_as_set.split('::');
+
+                                let irrdbSelectOption = dd_irrdb.find('option:not(:selected)').filter(function () {
+                                    return $(this).text() === irr;
+                                });
+
+                                if (irrdbSelectOption.length > 0) {
+                                    dd_irrdb.val( irrdbSelectOption.val() ).select2().trigger('change.select2');
+                                    input_peeringmacro.val( asSet );
+                                } else {
+                                    $.ajax( "<?= route("irrdb-config-api@create") ?>", {
+                                        type: "POST",
+                                        data: {
+                                            "source": irr,
+                                            "host": "whois.radb.net",
+                                            "notes": "Created during customer import from PeeringDB",
+                                        },
+                                    } )
+                                        .done( function( response ) {
+                                            dd_irrdb.append( $( '<option>', {
+                                                value: response.id,
+                                                text: irr,
+                                                selected: 'selected',
+                                            } ) );
+                                            input_peeringmacro.val( asSet );
+                                        });
+                                }
+                            } else {
+                                input_peeringmacro.val( response.net.irr_as_set ).addClass( 'is-valid' );
+                            }
                         }
 
-                        if( response.net.info_prefixes6 !== "undefined" ) {
-                            input_maxprefixesv6.val( Math.ceil( htmlEntities( response.net.info_prefixes6 ) ) ).addClass( 'is-valid' );
+                        if( typeof response.net.info_prefixes4 !== "undefined" ) {
+                            input_maxprefixes.val( Math.ceil( response.net.info_prefixes4 ) ).addClass( 'is-valid' );
                         }
 
-                        dd_peering_policy.val(  htmlEntities( response.net.policy_general ).toLowerCase() ).trigger( "change" ).addClass( 'is-valid' );
+                        if( typeof response.net.info_prefixes6 !== "undefined" ) {
+                            input_maxprefixesv6.val( Math.ceil( response.net.info_prefixes6 ) ).addClass( 'is-valid' );
+                        }
 
-                        if( response.net.poc_set !== "undefined" ) {
+                        dd_peering_policy.val(  response.net.policy_general.toLowerCase() ).trigger( "change" ).addClass( 'is-valid' );
+
+                        if( typeof response.net.poc_set !== "undefined" ) {
                             $.each( response.net.poc_set, function( key, noc ) {
                                 if( noc.role.toUpperCase() === "NOC" ) {
-                                    if( noc.phone !== "undefined" && noc.phone !== "" ){
-                                        input_nocphone.val( htmlEntities( noc.phone ) ).addClass( 'is-valid' );
+                                    if( typeof noc.phone !== "undefined" && noc.phone !== "" ){
+                                        input_nocphone.val( noc.phone ).addClass( 'is-valid' );
                                     }
-                                    if( noc.email !== "undefined" ) {
-                                        input_nocemail.val( htmlEntities( noc.email ) ).addClass( 'is-valid' );
-                                        input_peeringemail.val( htmlEntities( noc.email ) ).addClass( 'is-valid' );
+                                    if( typeof noc.email !== "undefined" ) {
+                                        input_nocemail.val( noc.email ).addClass( 'is-valid' );
+                                        input_peeringemail.val( noc.email ).addClass( 'is-valid' );
                                     }
                                 }
                             });

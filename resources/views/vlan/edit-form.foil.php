@@ -23,7 +23,7 @@
 
         <?= Former::select( 'infrastructureid' )
             ->label( 'Infrastructure' )
-            ->fromQuery( $t->data[ 'params'][ 'infrastructure'], 'name' )
+            ->fromQuery( $t->data[ 'params'][ 'infrastructure'], fn ($model) => $t->ee( $model->name ) )
             ->placeholder( 'Choose an infrastructure' )
             ->addClass( 'chzn-select' );
         ?>
@@ -48,8 +48,8 @@
             ->text( 'Include VLAN in the peering matrix (see help)' )
             ->value( 1 )
             ->inline()
-            ->blockHelp( "Selecting this checkbox means that this VLAN will appear on the <a href='http://ixp-master.dev/peering-matrix' target='_blank'>peering matrix</a>. 
-                Note that this does not mean that this matrix will be populated. For that, you need to <a href='https://github.com/inex/IXP-Manager/wiki/Peering-Matrix'>configure
+            ->blockHelp( "Selecting this checkbox means that this VLAN will appear on the <a href='". route("peering-matrix@index")."' target='_blank'>peering matrix</a>.
+                Note that this does not mean that this matrix will be populated. For that, you need to <a href='https://docs.ixpmanager.org/latest/features/peering-matrix/'>configure
                 sflow support for this</a>." );
         ?>
 
@@ -59,7 +59,7 @@
             ->value( 1 )
             ->inline()
             ->blockHelp( "Selecting this checkbox means that this VLAN will appear on the members' peering manager. 
-                Note that this does not mean that it will be populated. For that, you need to <a href='https://github.com/inex/IXP-Manager/wiki/Peering-Matrix'>configure
+                Note that this does not mean that it will be populated. For that, you need to <a href='https://docs.ixpmanager.org/latest/features/peering-matrix/'>configure
                 sflow support for this</a>." );
         ?>
         <?= Former::checkbox( 'export_to_ixf' )
@@ -113,7 +113,7 @@
 
         <?= Former::close() ?>
 
-        <div class="alert alert-info tw-mt-8" role="alert">
+        <div class="alert alert-info tw:mt-8" role="alert">
             When choosing a VLAN / 802.1q tag, note that while it is technically possible to use the same VLAN tag across different infrastructures,
             this is a bad idea in IXP Manager. Some components expect unique tags for peering LANs.
             See <a href="https://github.com/inex/IXP-Manager/issues/517" target="_blank">this GitHub issue as one example for this</a>.

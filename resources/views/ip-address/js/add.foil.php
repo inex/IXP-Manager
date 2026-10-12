@@ -1,4 +1,4 @@
-<script>
+<script type="module">
   <?php if( $t->protocol === 6 ): ?>
       let cb_decimal  = $('#decimal' );
       let cb_overflow = $('#div-overflow');

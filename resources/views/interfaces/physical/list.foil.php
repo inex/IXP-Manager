@@ -48,7 +48,7 @@
                             Action
                         </th>
                     </tr>
-                <thead>
+                </thead>
                 <tbody>
                     <?php foreach( $t->pis as $pi ): ?>
                         <tr>

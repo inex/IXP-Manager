@@ -28,6 +28,8 @@ use IXP\Models\User;
 
 use Illuminate\Auth\Access\HandlesAuthorization;
 
+use Illuminate\Auth\Access\Response;
+
 /**
  * User Policy
  *
@@ -69,11 +71,13 @@ class UserPolicy
         $privs = $auth->privs();
 
         if( $privs === User::AUTH_SUPERUSER ){
-            return true;
+            return Response::allow();
         }
 
         if( $privs === User::AUTH_CUSTADMIN && CustomerToUser::where( 'customer_id', $auth->custid )->where( 'user_id', $user->id )->exists() ){
-            return true;
+            return Response::allow();
         }
+        
+        return Response::denyWithStatus(404);
     }
 }

@@ -1,9 +1,6 @@
 <?php
-
-namespace IXP\Http\Controllers\PatchPanel\Port;
-
 /*
- * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,9 +20,14 @@ namespace IXP\Http\Controllers\PatchPanel\Port;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Auth, Log, Storage;
+declare(strict_types=1);
+
+namespace IXP\Http\Controllers\PatchPanel\Port;
+
+use Auth, Storage;
 
 use Exception;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Http\{
     RedirectResponse,
     Request,
@@ -35,8 +37,6 @@ use Illuminate\Http\{
 use IXP\Models\{
     PatchPanelPort,
     PatchPanelPortFile,
-    PatchPanelPortHistoryFile,
-    User
 };
 
 use IXP\Utils\View\Alert\{
@@ -46,7 +46,7 @@ use IXP\Utils\View\Alert\{
 
 use IXP\Http\Controllers\Controller;
 
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 /**
  * File Controller
@@ -69,7 +69,7 @@ class FileController extends Controller
      */
     public function togglePrivacy( PatchPanelPortFile $file ): JsonResponse
     {
-        $file->update( [ 'is_private' => !$file->is_private ] );
+        $file->togglePrivacy();
         return response()->json( [ 'success' => true, 'isPrivate' => $file->is_private ] );
     }
 
@@ -94,6 +94,8 @@ class FileController extends Controller
             $message = 'Patch Panel Port File could not be deleted.'; $success = false;
         }
 
+        Log::notice( sprintf( "File [%d|%s] deleted by %s for the patch panel port [%d|%s]", $file->id, $file->name, $r->user()->username, $file->patchPanelPort->id, $file->patchPanelPort->name() ) );
+
         if( (bool)$r->jsonResponse ) {
             return response()->json( ['success'     => true,    'message' => 'File deleted' ] );
         }
@@ -114,6 +116,8 @@ class FileController extends Controller
     {
         if( !( $file = $r->file( 'file' ) ) ) {
             return response()->json( [ 'success' => false, 'message' => 'You need to upload a file.' ] );
+        } else if ( !$file->isValid() ) {
+            return response()->json( [ 'success' => false, 'message' => 'File upload failed. Check the file size.' ] );
         }
 
         $hash = hash('sha256', $ppp->id . '-' . $file->getClientOriginalName() );
@@ -135,6 +139,8 @@ class FileController extends Controller
                 'storage_location'      => $hash
             ] );
 
+            Log::notice( sprintf( "File [%d|%s] uploaded by %s for the patch panel port [%d|%s]", $pppf->id, $pppf->name, $r->user()->username, $ppp->id, $ppp->name() ) );
+
             return response()->json( [ 'success' => true, 'message' => 'File uploaded.', 'id' => $pppf->id ] );
         }
 
@@ -146,11 +152,11 @@ class FileController extends Controller
      *
      * @param   PatchPanelPortFile $file the Patch panel port file
      *
-     * @return  BinaryFileResponse
+     * @return  StreamedResponse
      */
-    public function download( PatchPanelPortFile $file ): BinaryFileResponse
+    public function download( PatchPanelPortFile $file ): StreamedResponse
     {
-        $u = User::find( Auth::id() );
+        $u = Auth::user();
         if( !$u->isSuperUser() ) {
             if( !$file->patchPanelPort->customer
                 || $file->patchPanelPort->customer_id !== $u->custid
@@ -160,6 +166,9 @@ class FileController extends Controller
             }
         }
 
-        return response()->file( storage_path() . '/files/' . $file->path(), [ 'Content-Type' => $file->type ] );
+        return Storage::download( '/files/' . $file->path(), $file->name, [
+            'Content-Type' => 'application/octet-stream',
+            'X-Content-Type-Options' => 'nosniff',
+        ] );
     }
 }

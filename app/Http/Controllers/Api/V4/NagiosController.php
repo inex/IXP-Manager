@@ -1,9 +1,6 @@
 <?php
-
-namespace IXP\Http\Controllers\Api\V4;
-
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,6 +20,10 @@ namespace IXP\Http\Controllers\Api\V4;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+declare(strict_types=1);
+
+namespace IXP\Http\Controllers\Api\V4;
+
 use Illuminate\Database\Eloquent\Builder;
 
 use Illuminate\Http\{
@@ -37,6 +38,7 @@ use IXP\Models\{
     Infrastructure,
     PhysicalInterface,
     Router,
+    TaskLastRun,
     Vlan
 };
 
@@ -45,6 +47,7 @@ use IXP\Models\{
  *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @author     Thomas Kerin <thomas@islandbridgenetworks.ie>
  * @category   APIv4
  * @package    IXP\Http\Controllers\Api\V4
  * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
@@ -64,7 +67,7 @@ class NagiosController extends Controller
      *
      * @return Response
      */
-    public function customers( Request $r, Vlan $vlan, int $protocol, string $template = null ): Response
+    public function customers( Request $r, Vlan $vlan, int $protocol, ?string $template = null ): Response
     {
         if( !in_array( $protocol, [ 4, 6 ] ) ) {
             abort( 404, 'Unknown protocol' );
@@ -79,6 +82,8 @@ class NagiosController extends Controller
         if( !FacadeView::exists( $tmpl ) ) {
             abort(404, 'Unknown template');
         }
+
+        TaskLastRun::updateNagiosCustomers( [ 'vlan' => $vlan->id, 'protocol' => $protocol, 'template' => $tmpl ] );
 
         return response()
             ->view( $tmpl, [
@@ -107,7 +112,7 @@ class NagiosController extends Controller
      *
      * @return Response
      */
-    public function switches( Request $r, Infrastructure $infra, string $template = null ): Response
+    public function switches( Request $r, Infrastructure $infra, ?string $template = null ): Response
     {
         if( $template === null ) {
             $tmpl = 'api/v4/nagios/switches/default';
@@ -118,6 +123,8 @@ class NagiosController extends Controller
         if( !FacadeView::exists( $tmpl ) ) {
             abort(404, 'Unknown template');
         }
+
+        TaskLastRun::updateNagiosSwitches( [ 'infrastructure' => $infra->id, 'template' => $tmpl ] );
 
         return response()
             ->view( $tmpl, [
@@ -141,7 +148,7 @@ class NagiosController extends Controller
      *
      * @return Response
      */
-    public function birdseyeDaemons( Request $r, string $template = null, Vlan $vlan = null ): Response
+    public function birdseyeDaemons( Request $r, ?string $template = null, ?Vlan $vlan = null ): Response
     {
         $routers = Router::where( 'api_type', Router::API_TYPE_BIRDSEYE )
             ->when( $vlan, function( Builder $q, $vlan ) {
@@ -162,14 +169,16 @@ class NagiosController extends Controller
             abort(404, 'Unknown template');
         }
 
+        TaskLastRun::updateNagiosBirdseyeDaemons( [ 'template' => $tmpl, 'vlan' => $vlan?->id ] );
+
         return response()
                 ->view( $tmpl, [
                     'routers'   => $routers,
                     'vlanid'    => $vlan->id ?? false,
 
                     // optional POST/GET parameters
-                    'host_definition'    => $r->input( 'host_definition', 'ixp-manager-host-birdseye-daemon' ),
-                    'service_definition' => $r->input( 'host_definition', 'ixp-manager-service-birdseye-daemon' ),
+                    'host_definition'    => $r->input( 'host_definition',    'ixp-manager-host-birdseye-daemon'    ),
+                    'service_definition' => $r->input( 'service_definition', 'ixp-manager-service-birdseye-daemon' ),
 
                 ], 200)
                 ->header('Content-Type', 'text/plain; charset=utf-8');
@@ -189,7 +198,7 @@ class NagiosController extends Controller
      *
      * @return Response
      */
-    public function birdseyeBgpSessions( Request $r, Vlan $vlan, int $protocol, int $type, string $template = null ): Response
+    public function birdseyeBgpSessions( Request $r, Vlan $vlan, int $protocol, int $type, ?string $template = null ): Response
     {
         if( !in_array( $protocol, [ 4, 6 ] ) ) {
             abort( 404, 'Unknown protocol' );
@@ -218,6 +227,8 @@ class NagiosController extends Controller
         if( !$routers->count() ) {
             abort( 404, "No suitable router(s) found." );
         }
+
+        TaskLastRun::updateNagiosBgpSessions( [ 'vlan' => $vlan->id, 'protocol' => $protocol, 'type' => $type, 'template' => $tmpl ] );
 
         return response()
             ->view( $tmpl, [

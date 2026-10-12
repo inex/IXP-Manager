@@ -26,7 +26,7 @@
                                     <label for="metric" class="col-sm-4 col-lg-4">Metric:</label>
                                     <select id="metric" class="form-control" name="metric">
                                         <?php foreach( $t->metrics as $mname => $mvalue ): ?>
-                                            <option value="<?= $mvalue ?>" <?= $t->metric === $mvalue ? 'selected="selected"' : '' ?>><?= $mname ?></option>
+                                            <option value="<?= $mvalue ?>" <?= $t->ee( $t->metric ) === $mvalue ? 'selected="selected"' : '' ?>><?= $mname ?></option>
                                         <?php endforeach; ?>
                                     </select>
                                 </div>
@@ -90,7 +90,7 @@
                     <?php foreach( $t->trafficDaily as $td ): ?>
                         <tr>
                             <td><?= $td['cust_id'] ?></td>
-                            <td><?= $td['name'] ?> (<?= $td['autsys'] ?>)</td>
+                            <td><?= $t->ee( $td['name'] ) ?> (<?= $td['autsys'] ?>)</td>
                             <?php if( $t->metric === 'max' ): ?>
                                 <td align="right"><?= $td['day_max_in'] ?></td>
                                 <td align="right"><?= $td['day_max_out'] ?></td>

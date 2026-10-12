@@ -26,6 +26,7 @@ use Cache, Mail;
 
 use IXP\Console\Commands\Command;
 
+use IXP\Mail\Raw;
 use IXP\Support\Facades\RipeRestApi;
 use IXP\Tasks\Rir\Generator as RirGenerator;
 
@@ -49,7 +50,7 @@ class GenerateObject extends Command
 
     protected $signature = 'rir:generate-object
                         {object             : The RIR object template to use}
-                        {--send-email       : Rather than printing to screen, sends and email for updating a RIR automatically}
+                        {--send-email       : Rather than printing to screen, sends an email for updating a RIR automatically}
                         {--update-ripe-db   : Update the RIPE database with the generated object, using the RIPE REST API}
                         {--force            : Send email/update RIPE even if the generated object matches the cached version}
                         {--to=              : The email address to send the object to (if not specified then uses IXP_API_RIR_EMAIL_TO)}
@@ -66,6 +67,8 @@ class GenerateObject extends Command
      * Execute the console command.
      *
      * @throws
+     *
+     * @psalm-return 0|1
      */
     public function handle(): int
     {
@@ -84,13 +87,13 @@ class GenerateObject extends Command
         if( !$this->isVerbosityQuiet() && !$this->option( "force" ) && $obj === $cobj ) {
             $this->warn( "Generated RIR object is identical to cached version, use --force to update anyway." );
         }
-        
+
         if( $this->option( "send-email" ) && ( $this->option( "force" ) || $obj !== $cobj ) ) {
-            $this->sendEmail( $key, $obj );
+            $this->sendEmail( $obj );
         } else if( $this->option( "update-ripe-db" ) && ( $this->option( "force" ) || $obj !== $cobj ) ) {
             $this->updateRipeDb( $gen->generateJson() );
         } else if( !$this->option( "send-email" ) && !$this->option( "update-ripe-db" ) ) {
-            echo $obj;
+            $this->line($obj);
         }
         
         if( $obj !== $cobj ) {
@@ -110,9 +113,7 @@ class GenerateObject extends Command
     private function updateRipeDb( array $jsonData ): void {
         
         $response = RipeRestApi::updateObject( $jsonData );
-        
-        $errors = false;
-        
+
         if( $response->json( 'errormessages.errormessage') ) {
             foreach( $response->json( 'errormessages.errormessage') as $em ) {
                 
@@ -123,13 +124,8 @@ class GenerateObject extends Command
                 if( $em['severity'] === 'Warning' ) {
                     $this->warn( 'Warning ' . $msg );
                 } else {
-                    $this->error( 'Error ' . $msg );
-                    $errors = true;
+                    $this->fail( $msg );
                 }
-            }
-
-            if( $errors ) {
-                exit( -1 );
             }
         }
         
@@ -140,27 +136,25 @@ class GenerateObject extends Command
     
     /**
      * Send an email with the generated object
-     * @param string $key
      * @param string $obj
-     * @param string|null $cobj
      * @return void
      */
-    private function sendEmail( string $key, string $obj, ?string $cobj ): void {
-        if( !$this->option( "to" ) && !config( 'ixp_api.rir.email.to' )   ){
-            $this->error( "Please specify the TO email address" );
-            exit( -1 );
+    private function sendEmail( string $obj ): void
+    {
+        if( !$this->option( "to" ) && config( 'ixp_api.rir.email.to' ) === null ){
+            $this->fail( "Please specify the TO email address" );
         }
-        
-        Mail::raw( $obj, function( $m ) {
-            $m->to( $this->checkEmail( 'to', $this->option( "to" ) ?? config( 'ixp_api.rir.email.to' ) ) )
+
+        Mail::send(
+            (new Raw($obj) )
+                ->to( $this->checkEmail( 'to', $this->option( "to" ) ?? config( 'ixp_api.rir.email.to' ) ) )
                 ->from( $this->checkEmail( 'from', ( $this->option( "from" ) ?: config( 'ixp_api.rir.email.from' ) ) ?: config( 'mail.from.address' ) ) )
-                ->subject( "Changes to {$this->argument ('object' )} via IXP Manager" );
-        } );
-        
+                ->subject( "Changes to {$this->argument ('object' )} via IXP Manager" )
+        );
+
         if( !$this->isVerbosityQuiet() ) {
             $this->info( "Email sent." );
         }
-        
     }
     
     
@@ -173,7 +167,6 @@ class GenerateObject extends Command
             return $e;
         }
 
-        $this->error( "Invalid $w email address: $}" );
-        exit( -1 );
+        $this->fail( "Invalid $w email address: $e" );
     }
 }

@@ -47,22 +47,22 @@ use IXP\Traits\Observable;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \IXP\Models\Customer|null $customer
- * @method static \Illuminate\Database\Eloquent\Builder|CompanyRegisteredDetail newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|CompanyRegisteredDetail newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|CompanyRegisteredDetail query()
- * @method static \Illuminate\Database\Eloquent\Builder|CompanyRegisteredDetail whereAddress1($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CompanyRegisteredDetail whereAddress2($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CompanyRegisteredDetail whereAddress3($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CompanyRegisteredDetail whereCompanyNumber($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CompanyRegisteredDetail whereCountry($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CompanyRegisteredDetail whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CompanyRegisteredDetail whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CompanyRegisteredDetail whereJurisdiction($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CompanyRegisteredDetail whereNotes($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CompanyRegisteredDetail wherePostcode($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CompanyRegisteredDetail whereRegisteredName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CompanyRegisteredDetail whereTownCity($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CompanyRegisteredDetail whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CompanyRegisteredDetail newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CompanyRegisteredDetail newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CompanyRegisteredDetail query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CompanyRegisteredDetail whereAddress1($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CompanyRegisteredDetail whereAddress2($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CompanyRegisteredDetail whereAddress3($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CompanyRegisteredDetail whereCompanyNumber($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CompanyRegisteredDetail whereCountry($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CompanyRegisteredDetail whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CompanyRegisteredDetail whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CompanyRegisteredDetail whereJurisdiction($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CompanyRegisteredDetail whereNotes($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CompanyRegisteredDetail wherePostcode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CompanyRegisteredDetail whereRegisteredName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CompanyRegisteredDetail whereTownCity($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CompanyRegisteredDetail whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class CompanyRegisteredDetail extends Model

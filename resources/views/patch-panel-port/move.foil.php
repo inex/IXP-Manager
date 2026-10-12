@@ -31,7 +31,7 @@
                     <?= Former::select( 'patch_panel_id' )
                         ->label( 'New Patch Panel' )
                         ->placeholder( 'Choose a Patch Panel' )
-                        ->fromQuery( $t->ppAvailable, 'name' )
+                        ->fromQuery( $t->ppAvailable, fn ( $model ) => $t->ee( $model->name ) )
                         ->addClass( 'chzn-select' )
                         ->blockHelp( 'The new patch panel to move this port to.' );
                     ?>

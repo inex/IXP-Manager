@@ -52,29 +52,29 @@ use IXP\Traits\Observable;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \IXP\Models\Customer|null $customer
- * @method static \Illuminate\Database\Eloquent\Builder|CompanyBillingDetail newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|CompanyBillingDetail newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|CompanyBillingDetail query()
- * @method static \Illuminate\Database\Eloquent\Builder|CompanyBillingDetail whereBillingAddress1($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CompanyBillingDetail whereBillingAddress2($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CompanyBillingDetail whereBillingAddress3($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CompanyBillingDetail whereBillingContactName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CompanyBillingDetail whereBillingCountry($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CompanyBillingDetail whereBillingEmail($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CompanyBillingDetail whereBillingFrequency($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CompanyBillingDetail whereBillingPostcode($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CompanyBillingDetail whereBillingTelephone($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CompanyBillingDetail whereBillingTownCity($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CompanyBillingDetail whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CompanyBillingDetail whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CompanyBillingDetail whereInvoiceEmail($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CompanyBillingDetail whereInvoiceMethod($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CompanyBillingDetail whereNotes($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CompanyBillingDetail wherePurchaseOrderNumber($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CompanyBillingDetail wherePurchaseOrderRequired($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CompanyBillingDetail whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CompanyBillingDetail whereVatNumber($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CompanyBillingDetail whereVatRate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CompanyBillingDetail newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CompanyBillingDetail newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CompanyBillingDetail query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CompanyBillingDetail whereBillingAddress1($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CompanyBillingDetail whereBillingAddress2($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CompanyBillingDetail whereBillingAddress3($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CompanyBillingDetail whereBillingContactName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CompanyBillingDetail whereBillingCountry($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CompanyBillingDetail whereBillingEmail($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CompanyBillingDetail whereBillingFrequency($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CompanyBillingDetail whereBillingPostcode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CompanyBillingDetail whereBillingTelephone($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CompanyBillingDetail whereBillingTownCity($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CompanyBillingDetail whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CompanyBillingDetail whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CompanyBillingDetail whereInvoiceEmail($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CompanyBillingDetail whereInvoiceMethod($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CompanyBillingDetail whereNotes($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CompanyBillingDetail wherePurchaseOrderNumber($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CompanyBillingDetail wherePurchaseOrderRequired($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CompanyBillingDetail whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CompanyBillingDetail whereVatNumber($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CompanyBillingDetail whereVatRate($value)
  * @mixin \Eloquent
  */
 class CompanyBillingDetail extends Model
@@ -113,22 +113,22 @@ class CompanyBillingDetail extends Model
         'notes',
     ];
 
-    public const INVOICE_METHOD_EMAIL = 'EMAIL';
-    public const INVOICE_METHOD_POST  = 'POST';
+    public const string INVOICE_METHOD_EMAIL = 'EMAIL';
+    public const string INVOICE_METHOD_POST  = 'POST';
 
-    public static $INVOICE_METHODS = [
+    public static array $INVOICE_METHODS = [
         self::INVOICE_METHOD_EMAIL => 'Email',
         self::INVOICE_METHOD_POST  => 'Post'
     ];
 
-    public const BILLING_FREQUENCY_MONTHLY    = 'MONTHLY';
-    public const BILLING_FREQUENCY_2MONTHLY   = '2MONTHLY';
-    public const BILLING_FREQUENCY_QUARTERLY  = 'QUARTERLY';
-    public const BILLING_FREQUENCY_HALFYEARLY = 'HALFYEARLY';
-    public const BILLING_FREQUENCY_ANNUALLY   = 'ANNUALLY';
-    public const BILLING_FREQUENCY_NOBILLING  = 'NOBILLING';
+    public const string BILLING_FREQUENCY_MONTHLY    = 'MONTHLY';
+    public const string BILLING_FREQUENCY_2MONTHLY   = '2MONTHLY';
+    public const string BILLING_FREQUENCY_QUARTERLY  = 'QUARTERLY';
+    public const string BILLING_FREQUENCY_HALFYEARLY = 'HALFYEARLY';
+    public const string BILLING_FREQUENCY_ANNUALLY   = 'ANNUALLY';
+    public const string BILLING_FREQUENCY_NOBILLING  = 'NOBILLING';
 
-    public static $BILLING_FREQUENCIES = [
+    public static array $BILLING_FREQUENCIES = [
         self::BILLING_FREQUENCY_MONTHLY    => 'Monthly',
         self::BILLING_FREQUENCY_2MONTHLY   => 'Every 2 Months',
         self::BILLING_FREQUENCY_QUARTERLY  => 'Quarterly',

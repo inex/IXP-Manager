@@ -48,6 +48,7 @@ use IXP\Events\Customer\Note\{
  * Customer Note API v4 Controller
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @author     Thomas Kerin <thomas@islandbridgenetworks.ie>
  * @category   Customers
  * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
@@ -71,7 +72,7 @@ class CustomerNotesController extends Controller
         $cn     = new CustomerNote;
 
         $cn->title          =   $r->title;
-        $cn->note           =   $r->note ;
+        $cn->note           =   $r->note;
         $cn->private        =   $r->public ? 0 : 1;
         $cn->customer_id    =   $cust->id;
         $cn->save();
@@ -103,8 +104,8 @@ class CustomerNotesController extends Controller
         $user = Auth::getUser();
         $old = clone( $cn );
 
-        $cn->title   =   $r->title;
-        $cn->note    =   $r->note ;
+        $cn->title   =   e( $r->title );
+        $cn->note    =   e( $r->note  );
         $cn->private =   $r->public ? 0 : 1;
         $cn->save();
 
@@ -141,9 +142,9 @@ class CustomerNotesController extends Controller
         }
 
         $note = $cn->toArray();
-        $note[ 'note_parsedown' ] = parsedown( $cn->note );
+        $note[ 'note_parsedown' ] = clean( parsedown( $cn->note ) );
         $note[ 'created_at' ] = $cn->created_at->format( 'Y-m-d H:i:s' );
-        
+
         return response()->json( [ 'note' => $note ] );
     }
 
@@ -171,7 +172,7 @@ class CustomerNotesController extends Controller
      *
      * @return JsonResponse
      */
-    public function ping( Customer $c = null ): JsonResponse
+    public function ping( ?Customer $c = null ): JsonResponse
     {
         /** @var User $u */
         $u = Auth::getUser();
@@ -220,7 +221,7 @@ class CustomerNotesController extends Controller
      *
      * @return JsonResponse
      */
-    private function notifyToggle( Customer $cust = null, CustomerNote $cn = null ): JsonResponse
+    private function notifyToggle( ?Customer $cust = null, ?CustomerNote $cn = null ): JsonResponse
     {
         /** @var User $user */
         $user   = Auth::getUser();

@@ -1,9 +1,6 @@
 <?php
-
-namespace IXP\Events\Auth;
-
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,9 +20,12 @@ namespace IXP\Events\Auth;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Illuminate\Database\Eloquent\Collection;
+declare(strict_types=1);
+
+namespace IXP\Events\Auth;
+
+use Illuminate\Support\Collection;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Foundation\Events\Dispatchable;
 
 /**
  * ForgotUsername Event
@@ -37,27 +37,10 @@ use Illuminate\Foundation\Events\Dispatchable;
  */
 class ForgotUsername
 {
-    use Dispatchable, SerializesModels;
+    use SerializesModels;
 
-    /**
-     * @var Collection of users
-     */
-    public Collection $users;
-
-    /**
-     * @var String Email
-     */
-    public string $email;
-
-    /**
-     * Create a new event instance.
-     *
-     * @param Collection    $users
-     * @param string        $email
-     */
-    public function __construct( Collection $users, string $email )
-    {
-        $this->users     = $users;
-        $this->email     = $email;
-    }
+    public function __construct(
+        public readonly Collection $users,
+        public readonly string $email
+    ) {}
 }

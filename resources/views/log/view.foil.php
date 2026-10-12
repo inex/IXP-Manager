@@ -11,7 +11,7 @@
 <?php $this->section( 'page-header-postamble' ) ?>
     <div class="btn-group btn-group-sm" role="group">
         <a id="e2f-list-a" class="btn btn-white" href="<?= route('log@list') ?>">
-            <span class="fa fa-th-list"></span>
+            <span class="fa fa-table-list"></span>
         </a>
     </div>
 <?php $this->append() ?>
@@ -117,7 +117,7 @@
                                                     </b>
                                                 </td>
                                                 <?php if( $new ): ?>
-                                                    <td class="<?= isset( $changed[ $key ] ) ? 'tw-bg-gray-500': '' ?> ">
+                                                    <td class="<?= isset( $changed[ $key ] ) ? 'tw:bg-gray-500': '' ?> ">
                                                         <?= $t->ee( $new[ $key ] ) ?>
                                                     </td>
                                                 <?php endif; ?>

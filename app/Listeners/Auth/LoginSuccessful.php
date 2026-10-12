@@ -1,9 +1,6 @@
 <?php
-
-namespace IXP\Listeners\Auth;
-
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,6 +19,11 @@ namespace IXP\Listeners\Auth;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+
+declare(strict_types=1);
+
+namespace IXP\Listeners\Auth;
+
 use Auth, Log;
 
 use Illuminate\Auth\Events\Login as LoginEvent;
@@ -37,15 +39,8 @@ use IXP\Models\UserLoginHistory;
  * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class LoginSuccessful
+final class LoginSuccessful
 {
-    /**
-     * Handle a login event.
-     *
-     * @param  LoginEvent  $e
-     *
-     * @return void
-     */
     public function handle( LoginEvent $e ): void
     {
         /** @var User $user */
@@ -53,20 +48,13 @@ class LoginSuccessful
 
         Log::notice( 'Login successful for user "' . $user->username. '" from IP ' . ixp_get_client_ip() . '.' );
 
-        if( !session()->exists( "switched_user_from" ) && ( $c2u = $user->currentCustomerToUser() ) ) {
-            $c2u->update( [
-                'last_login_date'   => now(),
-                'last_login_from'   => ixp_get_client_ip(),
-                'last_login_via'    => Auth::viaRemember() ?  'RememberMe' : 'Login',
-            ] );
+        if( !session()->exists( "switched_user_from" ) && ( $c2u = $user->currentCustomerToUser ) ) {
+            $ip = ixp_get_client_ip();
+            $via = Auth::viaRemember() ? 'RememberMe' : 'Login';
+            $c2u->updateLastLoginInfo( $ip, $via );
 
             if( config( "ixp_fe.login_history.enabled" ) ) {
-                UserLoginHistory::create( [
-                    'ip'                    => ixp_get_client_ip(),
-                    'at'                    => now(),
-                    'via'                   => Auth::viaRemember() ?  'RememberMe' : 'Login',
-                    'customer_to_user_id'   => $c2u->id,
-                ] );
+                UserLoginHistory::recordLogin( $c2u, $ip, $via );
             }
         }
     }

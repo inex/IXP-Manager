@@ -27,6 +27,7 @@ use Exception;
 use Illuminate\Database\Eloquent\{
     Builder,
 };
+use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Collection;
 
 use IXP\Models\{Customer, PhysicalInterface, Router, Vlan, VlanInterface};
@@ -48,6 +49,8 @@ use IXP\Models\{Customer, PhysicalInterface, Router, Vlan, VlanInterface};
  * @property string|null $bgpmd5secret
  * @property string|null $ipv4bgpmd5secret
  * @property string|null $ipv6bgpmd5secret
+ * @property int|null $ipv4maxbgpprefix
+ * @property int|null $ipv6maxbgpprefix
  * @property int|null $rsclient
  * @property int|null $ipv4canping
  * @property int|null $ipv6canping
@@ -65,38 +68,36 @@ use IXP\Models\{Customer, PhysicalInterface, Router, Vlan, VlanInterface};
  * @property-read int|null $layer2addresses_count
  * @property-read \IXP\Models\VirtualInterface|null $virtualInterface
  * @property-read Vlan|null $vlan
- * @method static Builder|VlanInterfaceAggregator newModelQuery()
- * @method static Builder|VlanInterfaceAggregator newQuery()
- * @method static Builder|VlanInterfaceAggregator query()
- * @method static Builder|VlanInterfaceAggregator whereAs112client($value)
- * @method static Builder|VlanInterfaceAggregator whereBgpmd5secret($value)
- * @method static Builder|VlanInterfaceAggregator whereBusyhost($value)
- * @method static Builder|VlanInterfaceAggregator whereCreatedAt($value)
- * @method static Builder|VlanInterfaceAggregator whereId($value)
- * @method static Builder|VlanInterfaceAggregator whereIpv4addressid($value)
- * @method static Builder|VlanInterfaceAggregator whereIpv4bgpmd5secret($value)
- * @method static Builder|VlanInterfaceAggregator whereIpv4canping($value)
- * @method static Builder|VlanInterfaceAggregator whereIpv4enabled($value)
- * @method static Builder|VlanInterfaceAggregator whereIpv4hostname($value)
- * @method static Builder|VlanInterfaceAggregator whereIpv4monitorrcbgp($value)
- * @method static Builder|VlanInterfaceAggregator whereIpv6addressid($value)
- * @method static Builder|VlanInterfaceAggregator whereIpv6bgpmd5secret($value)
- * @method static Builder|VlanInterfaceAggregator whereIpv6canping($value)
- * @method static Builder|VlanInterfaceAggregator whereIpv6enabled($value)
- * @method static Builder|VlanInterfaceAggregator whereIpv6hostname($value)
- * @method static Builder|VlanInterfaceAggregator whereIpv6monitorrcbgp($value)
- * @method static Builder|VlanInterfaceAggregator whereIrrdbfilter($value)
- * @method static Builder|VlanInterfaceAggregator whereMcastenabled($value)
- * @method static Builder|VlanInterfaceAggregator whereNotes($value)
- * @method static Builder|VlanInterfaceAggregator whereRsclient($value)
- * @method static Builder|VlanInterfaceAggregator whereRsmorespecifics($value)
- * @method static Builder|VlanInterfaceAggregator whereUpdatedAt($value)
- * @method static Builder|VlanInterfaceAggregator whereVirtualinterfaceid($value)
- * @method static Builder|VlanInterfaceAggregator whereVlanid($value)
- * @property int|null $ipv4maxbgpprefix
- * @property int|null $ipv6maxbgpprefix
+ * @method static Builder<static>|VlanInterfaceAggregator newModelQuery()
+ * @method static Builder<static>|VlanInterfaceAggregator newQuery()
+ * @method static Builder<static>|VlanInterfaceAggregator query()
+ * @method static Builder<static>|VlanInterfaceAggregator whereAs112client($value)
+ * @method static Builder<static>|VlanInterfaceAggregator whereBgpmd5secret($value)
+ * @method static Builder<static>|VlanInterfaceAggregator whereBusyhost($value)
+ * @method static Builder<static>|VlanInterfaceAggregator whereCreatedAt($value)
+ * @method static Builder<static>|VlanInterfaceAggregator whereId($value)
+ * @method static Builder<static>|VlanInterfaceAggregator whereIpv4addressid($value)
+ * @method static Builder<static>|VlanInterfaceAggregator whereIpv4bgpmd5secret($value)
+ * @method static Builder<static>|VlanInterfaceAggregator whereIpv4canping($value)
+ * @method static Builder<static>|VlanInterfaceAggregator whereIpv4enabled($value)
+ * @method static Builder<static>|VlanInterfaceAggregator whereIpv4hostname($value)
  * @method static Builder<static>|VlanInterfaceAggregator whereIpv4maxbgpprefix($value)
+ * @method static Builder<static>|VlanInterfaceAggregator whereIpv4monitorrcbgp($value)
+ * @method static Builder<static>|VlanInterfaceAggregator whereIpv6addressid($value)
+ * @method static Builder<static>|VlanInterfaceAggregator whereIpv6bgpmd5secret($value)
+ * @method static Builder<static>|VlanInterfaceAggregator whereIpv6canping($value)
+ * @method static Builder<static>|VlanInterfaceAggregator whereIpv6enabled($value)
+ * @method static Builder<static>|VlanInterfaceAggregator whereIpv6hostname($value)
  * @method static Builder<static>|VlanInterfaceAggregator whereIpv6maxbgpprefix($value)
+ * @method static Builder<static>|VlanInterfaceAggregator whereIpv6monitorrcbgp($value)
+ * @method static Builder<static>|VlanInterfaceAggregator whereIrrdbfilter($value)
+ * @method static Builder<static>|VlanInterfaceAggregator whereMcastenabled($value)
+ * @method static Builder<static>|VlanInterfaceAggregator whereNotes($value)
+ * @method static Builder<static>|VlanInterfaceAggregator whereRsclient($value)
+ * @method static Builder<static>|VlanInterfaceAggregator whereRsmorespecifics($value)
+ * @method static Builder<static>|VlanInterfaceAggregator whereUpdatedAt($value)
+ * @method static Builder<static>|VlanInterfaceAggregator whereVirtualinterfaceid($value)
+ * @method static Builder<static>|VlanInterfaceAggregator whereVlanid($value)
  * @mixin \Eloquent
  */
 class VlanInterfaceAggregator extends VlanInterface
@@ -422,5 +423,29 @@ class VlanInterfaceAggregator extends VlanInterface
         }
 
         return $newints;
+    }
+
+    /**
+     * This function takes two customers, and finds Vlans which the customers have in common with
+     * eachother.
+     * It returns an array of vlan ID's the users have in common.
+     * @param Customer $cust1
+     * @param Customer $cust2
+     * @return int[]
+     */
+    public static function findVlansBetweenCustomers( Customer $cust1, Customer $cust2 ): array
+    {
+        return VlanInterface::selectRaw("DISTINCT vlaninterface.vlanid")
+            ->join('virtualinterface as vi', 'vi.id', '=', 'vlaninterface.virtualinterfaceid')
+            ->where('vi.custid', $cust1->id)
+            ->whereIn('vlaninterface.vlanid', function( QueryBuilder $query) use ($cust2) {
+                $query->select('vlaninterface.vlanid')
+                    ->from('vlaninterface')
+                    ->join('virtualinterface as vi', 'vi.id', '=', 'vlaninterface.virtualinterfaceid')
+                    ->where('vi.custid', $cust2->id);
+            })
+            ->get()
+            ->pluck('vlanid')
+            ->toArray();
     }
 }

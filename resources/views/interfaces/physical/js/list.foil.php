@@ -1,5 +1,5 @@
 <?= $t->insert( 'interfaces/virtual/js/interface' ); ?>
-<script>
+<script type="module">
     $(document).ready( function() {
         $( '#table' ).dataTable( {
             stateSave: true,
@@ -15,13 +15,13 @@
                 { "targets": [ 8 ], "visible": false, "searchable": false }
             ],
         }).show();
-    });
 
-    /**
-     * on click even allow to delete a Virtual Interface
-     */
-    $( '.btn-delete' ).click( function(e){
-        e.preventDefault();
-        deletePopup( $( this ), 'pi');
+        /**
+         * on click event to delete a Physical Interface
+         */
+        $( '.btn-delete' ).click( function(e){
+            e.preventDefault();
+            deletePopup( $( this ), 'pi');
+        });
     });
 </script>

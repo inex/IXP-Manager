@@ -71,7 +71,7 @@ class CompleteRequests extends Job implements ShouldQueue
     /**
      * Execute the job.
      *
-     * @throws
+     * @throws \JsonException|\Illuminate\Contracts\Container\BindingResolutionException
      *
      * @psalm-return 0|1
      */

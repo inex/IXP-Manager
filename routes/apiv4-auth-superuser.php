@@ -34,10 +34,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// API key can be passed in the header (preferred) or on the URL.
+// API key can be passed in the header (preferred) or on the URL (deprecated).
 //
 //     curl -X GET -H "X-IXP-Manager-API-Key: mySuperSecretApiKey" http://ixpv.dev/api/v4/test
-//     wget http://ixpv.dev/api/v4/test?apikey=mySuperSecretApiKey
+//     DEPRECATED wget http://ixpv.dev/api/v4/test?apikey=mySuperSecretApiKey
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Customers
@@ -139,6 +139,28 @@ Route::group( [ 'namespace' => 'Customer\Note', 'prefix' => 'customer-note' ], f
     Route::delete(  'delete/{cn}',                  'CustomerNotesController@delete'            )->name( 'customer-notes@delete');
 });
 
+/////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+///
+/// CUSTOMER DOCUMENT STORE
+///
+if( !config( 'ixp_fe.frontend.disabled.docstore_customer' ) ) {
+    Route::group( ['namespace' => 'DocstoreCustomer', 'prefix' => 'docstorec'], function() {
+        Route::get(    'file/info/{file}',    'FileController@info'          )->name( 'docstore-c-file-api@info'        );
+    });
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+///
+/// DOCUMENT STORE
+///
+if( !config( 'ixp_fe.frontend.disabled.docstore' ) ) {
+    Route::group( ['namespace' => 'Docstore', 'prefix' => 'docstore'], function() {
+        Route::get(    'file/info/{file}',    'FileController@info'          )->name( 'docstore-file-api@info'        );
+    });
+}
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // RIPE ATLAS
 //
@@ -146,3 +168,10 @@ Route::group( [ 'namespace' => 'Customer\Note', 'prefix' => 'customer-note' ], f
 //    Route::get(  'measurement/{atlasid}/info',   'RipeAtlasController@getAtlasMeasurementDetail' )->name( 'ripe-atlas@measurement-info' );
 //    Route::get(  'probe/{atlasid}/info',         'RipeAtlasController@getAtlasProbeDetail'       )->name( 'ripe-atlas@probe-info'       );
 //});
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// IRRDB Config
+//
+Route::group( [ 'prefix' => '' ], function() {
+    Route::post(    'store',      'IrrdbConfigController@store'             )->name( 'irrdb-config-api@create');
+});

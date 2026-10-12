@@ -70,33 +70,33 @@ use OSS_SNMP\SNMP;
  * @property-read \IXP\Models\PatchPanelPort|null $patchPanelPort
  * @property-read \IXP\Models\PhysicalInterface|null $physicalInterface
  * @property-read \IXP\Models\Switcher|null $switcher
- * @method static Builder|SwitchPort newModelQuery()
- * @method static Builder|SwitchPort newQuery()
- * @method static Builder|SwitchPort query()
- * @method static Builder|SwitchPort whereActive($value)
- * @method static Builder|SwitchPort whereCreatedAt($value)
- * @method static Builder|SwitchPort whereId($value)
- * @method static Builder|SwitchPort whereIfAdminStatus($value)
- * @method static Builder|SwitchPort whereIfAlias($value)
- * @method static Builder|SwitchPort whereIfHighSpeed($value)
- * @method static Builder|SwitchPort whereIfIndex($value)
- * @method static Builder|SwitchPort whereIfLastChange($value)
- * @method static Builder|SwitchPort whereIfMtu($value)
- * @method static Builder|SwitchPort whereIfName($value)
- * @method static Builder|SwitchPort whereIfOperStatus($value)
- * @method static Builder|SwitchPort whereIfPhysAddress($value)
- * @method static Builder|SwitchPort whereLagIfIndex($value)
- * @method static Builder|SwitchPort whereLastSnmpPoll($value)
- * @method static Builder|SwitchPort whereMauAutoNegAdminState($value)
- * @method static Builder|SwitchPort whereMauAutoNegSupported($value)
- * @method static Builder|SwitchPort whereMauAvailability($value)
- * @method static Builder|SwitchPort whereMauJacktype($value)
- * @method static Builder|SwitchPort whereMauState($value)
- * @method static Builder|SwitchPort whereMauType($value)
- * @method static Builder|SwitchPort whereName($value)
- * @method static Builder|SwitchPort whereSwitchid($value)
- * @method static Builder|SwitchPort whereType($value)
- * @method static Builder|SwitchPort whereUpdatedAt($value)
+ * @method static Builder<static>|SwitchPort newModelQuery()
+ * @method static Builder<static>|SwitchPort newQuery()
+ * @method static Builder<static>|SwitchPort query()
+ * @method static Builder<static>|SwitchPort whereActive($value)
+ * @method static Builder<static>|SwitchPort whereCreatedAt($value)
+ * @method static Builder<static>|SwitchPort whereId($value)
+ * @method static Builder<static>|SwitchPort whereIfAdminStatus($value)
+ * @method static Builder<static>|SwitchPort whereIfAlias($value)
+ * @method static Builder<static>|SwitchPort whereIfHighSpeed($value)
+ * @method static Builder<static>|SwitchPort whereIfIndex($value)
+ * @method static Builder<static>|SwitchPort whereIfLastChange($value)
+ * @method static Builder<static>|SwitchPort whereIfMtu($value)
+ * @method static Builder<static>|SwitchPort whereIfName($value)
+ * @method static Builder<static>|SwitchPort whereIfOperStatus($value)
+ * @method static Builder<static>|SwitchPort whereIfPhysAddress($value)
+ * @method static Builder<static>|SwitchPort whereLagIfIndex($value)
+ * @method static Builder<static>|SwitchPort whereLastSnmpPoll($value)
+ * @method static Builder<static>|SwitchPort whereMauAutoNegAdminState($value)
+ * @method static Builder<static>|SwitchPort whereMauAutoNegSupported($value)
+ * @method static Builder<static>|SwitchPort whereMauAvailability($value)
+ * @method static Builder<static>|SwitchPort whereMauJacktype($value)
+ * @method static Builder<static>|SwitchPort whereMauState($value)
+ * @method static Builder<static>|SwitchPort whereMauType($value)
+ * @method static Builder<static>|SwitchPort whereName($value)
+ * @method static Builder<static>|SwitchPort whereSwitchid($value)
+ * @method static Builder<static>|SwitchPort whereType($value)
+ * @method static Builder<static>|SwitchPort whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class SwitchPort extends Model
@@ -138,12 +138,12 @@ class SwitchPort extends Model
         'mauAutoNegAdminState',
     ];
 
-    public const TYPE_UNSET          = 0;
-    public const TYPE_PEERING        = 1;
-    public const TYPE_MONITOR        = 2;
-    public const TYPE_CORE           = 3;
-    public const TYPE_OTHER          = 4;
-    public const TYPE_MANAGEMENT     = 5;
+    public const int TYPE_UNSET          = 0;
+    public const int TYPE_PEERING        = 1;
+    public const int TYPE_MONITOR        = 2;
+    public const int TYPE_CORE           = 3;
+    public const int TYPE_OTHER          = 4;
+    public const int TYPE_MANAGEMENT     = 5;
 
     /**
      * For resellers, we need to enforce the one port - one mac - one address rule
@@ -156,7 +156,7 @@ class SwitchPort extends Model
      *
      * @var int
      */
-    public const TYPE_FANOUT         = 6;
+    public const int TYPE_FANOUT         = 6;
 
     /**
      * For resellers, we need an uplink port(s) through which they deliver reseller
@@ -164,9 +164,9 @@ class SwitchPort extends Model
      *
      * @var int
      */
-    public const TYPE_RESELLER       = 7;
+    public const int TYPE_RESELLER       = 7;
 
-    public static $TYPES = [
+    public static array $TYPES = [
         self::TYPE_UNSET      => 'Unset / Unknown',
         self::TYPE_PEERING    => 'Peering',
         self::TYPE_MONITOR    => 'Monitor',
@@ -179,7 +179,7 @@ class SwitchPort extends Model
 
     // This array is for matching data from OSS_SNMP to the switchport database table.
     // See snmpUpdate() below
-    public static $SNMP_MAP = [
+    public static array $SNMP_MAP = [
         'descriptions'    => 'name',
         'names'           => 'ifName',
         'aliases'         => 'ifAlias',
@@ -194,7 +194,7 @@ class SwitchPort extends Model
     /**
      * Mappings for OSS_SNMP functions to SwitchPort members
      */
-    public static $OSS_SNMP_MAU_MAP = [
+    public static array $OSS_SNMP_MAU_MAP = [
         'types'             => [ 'fn' => 'mauType',         'xlate' => false ],
         'states'            => [ 'fn' => 'mauState',        'xlate' => true ],
         'mediaAvailable'    => [ 'fn' => 'mauAvailability', 'xlate' => true ],

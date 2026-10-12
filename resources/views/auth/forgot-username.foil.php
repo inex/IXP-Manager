@@ -8,9 +8,9 @@
     <div class="row">
         <div class="col-sm-12">
             <?= $t->alerts() ?>
-            <div class="tw-text-center tw-my-6">
+            <div class="tw:text-center tw:my-6">
                 <?php if( config( "identity.biglogo" ) ) :?>
-                    <img class="tw-inline img-fluid tw-w-full tw-max-w-sm tw-mx-auto" src="<?= config( "identity.biglogo" ) ?>" />
+                    <img class="tw:inline img-fluid tw:w-full tw:max-w-sm tw:mx-auto" src="<?= config( "identity.biglogo" ) ?>" />
                 <?php else: ?>
                     <h2>
                         [Your Logo Here]
@@ -25,27 +25,27 @@
 
     <div class="row"
         <div class="col-12">
-            <div class="tw-w-full tw-max-w-sm tw-mx-auto">
+            <div class="tw:w-full tw:max-w-sm tw:mx-auto">
                 <?= Former::open()->method( 'POST' )
                     ->action( route( 'forgot-password@username-email' ) )
-                    ->class( "tw-bg-white tw-shadow-md tw-rounded-sm tw-px-8 tw-pt-6 tw-pb-8 tw-mb-6" )
+                    ->class( "tw:bg-white tw:shadow-md tw:rounded-sm tw:px-8 tw:pt-6 tw:pb-8 tw:mb-6" )
                 ?>
 
-                <p class="tw-mb-6 tw-text-grey-dark tw-font-bold">
+                <p class="tw:mb-6 tw:text-grey-dark tw:font-bold">
                     Please enter your email address and we will send you any related username(s) by email.
                 </p>
 
-                <div class="tw-mb-16">
+                <div class="tw:mb-16">
                     <label class="control-label" for="email">
                         Email
                     </label>
                     <input name="email" class="form-control" id="email" type="text" placeholder="name@example.com" autofocus value="<?= $t->ee( old('email') ) ?>">
                     <?php foreach( $t->errors->get( 'email' ) as $err ): ?>
-                        <p class="tw-text-red-500 tw-text-xs tw-italic tw-mt-2"><?= $t->ee( $err ) ?></p>
+                        <p class="tw:text-red-500 tw:text-xs tw:italic tw:mt-2"><?= $t->ee( $err ) ?></p>
                     <?php endforeach; ?>
                 </div>
 
-                <div class="tw-flex tw-items-center tw-justify-between">
+                <div class="tw:flex tw:items-center tw:justify-between">
                     <a href="<?= route( "forgot-password@show-form" ) ?>">
                         Forgot Password?
                     </a>

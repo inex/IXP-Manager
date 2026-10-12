@@ -17,7 +17,7 @@
     <?php if( $t->grapher()->canAccessAllCustomerLatencyGraphs() || ( Auth::check() && Auth::getUser()->custid === $t->vi->customer->id ) ): ?>
         <div class="btn-group btn-group-sm dropup">
             <button type="button" class="btn btn-white btn-sm dropdown-toggle d-flex" data-toggle="dropdown" title="Latency Graphs"  aria-haspopup="true" aria-expanded="false">
-                <i class="fa fa-clock-o"></i>
+                <i class="fa fa-clock"></i>
             </button>
 
             <ul class="dropdown-menu">
@@ -25,7 +25,7 @@
                 <div class="dropdown-divider"></div>
                 <?php foreach( $latencyGraphs as $latencyGraph ): ?>
                     <a class="dropdown-item" href="<?= route( 'statistics@latency', [ 'vli' => $latencyGraph->vli()->id, 'protocol' => $latencyGraph->protocol() ] ) ?>">
-                        <?= $latencyGraph->vli()->getIPAddress( $latencyGraph->protocol() )->address ?>
+                        <?= $t->ee( $latencyGraph->vli()->getIPAddress( $latencyGraph->protocol() )->address ) ?>
                     </a>
                 <?php endforeach; ?>
             </ul>

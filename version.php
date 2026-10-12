@@ -25,6 +25,21 @@
 # Basic version information
 #
 
-define( 'APPLICATION_VERSION', '7.1.0' );
-define( 'APPLICATION_VERDATE', '2026022100' );
-define( 'DOCUMENTATION_VERSION', '7.1' );
+define( 'APPLICATION_VERSION', '7.4.1' );
+define( 'APPLICATION_VERDATE', '2026092800' );
+define( 'DOCUMENTATION_VERSION', '7.4' );
+define( 'APPLICATION_MANIFEST', [
+    'php_version' => [
+        'min' => '8.4.0',
+        'recommended' => '8.4.',
+        'max' => null,
+    ],
+    'mysql_version' => [
+        'min' => '8.0.0',
+        'recommended' => '8.0.',
+        'max' => null,
+    ],
+    'laravel_required_extensions' => [
+        'filter', 'hash', 'mbstring', 'openssl', 'pcre', 'pdo', 'pdo_mysql', 'session', 'tokenizer', 'xml', 'ds',
+    ],
+]);

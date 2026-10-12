@@ -1,9 +1,6 @@
 <?php
-
-namespace IXP\Mail\Customer\Note;
-
 /*
- * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,6 +20,10 @@ namespace IXP\Mail\Customer\Note;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+declare(strict_types=1);
+
+namespace IXP\Mail\Customer\Note;
+
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
@@ -39,27 +40,13 @@ use IXP\Events\Customer\Note\Changed as CustomerNoteChangedEvent;
  * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class Changed extends Mailable
+final class Changed extends Mailable
 {
     use Queueable, SerializesModels;
 
-    /**
-     *
-     * @var CustomerNoteChangedEvent
-     */
-    public $event;
-
-    /**
-     * Create a new message instance.
-     *
-     * @param CustomerNoteChangedEvent $e
-     *
-     * @return void
-     */
-    public function __construct( CustomerNoteChangedEvent $e )
-    {
-        $this->event = $e;
-    }
+    public function __construct(
+        public readonly CustomerNoteChangedEvent $event
+    ) {}
 
     /**
      * Build the message.
@@ -68,8 +55,8 @@ class Changed extends Mailable
      */
     public function build()
     {
-        $cust = $this->event->note() ? $this->event->note()->customer : $this->event->oldNote()->customer;
+        $cust = $this->event->note()->customer;
         return $this->markdown( 'customer.emails.note-changed' )
-            ->subject( env('IDENTITY_NAME') . " :: Customer Notes :: " . $cust->getFormattedName() );
+            ->subject( config( 'identity.name' ) . " :: Customer Notes :: " . $cust->getFormattedName() );
     }
 }

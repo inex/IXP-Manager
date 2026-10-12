@@ -78,7 +78,7 @@ class ConsoleServerConnectionController extends EloquentController
             'model'             => ConsoleServerConnection::class,
             'pagetitle'         => 'Console Server Connections',
             'titleSingular'     => 'Console Server Connection',
-            'nameSingular'      => 'a console server connection',
+            'nameSingular'      => 'console server connection',
             'listOrderBy'       => [ 'c.name', 'csc.port' ],
             'listOrderByDir'    => 'ASC',
             'viewFolderName'    => 'console-server-connection',
@@ -150,7 +150,7 @@ class ConsoleServerConnectionController extends EloquentController
     protected static function additionalRoutes( string $route_prefix ): void
     {
         Route::group( [ 'prefix' => ( static::$is_admin_route ? 'admin/' : '' ) . $route_prefix ], static function() use ( $route_prefix ) {
-            Route::get(     'list/port/{cs}',               'ConsoleServer\ConsoleServerConnectionController@listPort'    )->name( $route_prefix . '@listPort'   );
+            Route::get(     'list/port/{cs}',               [self::class, 'listPort']    )->name( $route_prefix . '@listPort'   );
         });
     }
 

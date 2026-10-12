@@ -41,20 +41,16 @@ use Illuminate\Database\Eloquent\{
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\Customer> $customers
  * @property-read int|null $customers_count
- * @method static Builder|CustomerTag newModelQuery()
- * @method static Builder|CustomerTag newQuery()
- * @method static Builder|CustomerTag query()
- * @method static Builder|CustomerTag whereCreatedAt($value)
- * @method static Builder|CustomerTag whereDescription($value)
- * @method static Builder|CustomerTag whereDisplayAs($value)
- * @method static Builder|CustomerTag whereId($value)
- * @method static Builder|CustomerTag whereInternalOnly($value)
- * @method static Builder|CustomerTag whereTag($value)
- * @method static Builder|CustomerTag whereUpdatedAt($value)
- * @property string $created
- * @property string $updated
- * @method static Builder|CustomerTag whereCreated($value)
- * @method static Builder|CustomerTag whereUpdated($value)
+ * @method static Builder<static>|CustomerTag newModelQuery()
+ * @method static Builder<static>|CustomerTag newQuery()
+ * @method static Builder<static>|CustomerTag query()
+ * @method static Builder<static>|CustomerTag whereCreatedAt($value)
+ * @method static Builder<static>|CustomerTag whereDescription($value)
+ * @method static Builder<static>|CustomerTag whereDisplayAs($value)
+ * @method static Builder<static>|CustomerTag whereId($value)
+ * @method static Builder<static>|CustomerTag whereInternalOnly($value)
+ * @method static Builder<static>|CustomerTag whereTag($value)
+ * @method static Builder<static>|CustomerTag whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class CustomerTag extends Model

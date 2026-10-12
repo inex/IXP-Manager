@@ -53,23 +53,23 @@ use OSS_SNMP\MIBS\Iface;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read Collection<int, \IXP\Models\CoreLink> $corelinks
  * @property-read int|null $corelinks_count
- * @method static Builder|CoreBundle active()
- * @method static Builder|CoreBundle newModelQuery()
- * @method static Builder|CoreBundle newQuery()
- * @method static Builder|CoreBundle query()
- * @method static Builder|CoreBundle whereBfd($value)
- * @method static Builder|CoreBundle whereCost($value)
- * @method static Builder|CoreBundle whereCreatedAt($value)
- * @method static Builder|CoreBundle whereDescription($value)
- * @method static Builder|CoreBundle whereEnabled($value)
- * @method static Builder|CoreBundle whereGraphTitle($value)
- * @method static Builder|CoreBundle whereId($value)
- * @method static Builder|CoreBundle whereIpv4Subnet($value)
- * @method static Builder|CoreBundle whereIpv6Subnet($value)
- * @method static Builder|CoreBundle wherePreference($value)
- * @method static Builder|CoreBundle whereStp($value)
- * @method static Builder|CoreBundle whereType($value)
- * @method static Builder|CoreBundle whereUpdatedAt($value)
+ * @method static Builder<static>|CoreBundle active()
+ * @method static Builder<static>|CoreBundle newModelQuery()
+ * @method static Builder<static>|CoreBundle newQuery()
+ * @method static Builder<static>|CoreBundle query()
+ * @method static Builder<static>|CoreBundle whereBfd($value)
+ * @method static Builder<static>|CoreBundle whereCost($value)
+ * @method static Builder<static>|CoreBundle whereCreatedAt($value)
+ * @method static Builder<static>|CoreBundle whereDescription($value)
+ * @method static Builder<static>|CoreBundle whereEnabled($value)
+ * @method static Builder<static>|CoreBundle whereGraphTitle($value)
+ * @method static Builder<static>|CoreBundle whereId($value)
+ * @method static Builder<static>|CoreBundle whereIpv4Subnet($value)
+ * @method static Builder<static>|CoreBundle whereIpv6Subnet($value)
+ * @method static Builder<static>|CoreBundle wherePreference($value)
+ * @method static Builder<static>|CoreBundle whereStp($value)
+ * @method static Builder<static>|CoreBundle whereType($value)
+ * @method static Builder<static>|CoreBundle whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class CoreBundle extends Model
@@ -112,14 +112,14 @@ class CoreBundle extends Model
     /**
      * CONST TYPES
      */
-    public const TYPE_ECMP              = 1;
-    public const TYPE_L2_LAG            = 2;
-    public const TYPE_L3_LAG            = 3;
+    public const int TYPE_ECMP              = 1;
+    public const int TYPE_L2_LAG            = 2;
+    public const int TYPE_L3_LAG            = 3;
 
     /**
      * Array STATES
      */
-    public static $TYPES = [
+    public static array $TYPES = [
         self::TYPE_ECMP          => "ECMP",
         self::TYPE_L2_LAG        => "L2-LAG (e.g. LACP)",
         self::TYPE_L3_LAG        => "L3-LAG",
@@ -236,9 +236,9 @@ class CoreBundle extends Model
     /**
      * get the duplex of the Physical interface
      *
-     * @return int|false
+     * @return false|null|string
      */
-    public function duplexPi()
+    public function duplexPi(): string|false|null
     {
         if( $cl = $this->corelinks()->first() ){
             return $cl->coreInterfaceSideA->physicalinterface->duplex;
@@ -249,10 +249,8 @@ class CoreBundle extends Model
 
     /**
      * get the auto neg of the Physical interface
-     *
-     * @return int|false
      */
-    public function autoNegPi()
+    public function autoNegPi(): bool|null
     {
         if( $cl = $this->corelinks()->first() ){
             return $cl->coreInterfaceSideA->physicalinterface->autoneg;
@@ -264,10 +262,10 @@ class CoreBundle extends Model
     /**
      * get the customer associated virtual interface of the core bundle
      */
-    public function customer(): Customer|false
+    public function customer(): Customer|null|false
     {
         $cl = $this->corelinks[ 0 ] ?? false;
-        if( $cl ){
+        if( $cl ) {
             return $cl->coreInterfaceSideA->physicalinterface->virtualInterface->customer;
         }
         return false;
@@ -318,7 +316,7 @@ class CoreBundle extends Model
     }
 
 
-        /**
+    /**
      * Check if the switch is the same for the Physical interfaces of the core links associated to the core bundle
      *
      * @param bool $sideA if true get the side A if false Side B
@@ -347,29 +345,18 @@ class CoreBundle extends Model
      */
     public function deleteObject(): bool
     {
-        try {
-            DB::beginTransaction();
-            $vis = [];
-            foreach( $this->corelinks as $cl ){
-                $cl->delete();
-                foreach( $cl->coreInterfaces() as $ci ){
-                    /** @var CoreInterface  $ci */
-                    $ci->delete();
-                    $vis[] = $ci->physicalInterface->virtualInterface;
-                    $ci->physicalInterface->delete();
-                }
-            }
+        // Take virtual interfaces before we delete relations in between
+        $vis = $this->virtualInterfaces();
 
-            foreach( $vis as $vi ){
-                $vi->delete();
-            }
-
-            $this->delete();
-            DB::commit();
-        } catch( Exception $e ) {
-            DB::rollBack();
-            throw $e;
+        foreach( $this->corelinks as $cl ){
+            $cl->deleteObject();
         }
+
+        foreach( $vis as $vi ){
+            $vi->delete();
+        }
+
+        $this->delete();
         return true;
     }
 

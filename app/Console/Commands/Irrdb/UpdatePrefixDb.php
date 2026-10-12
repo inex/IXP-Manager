@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace IXP\Console\Commands\Irrdb;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -24,6 +26,7 @@ namespace IXP\Console\Commands\Irrdb;
  */
 
 use Exception;
+use IXP\Contracts\IrrQuerier;
 use IXP\Tasks\Irrdb\UpdatePrefixDb as UpdatePrefixDbTask;
 
 /**
@@ -32,9 +35,10 @@ use IXP\Tasks\Irrdb\UpdatePrefixDb as UpdatePrefixDbTask;
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin      <yann@islandbridgenetworks.ie>
  * @author     Laszlo Kiss     <laszlo@islandbridgenetworks.ie>
+ * @author     Thomas Kerin    <thomas@islandbridgenetworks.ie>
  * @category   Irrdb
  * @package    IXP\Console\Commands
- * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class UpdatePrefixDb extends UpdateDb
@@ -60,13 +64,12 @@ class UpdatePrefixDb extends UpdateDb
     /**
      * Execute the console command.
      *
+     * @param  IrrQuerier  $irrdb - Irrdb query utility
      * @return int
-     *
-     * @throws
      *
      * @psalm-return -99|0
      */
-    public function handle(): int
+    public function handle(IrrQuerier $irrdb): int
     {
         if( !$this->setupChecks() ) {
             return -99;
@@ -76,7 +79,7 @@ class UpdatePrefixDb extends UpdateDb
 
         foreach( $customers as $c ) {
             try {
-                $task = new UpdatePrefixDbTask( $c );
+                $task = new UpdatePrefixDbTask( $irrdb, $c );
                 $this->printResults( $c, $task->update(), 'prefix' );
             } catch( Exception $e ) {
                 $this->handleException( $c, $e, 'ASN' );

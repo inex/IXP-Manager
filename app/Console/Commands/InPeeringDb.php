@@ -24,7 +24,6 @@ namespace IXP\Console\Commands;
  */
 use Illuminate\Support\Facades\DB;
 
-use Illuminate\Support\Facades\Http;
 use IXP\Models\Customer;
 use IXP\Services\PeeringDb;
 
@@ -58,7 +57,7 @@ class InPeeringDb extends  Command
      *
      * @throws
      *
-     * @psalm-return 0|1|2
+     * @psalm-return 0|2
      */
     public function handle(): int
     {

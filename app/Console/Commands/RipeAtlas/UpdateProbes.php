@@ -91,17 +91,17 @@ class UpdateProbes extends Command
     /**
      * Returns all customers or, if specified on the command line, a specific customer
      *
-     * @return Collection|array
+     * @return Collection
      *
-     * @psalm-return Collection<int, \Illuminate\Database\Eloquent\Model>|list{mixed}
+     * @psalm-return Collection<int, Customer>
      */
-    protected function resolveCustomers(): array|Collection
+    protected function resolveCustomers(): Collection
     {
         $cust = $this->argument('customer');
 
         // if no customer, return all appropriate ones:
         if( !$cust ) {
-            return Customer::CurrentActive( true, false, false )->get();
+            return Customer::currentActive( true, false, false )->get();
         }
 
         // assume ASN first:
@@ -117,7 +117,7 @@ class UpdateProbes extends Command
         }
 
         if($c) {
-            return [ $c ];
+            collect([$c]);
         }
 
         $this->error( "Could not find a customer matching asn/id/shortname: " . $cust );

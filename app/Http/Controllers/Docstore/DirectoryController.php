@@ -70,7 +70,7 @@ class DirectoryController extends Controller
     {
         $privs  = User::AUTH_PUBLIC;
         if( $user   = Auth::user() ){
-            $privs  = $user->privs;
+            $privs  = $user->privs();
         }
 
         /** @var User $us */

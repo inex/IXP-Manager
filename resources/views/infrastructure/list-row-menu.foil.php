@@ -13,7 +13,7 @@
 
     <button class="btn btn-white dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
     <ul class="dropdown-menu dropdown-menu-right">
-        <a class="dropdown-item" href="<?= route( 'switch@list' ) . "?infra=" . $t->row['id']?>">
+        <a class="dropdown-item" href="<?= route( 'switch@list',          [ 'infra' => $t->row[ 'id' ] ] ) ?>">
             View Switches
         </a>
         <a class="dropdown-item" href="<?= route( 'vlan@infra' ,          [ 'infra' => $t->row['id'] ]   )?>">

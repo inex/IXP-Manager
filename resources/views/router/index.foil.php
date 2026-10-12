@@ -50,7 +50,7 @@
                             Actions
                         </th>
                     </tr>
-                <thead>
+                </thead>
                 <tbody>
                     <?php foreach( $t->routers as $router ):
                         /** @var $router \IXP\Models\Router */?>
@@ -70,7 +70,7 @@
                                 <?= $t->ee( $router->pair?->handle )?>
                             </td>
                             <td>
-                                <?= $router->peering_ip ?>
+                                <?= $t->ee( $router->peering_ip ) ?>
                             </td>
                             <td>
                                 <?= $router->asn ?>
@@ -78,7 +78,7 @@
                             <td>
 
                                 <?php if( $router->pause_updates ): ?>
-                                    <a class="badge badge-warning tw-mr-2 btn-resume" id="btn-resume-<?= $router->id ?>" href="<?= route('router@resume' , [ 'router' => $router->id ] )?>"">
+                                    <a class="badge badge-warning tw:mr-2 btn-resume" id="btn-resume-<?= $router->id ?>" href="<?= route('router@resume' , [ 'router' => $router->id ] )?>"">
                                         <i class="fa fa-pause"></i>
                                     </a>
                                 <?php endif; ?>
@@ -153,7 +153,7 @@
                                         <?php endif; ?>
 
                                         <a class="dropdown-item btn-reset-ts" id="btn-reset-ts-<?= $router->id ?>" href="<?= route('router@resetUpdateTimestamps' , [ 'router' => $router->id ] )?>" title="Reset">
-                                            <i class="fa fa-clock-o"></i> Reset Update Timestamps
+                                            <i class="fa fa-clock"></i> Reset Update Timestamps
                                         </a>
 
                                     </div>

@@ -5,7 +5,7 @@
 
 <?php $this->section( 'page-header-preamble' ) ?>
     <a href="<?= route( 'customer@overview', [ 'cust' => $t->c->id ] ) ?>">
-        <?= $t->c->getFormattedName() ?>
+        <?= $t->ee( $t->c->getFormattedName() ) ?>
     </a>
     /
     Billing and Registration Details
@@ -48,7 +48,7 @@
                 <div class="row">
                     <div class="col-lg-6 col-md-12">
                         <h3>Registration Details</h3>
-                        <hr class="tw-mb-6">
+                        <hr class="tw:mb-6">
 
                         <?= Former::text( 'registeredName' )
                             ->label( 'Registered Name' )
@@ -62,7 +62,7 @@
 
                         <?= Former::select( 'jurisdiction' )
                             ->label( 'Jurisdiction' )
-                            ->fromQuery( $t->juridictions, 'jurisdiction' )
+                            ->fromQuery( $t->jurisdictions, fn( $row ) => $t->ee( $row->jurisdiction ) )
                             ->placeholder( 'Choose a jurisdiction' )
                             ->addClass( 'chzn-select-tag' )
                             ->blockHelp( '' );
@@ -145,7 +145,7 @@
                     <?php if( !( $t->resellerMode() && $t->c->reseller ) ): ?>
                         <div class="col-lg-6 col-md-12 full-member-details">
                             <h3>Billing Details</h3>
-                            <hr class="tw-mb-6">
+                            <hr class="tw:mb-6">
 
                             <?= Former::text( 'billingContactName' )
                                 ->label( 'Contact' )
@@ -306,18 +306,18 @@
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>
-    <script>
+    <script type="module">
         $( document ).ready( function() {
             /**
              * set the address information to the billing address info
              */
             $( "#copy-address" ).click( () => {
-                $( "#address1" ).val(  ) !== ''   ? $( "#billingAddress1"   ).val( $( "#address1" ).val() ) : '';
-                $( "#address2" ).val(  ) !== ''   ? $( "#billingAddress2"   ).val( $( "#address2" ).val() ) : '';
-                $( "#address3" ).val(  ) !== ''   ? $( "#billingAddress3"   ).val( $( "#address3" ).val() ) : '';
-                $( "#townCity" ).val(  ) !== ''   ? $( "#billingTownCity"   ).val( $( "#townCity" ).val() ): '';
-                $( "#postcode" ).val(  ) !== ''   ? $( "#billingPostcode"   ).val( $( "#postcode" ).val() ): '';
-                $( "#country" ).val(  )  !== ''   ? $( "#billingCountry"    ).val( $( "#country"  ).val() ).trigger('change.select2') : '';
+                $( "#billingAddress1" ).val( $( "#address1" ).val() );
+                $( "#billingAddress2" ).val( $( "#address2" ).val() );
+                $( "#billingAddress3" ).val( $( "#address3" ).val() );
+                $( "#billingTownCity" ).val( $( "#townCity" ).val() );
+                $( "#billingPostcode" ).val( $( "#postcode" ).val() );
+                $( "#billingCountry" ).val( $( "#country" ).val() ).trigger('change.select2');
             } );
 
 

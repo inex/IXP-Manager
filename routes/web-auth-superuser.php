@@ -22,6 +22,7 @@
  */
 
 use Illuminate\Support\Facades\Route;
+use IXP\Http\Controllers\IxpRegistrationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -79,7 +80,7 @@ Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'admin/patch-panel' ], 
     Route::get(     'create',                           'PatchPanelController@create'           )->name( 'patch-panel@create'           );
     Route::get(     'edit/{pp}',                        'PatchPanelController@edit'             )->name( 'patch-panel@edit'             );
     Route::get(     'view/{pp}',                        'PatchPanelController@view'             )->name( 'patch-panel@view'             );
-    Route::get(     'change-status/{pp}/{active}',      'PatchPanelController@changeStatus'     )->name( 'patch-panel@change-status'    );
+    Route::patch(   'change-status/{pp}',               'PatchPanelController@changeStatus'     )->name( 'patch-panel@change-status'    );
     Route::post(    'store',                            'PatchPanelController@store'            )->name( 'patch-panel@store'            );
     Route::put(    'update/{pp}',                      'PatchPanelController@update'            )->name( 'patch-panel@update'           );
     Route::get(     'expunge/{pp}',                    'PatchPanelController@expunge'           )->name( 'patch-panel@expunge'          );
@@ -298,7 +299,7 @@ Route::get( 'admin/search', 'SearchController@do' )->name( 'search' );
 /// .ENV Configurator
 ///
 Route::group( [ 'prefix' => 'admin/settings' ], function() {
-    Route::get( '', 'SettingsController@index' )->name( 'settings@index' );
+    Route::get(  '{tab?}', 'SettingsController@index'  )->name( 'settings@index'  );
     Route::post( 'update', 'SettingsController@update' )->name( 'settings@update' );
 });
 
@@ -388,6 +389,8 @@ Route::get( 'admin/rs-filters/list-customers', 'RsFilterController@listCustomers
 Route::get( 'admin/irrdb/summary', 'Irrdb\IrrdbController@summary' )->name( 'irrdb@summary' );
 
 
+Route::get(  'admin/ixp-registration',  [ IxpRegistrationController::class, 'register'       ] )->name( 'ixp-registration@register'        );
+Route::post( 'admin/ixp-registration',  [ IxpRegistrationController::class, 'registerSubmit' ] )->name( 'ixp-registration@register-submit' );
 
 
 
@@ -412,5 +415,4 @@ Route::group( [ 'prefix' => 'admin/utils', 'namespace' => 'Utils' ], function() 
 
     Route::get( 'ixf-compare', 'IxfCompareController@index' )->name('utils/ixf-compare');
     Route::post( 'do-ixf-compare', 'IxfCompareController@compare' )->name('utils/do-ixf-compare');
-
 });

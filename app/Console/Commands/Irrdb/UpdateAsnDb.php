@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace IXP\Console\Commands\Irrdb;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -24,6 +26,7 @@ namespace IXP\Console\Commands\Irrdb;
  */
 
 use Exception;
+use IXP\Contracts\IrrQuerier;
 use IXP\Tasks\Irrdb\UpdateAsnDb as UpdateAsnDbTask;
 
 /**
@@ -32,9 +35,10 @@ use IXP\Tasks\Irrdb\UpdateAsnDb as UpdateAsnDbTask;
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin      <yann@islandbridgenetworks.ie>
  * @author     Laszlo Kiss     <laszlo@islandbridgenetworks.ie>
+ * @author     Thomas Kerin    <thomas@islandbridgenetworks.ie>
  * @category   Irrdb
  * @package    IXP\Console\Commands
- * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class UpdateAsnDb extends UpdateDb
@@ -59,11 +63,11 @@ class UpdateAsnDb extends UpdateDb
     /**
      * Execute the console command.
      *
-     * @throws
+     * @param  IrrQuerier  $irrdb - Irrdb query utility
      *
      * @psalm-return -99|0
      */
-    public function handle(): int
+    public function handle(IrrQuerier $irrdb): int
     {
         if( !$this->setupChecks() ) {
             return -99;
@@ -73,7 +77,7 @@ class UpdateAsnDb extends UpdateDb
 
         foreach( $customers as $c ) {
             try {
-                $task = new UpdateAsnDbTask( $c );
+                $task = new UpdateAsnDbTask( $irrdb, $c );
                 $this->printResults( $c, $task->update(), 'asn' );
             } catch( Exception $e ) {
                 $this->handleException( $c, $e, 'ASN' );

@@ -1,9 +1,6 @@
 <?php
-
-namespace IXP\Providers;
-
 /*
- * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -14,7 +11,7 @@ namespace IXP\Providers;
  *
  * IXP Manager is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the GpNU General Public License for
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
  * more details.
  *
  * You should have received a copy of the GNU General Public License v2.0
@@ -23,50 +20,57 @@ namespace IXP\Providers;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+declare(strict_types=1);
+
+namespace IXP\Providers;
+
 use Illuminate\Auth\Events\{
     Failed,
-    Login
+    Login,
+    Logout
 };
 
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
-use IXP\Listeners\Auth\{
-    Google2FALoginSucceeded,
-    LoginFailed,
-    LoginSuccessful
+use IXP\Events\Auth\{
+    ForgotPassword,
+    ForgotUsername,
+    PasswordReset
 };
 
-use IXP\Listeners\Customer\Note\EmailOnChange;
-
-use PragmaRX\Google2FALaravel\Events\LoginSucceeded;
-
-use SocialiteProviders\Manager\SocialiteWasCalled;
-
 use IXP\Events\Customer\BillingDetailsChanged;
-
-use IXP\Listeners\Layer2Address\Changed;
 
 use IXP\Events\Layer2Address\{
     Added,
     Deleted
 };
 
+use IXP\Events\RipeAtlas\MeasurementComplete;
+
 use IXP\Events\User\{
-    UserCreated,
-    UserAddedToCustomer
+    UserAddedToCustomer,
+    UserCreated
 };
+
+use IXP\Listeners\Auth\{
+    Google2FALoginSucceeded,
+    InvalidSessionOnLogout,
+    LoginFailed,
+    LoginSuccessful
+};
+
+use IXP\Listeners\Customer\Note\EmailOnChange;
+
+use IXP\Listeners\Layer2Address\Changed;
 
 use IXP\Listeners\User\{
     SendNewUserWelcomeEmail,
     SendUserAddedToCustomerWelcomeEmail
 };
 
-use IXP\Events\Auth\{
-    ForgotUsername,
-    ForgotPassword,
-    PasswordReset
-};
-use IXP\Events\RipeAtlas\MeasurementComplete;
+use PragmaRX\Google2FALaravel\Events\LoginSucceeded;
+
+use SocialiteProviders\Manager\SocialiteWasCalled;
 
 /**
  * Event Service Provider
@@ -137,6 +141,10 @@ class EventServiceProvider extends ServiceProvider
 
         LoginSucceeded::class => [
             Google2FALoginSucceeded::class
+        ],
+
+        Logout::class => [
+            InvalidSessionOnLogout::class,
         ],
 
         SocialiteWasCalled::class => [

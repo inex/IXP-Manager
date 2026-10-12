@@ -38,12 +38,12 @@
                                     <select id="vlan" name="vlan" class="form-control">
                                         <option></option>
                                             <?php foreach( $t->vlans as $v ): ?>
-                                                <option value="<?= $v->id ?>" <?= $t->vlan && $v->id === $t->vlan ? 'selected' : '' ?>><?= $v->name ?></option>
+                                                <option value="<?= $v->id ?>" <?= $t->vlan && $v->id === $t->vlan ? 'selected' : '' ?>><?= $t->ee( $v->name ) ?></option>
                                             <?php endforeach; ?>
                                     </select>
                                 </div>
                             </li>
-                            <li class="nav-item tw-ml-12">
+                            <li class="nav-item tw:ml-12">
                                 <div class="nav-link d-flex ">
                                     <label for="period" class="col-sm-4 col-lg-5">Period:</label>
                                     <select id="period" class="form-control" name="period">
@@ -58,12 +58,12 @@
                                     <label for="period" class="col-sm-4 col-lg-5">Day:</label>
                                     <select id="day" class="form-control" name="day">
                                         <?php foreach( $t->days as $day ): ?>
-                                            <option value="<?= $day ?>" <?= $t->day === $day ? 'selected="selected"' : '' ?>><?= $day ?></option>
+                                            <option value="<?= $t->ee( $day, "attr") ?>" <?= $t->day === $day ? 'selected="selected"' : '' ?>><?= $t->ee( $day ) ?></option>
                                         <?php endforeach; ?>
                                     </select>
                                 </div>
                             </li>
-                            <li class="nav-item  tw-ml-8">
+                            <li class="nav-item  tw:ml-8">
                                 <div class="nav-link d-flex float-right">
                                     <input type="hidden" name="metric" value="max">
                                     <input type="hidden" name="category" value="bits">
@@ -81,11 +81,11 @@
                     <tr>
                         <th><?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?></th>
                         <th>Switch</th>
-                        <th class="tw-text-center">Ports</th>
-                        <th class="tw-text-center">Capacity</th>
-                        <th class="tw-text-center">In</th>
-                        <th class="tw-text-center">Out</th>
-                        <th class="tw-text-center">Utilization (%)</th>
+                        <th class="tw:text-center">Ports</th>
+                        <th class="tw:text-center">Capacity</th>
+                        <th class="tw:text-center">In</th>
+                        <th class="tw:text-center">Out</th>
+                        <th class="tw:text-center">Utilization (%)</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -94,45 +94,45 @@
                         <tr>
                             <td>
                                 <a href="<?= route( 'customer@overview', [ 'cust' => $td[ 'cid' ] ] ) ?>">
-                                    <?= $td[ 'cname' ] ?>
+                                    <?= $t->ee( $td[ 'cname' ] ) ?>
                                 </a>
                             </td>
                             <td>
-                                <?= $td[ 'switch' ] ?>
+                                <?= $t->ee( $td[ 'switch' ] ) ?>
                             </td>
-                            <td class="tw-text-center">
-                                <?= $td[ 'num_ports_in_lag' ] ?>
+                            <td class="tw:text-center">
+                                <?= $t->ee( $td[ 'num_ports_in_lag' ] ) ?>
                             </td>
-                            <td class="tw-text-center">
-                                <?= $td[ 'vi_speed' ] * 1000000 ?>
+                            <td class="tw:text-center">
+                                <?= $t->ee( $td[ 'vi_speed' ] * 1000000 ) ?>
                             </td>
-                            <td class="tw-text-center <?= $td[ 'max_in' ] < $td[ 'max_out' ] ? '' : 'tw-font-bold' ?>">
-                                <?= $td[ 'max_in' ] ?>
+                            <td class="tw:text-center <?= $td[ 'max_in' ] < $td[ 'max_out' ] ? '' : 'tw:font-bold' ?>">
+                                <?= $t->ee( $td[ 'max_in' ] ) ?>
                             </td>
-                            <td class="tw-text-center <?= $td[ 'max_in' ] > $td[ 'max_out' ] ? '' : 'tw-font-bold' ?>">
-                                <?= $td[ 'max_out' ] ?>
+                            <td class="tw:text-center <?= $td[ 'max_in' ] > $td[ 'max_out' ] ? '' : 'tw:font-bold' ?>">
+                                <?= $t->ee( $td[ 'max_out' ] ) ?>
                             </td>
-                            <td class="tw-text-center">
+                            <td class="tw:text-center">
                                 <?php if( $td[ 'util' ] >= 90 ): ?>
                                     <span class="badge badge-danger">
-                                        <?= $td[ 'util' ] ?>
+                                        <?= $t->ee( $td[ 'util' ] ) ?>
                                     </span>
                                 <?php elseif( $td[ 'util' ] >= 80 ): ?>
                                     <span class="badge badge-warning">
-                                        <?= $td[ 'util' ] ?>
+                                        <?= $t->ee( $td[ 'util' ] ) ?>
                                     </span>
                                 <?php elseif( $td[ 'util' ] >= 70 ): ?>
                                     <span class="badge badge-info">
-                                        <?= $td[ 'util' ] ?>
+                                        <?= $t->ee( $td[ 'util' ] ) ?>
                                     </span>
                                 <?php else: ?>
-                                    <?= $td[ 'util' ] ?>
+                                    <?= $t->ee( $td[ 'util' ] ) ?>
                                 <?php endif; ?>
                             </td>
                             <td>
                                 <div class="btn-group btn-group-sm">
                                     <a class="btn btn-white" href="<?= route( 'statistics@member-drilldown', [ 'type' => 'vi', 'typeid' => $td[ 'viid' ] ] ) ?>" title="Graphs">
-                                        <i class="fa fa-xs fa-area-chart"></i>
+                                        <i class="fa fa-xs fa-chart-area"></i>
                                     </a>
                                 </div>
                             </td>

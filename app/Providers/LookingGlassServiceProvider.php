@@ -61,13 +61,13 @@ class LookingGlassServiceProvider extends ServiceProvider
 
             Route::get( '',                                                 'LookingGlass@index'             )->name('index');
             Route::get( '{handle}',                                         'LookingGlass@bgpSummary'        )->name( 'bgp-sum' );
-            Route::get( '{handle}/routes/table/{table}',                    'LookingGlass@routesForTable'    );
+            Route::get( '{handle}/routes/table/{table}',                    'LookingGlass@routesForTable'    )->name( 'route-table');
             Route::get( '{handle}/routes/protocol/{protocol}',              'LookingGlass@routesForProtocol' )->name( 'route-protocol' );
-            Route::get( '{handle}/routes/export/{protocol}',                'LookingGlass@routesForExport'   );
+            Route::get( '{handle}/routes/export/{protocol}',                'LookingGlass@routesForExport'   )->name( 'route-export');
             Route::get( '{handle}/route-search',                            'LookingGlass@routeSearch'       )->name( 'route-search' );
-            Route::get( '{handle}/route/{net}/{mask}/protocol/{protocol}',  'LookingGlass@routeProtocol'     );
-            Route::get( '{handle}/route/{net}/{mask}/table/{table}',        'LookingGlass@routeTable'        );
-            Route::get( '{handle}/route/{net}/{mask}/export/{protocol}',    'LookingGlass@routeExport'       );
+            Route::get( '{handle}/route/{net}/{mask}/protocol/{protocol}',  'LookingGlass@routeProtocol'     )->name('network-route-protocol');
+            Route::get( '{handle}/route/{net}/{mask}/table/{table}',        'LookingGlass@routeTable'        )->name('network-route-table');
+            Route::get( '{handle}/route/{net}/{mask}/export/{protocol}',    'LookingGlass@routeExport'       )->name('network-route-export');
         });
 
         Route::group( [ 'middleware' => 'lookingglass', 'namespace' => 'IXP\Http\Controllers\Services',

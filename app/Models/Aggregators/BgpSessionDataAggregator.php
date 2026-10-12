@@ -4,7 +4,6 @@ namespace IXP\Models\Aggregators;
 
 use Cache;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 use IXP\Models\BgpSessionData;
 use IXP\Models\Vlan;
 use IXP\Exceptions\GeneralException as IXP_Exception;
@@ -20,17 +19,17 @@ use IXP\Exceptions\GeneralException as IXP_Exception;
  * @property int|null $packetcount
  * @property string|null $timestamp
  * @property string|null $source
- * @method static Builder|BgpSessionDataAggregator newModelQuery()
- * @method static Builder|BgpSessionDataAggregator newQuery()
- * @method static Builder|BgpSessionDataAggregator query()
- * @method static Builder|BgpSessionDataAggregator whereDstipaddressid($value)
- * @method static Builder|BgpSessionDataAggregator whereId($value)
- * @method static Builder|BgpSessionDataAggregator wherePacketcount($value)
- * @method static Builder|BgpSessionDataAggregator whereProtocol($value)
- * @method static Builder|BgpSessionDataAggregator whereSource($value)
- * @method static Builder|BgpSessionDataAggregator whereSrcipaddressid($value)
- * @method static Builder|BgpSessionDataAggregator whereTimestamp($value)
- * @method static Builder|BgpSessionDataAggregator whereVlan($value)
+ * @method static Builder<static>|BgpSessionDataAggregator newModelQuery()
+ * @method static Builder<static>|BgpSessionDataAggregator newQuery()
+ * @method static Builder<static>|BgpSessionDataAggregator query()
+ * @method static Builder<static>|BgpSessionDataAggregator whereDstipaddressid($value)
+ * @method static Builder<static>|BgpSessionDataAggregator whereId($value)
+ * @method static Builder<static>|BgpSessionDataAggregator wherePacketcount($value)
+ * @method static Builder<static>|BgpSessionDataAggregator whereProtocol($value)
+ * @method static Builder<static>|BgpSessionDataAggregator whereSource($value)
+ * @method static Builder<static>|BgpSessionDataAggregator whereSrcipaddressid($value)
+ * @method static Builder<static>|BgpSessionDataAggregator whereTimestamp($value)
+ * @method static Builder<static>|BgpSessionDataAggregator whereVlan($value)
  * @mixin \Eloquent
  */
 class BgpSessionDataAggregator extends BgpSessionData
@@ -122,8 +121,8 @@ class BgpSessionDataAggregator extends BgpSessionData
             ->when( $vlan !== null && $evlan, function( Builder $q ) use ( $evlan ) {
                 return $q->where( 'vlan.id', $evlan->id );
             } )
-            ->when( $asn !== null, function( Builder $q, $asn ) {
-                return $q->where( 'cs.autsys', (int)$asn );
+            ->when( $asn, function( Builder $q, int $asn ) {
+                return $q->where( 'cs.autsys', $asn );
             } )
             ->groupBy( [ 'bs.srcipaddressid', 'bs.dstipaddressid', 'bs.id', 'vlis.virtualinterfaceid', 'vlid.virtualinterfaceid' ] )
         ->get()->toArray();

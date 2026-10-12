@@ -27,6 +27,8 @@ use Auth;
 
 use Illuminate\Http\RedirectResponse;
 
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use IXP\Http\Controllers\Controller;
 
 use IXP\Models\{
@@ -64,33 +66,31 @@ class SwitchCustomerController extends Controller
         $user = Auth::getUser();
 
         // Check if the selected customer is associated with the current user
-         if( !( $c2u = CustomerToUser::where( 'customer_id', $cust->id )->where( 'user_id', $user->id )->first() ) ){
+        if( !( $c2u = CustomerToUser::where( 'customer_id', $cust->id )->where( 'user_id', $user->id )->first() ) ){
             AlertContainer::push( "You are not allowed to access to this " . config( "ixp_fe.lang.customer.one" ) . ".", Alert::DANGER );
             return redirect()->to( "/" );
         }
 
-         // Check if the selected customer is active
+        // Check if the selected customer is active
         if( $c2u->customer()->active()->notDeleted()->get()->isEmpty() ){
             AlertContainer::push( "You are not allowed to access to this " . config( "ixp_fe.lang.customer.one" ) . ".", Alert::DANGER );
             return redirect()->to( "/" );
         }
 
-        $c2u->update([
-            'last_login_date' => now(),
-            'last_login_from' => $this->getIp(),
-        ]);
+        $ip = $this->getIp();
+        $oldCustomer = $user->customer;
+        DB::transaction( function () use ( $c2u, $user, $cust, $ip ) {
+            $c2u->updateLastLoginInfo( $ip, 'SwitchCustomer' );
 
-        if( config( "ixp_fe.login_history.enabled" ) ) {
-            UserLoginHistory::create( [
-                'ip'                    => $this->getIp(),
-                'at'                    => now(),
-                'customer_to_user_id'   => $c2u->id,
-                'via'                   => 'SwitchCustomer'
-            ] );
-        }
+            if( config( "ixp_fe.login_history.enabled" ) ) {
+                UserLoginHistory::recordLogin( $c2u, $ip, 'SwitchCustomer' );
+            }
 
-        $user->custid = $cust->id;
-        $user->save();
+            $user->custid = $cust->id;
+            $user->save();
+        });
+
+        Log::notice( Auth::getUser()->username . '(' . Auth::getUser()->name . ') has changed customer from  ' . $oldCustomer->name . ' to ' . $cust->name  );
 
         AlertContainer::push( "You are now logged in for {$cust->name}.", Alert::SUCCESS );
         return redirect()->to( "/" );

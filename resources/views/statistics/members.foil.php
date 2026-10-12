@@ -12,8 +12,8 @@
         <?php endif; ?>
 
         (
-        <?= $t->infra ? 'MRTG: '  . $t->infra->name : '' ?>
-        <?= $t->vlan  ? 'SFlow: ' . $t->vlan->name  : '' ?>
+        <?= $t->infra ? 'MRTG: '  . $t->ee( $t->infra->name ) : '' ?>
+        <?= $t->vlan  ? 'SFlow: ' . $t->ee( $t->vlan->name )  : '' ?>
         /
         <?= $t->graph->resolveCategory( $t->graph->category() ) ?>
         /
@@ -51,7 +51,7 @@
                                         <select id="selectInfra" class="form-control" name="infra">
                                             <option>All</option>
                                             <?php foreach( $t->infras as  $i ): ?>
-                                                <option value="<?= $i[ 'id' ] ?>" <?= $t->infra && $t->infra->id === $i[ 'id' ] ? 'selected="selected"' : '' ?>><?= $i[ 'name' ] ?></option>
+                                                <option value="<?= $i[ 'id' ] ?>" <?= $t->infra && $t->infra->id === $i[ 'id' ] ? 'selected="selected"' : '' ?>><?= $t->ee( $i[ 'name' ] ) ?></option>
                                             <?php endforeach; ?>
                                         </select>
                                     </div>
@@ -105,7 +105,7 @@
                                         <select id="selectVlan" class="form-control" name="vlan">
                                             <option>All</option>
                                             <?php foreach( $t->vlans as $i ): ?>
-                                                <option value="<?= $i[ 'id' ] ?>" <?= $t->vlan && $t->vlan->id === $i[ 'id' ] ? 'selected="selected"' : '' ?>><?= $i[ 'name' ] ?></option>
+                                                <option value="<?= $i[ 'id' ] ?>" <?= $t->vlan && $t->vlan->id === $i[ 'id' ] ? 'selected="selected"' : '' ?>><?= $t->ee( $i[ 'name' ] ) ?></option>
                                             <?php endforeach; ?>
                                         </select>
                                     </div>
@@ -155,7 +155,7 @@
 
             <?php if( !sizeof( array_intersect( ['mrtg', 'sflow'], config( 'grapher.backend' ) ) ) ): ?>
 
-                <div id="infra_reg_banner" class="tw-bg-blue-100 tw-border-l-4 tw-border-blue-500 tw-text-blue-700 p-4 alert-dismissible mb-4" role="alert">
+                <div id="infra_reg_banner" class="tw:bg-blue-100 tw:border-l-4 tw:border-blue-500 tw:text-blue-700 p-4 alert-dismissible mb-4" role="alert">
                     <div class="d-flex align-items-center">
                         <div class="text-center"><i class="fa fa-info-circle fa-2x "></i></div>
                         <div class="col-sm-12">
@@ -190,12 +190,16 @@
                                 <div class="card-header d-flex">
                                     <div class="mr-auto">
                                         <b class="align-middle">
-                                            <?= $graph->customer()->getFormattedName() ?>
+                                            <?= $t->ee( $graph->customer()->getFormattedName() ) ?>
                                         </b>
                                     </div>
                                     <div class="btn-group btn-group-sm my-auto" role="group">
                                         <?php if( config('grapher.backends.sflow.enabled') && isset( IXP\Services\Grapher\Graph::CATEGORIES_BITS_PKTS[$graph->category()] ) && $t->grapher()->canAccessAllCustomerP2pGraphs() ): ?>
-                                            <a class="btn btn-white" href="<?= route('statistics@p2ps-get', [ 'cust' => $graph->customer()->id ] ) . "?category={$graph->category()}&period={$graph->period()}" ?>">
+                                            <a class="btn btn-white" href="<?= route('statistics@p2p-table', [
+                                                'custid' => $graph->customer()->id ,
+                                                'category' => $graph->category(),
+                                                'period' => $graph->period(),
+                                            ] ) ?>">
                                                 <span class="fa fa-random"></span>
                                             </a>
                                         <?php endif; ?>

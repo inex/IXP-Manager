@@ -41,7 +41,7 @@
                             Action
                         </th>
                     </tr>
-                <thead>
+                </thead>
                 <tbody>
                     <?php foreach( $t->listSr as $sflr ): /** @var \IXP\Models\SflowReceiver $sflr */ ?>
                         <tr>
@@ -85,14 +85,15 @@
 <?php $this->section( 'scripts' ) ?>
     <?= $t->insert( 'interfaces/virtual/js/interface' ); ?>
 
-    <script>
-        /**
-         * on click event to to delete a sflow receiver
-         */
-        $( ".btn-delete" ).click( function(e) {
-            e.preventDefault();
-            deletePopup( $( this ), 'sflr' );
+    <script type="module">
+        $(document).ready(function() {
+            /**
+             * on click event to delete a sflow receiver
+             */
+            $( ".btn-delete" ).click( function(e) {
+                e.preventDefault();
+                deletePopup( $( this ), 'sflr' );
+            });
         });
     </script>
-
-<?php $this->append() ?>å
+<?php $this->append() ?>

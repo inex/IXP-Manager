@@ -60,7 +60,7 @@ class AdminController extends Controller
      *
      * @param Request $r
      *
-     * @return view
+     * @return View
      */
     public function dashboard( Request $r ): View
     {

@@ -47,20 +47,20 @@ use IXP\Traits\Observable;
  * @property-read \IXP\Models\CoreBundle $coreBundle
  * @property-read \IXP\Models\CoreInterface $coreInterfaceSideA
  * @property-read \IXP\Models\CoreInterface $coreInterfaceSideB
- * @method static Builder|CoreLink active()
- * @method static Builder|CoreLink newModelQuery()
- * @method static Builder|CoreLink newQuery()
- * @method static Builder|CoreLink query()
- * @method static Builder|CoreLink whereBfd($value)
- * @method static Builder|CoreLink whereCoreBundleId($value)
- * @method static Builder|CoreLink whereCoreInterfaceSideaId($value)
- * @method static Builder|CoreLink whereCoreInterfaceSidebId($value)
- * @method static Builder|CoreLink whereCreatedAt($value)
- * @method static Builder|CoreLink whereEnabled($value)
- * @method static Builder|CoreLink whereId($value)
- * @method static Builder|CoreLink whereIpv4Subnet($value)
- * @method static Builder|CoreLink whereIpv6Subnet($value)
- * @method static Builder|CoreLink whereUpdatedAt($value)
+ * @method static Builder<static>|CoreLink active()
+ * @method static Builder<static>|CoreLink newModelQuery()
+ * @method static Builder<static>|CoreLink newQuery()
+ * @method static Builder<static>|CoreLink query()
+ * @method static Builder<static>|CoreLink whereBfd($value)
+ * @method static Builder<static>|CoreLink whereCoreBundleId($value)
+ * @method static Builder<static>|CoreLink whereCoreInterfaceSideaId($value)
+ * @method static Builder<static>|CoreLink whereCoreInterfaceSidebId($value)
+ * @method static Builder<static>|CoreLink whereCreatedAt($value)
+ * @method static Builder<static>|CoreLink whereEnabled($value)
+ * @method static Builder<static>|CoreLink whereId($value)
+ * @method static Builder<static>|CoreLink whereIpv4Subnet($value)
+ * @method static Builder<static>|CoreLink whereIpv6Subnet($value)
+ * @method static Builder<static>|CoreLink whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class CoreLink extends Model
@@ -105,6 +105,7 @@ class CoreLink extends Model
     {
         return [ $this->coreInterfaceSideA, $this->coreInterfaceSideB ];
     }
+
     /**
      * Get the corebundle that own the corelink
      *
@@ -122,10 +123,25 @@ class CoreLink extends Model
      *
      * @return Builder
      */
-
     public function scopeActive( Builder $query ): Builder
     {
         return $query->where( 'enabled' , true );
+    }
+
+    /**
+     * Deletes the core link and associated physical and core interfaces
+     */
+    public function deleteObject(): void
+    {
+        $this->delete();
+        foreach( $this->coreInterfaces() as $ci ){
+            /** @var CoreInterface  $ci */
+            $pi = $ci->physicalInterface;
+            $pi->switchPort->update( [ 'type' => SwitchPort::TYPE_UNSET ] );
+
+            $ci->delete();
+            $pi->delete();
+        }
     }
 
     /**

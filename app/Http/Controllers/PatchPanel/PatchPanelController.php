@@ -25,6 +25,7 @@ namespace IXP\Http\Controllers\PatchPanel;
 
 use Former;
 
+use IXP\Http\Requests\TogglePatchPanelActive;
 use Illuminate\Http\{
     RedirectResponse,
     Request
@@ -89,6 +90,8 @@ class PatchPanelController extends Controller
      */
     public function create(): View
     {
+        Former::populate(['active' => 1]);
+
         return view( 'patch-panel/edit' )->with([
             'pp'            => false,
             'cabinets'      => Cabinet::selectRaw( "id, concat( name, ' [', colocation, ']') AS name" )
@@ -107,7 +110,6 @@ class PatchPanelController extends Controller
     {
         $pp = PatchPanel::create( $r->merge( [
                 'location_notes' => clean( $r->location_notes ),
-                'active' => true,
                 'port_prefix' => $r->port_prefix ?? '',
             ])->all()
         );
@@ -130,6 +132,7 @@ class PatchPanelController extends Controller
         Former::populate([
             'cabinet_id'                => $r->old( 'cabinet_id',          (string)$pp->cabinet_id          ),
             'name'                      => $r->old( 'name',                $pp->name                ),
+            'active'                    => $r->old( 'active',              $pp->active              ),
             'colo_reference'            => $r->old( 'colo_reference',      $pp->colo_reference      ),
             'cable_type'                => $r->old( 'cable_type',          (string)$pp->cable_type          ),
             'connector_type'            => $r->old( 'connector_type',      (string)$pp->connector_type      ),
@@ -159,6 +162,13 @@ class PatchPanelController extends Controller
      */
     public function update( StorePatchPanel $r, PatchPanel $pp): RedirectResponse
     {
+        // Prevent modification of active status if there are ports in use
+        if ($pp->active != $r->active && $pp->patchPanelPorts()->count() !== $pp->availableForUsePortCount()) {
+            $status = $r->active ? 'active' : 'inactive';
+            AlertContainer::push( 'To make a patch panel ' . $status . ', all ports must be available for use.', Alert::DANGER );
+            return redirect()->back()->withInput();
+        }
+
         $r->merge( [ 'location_notes' => clean( $r->location_notes ) ]);
         $pp->update( $r->all() );
 
@@ -170,17 +180,17 @@ class PatchPanelController extends Controller
     /**
      * Change the status to active or inactive for a patch panel
      *
-     * @param PatchPanel    $pp
-     * @param int           $active
+     * @param PatchPanel              $pp
+     * @param TogglePatchPanelActive  $request
      *
      * @return RedirectResponse
      */
-    public function changeStatus( PatchPanel $pp, int $active ): RedirectResponse
+    public function changeStatus( PatchPanel $pp, TogglePatchPanelActive $request ): RedirectResponse
     {
-        $status = $active ? 'active' : 'inactive';
+        $status = $request->active ? 'active' : 'inactive';
 
         if( $pp->patchPanelPorts()->count() === $pp->availableForUsePortCount() ) {
-            $pp->update( [ 'active' => (bool)$active ] );
+            $pp->update( [ 'active' => (bool)$request->active ] );
             AlertContainer::push( 'The patch panel has been marked as ' . $status, Alert::SUCCESS );
         } else {
             AlertContainer::push( 'To make a patch panel ' . $status . ', all ports must be available for use.', Alert::DANGER );

@@ -28,6 +28,7 @@ use Auth, Former, Hash, Log, Mail;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Routing\Redirector;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 
@@ -50,6 +51,7 @@ use IXP\Http\Requests\User\{
 use IXP\Mail\User\UserCreated as UserCreatedeMailable;
 
 use IXP\Models\{
+    Aggregators\CustomerToUserAggregator,
     Customer,
     CustomerToUser,
     User
@@ -192,7 +194,7 @@ class UserController extends Controller
         }
 
         if( $user = User::where( 'email',  $r->email )->first() ){
-            return redirect( route( "customer-to-user@create", [ 'email' => $user->email ] ) . ( $custid ? "?cust=" . $custid : '' ) );
+            return redirect( route( "customer-to-user@create", [ 'email' => $user->email ] + ( $custid ? [ "cust" => $custid ] : [] ) ) );
         }
 
         return redirect( route("user@create" , [ 'custid' => $custid, 'email' => $r->email ] ) );
@@ -259,7 +261,6 @@ class UserController extends Controller
         $user->email            = strtolower( $r->email );
         $user->disabled         = $r->disabled ? 0 : 1; // input as enable in the view
         $user->lastupdatedby    = Auth::id();
-        $user->privs            = $r->privs;
         $user->custid           = $us->isSuperUser() ? $r->custid : $us->custid;
         $user->save();
 
@@ -381,6 +382,14 @@ class UserController extends Controller
                 abort(404, 'UserToCustomer not found');
             }
 
+            if ($us->id === $u->id) {
+                // editing our self - if we are dropping privs and there's no one else with this privilege, disallow the change
+                if ($r->privs < $c2u->privs && CustomerToUserAggregator::countActiveUsersWithPrivilege(Auth::user()->custid, $c2u->privs) === 1) {
+                    AlertContainer::push( 'You are the only user with that privilege so the change is not allowed.', Alert::WARNING );
+                    return redirect( request()->headers->get('referer', "" ) );
+                }
+            }
+
             $c2u->privs =  $r->privs;
             $c2u->save();
         }
@@ -466,6 +475,12 @@ class UserController extends Controller
             $c2u->delete();
         }
 
+        // delete application passwords
+        foreach( $u->appPasswords as $ap ) {
+            DB::table( 'app_passwords_last_logins' )->where( 'id', $ap->id )->delete();
+        }
+        $u->appPasswords()->delete();
+        
         // preserve and delete logs
         foreach( \IXP\Models\Log::whereUserId( $u->id )->orderBy( 'id', 'ASC' )->get() as $l ) {
             Log::info( "[USER DEL - PRESERVING LOG {$l->id}] {$l->model}:{$l->model_id}:{$l->action} ::: {$l->message} ::: " . json_encode( $l->models ) . " ::: {$l->created_at->format('Y-m-d H:i:s')} :::ENDS:::" );
@@ -474,14 +489,17 @@ class UserController extends Controller
 
         $u->delete();
 
-        AlertContainer::push('User deleted.', Alert::SUCCESS );
         Log::notice( $us->username." deleted user" . $u->username );
 
         // If the user delete itself and is loggued as the same customer logout
         if( Auth::id() === $u->id ) {
             Auth::logout();
+            // Note: logout triggers session invalidation so push this log after.
+            AlertContainer::push('User deleted.', Alert::SUCCESS );
             return redirect( route( "login@showForm" ) );
         }
+
+        AlertContainer::push('User deleted.', Alert::SUCCESS );
 
         if( $us->isSuperUser() && strpos( request()->headers->get('referer', "" ), "customer/overview" ) ) {
             return redirect( route( "customer@overview", [ 'cust' => $u->custid , "tab" => "users"] ) );

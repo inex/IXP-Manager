@@ -7,10 +7,10 @@
 <?php $this->section( 'page-header-preamble' ) ?>
     <?php if( $isSuperUser ): ?>
         <a href="<?= route( 'customer@overview', [ 'cust' => $t->c->id ] )?>" >
-            <?= $t->c->getFormattedName() ?>
+            <?= $t->ee( $t->c->getFormattedName() ) ?>
         </a>
     <?php else: ?>
-        IXP Port Graphs :: <?= $t->c->getFormattedName() ?>
+        IXP Port Graphs :: <?= $t->ee( $t->c->getFormattedName() ) ?>
     <?php endif; ?>
 
     / Statistics
@@ -49,7 +49,7 @@
                             <li class="nav-item">
                                 <div class="nav-link d-flex ">
                                     <label for="period" class="col-sm-4 col-lg-6">Period:</label>
-                                    <select id="period" name="period" onchange="" class="form-control" placeholder="Select State">
+                                    <select id="period" name="period" onchange="" class="form-control">
                                         <option></option>
                                         <?php foreach( IXP\Services\Grapher\Graph::PERIOD_DESCS as $pvalue => $pname ): ?>
                                             <option value="<?= $pvalue ?>" <?php if( $t->period === $pvalue ): ?> selected <?php endif; ?>  ><?= $pname ?></option>
@@ -61,7 +61,7 @@
                             <li class="nav-item float-right ml-3">
                                 <input type="submit" class="btn btn-white" value="Show Graphs">
                                 <?php if( config('grapher.backends.sflow.enabled') && $t->grapher()->canAccessAllCustomerP2pGraphs() ): ?>
-                                    <a class="btn btn-white ml-2" href="<?= route( 'statistics@p2ps-get', [ 'customer' => $t->c->id ] ) ?>">
+                                    <a class="btn btn-white ml-2" href="<?= route( 'statistics@p2p-table', [ 'custid' => $t->c->id ] ) ?>">
                                         <i class="fa fa-random"></i>&nbsp;&nbsp;P2P Graphs
                                     </a>&nbsp;&nbsp;&nbsp;&nbsp;
                                 <?php endif; ?>
@@ -83,11 +83,11 @@
                             </h3>
                             <div class="btn-group btn-group-sm my-auto">
                                 <?php if( config( 'grapher.backends.sflow.enabled' ) ): ?>
-                                    <a class="btn btn-sm btn-white" href="<?= route( 'statistics@p2ps-get', [ 'customer' => $t->c->id ] ) ?>">
+                                    <a class="btn btn-sm btn-white" href="<?= route( 'statistics@p2p-table', [ 'custid' => $t->c->id ] ) ?>">
                                         <span class="fa fa-random"></span>
                                     </a>
                                 <?php endif; ?>
-                                <a class="btn btn-white" href="<?= route( "statistics@member-drilldown" , [ "typeid" => $t->c->id, "type" => "agg" ] ) ?>/?category=<?= $t->category ?>">
+                                <a class="btn btn-white" href="<?= route( "statistics@member-drilldown" , [ "typeid" => $t->c->id, "type" => "agg" ] ) ?>/?category=<?= $t->ee( $t->category ) ?>">
                                     <i class="fa fa-search-plus"></i>
                                 </a>
                             </div>
@@ -117,22 +117,23 @@
                                 <div class="card mb-4">
                                     <div class="card-header d-flex">
                                         <h5 class="mr-auto">
-                                            LAG on <?= $pi->switchPort->switcher->cabinet->location->name ?>
-                                            / <?= $pi->switchPort->switcher->name ?>
+                                            LAG on <?= $t->ee( $pi->switchPort->switcher->cabinet->location->name ) ?>
+                                            / <?= $t->ee( $pi->switchPort->switcher->name ) ?>
                                         </h5>
                                         <?php if( $vi->isGraphable() ): ?>
                                             <div class="btn-group btn-group-sm my-auto">
                                                 <?= $t->insert( 'statistics/snippets/latency-dropup', [ 'vi' => $vi ] ) ?>
 
                                                 <?php if( config( 'grapher.backends.sflow.enabled' ) ): ?>
-                                                    <a class="btn btn-white" href="<?= route( 'statistics@p2ps-get', [ 'customer' => $t->c->id ] )
-                                                        . ( $vi->vlanInterfaces->isNotEmpty() ? '?svli=' . $vi->vlanInterfaces[ 0 ]->id : '' )
-                                                    ?>">
+                                                    <a class="btn btn-white" href="<?= route( 'statistics@p2ps-get',
+                                                            [ 'customer' => $t->c->id ] +
+                                                            ( $vi->vlanInterfaces->isNotEmpty() ? [ 'svli' => $vi->vlanInterfaces[ 0 ]->id ] : [] )
+                                                    ); ?>">
                                                         <span class="fa fa-random"></span>
                                                     </a>
                                                 <?php endif; ?>
 
-                                                <a class="btn btn-white" href="<?= route( "statistics@member-drilldown" , [ "type" => "vi", "typeid" => $vi->id  ] ) ?>/?category=<?= $t->category ?>" title="Drilldown">
+                                                <a class="btn btn-white" href="<?= route( "statistics@member-drilldown" , [ "type" => "vi", "typeid" => $vi->id  ] ) ?>/?category=<?= $t->ee( $t->category ) ?>" title="Drilldown">
                                                     <i class="fa fa-search-plus"></i>
                                                 </a>
                                             </div>
@@ -155,11 +156,11 @@
                                             <div class="mr-auto">
                                                 <h5>
                                                     <?php if( $isLAG ): ?>
-                                                        <?= $pi->switchPort->switcher->name ?> ::
-                                                        <?= $pi->switchPort->name ?> (<?= $t->scaleSpeed( $pi->configuredSpeed() ) . ( $pi->isRateLimited() ? '/' . $pi->speed() : '' ) ?>)
+                                                        <?= $t->ee( $pi->switchPort->switcher->name ) ?> ::
+                                                        <?= $t->ee( $pi->switchPort->name ) ?> (<?= $t->scaleSpeed( $pi->configuredSpeed() ) . ( $pi->isRateLimited() ? '/' . $pi->speed() : '' ) ?>)
                                                     <?php else: ?>
-                                                        <?= $pi->switchPort->switcher->cabinet->location->name ?>
-                                                        / <?= $pi->switchPort->switcher->name ?> (<?= $pi->speed() ?>)
+                                                        <?= $t->ee( $pi->switchPort->switcher->cabinet->location->name ) ?>
+                                                        / <?= $t->ee( $pi->switchPort->switcher->name ) ?> (<?= $pi->speed() ?>)
                                                     <?php endif; ?>
                                                 </h5>
                                             </div>
@@ -169,13 +170,14 @@
                                                         <?= $t->insert( 'statistics/snippets/latency-dropup', [ 'vi' => $vi ] ) ?>
                                                     <?php endif; ?>
                                                     <?php if( config( 'grapher.backends.sflow.enabled' ) ): ?>
-                                                        <a class="btn btn-white btn-sm" href="<?= route( 'statistics@p2ps-get', [ 'customer' => $t->c->id ] )
-                                                        . ( $vi->vlanInterfaces->isNotEmpty() ? '?svli=' . $vi->vlanInterfaces[ 0 ]->id : '' )
-                                                        ?>">
+                                                        <a class="btn btn-white btn-sm" href="<?= route( 'statistics@p2ps-get',
+                                                                [ 'customer' => $t->c->id ] +
+                                                                ( $vi->vlanInterfaces->isNotEmpty() ? ['svli' => $vi->vlanInterfaces[ 0 ]->id ] : [] )
+                                                        ) ?>">
                                                             <span class="fa fa-random"></span>
                                                         </a>
                                                     <?php endif; ?>
-                                                    <a class="btn btn-white btn-sm" href="<?= route( "statistics@member-drilldown" , [ "type" => "pi", "typeid" => $pi->id  ] ) ?>/?category=<?= $t->category ?>">
+                                                    <a class="btn btn-white btn-sm" href="<?= route( "statistics@member-drilldown" , [ "type" => "pi", "typeid" => $pi->id  ] ) ?>/?category=<?= $t->ee( $t->category ) ?>">
                                                         <i class="fa fa-search-plus"></i>
                                                     </a>
                                                 </div>
@@ -183,7 +185,7 @@
                                         </div>
                                         <small>
                                             <?php if( !$isLAG ): ?>
-                                                <?= $pi->switchPort->name ?>
+                                                <?= $t->ee( $pi->switchPort->name ) ?>
                                             <?php endif; ?>
 
                                             <?php if( $t->resellerMode() && $t->c->isReseller ): ?>
@@ -193,7 +195,7 @@
                                                 <?php elseif( $pi->switchPort->typeFanout() ):
                                                     $cust = $pi->relatedInterface()->virtualInterface->customer?>
                                                     Fanout Port for <a href="<?= route( 'customer@overview', [ 'cust' => $cust->id ] ) ?>">
-                                                    <?= $cust->abbreviatedName ?>
+                                                    <?= $t->ee( $cust->abbreviatedName ) ?>
                                                 </a>
                                                 <?php elseif( $pi->switchPort->typeReseller() ): ?>
                                                     Reseller Uplink Port

@@ -153,7 +153,7 @@ class UserRememberTokenControllerTest extends DuskTestCase
 
 
             /**
-             * Delete the user remember token left for the user and check that the user is loggued out
+             * Delete the user remember token left for the user and check that the user is logged out
              */
             // Get the user remember token left for the user
             $urt = UserRememberToken::whereUserId( $user->id )->first();
@@ -162,7 +162,7 @@ class UserRememberTokenControllerTest extends DuskTestCase
                 ->waitForText( 'Do you really want to delete this active login session?' )
                 ->press('Delete')
                 ->waitForLocation('/login' )
-                ->assertSee( 'You have been logged out.' );
+                ->assertSee( 'You deleted your active remember me token and have been logged out.' );
         });
     }
 }

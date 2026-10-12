@@ -4,7 +4,7 @@
 ?>
 
 <?php $this->section( 'title' ) ?>
-    Location Aggregate Graphs - <?= $t->location->name ?> (<?= IXP\Services\Grapher\Graph::resolveCategory( $t->category ) ?>)
+    Location Aggregate Graphs - <?= $t->ee( $t->location->name ) ?> (<?= IXP\Services\Grapher\Graph::resolveCategory( $t->category ) ?>)
 <?php $this->append() ?>
 
 <?php $this->section( 'content' ) ?>
@@ -29,7 +29,7 @@
                                     <label for="locationid" class="col-sm-4 col-lg-4">Location:</label>
                                     <select id="form-select-locationid" name="locationid" class="form-control">
                                         <?php foreach( $t->locations as $s ): ?>
-                                            <option value="<?= $s->id ?>" <?= $t->location->id !== $s->id ?: 'selected="selected"' ?>><?= $s->name ?></option>
+                                            <option value="<?= $s->id ?>" <?= $t->location->id !== $s->id ?: 'selected="selected"' ?>><?= $t->ee( $s->name ) ?></option>
                                         <?php endforeach; ?>
                                     </select>
                                 </div>
@@ -67,7 +67,7 @@
     </div>
 
 
-    <div class="tw-bg-blue-100 tw-border-l-4 tw-border-blue-500 tw-text-blue-700 p-4 alert-dismissible mb-4 tw-mt-16" role="alert">
+    <div class="tw:bg-blue-100 tw:border-l-4 tw:border-blue-500 tw:text-blue-700 p-4 alert-dismissible mb-4 tw:mt-16" role="alert">
         <div class="d-flex align-items-center">
             <div class="text-center"><i class="fa fa-info-circle fa-2x "></i></div>
             <div class="col-sm-12">
@@ -82,7 +82,7 @@
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>
-    <script>
+    <script type="module">
         let base_route     = "<?= route( 'statistics@location' ) ?>";
         let sel_locationid = $("#form-select-locationid");
         let sel_category   = $("#form-select-category");

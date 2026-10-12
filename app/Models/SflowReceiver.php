@@ -40,15 +40,15 @@ use IXP\Traits\Observable;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \IXP\Models\VirtualInterface|null $virtualInterface
- * @method static \Illuminate\Database\Eloquent\Builder|SflowReceiver newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|SflowReceiver newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|SflowReceiver query()
- * @method static \Illuminate\Database\Eloquent\Builder|SflowReceiver whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|SflowReceiver whereDstIp($value)
- * @method static \Illuminate\Database\Eloquent\Builder|SflowReceiver whereDstPort($value)
- * @method static \Illuminate\Database\Eloquent\Builder|SflowReceiver whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|SflowReceiver whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|SflowReceiver whereVirtualInterfaceId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SflowReceiver newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SflowReceiver newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SflowReceiver query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SflowReceiver whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SflowReceiver whereDstIp($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SflowReceiver whereDstPort($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SflowReceiver whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SflowReceiver whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SflowReceiver whereVirtualInterfaceId($value)
  * @mixin \Eloquent
  */
 class SflowReceiver extends Model

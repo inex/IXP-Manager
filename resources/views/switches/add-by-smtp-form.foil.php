@@ -60,7 +60,7 @@
                             Former::primary_submit( 'Next &gg;' )->id( 'btn-submit' )->class( "mb-2 mb-md-0" ),
                             Former::secondary_link( 'Cancel' )->href( route( $t->feParams->route_prefix.'@list') )->class( "mb-2 mb-md-0" ),
                             Former::success_button( 'Help' )->id( 'help-btn' )->class( "mb-2 mb-md-0" ),
-                            Former::secondary_link( "Manual / Non-SNMP Add" )->href( route( $t->feParams->route_prefix.'@create' ) . '?manual=1' )->class( "mb-2 mb-md-0" )
+                            Former::secondary_link( "Manual / Non-SNMP Add" )->href( route( $t->feParams->route_prefix.'@create', [ 'manual' => 1 ] ) )->class( "mb-2 mb-md-0" )
                         );
                     ?>
 

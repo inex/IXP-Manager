@@ -24,6 +24,8 @@ namespace IXP\Http\Controllers;
  */
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
 use IXP\Exceptions\GeneralException;
 use IXP\Models\Customer;
@@ -46,14 +48,14 @@ class DiagnosticsController extends Controller
 
     public function __construct() {
         $this->badgeTypes = [
-            DiagnosticResult::TYPE_FATAL   => 'tw-border-red-600 tw-bg-red-600',
-            DiagnosticResult::TYPE_ERROR   => 'tw-border-red-400 tw-bg-red-400',
-            DiagnosticResult::TYPE_WARN    => 'tw-border-amber-400 tw-bg-amber-400',
-            DiagnosticResult::TYPE_INFO    => 'tw-border-teal-400 tw-bg-teal-400',
-            DiagnosticResult::TYPE_UNKNOWN => 'tw-border-gray-600 tw-bg-gray-800',
-            DiagnosticResult::TYPE_DEBUG   => 'tw-border-gray-300 tw-bg-gray-300',
-            DiagnosticResult::TYPE_TRACE   => 'tw-border-gray-400 tw-bg-gray-400',
-            DiagnosticResult::TYPE_GOOD    => 'tw-border-lime-500 tw-bg-lime-500',
+            DiagnosticResult::TYPE_FATAL   => 'tw:border-red-600 tw:bg-red-600',
+            DiagnosticResult::TYPE_ERROR   => 'tw:border-red-400 tw:bg-red-400',
+            DiagnosticResult::TYPE_WARN    => 'tw:border-amber-400 tw:bg-amber-400',
+            DiagnosticResult::TYPE_INFO    => 'tw:border-teal-400 tw:bg-teal-400',
+            DiagnosticResult::TYPE_UNKNOWN => 'tw:border-gray-600 tw:bg-gray-800',
+            DiagnosticResult::TYPE_DEBUG   => 'tw:border-gray-300 tw:bg-gray-300',
+            DiagnosticResult::TYPE_TRACE   => 'tw:border-gray-400 tw:bg-gray-400',
+            DiagnosticResult::TYPE_GOOD    => 'tw:border-lime-500 tw:bg-lime-500',
         ];
     }
 
@@ -82,12 +84,12 @@ class DiagnosticsController extends Controller
                 result: $result,
                 narrative: '',
             );
-            $enable = ' tw-opacity-40';
+            $enable = ' tw:opacity-40';
             if(in_array($result, $enabledBadges)) {
                 $enable = '';
             }
 
-            $badgeExtension = '<span data-target="'.$text.'" data-status="'.$result.'" class="badgeButton '.$enable.' hover:tw-opacity-80 tw-cursor-pointer ';
+            $badgeExtension = '<span data-target="'.$text.'" data-status="'.$result.'" class="badgeButton '.$enable.' hover:tw:opacity-80 tw:cursor-pointer ';
 
             $badges[$text] = str_replace('<span class="',$badgeExtension,$plainResult->badge());
         }
@@ -100,6 +102,9 @@ class DiagnosticsController extends Controller
      */
     public function customer( Customer $customer, Diagnostics $diagnostics ): View
     {
+        Log::notice( Auth::getUser()->username . ' ran customer diagnostics for ' .
+            'customer with ID ' . $customer->id);
+
         $resultSets = [];
 
         $resultSets[] = $diagnostics->getCustomerDiagnostics($customer);
@@ -150,6 +155,9 @@ class DiagnosticsController extends Controller
      */
     public function irrdb( Customer $customer, Diagnostics $diagnostics ): View
     {
+        Log::notice( Auth::getUser()->username . ' ran IRRDB diagnostics for ' .
+            'customer with ID ' . $customer->id );
+
         $resultSets = [];
 
         $resultSets[] = $diagnostics->getCustomerIrrdbDiagnostics($customer);

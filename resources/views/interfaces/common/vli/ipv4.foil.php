@@ -26,15 +26,18 @@
 
         <?= Former::text( 'ipv4bgpmd5secret' )
             ->label( 'IPv4 BGP MD5 Secret' )
-            ->append( '<button class="btn-white btn glyphicon-generator glyphicon-generator-ipv4" id="generator-ipv4" type="button"><i class="fa fa-refresh"> </i></button>' )
+            ->append( '<button class="btn-white btn glyphicon-generator glyphicon-generator-ipv4" id="generator-ipv4" type="button"><i class="fa fa-arrows-rotate"> </i></button>' )
             ->blockHelp( 'MD5 secret for route server / collector / AS112 BGP sessions. If supported by your browser, it can be generated in a cryptographically secure manner by clicking the <em>refresh</em> button.' );
         ?>
-
-        <?= Former::number( 'ipv4maxbgpprefix' )
-                ->label( 'Max BGP Prefixes' )
-                ->blockHelp( 'The maximum IPv4 prefixes that any router configured via IXP Manager should accept for this endpoint. '
-                        . 'See <a href="https://docs.ixpmanager.org/latest/usage/customers/#peering-details">the official documentation</a> for more details.' );
-        ?>
+        
+        <?php if( config('ixp_fe.vlaninterfaces.max_prefix_enabled') || ( $t->vli && $t->vli->ipv4maxbgpprefix ) ): ?>
+            <?= Former::number( 'ipv4maxbgpprefix' )
+                    ->label( 'Max BGP Prefixes' )
+                    ->title( 'Per VLAN interface max. prefix disabled. Update via Edit ' . ucfirst(config( 'ixp_fe.lang.customer.one' )) . ' Details page.' )
+                    ->blockHelp( 'The maximum IPv4 prefixes that any router configured via IXP Manager should accept for this endpoint. '
+                            . 'See <a href="https://docs.ixpmanager.org/latest/usage/customers/#peering-details">the official documentation</a> for more details.' );
+            ?>
+        <?php endif; ?>
 
         <?= Former::checkbox( 'ipv4canping' )
             ->label( '&nbsp;' )

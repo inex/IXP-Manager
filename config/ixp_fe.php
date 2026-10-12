@@ -29,7 +29,7 @@ return [
     |
     */
     'skinning' => [
-        // https://github.com/inex/IXP-Manager/wiki/Skinning :
+        // https://docs.ixpmanager.org/latest/features/skinning/ :
         'smarty' => env( 'VIEW_SMARTY_SKIN', "" ),
     ],
 
@@ -81,6 +81,7 @@ return [
     */
     'frontend' => [
         'disabled' => [
+            'app-passwords'             => env( 'IXP_FE_FRONTEND_DISABLED_APP_PASSWORD',      false ),
             'console-server-connection' => env( 'IXP_FE_FRONTEND_DISABLED_CONSOLE',           false ),
             'cust-kit'                  => env( 'IXP_FE_FRONTEND_DISABLED_CUSTKIT',           false ),
             'docstore'                  => env( 'IXP_FE_FRONTEND_DISABLED_DOCSTORE',          false ),
@@ -93,34 +94,10 @@ return [
             'peering-matrix'            => env( 'IXP_FE_FRONTEND_DISABLED_PEERING_MATRIX',    false ),
             'phpinfo'                   => env( 'IXP_FE_FRONTEND_DISABLED_PHPINFO',           true  ),
             'ripe-atlas'                => true, // not ready for use yet
-            'rs-prefixes'               => env( 'IXP_FE_FRONTEND_DISABLED_RS_PREFIXES',       true  ),
             'rs-filters'                => env( 'IXP_FE_FRONTEND_DISABLED_RS_FILTERS',        true  ),
             'settings'                  => env( 'IXP_FE_FRONTEND_DISABLED_SETTINGS',          false ),
         ],
     ],
-
-    /*
-    |--------------------------------------------------------------------------
-    | Route Server Prefixes Access permissions
-    |--------------------------------------------------------------------------
-    |
-    | Generally speaking, the filtering of route server prefixes is visible
-    | on looking glasses / via comparison to route collector / etc.
-    |
-    | However, some IXs may wish to restrict access to the Route Server Prefix
-    | Analysis Tool.
-    |
-    | The following options apply:
-    |
-    | 1. \IXP\Models\User::AUTH_PUBLIC     -> tool is publicly available to all
-    | 2. \IXP\Models\User::AUTH_CUSTUSER   -> tool is available to any logged in user
-    | 3. \IXP\Models\User::AUTH_SUPERUSER  -> summary and any customer access is restricted to superadmins,
-    |                                      logged in users may see their prefixes.
-    */
-    'rs-prefixes' => [
-        'access'  => env( 'IXP_FE_RS_PREFIXES_ACCESS', \IXP\Models\User::AUTH_SUPERUSER ),
-    ],
-
 
 
     /*
@@ -228,12 +205,49 @@ return [
    */
     'api_keys' => [
 
-        // when an API key is created it is only shown once in the UI and there after it is hidden.
-        // set IXP_FE_API_KEYS_SHOW=true in .env to show the keys
-        'show_keys'       => env( 'IXP_FE_API_KEYS_SHOW', false ),
-
         // maximum API keys per user
         'max_keys'        => env( 'IXP_FE_API_KEYS_MAX', 10 ),
+
+        // History retention in days
+        'history_retention_days' => env('IXP_FE_API_KEYS_HISTORY_RETENTION_DAYS', 90),
+
+        // Maximum duration for api key expiry (e.g. '30 days', '12 months')
+        'max_expires_duration' => env('IXP_FE_API_KEYS_MAX_EXPIRES_DURATION', '1 year' ),
+
+    ],
+
+    /*
+   |--------------------------------------------------------------------------
+   | App Passwords
+   |--------------------------------------------------------------------------
+   |
+   */
+    'app_passwords' => [
+
+        // maximum app passwords per user
+        'max_passwords'        => env( 'IXP_FE_APP_PASSWORDS_MAX', 50 ),
+
+        // encryption scheme
+        'encryption' => [
+            // Available algorithms the user can choose from (if allowed to change)
+            'available_algorithms' => [
+                'bcrypt'   => 'Bcrypt',
+                'argon'    => 'Argon2i',
+                'argon2id' => 'Argon2id',
+                'sha256'   => 'SHA256',
+            ],
+            // Default algorithm to use
+            'default_algorithm' => env('IXP_FE_APP_PASSWORDS_DEFAULT_ALGO', 'bcrypt'),
+            
+            // Can the user change the algorithm on creation?
+            'user_can_change'   => env('IXP_FE_APP_PASSWORDS_USER_CAN_CHANGE', false),
+        ],
+
+        // History retention in days
+        'history_retention_days' => env('IXP_FE_APP_PASSWORDS_HISTORY_RETENTION_DAYS', 90),
+
+        // Maximum duration for password expiry (e.g. '30 days', '12 months')
+        'max_expires_duration' => env('IXP_FE_APP_PASSWORDS_MAX_EXPIRES_DURATION', '1 year' ),
     ],
 
     /*
@@ -244,6 +258,7 @@ return [
     */
     'vlaninterfaces' => [
         'hostname_required'  => env( 'IXP_FE_VLANINTERFACES_HOSTNAME_REQUIRED', true ),
+        'max_prefix_enabled' => env( 'IXP_FE_VLANINTERFACES_MAX_PREFIX_ENABLED', true ),
     ],
 
     /*
@@ -270,6 +285,14 @@ return [
 
     ],
 
-
+    /*
+    |--------------------------------------------------------------------------
+    | Documentation
+    |--------------------------------------------------------------------------
+    |
+    */
+    'documentation' => [
+        'base_url' => env('IXP_FE_DOCUMENTATION_BASE_URL', 'https://docs.ixpmanager.org/' . DOCUMENTATION_VERSION),
+    ]
 
 ];

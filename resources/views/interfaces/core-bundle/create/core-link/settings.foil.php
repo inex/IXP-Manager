@@ -10,7 +10,7 @@
                 <?= Former::select( 'switch-a' )
                     ->id( 'switch-a' )
                     ->label( 'Switch A' )
-                    ->fromQuery( $t->switches, 'name' )
+                    ->fromQuery( $t->switches, fn ( $model ) => $t->ee( $model->name ) )
                     ->required( true )
                     ->placeholder( 'Choose a switch' )
                     ->addClass( 'chzn-select switch-dd' )

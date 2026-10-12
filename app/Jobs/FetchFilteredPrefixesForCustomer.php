@@ -29,6 +29,7 @@ use Carbon\Carbon;
 
 use Illuminate\Bus\Queueable;
 
+use Illuminate\Support\Facades\Log;
 use Illuminate\Queue\{
     SerializesModels,
     InteractsWithQueue
@@ -97,6 +98,7 @@ class FetchFilteredPrefixesForCustomer extends Job implements ShouldQueue
             throw new GeneralException('A persistent cache is required to fetch filtered prefixes' );
         }
 
+        $taskBeganAt = now();
 
         // so, find all vlan interfaces where this customer is configured for route server client
         // them, for each router, get a list of filtered prefixes and record reason(s) and routers
@@ -123,18 +125,12 @@ class FetchFilteredPrefixesForCustomer extends Job implements ShouldQueue
 
         // and jam the results into the cache
         Cache::put('filtered-prefixes-' . $this->customer->id, $this->filteredPrefixes, 900);
+
+        Log::notice( 'Completed fetching filtered prefixes for customer with ID: ' . $this->customer->id . '. Took ' . $taskBeganAt->diffInMilliseconds() . ' ms');
     }
 
     /**
      * Query the various route servers for filtered prefixes and add them to the $this->filteredPrefixes array
-     *
-     * @param LookingGlass      $lg
-     * @param VlanInterface     $vli
-     * @param int               $ipproto
-     *
-     * @return void
-     *
-     * @throws
      */
     private function queryRouteServer( LookingGlass $lg, VlanInterface $vli, int $ipproto ): void
     {

@@ -1,9 +1,6 @@
 <?php
-
-namespace IXP\Events\Customer\Note;
-
 /*
- * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,7 +20,10 @@ namespace IXP\Events\Customer\Note;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use IXP\Exceptions\GeneralException;
+declare(strict_types=1);
+
+namespace IXP\Events\Customer\Note;
+
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -46,61 +46,35 @@ use IXP\Models\{
  */
 abstract class Changed implements ShouldQueue
 {
-    use Dispatchable, SerializesModels, InteractsWithQueue;
-
-    /**
-     * old customer note
-     */
-    protected ?CustomerNote $ocn;
-
-    /**
-     * new customer note
-     */
-    protected CustomerNote $cn;
+    use SerializesModels, InteractsWithQueue;
 
     /**
      * @var Customer
      */
-    protected $cust;
+    protected Customer $cust;
 
     /**
      * @var string
      */
-    protected $type;
-
-    /**
-     * @var User
-     */
-    protected $user;
+    protected string $type;
 
     /**
      * Create a new event instance.
      *
      * @param  CustomerNote|null    $ocn
      * @param  CustomerNote         $cn
-     * @param User                  $user
-     *
-     * @throws GeneralException
+     * @param  User                 $user
      */
-    public function __construct( ?CustomerNote $ocn, CustomerNote $cn, User $user )
+    public function __construct(
+        protected readonly ?CustomerNote $ocn,
+        protected readonly CustomerNote $cn,
+        protected readonly User $user )
     {
-        $this->ocn      = $ocn;
-        $this->cn       = $cn;
-        $this->user     = $user;
-
-        if( $ocn ) {
-            $this->cust = $ocn->customer;
-        } else if( $cn ) {
-            $this->cust = $cn->customer;
-        } else {
-            throw new GeneralException( "Customer note is missing." );
-        }
+        $this->cust = $ocn?->customer ?? $cn->customer;
     }
 
     /**
      * Get customer
-     *
-     * @return Customer
      */
     public function customer(): Customer
     {
@@ -108,9 +82,7 @@ abstract class Changed implements ShouldQueue
     }
 
     /**
-     * Get customer
-     *
-     * @return User
+     * Get user
      */
     public function user(): User
     {
@@ -127,8 +99,6 @@ abstract class Changed implements ShouldQueue
 
     /**
      * Get note
-     *
-     * @return CustomerNote
      */
     public function note(): CustomerNote
     {
@@ -137,8 +107,6 @@ abstract class Changed implements ShouldQueue
 
     /**
      * Get either note: get the new note if set, otherwise the old note
-     *
-     * @return CustomerNote
      */
     public function eitherNote(): CustomerNote
     {
@@ -148,8 +116,6 @@ abstract class Changed implements ShouldQueue
 
     /**
      * Is the event type: a customer note was added
-     *
-     * @return bool
      */
     public function typeCreated(): bool
     {
@@ -158,8 +124,6 @@ abstract class Changed implements ShouldQueue
 
     /**
      * Is the event type: a customer note was deleted
-     *
-     * @return bool
      */
     public function typeDeleted(): bool
     {
@@ -168,8 +132,6 @@ abstract class Changed implements ShouldQueue
 
     /**
      * Is the event type: a customer note was edited
-     *
-     * @return bool
      */
     public function typeEdited(): bool
     {
@@ -178,8 +140,6 @@ abstract class Changed implements ShouldQueue
 
     /**
      * Resolve the type
-     *
-     * @return string
      *
      * @psalm-return 'Created'|'Deleted'|'Edited'
      */

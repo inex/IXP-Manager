@@ -31,7 +31,7 @@
 ;; to contacts such as 'Admin', 'Billing', 'Technical', 'Marketing'. These are set up
 ;; by the default fixtures.
 ;;
-;; See: https://github.com/inex/IXP-Manager/wiki/Contact-Groups
+;; See: https://docs.ixpmanager.org/latest/usage/contacts/#contact-groups
 */
 
 

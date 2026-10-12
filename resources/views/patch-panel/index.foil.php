@@ -41,7 +41,7 @@
                                     <select id="adv-search-select-locations" name="location" class="form-control">
                                         <option value="all">All Facilities</option>
                                         <?php foreach( $t->locations as $l ): ?>
-                                            <option value="<?= $l->id ?>"><?= $l->name ?></option>
+                                            <option value="<?= $l->id ?>"><?= $t->ee( $l->name ) ?></option>
                                         <?php endforeach; ?>
                                     </select>
 
@@ -139,7 +139,7 @@
                                 Action
                             </th>
                         </tr>
-                    <thead>
+                    </thead>
                     <tbody>
                         <?php foreach( $t->patchPanels as $pp ):
                             /** @var \IXP\Models\PatchPanel $pp */
@@ -195,12 +195,12 @@
                                         </a>
 
                                         <?php if( $pp->active ): ?>
-                                            <a class="btn btn-white btn-delete" id='list-delete-<?= $pp->id ?>' href="<?= route( 'patch-panel@change-status' , [ 'pp' => $pp->id, 'active' => ( $pp->active ? '0' : '1' ) ] ) ?>" title="Make Inactive">
+                                            <a class="btn btn-white btn-change-status" id='list-deactivate-<?= $pp->id ?>' href="<?= route( 'patch-panel@change-status' , [ 'pp' => $pp->id ] ) ?>" data-active="0" title="Make Inactive">
                                                 <i class="fa fa-trash"></i>
                                             </a>
                                         <?php else: ?>
-                                            <a class="btn btn-white" id='list-reactivate-<?= $pp->id ?>' href="<?= route( 'patch-panel@change-status' , [ 'pp' => $pp->id, 'active' => ( $pp->active ? '0' : '1' ) ] ) ?>" title="Reactive">
-                                                <i class="fa fa-repeat"></i>
+                                            <a class="btn btn-white btn-change-status" id='list-reactivate-<?= $pp->id ?>' href="<?= route( 'patch-panel@change-status' , [ 'pp' => $pp->id ] ) ?>" data-active="1" title="Reactivate">
+                                                <i class="fa fa-rotate-right"></i>
                                             </a>
                                             <a class="btn btn-danger" id='list-expunge-<?= $pp->id ?>' href="<?= route( 'patch-panel@expunge' , [ 'pp' => $pp->id ] ) ?>" title="Expunge">
                                                 <i class="fa fa-trash"></i>

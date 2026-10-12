@@ -27,6 +27,8 @@ use Former, Mail, Redirect;
 
 use Barryvdh\DomPDF\PDF;
 
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use IXP\Models\PatchPanelPort;
 
 use Illuminate\Http\{
@@ -53,6 +55,7 @@ use IXP\Utils\View\Alert\{
  *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @author     Thomas Kerin <thomas@islandbridgenetworks.ie>
  * @category   IXP
  * @package    IXP\Http\Controllers\PatchPanel\Port
  * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
@@ -75,7 +78,7 @@ class EmailController extends Common
         return view( 'patch-panel-port/email-form' )->with([
             'ppp'                           => $ppp,
             'emailType'                     => $type,
-            'body'                          => $mailable->getBody()
+            'body'                          => $mailable->getPopulatedEmailTemplate()
         ]);
     }
 
@@ -93,7 +96,6 @@ class EmailController extends Common
         $mailable = $this->setupEmailRoutes( $ppp, $type );
 
         $mailable->prepareFromRequest( $r );
-        $mailable->prepareBody( $r );
 
         try {
             $mailable->checkIfSendable();
@@ -127,6 +129,7 @@ class EmailController extends Common
 
         Mail::send( $mailable );
 
+        Log::notice( Auth::getUser()->username . ' sent a/an ' . PatchPanelPort::$EMAIL_CLASSES[ $type ] . ' email for patch panel port ' . $ppp->name() );
         AlertContainer::push( "Email sent.", Alert::SUCCESS );
 
         return Redirect::to( route( 'patch-panel-port@list-for-patch-panel', [ "pp" => $ppp->patch_panel_id ] ) );
@@ -137,19 +140,16 @@ class EmailController extends Common
      *
      * @param PatchPanelPort    $ppp
      * @param int               $type Email type to send
-     * @param Email|null        $mailable
      *
      * @return  Email
      */
-    private function setupEmailRoutes( PatchPanelPort $ppp, int $type, Email $mailable = null ): Email
+    private function setupEmailRoutes( PatchPanelPort $ppp, int $type ): Email
     {
         if( !array_key_exists( $type, PatchPanelPort::$EMAIL_CLASSES ) ) {
             abort(404, 'Email type not found');
         }
 
-        if( !$mailable ) {
-            $mailable = new PatchPanelPort::$EMAIL_CLASSES[ $type ]( $ppp );
-        }
+        $mailable = new PatchPanelPort::$EMAIL_CLASSES[ $type ]( $ppp );
 
         Former::populate([
             'email_to'       => implode( ',', $mailable->getRecipientEmails('to') ),

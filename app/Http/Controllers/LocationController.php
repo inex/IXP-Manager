@@ -27,6 +27,8 @@ use Countries, Former;
 
 use Illuminate\Database\Eloquent\Builder;
 
+use IXP\Rules\IsCountry;
+use IXP\Utils\CountryUtils;
 use Illuminate\Http\{
     Request,
     RedirectResponse
@@ -186,7 +188,7 @@ class LocationController extends EloquentController
             'tag'                   => request()->old( 'tag',         $this->object->tag            ),
             'address'               => request()->old( 'address',     $this->object->address        ),
             'city'                  => request()->old( 'city',        $this->object->city           ),
-            'country'               => request()->old( 'country', in_array( $this->object->country, array_values( Countries::getListForSelect( 'iso_3166_2' ) ), false ) ? $this->object->country : null ),
+            'country'               => request()->old( 'country',     CountryUtils::isKnownBy($this->object->country) ? $this->object->country : null ),
             'nocphone'              => request()->old( 'nocphone',    $this->object->nocphone       ),
             'nocfax'                => request()->old( 'nocfax',      $this->object->nocfax         ),
             'nocemail'              => request()->old( 'nocemail',    $this->object->nocemail       ),
@@ -260,7 +262,7 @@ class LocationController extends EloquentController
             'shortname'         => 'required|string|max:255|unique:location,shortname' . ( $r->id ? ',' . $r->id : '' ),
             'tag'               => 'required|string|max:255',
             'city'              => 'required|string|max:50',
-            'country'           => 'required|string|max:2|in:' . implode( ',', array_values( Countries::getListForSelect( 'iso_3166_2' ) ) ),
+            'country'           => ['required', 'string', 'max:2', new IsCountry],
             'nocemail'          => 'nullable|email',
             'officeemail'       => 'nullable|email',
         ] );

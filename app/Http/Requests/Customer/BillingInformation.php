@@ -30,6 +30,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use IXP\Models\CompanyBillingDetail;
 
 use IXP\Models\User;
+use IXP\Rules\IsCountry;
 use Webpatser\Countries\CountriesFacade as Countries;
 
 /**
@@ -61,7 +62,7 @@ class BillingInformation extends FormRequest
      *
      * @return string[]
      *
-     * @psalm-return array{registeredName: 'nullable|string|max:255', companyNumber: 'nullable|string|max:255', jurisdiction: 'nullable|string|max:255', address1: 'nullable|string|max:255', address2: 'nullable|string|max:255', address3: 'nullable|string|max:255', townCity: 'nullable|string|max:255', postcode: 'nullable|string|max:255', country: string, notes: 'nullable|string', billingContactName: 'nullable|string|max:255', billingFrequency: string, billingAddress1: 'nullable|string|max:255', billingAddress2: 'nullable|string|max:255', billingAddress3: 'nullable|string|max:255', billingTownCity: 'nullable|string|max:255', billingPostcode: 'nullable|string|max:255', billingCountry: string, billingEmail: 'nullable|email|max:255', billingTelephone: 'nullable|string|max:255', invoiceMethod: string, invoiceEmail: 'nullable|string|max:255', vatRate: 'nullable|string|max:255', vatNumber: 'nullable|string|max:255', purchaseOrderNumber: 'nullable|string|max:50', billingNotes: 'nullable|string'}
+     * @psalm-return array{address1: 'nullable|string|max:255', address2: 'nullable|string|max:255', address3: 'nullable|string|max:255', billingAddress1: 'nullable|string|max:255', billingAddress2: 'nullable|string|max:255', billingAddress3: 'nullable|string|max:255', billingContactName: 'nullable|string|max:255', billingCountry: non-falsy-string, billingEmail: 'nullable|email|max:255', billingFrequency: non-falsy-string, billingNotes: 'nullable|string', billingPostcode: 'nullable|string|max:255', billingTelephone: 'nullable|string|max:255', billingTownCity: 'nullable|string|max:255', companyNumber: 'nullable|string|max:255', country: list{'nullable', 'string', 'max:255', IsCountry}, invoiceEmail: 'nullable|string|max:255', invoiceMethod: non-falsy-string, jurisdiction: 'nullable|string|max:255', notes: 'nullable|string', postcode: 'nullable|string|max:255', purchaseOrderNumber: 'nullable|string|max:50', registeredName: 'nullable|string|max:255', townCity: 'nullable|string|max:255', vatNumber: 'nullable|string|max:255', vatRate: 'nullable|string|max:255'}
      */
     public function rules(): array
     {
@@ -74,7 +75,7 @@ class BillingInformation extends FormRequest
             'address3'              => 'nullable|string|max:255',
             'townCity'              => 'nullable|string|max:255',
             'postcode'              => 'nullable|string|max:255',
-            'country'               => 'nullable|string|max:255|in:' . implode( ',', array_values( Countries::getListForSelect( 'iso_3166_2' ) ) ),
+            'country'               => ['nullable', 'string', 'max:255', new IsCountry],
             'notes'                 => 'nullable|string',
 
             'billingContactName'    => 'nullable|string|max:255',

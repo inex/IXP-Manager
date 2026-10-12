@@ -58,6 +58,7 @@ use OSS_SNMP\MIBS\Iface;
  *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @author     Thomas Kerin <thomas@islandbridgenetworks.ie>
  * @category   IXP
  * @package    IXP\Http\Controllers\Switches
  * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
@@ -85,19 +86,17 @@ class SwitchPortController extends EloquentController
             'model'                     => SwitchPort::class,
             'pagetitle'                 => 'Switch Ports',
             'titleSingular'             => 'Switch Port',
-            'nameSingular'              => 'a switch port',
+            'nameSingular'              => 'switch port',
             'listOrderBy'               => 'name',
             'listOrderByDir'            => 'ASC',
             'viewFolderName'            => 'switch-port',
             'route_action'              => 'list',
             'route_prefix_page_title'   => 'switch',
-            'pagetitlepostamble'        => 'Switch Port',
             'listColumns'               => [
                 'switchname'  => [
                     'title'      => 'Switch',
                     'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
-                    'controller' => 'switch',
-                    'action'     => 'view',
+                    'route'      => 'switch@view',
                     'idField'    => 'switchid'
                 ],
                 'name'           => 'Description',
@@ -131,16 +130,16 @@ class SwitchPortController extends EloquentController
     {
         // NB: this route is marked as 'read-only' to disable normal CRUD operations. It's not really read-only.
         Route::group( [  'prefix' => ( static::$is_admin_route ? 'admin/' : '' ) . $route_prefix ], static function() {
-            Route::get(  'unused-optics',       'Switches\SwitchPortController@unusedOptics'   )->name( 'switch-port@unused-optics'     );
-            Route::get(  'optic-inventory',     'Switches\SwitchPortController@opticInventory' )->name( 'switch-port@optic-inventory'   );
-            Route::get(  'optic-list',          'Switches\SwitchPortController@opticList'      )->name( 'switch-port@optic-list'        );
-            Route::get(  'list-mau/{switch}',   'Switches\SwitchPortController@listMau'        )->name( 'switch-port@list-mau'          );
-            Route::get(  'op-status/{switch}',  'Switches\SwitchPortController@listOpStatus'   )->name( 'switch-port@list-op-status'    );
-            Route::get(  'snmp-poll/{switch}',  'Switches\SwitchPortController@snmpPoll'       )->name( 'switch-port@snmp-poll'         );
+            Route::get(  'unused-optics',       [self::class, 'unusedOptics']   )->name( 'switch-port@unused-optics'     );
+            Route::get(  'optic-inventory',     [self::class, 'opticInventory'] )->name( 'switch-port@optic-inventory'   );
+            Route::get(  'optic-list',          [self::class, 'opticList']      )->name( 'switch-port@optic-list'        );
+            Route::get(  'list-mau/{switch}',   [self::class, 'listMau']        )->name( 'switch-port@list-mau'          );
+            Route::get(  'op-status/{switch}',  [self::class, 'listOpStatus']   )->name( 'switch-port@list-op-status'    );
+            Route::get(  'snmp-poll/{switch}',  [self::class, 'snmpPoll']       )->name( 'switch-port@snmp-poll'         );
 
-            Route::post( 'set-type',            'Switches\SwitchPortController@setType'        )->name( 'switch-port@set-type'          );
-            Route::post( 'change-status',       'Switches\SwitchPortController@changeStatus'   )->name( 'switch-port@change-status'     );
-            Route::delete( 'delete-snmp-poll',  'Switches\SwitchPortController@deleteSnmpPoll' )->name( 'switch-port@delete-snmp-poll'  );
+            Route::post( 'set-type',            [self::class, 'setType']        )->name( 'switch-port@set-type'          );
+            Route::post( 'change-status',       [self::class, 'changeStatus']   )->name( 'switch-port@change-status'     );
+            Route::delete( 'delete-snmp-poll',  [self::class, 'deleteSnmpPoll'] )->name( 'switch-port@delete-snmp-poll'  );
         });
     }
 
@@ -268,7 +267,7 @@ class SwitchPortController extends EloquentController
      * @psalm-return array{object: mixed, switches: mixed}
      */
     #[\Override]
-    protected function editPrepareForm( $id = null ): array
+    protected function editPrepareForm( int $id ): array
     {
         $this->object = SwitchPort::findOrFail( $id );
 
@@ -376,7 +375,7 @@ class SwitchPortController extends EloquentController
     /**
      * Display the unused optics
      *
-     * @return view
+     * @return View
      *
      * @throws
      */
@@ -553,9 +552,9 @@ class SwitchPortController extends EloquentController
      *
      * @param Switcher $switch
      *
-     * @return view
+     * @return View
      */
-    public function listOpStatus( Switcher $switch  ): view
+    public function listOpStatus( Switcher $switch  ): View
     {
         // to refresh switch and switch port details via SNMP
         try {
@@ -603,9 +602,9 @@ class SwitchPortController extends EloquentController
      *
      * @param Switcher $switch Switch
      *
-     * @return view
+     * @return View
      */
-    public function snmpPoll( Switcher $switch ): view
+    public function snmpPoll( Switcher $switch ): View
     {
         if( !$switch->active ) {
             AlertContainer::push( "SNMP Polling of ports is only valid for switches that are active", Alert::DANGER );
@@ -765,7 +764,7 @@ class SwitchPortController extends EloquentController
             'cnt'  => [
                 'title'                 => 'Count',
                 'type'                  => self::$FE_COL_TYPES[ 'HAS_ONE' ],
-                'controller'            => 'switch-port',
+                'controller'            => 'admin/switch-port',
                 'action'                => 'optic-list',
                 'nameIdOptionalParam'   => 'mau-type',
                 'idField'               => 'mauType'
@@ -778,9 +777,9 @@ class SwitchPortController extends EloquentController
     /**
      * Display the Optic Inventory
      *
-     * @return view
+     * @return View
      */
-    public function opticInventory(): view
+    public function opticInventory(): View
     {
         $this->setUpOpticInventory();
 
@@ -822,7 +821,7 @@ class SwitchPortController extends EloquentController
             'custname'  => [
                 'title'                 => 'Customer',
                 'type'                  => self::$FE_COL_TYPES[ 'HAS_ONE' ],
-                'controller'            => 'customer',
+                'controller'            => 'admin/customer',
                 'action'                => 'overview',
                 'idField'               => 'custid'
             ],
@@ -850,9 +849,9 @@ class SwitchPortController extends EloquentController
     /**
      * Display the Optic list
      *
-     * @return view
+     * @return View
      */
-    public function opticList(): view
+    public function opticList(): View
     {
         $this->setUpOpticList();
 

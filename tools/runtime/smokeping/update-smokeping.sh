@@ -26,7 +26,7 @@
 # See: https://docs.ixpmanager.org/latest/grapher/smokeping/
 
 KEY="my-ixp-manager-api-key"
-URL="https://ixp.example.com/api/v4/grapher/config?backend=smokeping"
+URL="https://ixp.example.com/admin/api/v4/grapher/config?backend=smokeping"
 ETCPATH="/etc/smokeping"
 SMOKEPING="/usr/bin/smokeping"
 SMOKEPING_RELOAD="/etc/rc.d/smokeping reload"

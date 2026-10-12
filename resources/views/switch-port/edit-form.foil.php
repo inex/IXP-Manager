@@ -10,7 +10,7 @@
 
         <?= Former::select( 'switchid' )
             ->label( 'Switch' )
-            ->fromQuery( $t->data[ 'params'][ 'switches'], 'name' )
+            ->fromQuery( $t->data[ 'params'][ 'switches'], fn( $model ) => $t->ee( $model->name ) )
             ->placeholder( 'Choose a Switch' )
             ->addClass( 'chzn-select' )
             ->blockHelp( "The switch that this port belongs to." );

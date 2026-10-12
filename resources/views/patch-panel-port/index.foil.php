@@ -9,15 +9,15 @@
 <?php $this->section( 'page-header-preamble' ) ?>
     Patch Panel Port
     <?php if( $t->pp ): ?>
-        - <?= $t->ee( $pp->name ) ?>
+        - <?= $t->ee( $pp->name ) ?> <?php if ( !$pp->active ): ?>[Inactive]<?php endif; ?>
     <?php endif;?>
-    <?= isset( $t->data()['summary'] ) ? ' :: ' . $t->summary : '' ?>
+    <?= isset( $t->data()['summary'] ) ? ' :: ' . $t->ee( $t->summary ) : '' ?>
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
     <div class="btn-group btn-group-sm" role="group">
         <a class="btn btn-white" href="<?= \Illuminate\Support\Facades\Request::url() ?>" title="Refresh">
-            <span class="fa fa-refresh"></span>
+            <span class="fa fa-arrows-rotate"></span>
         </a>
         <?php if( $t->pp ): ?>
             <a class="btn btn-white" href="<?= route('patch-panel@edit' , [ 'pp' => $pp->id ] ) ?>" title="Edit Patch Panel">
@@ -89,7 +89,7 @@
                             Action
                         </th>
                     </tr>
-                <thead>
+                </thead>
                 <tbody>
                     <?php
                         $lastUsedNumber = 0;
@@ -112,9 +112,9 @@
                                                 $name .=  '/' . $slaveName .  ' (' . ( $ppp->number % 2 ? ( floor( $ppp->number / 2 ) ) + 1 : $ppp->number / 2 ) . ')';
                                             }
                                             if( $pp && $ppHasDuplex && ! ( $ppp->duplex_master_id !== null || $ppp->nbslave > 0 ) ){
-                                                echo $name . ' <span class="potential-slave">(' . $num . ')</span>';
+                                                echo $t->ee( $name ) . ' <span class="potential-slave">(' . $num . ')</span>';
                                             } else {
-                                                echo $name;
+                                                echo $t->ee( $name );
                                             }
                                             $lastUsedNumber = $num;
                                         ?>
@@ -129,7 +129,7 @@
                                 <?php endif; ?>
                                 <td>
                                     <?php if( trim( $ppp->description ) !== '' ): ?>
-                                        <?= @parsedown( $t->ee( $ppp->description ) ) ?>
+                                        <?= clean( @parsedown( $ppp->description ) ) ?>
                                         <?= $ppp->switch_port_id ? "<br>" : "" ?>
                                     <?php endif; ?>
                                     <?php if( $ppp->switch_port_id ): ?>

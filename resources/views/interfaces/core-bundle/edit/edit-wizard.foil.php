@@ -13,7 +13,7 @@
             Documentation
         </a>
         <a class="btn btn-white" href="<?= route( 'core-bundle@list' )?>" title="list">
-            <span class="fa fa-th-list"></span>
+            <span class="fa fa-table-list"></span>
         </a>
     </div>
 <?php $this->append() ?>
@@ -52,7 +52,7 @@
                     <div class="col-lg-6 col-sm-12">
                         <?= Former::select( 'custid' )
                             ->label( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) )
-                            ->fromQuery( $t->customers, 'name' )
+                            ->fromQuery( $t->customers , fn ( $model ) => $t->ee( $model->name ) )
                             ->placeholder( 'Choose a ' . config( 'ixp_fe.lang.customer.one' ) )
                             ->addClass( 'chzn-select' )
                             ->blockHelp( "All core bundles must be associated with the internal IXP " . config( 'ixp_fe.lang.customer.one' )
@@ -163,7 +163,7 @@
             <?= $t->insert( 'interfaces/core-bundle/edit/core-link/form' ); ?>
 
             <!-- Delete Core Bundle area -->
-            <div class="alert alert-warning tw-mt-8" role="alert">
+            <div class="alert alert-warning tw:mt-8" role="alert">
                 <div class="d-flex align-items-center">
                     <div class="text-center">
                         <i class="fa fa-exclamation-triangle"></i>
@@ -183,6 +183,6 @@
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>
-    <?= $t->insert( 'interfaces/core-bundle/js/edit-wizard' ); ?>
     <?= $t->insert( 'interfaces/core-bundle/js/cb-functions' ); ?>
+    <?= $t->insert( 'interfaces/core-bundle/js/edit-wizard' ); ?>
 <?php $this->append() ?>

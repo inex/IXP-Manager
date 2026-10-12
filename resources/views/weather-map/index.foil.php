@@ -3,7 +3,7 @@
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-    <?= $t->wm[ 'name' ]?>
+    <?= $t->ee( $t->wm[ 'name' ] ) ?>
 <?php $this->append() ?>
 
 <?php $this->section( 'content' ) ?>
@@ -26,7 +26,7 @@
                     <?php foreach( $t->wms as $id => $wp ): ?>
                         <li>
                             <a href="<?= route( 'weathermap' , [ 'id' => $id ] ) ?>">
-                                <?= $wp[ 'name' ] ?>
+                                <?= $t->ee( $wp[ 'name' ] ) ?>
                             </a>
                         </li>
                     <?php endforeach; ?>

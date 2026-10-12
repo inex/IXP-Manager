@@ -37,6 +37,7 @@ use Zendesk\API\HttpClient as ZendeskAPI;
  *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @author     Thomas Kerin <thomas@islandbridgenetworks.ie>
  * @category   Helpdesk
  * @package    IXP\Services
  * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
@@ -358,7 +359,7 @@ class Zendesk implements HelpdeskContract
      *
      * @psalm-return array{external_id?: int, name: string, email: null|string, phone: null|string, organization_id: int|null, role: 'admin'|'end-user', ticket_restriction?: 'organization'|'requested', verified?: true, locale_id?: 1176, time_zone?: 'Europe/Dublin', id?: int}
      */
-    private function contactEntityToZendeskObject( Contact $contact, int $org_id = null, int|false $id = false ): array
+    private function contactEntityToZendeskObject( Contact $contact, ?int $org_id = null, int|false $id = false ): array
     {
         $data = [];
 

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateAtlasMeasurements extends Migration
+final class CreateAtlasMeasurements extends Migration
 {
     /**
      * Run the migrations.
@@ -14,7 +14,7 @@ class CreateAtlasMeasurements extends Migration
     public function up()
     {
         Schema::create('atlas_measurements', function (Blueprint $table) {
-            $table->increments('id')->unsigned( false );
+            $table->integer('id', true, false);
             $table->integer('run_id' );
             $table->integer('cust_source' )->nullable();
             $table->integer('cust_dest' )->nullable();

@@ -4,7 +4,7 @@
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-    IPv<?= $t->protocol ?> Addresses
+    IPv<?= $t->ee( $t->protocol ) ?> Addresses
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
@@ -38,15 +38,15 @@
                 <div class="card mb-4 bg-light">
                     <div class="card-body">
                         <div class="form-inline">
-                            <div class="form-group row tw-pl-16">
+                            <div class="form-group row tw:pl-16">
                                 <label for="vlan" class="col-sm-2 col-form-label">
                                     VLAN
                                 </label>
                                 <div class="col-sm-10">
-                                    <select id="vlan" name="vlan" class="form-control tw-min-w-full">
+                                    <select id="vlan" name="vlan" class="form-control tw:min-w-full">
                                         <option></option>
                                         <?php foreach( $t->vlans as $v ): ?>
-                                            <option value="<?= $v->id ?>" <?= $t->vlan && $v->id === $t->vlan->id ? 'selected' : '' ?>><?= $v->name ?></option>
+                                            <option value="<?= $v->id ?>" <?= $t->vlan && $v->id === $t->vlan->id ? 'selected' : '' ?>><?= $t->ee( $v->name ) ?></option>
                                         <?php endforeach; ?>
                                     </select>
                                 </div>
@@ -75,7 +75,7 @@
             <?php if( !count( $t->ips ) ): ?>
                 <?php if( $t->vlan ): ?>
                     <p>
-                        There are no IPv<?= $t->protocol ?> addresses in this VLAN.
+                        There are no IPv<?= $t->ee( $t->protocol ) ?> addresses in this VLAN.
                         <a href="<?= route ('ip-address@create', [ 'protocol' => $t->protocol, 'vlan' => $t->vlan->id ] ) ?>">Create some...</a>
                     </p>
                 <?php endif; ?>
@@ -96,7 +96,7 @@
                                 Action
                             </th>
                         </tr>
-                    <thead>
+                    </thead>
                     <tbody>
                         <?php foreach( $t->ips as $ip ):?>
                             <tr>

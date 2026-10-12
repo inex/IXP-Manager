@@ -76,13 +76,6 @@ class JsonSchema
     
     /**
      * Get the JSON schema (for a given version or for the latest version)
-     *
-     * @param string|null   $version    The version to get (or, if null / not present then the latest)
-     * @param bool          $asArray    Do not convert to JSON but rather return the PHP array
-     * @param bool          $detailed   Create the very detailed version (usually for logged in users)
-     * @param bool          $tags       Include customer tags
-     *
-     * @throws
      */
     public function get( ?string $version = null, bool $asArray = false, bool $detailed = true, bool $tags = false ): array|string
     {
@@ -134,8 +127,7 @@ class JsonSchema
     /**
      * Collate the IXP specific information for the JSON schema export
      *
-     * @param string $version The version to collate the detail for
-     * @throws
+     * @throws ExportException
      */
     private function getIXPInfo( string $version ): array
     {
@@ -252,12 +244,7 @@ class JsonSchema
     /**
      * Collate the IXP's switch information for the JSON schema export
      *
-     * @param string            $version
-     * @param Infrastructure    $infra
-     *
-     * @return (|int|null|string)[][]
-     *
-     * @psalm-return list<array{city: (TGeneratedFromParam0 is null ? Illuminate\Config\Repository : (TGeneratedFromParam0 is string ? mixed : null))|string, colo: null|string, country: (TGeneratedFromParam0 is null ? Illuminate\Config\Repository : (TGeneratedFromParam0 is string ? mixed : null))|string, id: int, manufacturer?: null|string, model?: null|string, name: null|string, pdb_facility_id?: int, software?: string}>
+     * @return array<array>
      */
     private function getSwitchInfo( string $version, Infrastructure $infra ): array
     {
@@ -337,11 +324,17 @@ class JsonSchema
         $exclude_asns = [];
         $exclude_tags = [];
 
-        if( $xas = config( 'ixp_api.json_export_schema.excludes.asnum' ) ) {
+        /** @var false|string $xas */
+        $xas = config( 'ixp_api.json_export_schema.excludes.asnum' );
+
+        if( is_string( $xas ) ) {
             $exclude_asns = explode( '|', $xas );
         }
 
-        if( $xt = config( 'ixp_api.json_export_schema.excludes.tags' ) ) {
+        /** @var false|string $xt */
+        $xt = config( 'ixp_api.json_export_schema.excludes.tags' );
+
+        if( is_string( $xt ) ) {
             $exclude_tags = explode( '|', $xt );
         }
 
@@ -601,8 +594,11 @@ class JsonSchema
     private function filter( array $output ): array
     {
         // switch filters
-        if( $s = config( 'ixp_api.json_export_schema.excludes.switch' ) ) {
-            foreach( explode( '|', $s ) as $exc ) {
+        /** @var string|bool $switch_excludes - needed for psalm to understand the type */
+        $switch_excludes = config('ixp_api.json_export_schema.excludes.switch');
+
+        if( is_string( $switch_excludes ) ) {
+            foreach( explode( '|', $switch_excludes ) as $exc ) {
                 foreach( $output[ 'ixp_list' ] as $ixid => $ix ) {
                     foreach( $ix[ 'switch' ] as $sid => $sw ) {
                         if( isset( $output[ 'ixp_list' ][ $ixid ][ 'switch' ][ $sid ][ $exc ] ) ) {
@@ -614,8 +610,11 @@ class JsonSchema
         }
 
         // ixp filters
-        if( $i = config( 'ixp_api.json_export_schema.excludes.ixp' ) ) {
-            foreach( explode( '|', $i ) as $exc ) {
+        /** @var string|bool $ixp_excludes - needed for psalm to understand the type */
+        $ixp_excludes = config('ixp_api.json_export_schema.excludes.ixp');
+
+        if( is_string( $ixp_excludes ) ) {
+            foreach( explode( '|', $ixp_excludes ) as $exc ) {
                 foreach( $output[ 'ixp_list' ] as $ixid => $ix ) {
                     if( isset( $output[ 'ixp_list' ][ $ixid ][ $exc ] ) ) {
                         unset( $output[ 'ixp_list' ][ $ixid ][ $exc ] );
@@ -625,8 +624,11 @@ class JsonSchema
         }
 
         // member filters
-        if( $m = config( 'ixp_api.json_export_schema.excludes.member' ) ) {
-            foreach( explode( '|', $m ) as $exc ) {
+        /** @var string|bool $member_excludes - needed for psalm to understand the type */
+        $member_excludes = config('ixp_api.json_export_schema.excludes.member');
+
+        if( is_string( $member_excludes ) ) {
+            foreach( explode( '|', $member_excludes ) as $exc ) {
                 foreach( $output[ 'member_list' ] as $membid => $memb ) {
                     if( isset( $output[ 'member_list' ][ $membid ][ $exc ] ) ) {
                         unset( $output[ 'member_list' ][ $membid ][ $exc ] );
@@ -636,8 +638,11 @@ class JsonSchema
         }
 
         // intinfo filters
-        if( $i = config( 'ixp_api.json_export_schema.excludes.intinfo' ) ) {
-            foreach( explode( '|', $i ) as $exc ) {
+        /** @var string|bool $intinfo_excludes - needed for psalm to understand the type */
+        $intinfo_excludes = config('ixp_api.json_export_schema.excludes.intinfo');
+
+        if( is_string( $intinfo_excludes ) ) {
+            foreach( explode( '|', $intinfo_excludes ) as $exc ) {
                 foreach( $output[ 'member_list' ] as $mid => $member ) {
                     foreach( $member[ 'connection_list' ] as $clid => $connection ) {
                         foreach( $member[ 'connection_list' ][$clid]['vlan_list'] as $vid => $vlanint ) {

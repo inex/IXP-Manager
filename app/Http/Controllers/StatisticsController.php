@@ -31,7 +31,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Auth\Access\AuthorizationException;
 
 use IXP\Exceptions\Services\Grapher\ParameterException;
-use IXP\Http\Requests\StatisticsP2pRequest;
 use IXP\IXP;
 use Illuminate\Http\{
     Request,
@@ -661,7 +660,7 @@ class StatisticsController extends Controller
      *
      * @param  Request  $request
      * @param  VlanInterface $srcVli
-     * @param VlanInterface $dstVli
+     * @param  VlanInterface $dstVli
      * @return RedirectResponse|View
      * @throws ParameterException
      */
@@ -763,19 +762,28 @@ class StatisticsController extends Controller
                 ->where('day', $r->day)->where('cust_id', $r->custid )->get();
         }
 
+        $defaultChartProtocol = null;
+        if( $r->custid ) {
+            $customer = $customers[$r->custid];
+
+            if ($customer->isIPvXEnabled(4) && $customer->isIPvXEnabled(6)) {
+                $defaultChartProtocol = Graph::PROTOCOL_ALL;
+            } else if ($customer->isIPvXEnabled(4)) {
+                $defaultChartProtocol = Graph::PROTOCOL_IPV4;
+            } else if ($customer->isIPvXEnabled(6)) {
+                $defaultChartProtocol = Graph::PROTOCOL_IPV6;
+            }
+        }
+
         return view( 'statistics/p2p-table' )->with( [
-            'day'          => $r->day,
-            'days'         => $days,
-            'stats'        => $stats,
-            'customers'    => $customers,
-            'c'            => $r->custid ? $customers[$r->custid] : false,
+            'day'                  => $r->day,
+            'days'                 => $days,
+            'stats'                => $stats,
+            'customers'            => $customers,
+            'c'                    => $r->custid ? $customers[$r->custid] : false,
+            'defaultChartProtocol' => $defaultChartProtocol,
         ] );
     }
-
-
-
-
-
 
     /**
      * Show daily traffic for customers in a table.

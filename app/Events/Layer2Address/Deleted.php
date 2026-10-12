@@ -1,9 +1,6 @@
 <?php
-
-namespace IXP\Events\Layer2Address;
-
 /*
- * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,6 +20,10 @@ namespace IXP\Events\Layer2Address;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+declare(strict_types=1);
+
+namespace IXP\Events\Layer2Address;
+
 use IXP\Models\{
     User,
     VlanInterface
@@ -41,7 +42,7 @@ use Illuminate\Foundation\Events\Dispatchable;
  */
 class Deleted
 {
-    use Dispatchable, SerializesModels;
+    use SerializesModels;
 
     /**
      * @var string

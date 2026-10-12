@@ -4,7 +4,7 @@
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-    <?= $t->rsf ? 'Edit ' : 'Create ' ?> Route Server Filter <?= Auth::getUser()->isSuperUser() ? ' for ' . $t->c->name : '' ?>
+    <?= $t->rsf ? 'Edit ' : 'Create ' ?> Route Server Filter <?= Auth::getUser()->isSuperUser() ? ' for ' . $t->ee( $t->c->name ) : '' ?>
 
 <?php $this->append() ?>
 
@@ -36,7 +36,7 @@
 
                     <?= Former::select( 'peer_id' )
                         ->label( 'Peer' )
-                        ->fromQuery( $t->peers, 'name' )
+                        ->fromQuery( $t->peers, function ( $model ) use ( $t ) { return $t->ee( $model->name ); })
                         ->placeholder( 'Choose a Peer' )
                         ->addClass( 'chzn-select' )
                         ->blockHelp( 'A route server filter can apply to all peers or you can specify a specific peer by selecting the network name in the dropdown.' )
@@ -45,7 +45,7 @@
                     <?= Former::select( 'vlan_id' )
                         ->label( 'LAN' )
                         ->option( 'all' )
-                        ->fromQuery( $t->vlans, 'name' )
+                        ->fromQuery( $t->vlans, function ( $model ) use ( $t ) { return $t->ee( $model->name ); })
                         ->placeholder( 'Choose a Lan' )
                         ->addClass( 'chzn-select' )
                         ->blockHelp( 'A route server filter can apply to the above peer(s) on a specific peering LAN or all peering LANs.' )

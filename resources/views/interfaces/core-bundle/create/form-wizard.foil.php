@@ -19,7 +19,7 @@
         </a>
 
         <a class="btn btn-white" href="<?= route( 'core-bundle@list' )?>" title="list">
-            <span class="fa fa-th-list"></span>
+            <span class="fa fa-table-list"></span>
         </a>
     </div>
 
@@ -40,14 +40,14 @@
             ?>
                 <div class="card col-sm-12">
                     <div class="card-body row">
-                        <div class="col-lg-6 col-md-12 tw-mt-4">
+                        <div class="col-lg-6 col-md-12 tw:mt-4">
                             <h4>
                                 General Core Bundle Settings:
                             </h4>
                             <hr>
                             <?= Former::select( 'custid' )
                                 ->label( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) )
-                                ->fromQuery( $t->customers, 'name' )
+                                ->fromQuery( $t->customers , fn ( $model ) => $t->ee( $model->name ) )
                                 ->placeholder( 'Choose a ' . config( 'ixp_fe.lang.customer.one' ) )
                                 ->addClass( 'chzn-select' )
                                 ->required( true )
@@ -97,7 +97,7 @@
 
                             <?= Former::select( 'type' )
                                 ->label( 'Type' )
-                                ->fromQuery( \IXP\Models\CoreBundle::$TYPES , 'name' )
+                                ->fromQuery( \IXP\Models\CoreBundle::$TYPES )
                                 ->placeholder( 'Choose core bundle type' )
                                 ->addClass( 'chzn-select' )
                                 ->required( true )
@@ -114,7 +114,7 @@
                             ?>
                         </div>
 
-                        <div class="col-lg-6 col-md-12 tw-mt-4">
+                        <div class="col-lg-6 col-md-12 tw:mt-4">
                             <h4>
                                 Virtual Interface Settings:
                             </h4>

@@ -37,7 +37,7 @@
 
         <?= Former::select( 'docstore_directory_id' )
             ->label( 'Directory' )
-            ->fromQuery( $t->dirs, 'name' )
+            ->fromQuery( $t->dirs, fn ($dir) => htmlentities( $dir->name, ENT_QUOTES, 'UTF-8', double_encode: false ) )
             ->addClass( 'chzn-select' )
             ->blockHelp( "The directory in which to store the file." );
         ?>
@@ -115,7 +115,7 @@
 
 <?php $this->section( 'scripts' ) ?>
 
-    <script>
+    <script type="module">
         <?php if( $t->file ): ?>
             $( document ).ready( function() {
                 $('#uploadedFile').on( 'input', function( e ) {

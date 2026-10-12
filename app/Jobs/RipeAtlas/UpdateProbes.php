@@ -79,9 +79,7 @@ class UpdateProbes extends Job implements ShouldQueue
     /**
      * Execute the job.
      *
-     * @return void
-     *
-     * @throws
+     * @throws GeneralException
      */
     public function handle(): void
     {

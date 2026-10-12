@@ -1,9 +1,6 @@
 <?php
-
-namespace IXP\Events\Auth;
-
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,8 +20,11 @@ namespace IXP\Events\Auth;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+declare(strict_types=1);
+
+namespace IXP\Events\Auth;
+
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Foundation\Events\Dispatchable;
 
 use IXP\Models\User;
 
@@ -38,27 +38,10 @@ use IXP\Models\User;
  */
 class ForgotPassword
 {
-    use Dispatchable, SerializesModels;
+    use SerializesModels;
 
-    /**
-     * @var string
-     */
-    public $token;
-
-    /**
-     * @var User
-     */
-    public $user;
-
-    /**
-     * Create a new event instance.
-     *
-     * @param string        $token
-     * @param User          $user
-     */
-    public function __construct( string $token, User $user )
-    {
-        $this->token        = $token;
-        $this->user         = $user;
-    }
+    public function __construct(
+        public readonly string $token,
+        public readonly User $user
+    ) {}
 }

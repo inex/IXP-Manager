@@ -1,6 +1,9 @@
 <?php
     /** @var Foil\Template\Template $t */
-    $this->layout( 'layouts/ixpv4' );
+
+use IXP\Models\Customer;
+
+$this->layout( 'layouts/ixpv4' );
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
@@ -10,7 +13,7 @@
 <?php $this->section( 'page-header-postamble' ) ?>
     <div class=" btn-group btn-group-sm" role="group">
         <a class="btn btn-white" href="<?= route( 'virtual-interface@list' )?>" title="list">
-            <span class="fa fa-th-list"></span>
+            <span class="fa fa-table-list"></span>
         </a>
         <button type="button" class="btn btn-white dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <i class="fa fa-plus"></i>
@@ -47,7 +50,7 @@
 
                         <?= Former::select( 'custid' )
                             ->label( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) )
-                            ->fromQuery( $t->custs, 'name' )
+                            ->fromQuery( $t->custs , fn ( $model ) => $t->ee( $model->name ) )
                             ->placeholder( 'Choose a ' . config( 'ixp_fe.lang.customer.one' ) )
                             ->addClass( 'chzn-select' )
                             ->disabled( $t->selectedCust ? true : false )
@@ -62,7 +65,7 @@
 
                         <?= Former::select( 'vlanid' )
                             ->label( 'VLAN' )
-                            ->fromQuery( $t->vlans, 'name' )
+                            ->fromQuery( $t->vlans, fn( $model ) => $t->ee( $model->name ) )
                             ->placeholder( 'Choose a VLAN' )
                             ->addClass( 'chzn-select' )
                             ->blockHelp( '' );
@@ -110,7 +113,7 @@
                         </div>
                         <?= Former::select( 'switch' )
                             ->label( 'Switch' )
-                            ->fromQuery( $t->pi_switches, 'name' )
+                            ->fromQuery( $t->pi_switches, fn( $model ) => $t->ee( $model->name ) )
                             ->placeholder( 'Choose a switch' )
                             ->addClass( 'chzn-select' )
                             ->blockHelp( '' );
@@ -151,6 +154,20 @@
                             ->addClass( 'chzn-select' )
                             ->value(1)
                             ->blockHelp( '' );
+                        ?>
+
+                        <?= Former::number( 'rate_limit' )
+                            ->label( 'Rate Limit <u>(Mbps)</u>' )
+                            ->blockHelp( 'Enter the provisioned speed if the port has been rate limited below its line rate. <strong>Enter in Mbps!</strong> Leave blank if port is not rate limited. Zero will be converted to null (blank - not rate limited).');
+                        ?>
+
+                        <?= Former::checkbox( 'autoneg' )
+                            ->label( '&nbsp;' )
+                            ->text( 'Auto-Negotiation Enabled' )
+                            ->value( 1 )
+                            ->check()
+                            ->inline()
+                            ->blockHelp( "Unless you are provisioning switches from IXP Manager, this is informational." );
                         ?>
                     </div>
 

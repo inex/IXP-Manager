@@ -20,7 +20,7 @@
 <?php $this->section( 'page-header-postamble' ) ?>
     <div class=" btn-group btn-group-sm" role="group">
         <a class="btn btn-white" href="<?= route( 'virtual-interface@list' )?>" title="list">
-            <i class="fa fa-th-list"></i>
+            <i class="fa fa-table-list"></i>
         </a>
         <button type="button" class="btn btn-white dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <i class="fa fa-plus"></i>

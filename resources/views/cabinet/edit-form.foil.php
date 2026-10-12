@@ -1,3 +1,8 @@
+<?php
+
+use IXP\Models\Location;
+
+?>
 <div class="card col-sm-12">
     <div class="card-body">
         <?= Former::open()->method( $t->data['params']['isAdd'] ? 'POST' : 'PUT' )
@@ -19,7 +24,7 @@
             ->id( 'location' )
             ->label( 'Facility' )
             ->placeholder( 'Select a facility' )
-            ->fromQuery( $t->data[ 'params'][ 'locations' ], 'name' )
+            ->fromQuery( $t->data[ 'params'][ 'locations' ], function (Location $model) use ($t) { return $t->ee( $model->name ); } )
             ->addClass( 'chzn-select' )
             ->blockHelp( "Choose the facility where this rack resides." );
         ?>

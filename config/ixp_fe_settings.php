@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2009 - 2024 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -26,6 +26,8 @@
 // Not a traditional Laravel config file - this is an IXP Manager config file which
 // determines what .env elements are configurable via the frontend and sets up the
 // form for this.
+
+use IXP\Rules\IsCountry;
 
 return [
 
@@ -57,7 +59,22 @@ return [
                                         particularly RFC 1918 space. If you are providing an AS112 service to your members,
                                         this feature enables UI elements for that.',
                 ],
-
+                
+                'app-passwords' => [
+                    'config_key' => 'ixp_fe.frontend.disabled.app-passwords',
+                    'dotenv_key' => 'IXP_FE_FRONTEND_DISABLED_APP_PASSWORD',
+                    'type'       => 'radio',
+                    'invert'     => true,
+                    'rules'      => 'boolean',
+                    'name'       => 'Application-Specific Passwords',
+                    'docs_url'   => 'https://docs.ixpmanager.org/latest/features/app-passwords/', // can be null
+                    'help'       => 'App Passwords can be used, where necessary, to bridge the gap to modern security
+                                        standards where a necessary system creates a classic compliance headache, such
+                                        as no direct support for Two-Factor Authentication (2FA). IXP Manager implements
+                                        an application-specific password manager for the convenience of IXPs who need it
+                                        and who do not have an alternative system.',
+                ],
+                
                 'console-server-connection' => [
                     'config_key' => 'ixp_fe.frontend.disabled.console-server-connection',
                     'dotenv_key' => 'IXP_FE_FRONTEND_DISABLED_CONSOLE',
@@ -199,6 +216,21 @@ return [
                                         target="_blank">BGP detector</a> running.',
                 ],
 
+                'vlaninterfaces-max-prefix-enabled' => [
+                    'config_key' => 'ixp_fe.vlaninterfaces.max_prefix_enabled',
+                    'dotenv_key' => 'IXP_FE_VLANINTERFACES_MAX_PREFIX_ENABLED',
+                    'type'       => 'radio',
+                    'invert'     => false,
+                    'rules'      => 'boolean',
+                    'name'       => 'Per-VLAN Interface Maximum Prefixes',
+                    'docs_url'   => null,
+                    'help'       => 'Allow maximum prefixes to be set per VLAN interface.
+                                        If you only operate a single peering VLAN or infrastructure in one geographic location,
+                                        you may want to disable this and only use the global maximum prefix settings for each
+                                        member. Before disabling, run <code>php ./artisan customer:update-global-max-prefixes</code>',
+                ],
+
+
                 'phpinfo'                   => [
                     'config_key' => 'ixp_fe.frontend.disabled.phpinfo',
                     'dotenv_key' => 'IXP_FE_FRONTEND_DISABLED_PHPINFO',
@@ -209,17 +241,6 @@ return [
                     'docs_url'   => null,
                     'help'       => 'The PHP Info option under IXP Utilities on the left-hand menu. This is available to 
                                         administrators only and shows the output of <code>phpinfo()</code>.',
-                ],
-
-                'rs-prefixes'               => [
-                    'config_key' => 'ixp_fe.frontend.disabled.rs-prefixes',
-                    'dotenv_key' => 'IXP_FE_FRONTEND_DISABLED_RS_PREFIXES',
-                    'type'       => 'radio',
-                    'invert'     => true,
-                    'rules'      => 'boolean',
-                    'name'       => 'RS Prefixes',
-                    'docs_url'   => null,
-                    'help'       => '[DEPRECATED] <em>Filtered Prefixes</em> above should be used instead of this.',
                 ],
 
                 'rs-filters'                => [
@@ -315,7 +336,7 @@ return [
                     'dotenv_key' => 'IDENTITY_COUNTRY',
                     'type'       => 'select',
                     'options'    => [ 'type' => 'countries' ], // special option list for countries
-                    'rules'      => 'nullable|size:2',
+                    'rules'      => ['nullable', 'string', 'size:2', new IsCountry()],
                     'name'       => 'Country',
                     'docs_url'   => null,
                     'help'       => 'This is a fallback location, typically only used if it cannot be inferred from your facility settings.',
@@ -365,7 +386,7 @@ return [
                 'alerts_recipient_address' => [
                     'config_key' => 'mail.alerts_recipient.address',
                     'dotenv_key' => 'IDENTITY_ALERTS_EMAIL',
-                    'type'       => 'nullable|text',
+                    'type'       => 'text',
                     'rules'      => 'nullable|max:255|email',
                     'name'       => 'Alert Recipient Email Address',
                     'docs_url'   => null,
@@ -555,8 +576,18 @@ return [
                     'type'       => 'radio',
                     'rules'      => 'boolean',
                     'name'       => 'Unsecured API Access Enabled',
-                    'docs_url'   => 'https://docs.ixpmanager.org/install/security/',
+                    'docs_url'   => 'https://docs.ixpmanager.org/latest/install/security/',
                     'help'       => 'IXP Manager v7.1.0 introduced an admin/ prepend on APIs for securing them. For v7.1.0 only, unsecured access will be enabled by default to allow administrators migrate their API clients.',
+                ],
+
+                'api_key_via_get'      => [
+                    'config_key' => 'ixp_api.allow_apikeys_get_parameter',
+                    'dotenv_key' => 'IXP_ALLOW_DEPRECATED_APIKEYS_VIA_GET',
+                    'type'       => 'radio',
+                    'rules'      => 'boolean',
+                    'name'       => 'Allow API authentication via GET parameter',
+                    'docs_url'   => 'https://docs.ixpmanager.org/latest/install/security/',
+                    'help'       => 'This setting determines whether IXP Manager will accept API keys provided via GET parameter. It is on by default in v7.3.0, but will be disabled by default in v7.4.0.',
                 ],
             
             ],
@@ -572,7 +603,7 @@ return [
 
                 'peeringdb_api_key' => [
 
-                    'config_key' => 'ixp_api.peeringdb.api_key',
+                    'config_key' => 'ixp_api.peeringDB.api-key',
                     'dotenv_key' => 'IXP_API_PEERING_DB_API_KEY',
                     'type'       => 'text',
                     'rules'      => 'nullable|max:255',
@@ -708,7 +739,7 @@ return [
 
                 'default_graph_period' => [
 
-                    'config_key' => 'ixp_fe.admin.default_graph_period',
+                    'config_key' => 'ixp_fe.admin_dashboard.default_graph_period',
                     'dotenv_key' => 'IXP_FE_ADMIN_DASHBOARD_DEFAULT_GRAPH_PERIOD',
                     'type'       => 'select',
                     'options'    => [ 'type' => 'array', 'list' => array_filter( IXP\Services\Grapher\Graph::PERIODS, function( $k ) {
@@ -722,8 +753,8 @@ return [
 
                 'billing-updates-notification' => [
 
-                    'config_key' => 'ixp_fe.frontend.billing-updates.notification',
-                    'dotenv_key' => 'IXP_FE_BILLING_UPDATES',
+                    'config_key' => 'ixp_fe.customer.billing_updates_notify',
+                    'dotenv_key' => 'IXP_FE_CUSTOMER_BILLING_UPDATES_NOTIFY',
                     'type'       => 'text',
                     'rules'      => 'nullable|max:255|email',
                     'name'       => 'Billing Updates Notification',
@@ -766,7 +797,7 @@ return [
 
                 'rs-filters-ttl' => [
                     // this via config() will give default value
-                    'config_key' => 'ixp_fe.frontend.rs-filters.ttl',
+                    'config_key' => 'ixp_fe.rs-filters.ttl',
                     'dotenv_key' => 'IXP_FE_RS_FILTERS_TIME_TO_LIVE',
                     'type'       => 'textarea',
                     'rules'      => 'nullable|max:1024',
@@ -828,15 +859,48 @@ return [
 
             'fields' => [
 
+                'irrdb_utility' => [
+                    'config_key' => 'ixp.irrdb.utility',
+                    'dotenv_key' => 'IXP_IRRDB_UTILITY',
+                    'type'       => 'select',
+                    'options'    => [
+                        'type' => 'array',
+                        'list' => [ 'bgpq3' => 'bgpq3', 'bgpq4' => 'bgpq4' ],
+                    ],
+                    'rules'      => 'in:bgpq3,bgpq4',
+                    'name'       => 'IRRDB utility',
+                    'docs_url'   => 'https://docs.ixpmanager.org/latest/features/irrdb/',
+                    'help'       => 'Software to use for IRRDB lookups. This defaults to bgpq3.',
+                ],
+
                 'bgpq3' => [
                     'config_key' => 'ixp.irrdb.bgpq3.path',
                     'dotenv_key' => 'IXP_IRRDB_BGPQ3_PATH',
                     'type'       => 'text',
-                    'rules'      => 'nullable|max:255',
+                    'rules'      => ['nullable', 'max:255', 'regex:/^(?:\/(?:[a-zA-Z0-9._-]+\/)*)?[a-zA-Z0-9._-]+$/',
+//                        Rule::when(function () {
+//                            return request()->input('irrdb_utility') === 'bgpq3';
+//                        }, new ExistsAndExecutable)
+                    ],
                     'name'       => 'Path to bgpq3 utility',
                     'docs_url'   => 'https://docs.ixpmanager.org/latest/features/irrdb/',
-                    'help'       => 'Full path to the bgpq3 utility.',
+                    'help'       => 'Full path to the bgpq3 executable, or an executable in $PATH.',
                 ],
+
+                'bgpq4' => [
+                    'config_key' => 'ixp.irrdb.bgpq4.path',
+                    'dotenv_key' => 'IXP_IRRDB_BGPQ4_PATH',
+                    'type'       => 'text',
+                    'rules'      => ['nullable', 'max:255', 'regex:/^(?:\/(?:[a-zA-Z0-9._-]+\/)*)?[a-zA-Z0-9._-]+$/',
+//                        Rule::when(function () {
+//                            return request()->input('irrdb_utility') === 'bgpq4';
+//                        }, new ExistsAndExecutable)
+                    ],
+                    'name'       => 'Path to bgpq4 utility',
+                    'docs_url'   => 'https://docs.ixpmanager.org/latest/features/irrdb/',
+                    'help'       => 'Full path to the bgpq4 executable, or an executable in $PATH.',
+                ],
+
 
 //                'ping4' => [
 //                    'config_key' => 'ixp.exec.ping4',

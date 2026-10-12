@@ -42,19 +42,17 @@ use IXP\Models\ContactGroup;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\Contact> $contacts
  * @property-read int|null $contacts_count
- * @method static Builder|ContactGroupAggregator newModelQuery()
- * @method static Builder|ContactGroupAggregator newQuery()
- * @method static Builder|ContactGroupAggregator query()
- * @method static Builder|ContactGroupAggregator whereActive($value)
- * @method static Builder|ContactGroupAggregator whereCreatedAt($value)
- * @method static Builder|ContactGroupAggregator whereDescription($value)
- * @method static Builder|ContactGroupAggregator whereId($value)
- * @method static Builder|ContactGroupAggregator whereLimitedTo($value)
- * @method static Builder|ContactGroupAggregator whereName($value)
- * @method static Builder|ContactGroupAggregator whereType($value)
- * @method static Builder|ContactGroupAggregator whereUpdatedAt($value)
- * @property string $created
- * @method static Builder|ContactGroupAggregator whereCreated($value)
+ * @method static Builder<static>|ContactGroupAggregator newModelQuery()
+ * @method static Builder<static>|ContactGroupAggregator newQuery()
+ * @method static Builder<static>|ContactGroupAggregator query()
+ * @method static Builder<static>|ContactGroupAggregator whereActive($value)
+ * @method static Builder<static>|ContactGroupAggregator whereCreatedAt($value)
+ * @method static Builder<static>|ContactGroupAggregator whereDescription($value)
+ * @method static Builder<static>|ContactGroupAggregator whereId($value)
+ * @method static Builder<static>|ContactGroupAggregator whereLimitedTo($value)
+ * @method static Builder<static>|ContactGroupAggregator whereName($value)
+ * @method static Builder<static>|ContactGroupAggregator whereType($value)
+ * @method static Builder<static>|ContactGroupAggregator whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class ContactGroupAggregator extends ContactGroup

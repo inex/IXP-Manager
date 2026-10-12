@@ -86,9 +86,16 @@ abstract class EloquentController extends Controller
     /**
      * Allow controllers to override the default successful store message
      *
-     * @var string
+     * @var ?string
      */
     protected $store_alert_success_message = null;
+
+    /**
+     * Allow controllers to override the default successful update message
+     *
+     * @var ?string
+     */
+    protected $update_alert_success_message = null;
 
     /**
      * The URL prefix to use.
@@ -210,25 +217,24 @@ abstract class EloquentController extends Controller
     public static function routes(): void
     {
         // add leading slash to class name for absolute resolution:
-        $class = '\\' . static::class;
         $route_prefix = self::route_prefix();
 
-        Route::group( [ 'prefix' => ( static::$is_admin_route ? 'admin/' : '' ) . $route_prefix ], static function() use ( $class, $route_prefix ) {
-            Route::get( 'list',      $class . '@list' )->name( $route_prefix . '@list' );
-            Route::get( 'view/{id}', $class . '@view' )->name( $route_prefix . '@view' );
+        Route::group( [ 'prefix' => ( static::$is_admin_route ? 'admin/' : '' ) . $route_prefix ], static function() use ( $route_prefix ) {
+            Route::get( 'list',      [static::class, 'list'] )->name( $route_prefix . '@list' );
+            Route::get( 'view/{id}', [static::class, 'view'] )->name( $route_prefix . '@view' );
 
             if( !static::$read_only ) {
-                Route::get(  'create',          $class . '@create'  )->name( $route_prefix . '@create'  );
-                Route::delete( 'delete/{id}',   $class . '@delete'  )->name( $route_prefix . '@delete'  );
+                Route::get(  'create',          [static::class, 'create']  )->name( $route_prefix . '@create'  );
+                Route::delete( 'delete/{id}',   [static::class, 'delete']  )->name( $route_prefix . '@delete'  );
                 if( !static::$disable_edit ) {
-                    Route::get( 'edit/{id}',    $class . '@edit'    )->name( $route_prefix . '@edit'    );
-                    Route::put( 'update/{id}',  $class . '@update'  )->name( $route_prefix . '@update'  );
+                    Route::get( 'edit/{id}',    [static::class, 'edit']    )->name( $route_prefix . '@edit'    );
+                    Route::put( 'update/{id}',  [static::class, 'update']  )->name( $route_prefix . '@update'  );
                 }
-                Route::post( 'store', $class . '@' . static::$storeFn )->name( $route_prefix . '@store' );
+                Route::post( 'store', [static::class, static::$storeFn] )->name( $route_prefix . '@store' );
             }
         });
 
-        $class::additionalRoutes( $route_prefix );
+        static::additionalRoutes( $route_prefix );
     }
 
     /**
@@ -238,13 +244,11 @@ abstract class EloquentController extends Controller
      */
     public static function route_prefix(): ?string
     {
-        $class = static::class;
-
-        if( $class::$route_prefix ) {
-            return $class::$route_prefix;
+        if( static::$route_prefix ) {
+            return static::$route_prefix;
         }
 
-        return Str::kebab( substr( class_basename( $class ), 0, -10 ) );
+        return Str::kebab( substr( class_basename( static::class ), 0, -10 ) );
     }
 
     /**
@@ -318,6 +322,7 @@ abstract class EloquentController extends Controller
     public function list( Request $param )
     {
         if( ( $r = $this->canList() ) !== null ) {
+            /** @psalm-suppress NoValue - this can be set non-null in child classes */
             return $r;
         }
 
@@ -339,7 +344,7 @@ abstract class EloquentController extends Controller
     {
         $data = $this->listGetData( $id );
 
-        if( is_array( $data ) && reset( $data ) ) {
+        if( reset( $data ) ) {
             // get first value of the array
             return $data[0];
         }
@@ -381,8 +386,6 @@ abstract class EloquentController extends Controller
     /**
      * Prepares data for the create form
      *
-     * @return never
-     *
      * @throws GeneralException
      */
     protected function createPrepareForm(): array
@@ -394,8 +397,6 @@ abstract class EloquentController extends Controller
      * Prepares data for the edit form
      *
      * @param int $id
-     *
-     * @return never
      *
      * @throws GeneralException
      */
@@ -438,9 +439,9 @@ abstract class EloquentController extends Controller
      *
      * @param int $id ID of the object to edit
      *
-     * @return view
+     * @return View
      *
-     * @throws
+     * @throws GeneralException
      */
     public function edit( int $id ): View
     {
@@ -456,8 +457,6 @@ abstract class EloquentController extends Controller
      * @param Request $r
      *
      * @throws GeneralException
-     *
-     * @return never
      */
     public function checkForm( Request $r ): void
     {
@@ -469,7 +468,7 @@ abstract class EloquentController extends Controller
      *
      * @param Request $r
      *
-     * @return never
+     * @return RedirectResponse|true
      *
      * @throws GeneralException
      */
@@ -484,7 +483,7 @@ abstract class EloquentController extends Controller
      * @param Request   $r
      * @param int       $id
      *
-     * @return never
+     * @return RedirectResponse|true
      *
      * @throws GeneralException
      */
@@ -496,9 +495,7 @@ abstract class EloquentController extends Controller
     /**
      * Action for storing a new object
      *
-     * @param Request $r
-     *
-     * @throws
+     * @throws GeneralException
      */
     public function store( Request $r ): RedirectResponse|false
     {
@@ -523,8 +520,6 @@ abstract class EloquentController extends Controller
      *
      * @param Request   $r
      * @param int       $id
-     *
-     * @throws GeneralException
      */
     public function update( Request $r, int $id ): RedirectResponse|false
     {
@@ -549,7 +544,7 @@ abstract class EloquentController extends Controller
      *
      * To implement this, have it return a valid route name
      *
-     * @return null
+     * @return null|string
      */
     protected function postStoreRedirect(): ?string
     {
@@ -589,8 +584,6 @@ abstract class EloquentController extends Controller
      * @param Request $r
      *
      * @return RedirectResponse
-     *
-     * @throws
      */
     public function delete( Request $r ): RedirectResponse
     {
@@ -601,8 +594,14 @@ abstract class EloquentController extends Controller
         if( $this->preDelete() ) {
             $this->object->delete();
             $this->postFlush( 'delete' );
+
+            Log::notice( ( Auth::check() ? Auth::getUser()->username : 'A public user' ) . ' deleted'
+                . ' ' . $this->feParams->nameSingular . ' with ID ' . $this->object->id );
+
             AlertContainer::push( $this->feParams->titleSingular . " deleted.", Alert::SUCCESS );
         }
+
+        /** @psalm-suppress TypeDoesNotContainType, NoValue - can be set non-null in child classes */
         if( $url = $this->postDeleteRedirect() ) {
             return redirect()->to( $url );
         }
@@ -614,8 +613,6 @@ abstract class EloquentController extends Controller
      * Allow D2F implementations to override where the post-delete redirect goes.
      *
      * To implement this, have it return a valid route url (e.g. `return route( "route-name" );`
-     *
-     * @return null
      */
     protected function postDeleteRedirect(): ?string
     {

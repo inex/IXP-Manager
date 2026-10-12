@@ -11,7 +11,7 @@
 <?php $this->section( 'page-header-postamble' ) ?>
     <div class="btn-group btn-group-sm" role="group">
         <a class="btn btn-white" href="<?= route( 'vlan-interface@list' )?>" title="list">
-            <span class="fa fa-th-list"></span>
+            <span class="fa fa-table-list"></span>
         </a>
         <a class="btn btn-white" href="<?= route('vlan-interface@edit' , [ 'vli' => $vli->id ] ) ?>" title="edit">
             <span class="fa fa-pencil"></span>
@@ -23,7 +23,7 @@
     <div class="row">
         <div class="col-sm-12">
             <div class="card">
-                <div class="card-header tw-flex">
+                <div class="card-header tw:flex">
                     <div class="mr-auto">
                         Details
                     </div>

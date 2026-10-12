@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateAtlasResults extends Migration
+final class CreateAtlasResults extends Migration
 {
     /**
      * Run the migrations.
@@ -14,7 +14,7 @@ class CreateAtlasResults extends Migration
     public function up()
     {
         Schema::create('atlas_results', function (Blueprint $table) {
-            $table->increments('id')->unsigned( false );
+            $table->integer('id', true, false);
             $table->integer('measurement_id' )->nullable()->unique();
             $table->string('routing', 255)->nullable();
             $table->longText('path' )->nullable();

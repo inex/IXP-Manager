@@ -11,15 +11,15 @@
 
 <?php $this->section( 'page-header-postamble' ) ?>
     <div class="btn-group btn-group-sm" role="group">
-        <a class="btn btn-white" href="<?= route ('rs-filter@list', [ "cust" => $rsf->customer_id ] ) ?>" title="list">
+        <a class="btn btn-white" id="list-customer-rsf" href="<?= route ('rs-filter@list', [ "cust" => $rsf->customer_id ] ) ?>" title="list">
             <span class="fa fa-list"></span>
         </a>
 
         <?php if( !Auth::getUser()->isCustUser() ): ?>
-            <a class="btn btn-white" href="<?= route ('rs-filter@create', [ "cust" => $rsf->customer_id ] ) ?>" title="create">
+            <a class="btn btn-white" id="create-rsf" href="<?= route ('rs-filter@create', [ "cust" => $rsf->customer_id ] ) ?>" title="create">
                 <span class="fa fa-plus"></span>
             </a>
-            <a class="btn btn-white" href="<?= route ('rs-filter@edit' , [ 'rsf' => $rsf->id ] ) ?>" title="edit">
+            <a class="btn btn-white" id="edit-rsf" href="<?= route ('rs-filter@edit' , [ 'rsf' => $rsf->id ] ) ?>" title="edit">
                 <span class="fa fa-pencil"></span>
             </a>
         <?php endif; ?>
@@ -30,7 +30,7 @@
     <div class="row">
         <div class="col-sm-12">
             <div class="card">
-                <div class="card-header tw-flex">
+                <div class="card-header tw:flex">
                     <div class="mr-auto">
                         Details
                     </div>
@@ -93,10 +93,10 @@
                                     <?php if( $t->rsf->vlan ): ?>
                                         <?php if( $isSuperUser ): ?>
                                             <a href="<?= route( "vlan@view" , [ "id" => $rsf->vlan_id ] )?> ">
-                                                <?= $rsf->vlan->name ?>
+                                                <?= $t->ee( $rsf->vlan->name ) ?>
                                             </a>
                                         <?php else: ?>
-                                            <?= $rsf->vlan->name ?>
+                                            <?= $t->ee( $rsf->vlan->name ) ?>
                                         <?php endif; ?>
                                     <?php else: ?>
                                         All LAN's
@@ -204,7 +204,7 @@
                                     </b>
                                 </td>
                                 <td>
-                                    <?= $rsf->live ?>
+                                    <?= $t->ee( $rsf->live ) ?>
                                 </td>
                             </tr>
                         </table>

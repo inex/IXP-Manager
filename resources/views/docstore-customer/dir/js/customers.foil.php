@@ -1,4 +1,4 @@
-<script>
+<script type="module">
     $(function () {
         $( '.btn-delete' ).click( function( e ) {
             e.preventDefault();

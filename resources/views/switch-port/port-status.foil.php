@@ -8,6 +8,6 @@
     </span>
 <?php else: ?>
     <span class="badge badge-warning">
-        <?= $t->data[ 'params'][ 'portStates'][ $t->state ] ?>
+        <?= $t->ee( $t->data[ 'params'][ 'portStates'][ $t->state ] ) ?>
     </span>
 <?php endif; ?>

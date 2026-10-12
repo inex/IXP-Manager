@@ -12,7 +12,7 @@
             ->id( 'type' )
             ->label( 'Group' )
             ->placeholder( 'Select a group...' )
-            ->fromQuery( $t->data[ 'params'][ 'types' ], 'name' )
+            ->fromQuery( $t->mapToSelectOptions($t->data[ 'params'][ 'types' ] ) , fn( $model ) => $t->ee( $model->text ) , [ 'value' => fn( $model ) => $t->ee( $model->id ) ] )
             ->addClass( 'chzn-select' )
             ->blockHelp( "Select the contact group to add / edit the option for." );
         ?>

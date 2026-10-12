@@ -51,6 +51,7 @@ use IXP\Utils\View\Alert\{
  *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @author     Thomas Kerin <thomas@islandbridgenetworks.ie>
  * @category   IXP
  * @package    IXP\Http\Controllers
  * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
@@ -137,10 +138,10 @@ class VlanController extends EloquentController
     protected static function additionalRoutes( string $route_prefix ): void
     {
         Route::group( [ 'prefix' => ( static::$is_admin_route ? 'admin/' : '' ) . $route_prefix ], static function() use ( $route_prefix ) {
-            Route::get(     'private',                             'VlanController@listPrivate'    )->name( $route_prefix . '@private'        );
-            Route::get(     'private/infra/{infra}',               'VlanController@listPrivate'    )->name( $route_prefix . '@privateInfra'   );
-            Route::get(     'list/infra/{infra}',                  'VlanController@listInfra'      )->name( $route_prefix . '@infra'          );
-            Route::get(     'list/infra/{infra}/public/{public}',  'VlanController@listInfra'      )->name( $route_prefix . '@infraPublic'    );
+            Route::get(     'private',                             [self::class, 'listPrivate']    )->name( $route_prefix . '@private'        );
+            Route::get(     'private/infra/{infra}',               [self::class, 'listPrivate']    )->name( $route_prefix . '@privateInfra'   );
+            Route::get(     'list/infra/{infra}',                  [self::class, 'listInfra']      )->name( $route_prefix . '@infra'          );
+            Route::get(     'list/infra/{infra}/public/{public}',  [self::class, 'listInfra']      )->name( $route_prefix . '@infraPublic'    );
         });
     }
 
@@ -212,14 +213,14 @@ class VlanController extends EloquentController
     /**
      * Display the form to edit an object
      *
-     * @param null $id ID of the row to edit
+     * @param int $id ID of the row to edit
      *
      * @return array
      *
      * @psalm-return array{object: mixed, infrastructure: mixed}
      */
     #[\Override]
-    protected function editPrepareForm( $id = null ): array
+    protected function editPrepareForm( int $id ): array
     {
         $this->object = Vlan::findOrFail( $id );
 

@@ -235,18 +235,22 @@ class LookingGlass extends Controller
             $routes = $this->lg()->routesForTable( $table );
         } catch( ErrorException $e ) {
             if( strpos( $e->getMessage(), 'HTTP/1.0 403' ) !== false ) {
-                return redirect( 'lg/' . $handle )->with( 'msg', $tooManyRoutesMsg );
+                AlertContainer::push($tooManyRoutesMsg, Alert::WARNING);
+                return redirect( 'lg/' . $handle );
             }
-            return redirect( 'lg/' . $handle )->with('msg', 'An error occurred - please contact our support team if you wish.' );
+            AlertContainer::push('An error occurred - please contact our support team if you wish.', Alert::WARNING);
+            return redirect( 'lg/' . $handle );
         }
 
         if( $routes === "" ) {
-            return redirect( 'lg/' . $handle )->with( 'msg', $tooManyRoutesMsg );
+            AlertContainer::push($tooManyRoutesMsg, Alert::WARNING);
+            return redirect( 'lg/' . $handle );
         }
 
         $view = view('services/lg/routes' )->with([
             'content'   => json_decode($routes, false, 512, JSON_THROW_ON_ERROR),
-            'source'    => 'table', 'name' => $table
+            'source'    => 'table',
+            'name'      => $table
         ]);
 
         return $this->addCommonParams( $view );
@@ -264,7 +268,8 @@ class LookingGlass extends Controller
             // get bgp protocol summary
             $view = view('services/lg/routes' )->with([
                 'content' => json_decode( $this->lg()->routesForProtocol( $protocol ), false, 512, JSON_THROW_ON_ERROR),
-                'source' => 'protocol', 'name' => $protocol
+                'source'  => 'protocol',
+                'name'    => $protocol
             ]);
             return $this->addCommonParams( $view );
         } catch( \Exception $e ){
@@ -310,7 +315,7 @@ class LookingGlass extends Controller
             'source'  => 'protocol',
             'name'    => $protocol,
             'lg'      => $this->lg(),
-            'net' => urldecode( $network.'/'.$mask ),
+            'net'     => urldecode( $network.'/'.$mask ),
         ]);
     }
 

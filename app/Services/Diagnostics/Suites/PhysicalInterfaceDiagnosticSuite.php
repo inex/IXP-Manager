@@ -59,8 +59,8 @@ class PhysicalInterfaceDiagnosticSuite extends DiagnosticSuite
 
     private bool $stale = true;
 
-    private static string $badgeStale = '<span class="tw-inline-flex tw-items-center tw-rounded-full tw-bg-red-50   tw-px-1.5 tw-py-0.5 tw-text-xs tw-font-medium tw-text-red-700   tw-ring-1 tw-ring-inset tw-ring-red-600/10"  >Stale</span>';
-    private static string $badgeLive  = '<span class="tw-inline-flex tw-items-center tw-rounded-full tw-bg-green-50 tw-px-1.5 tw-py-0.5 tw-text-xs tw-font-medium tw-text-green-700 tw-ring-1 tw-ring-inset tw-ring-green-600/20">Live</span>';
+    private static string $badgeStale = '<span class="tw:inline-flex tw:items-center tw:rounded-full tw:bg-red-50   tw:px-1.5 tw:py-0.5 tw:text-xs tw:font-medium tw:text-red-700   tw:ring-1 tw:ring-inset tw:ring-red-600/10"  >Stale</span>';
+    private static string $badgeLive  = '<span class="tw:inline-flex tw:items-center tw:rounded-full tw:bg-green-50 tw:px-1.5 tw:py-0.5 tw:text-xs tw:font-medium tw:text-green-700 tw:ring-1 tw:ring-inset tw:ring-green-600/20">Live</span>';
 
 
 

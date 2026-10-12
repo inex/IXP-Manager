@@ -60,6 +60,7 @@ use Symfony\Component\HttpFoundation\{
  *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @author     Thomas Kerin <thomas@islandbridgenetworks.ie>
  * @category   IXP
  * @package    IXP\Http\Controllers\Auth
  * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
@@ -135,23 +136,23 @@ class LoginController extends Controller
     /**
      * The user has been authenticated.
      *
-     * @param Request       $r
+     * @param Request       $request
      * @param User          $user
      *
      * @return RedirectResponse|null
      */
-    protected function authenticated( Request $r, User $user )
+    protected function authenticated( Request $request, User $user )
     {
         // Check if the user has Customer(s) linked
         if( !$user->customers()->count() ) {
-            return $this->logout( $r, [ 'message' => "Your user account is not associated with any " . config( "ixp_fe.lang.customer.many" ) . ".", 'class' => Alert::DANGER ] );
+            return $this->logout( $request, [ 'message' => "Your user account is not associated with any " . config( "ixp_fe.lang.customer.many" ) . ".", 'class' => Alert::DANGER ] );
         }
 
         $activeCusts = $user->customers()->active()->notDeleted()->get();
 
         // Check if the user has active Customer(s) linked
         if( !$activeCusts->count() ) {
-            return $this->logout( $r, [ 'message' => "Your user account is not associated with any active " . config( "ixp_fe.lang.customer.many" ) . ".", 'class' => Alert::DANGER ] );
+            return $this->logout( $request, [ 'message' => "Your user account is not associated with any active " . config( "ixp_fe.lang.customer.many" ) . ".", 'class' => Alert::DANGER ] );
         }
 
         $newCust = $activeCusts->first();
@@ -170,30 +171,33 @@ class LoginController extends Controller
             $user->custid = $newCust->id;
             $user->save();
         }
+
+        return null;
     }
 
     /**
      * Get the failed login response instance.
      *
-     * @param Request       $r
+     * @param Request       $request
      * @param string|null   $msg
+     * @return RedirectResponse
      */
-    protected function sendFailedLoginResponse( Request $r, $msg = null ) : RedirectResponse
+    protected function sendFailedLoginResponse( Request $request, ?string $msg = null ) : RedirectResponse
     {
         AlertContainer::push( $msg ?? "Invalid username or password. Please try again." , Alert::DANGER );
-        return redirect()->back()->withInput( $r->only('username') );
+        return redirect()->back()->withInput( $request->only('username') );
     }
 
     /**
      * Log the user out of the application.
      *
-     * @param Request      $r
+     * @param Request      $request
      * @param array|null   $customMessage Custom message to display
+     * @return RedirectResponse
      */
-    public function logout( Request $r, $customMessage = null ) : RedirectResponse
+    public function logout( Request $request, ?array $customMessage = null ) : RedirectResponse
     {
         $this->guard()->logout();
-        $r->session()->invalidate();
 
         AlertContainer::push( $customMessage ? $customMessage[ "message" ] : "You have been logged out." , $customMessage ? $customMessage[ "class" ] : Alert::SUCCESS );
         return redirect('');

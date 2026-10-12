@@ -36,13 +36,13 @@ use IXP\Traits\Observable;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \IXP\Models\Customer $customer
  * @property-read \IXP\Models\CustomerTag $tag
- * @method static \Illuminate\Database\Eloquent\Builder|CustomerToCustomerTag newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|CustomerToCustomerTag newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|CustomerToCustomerTag query()
- * @method static \Illuminate\Database\Eloquent\Builder|CustomerToCustomerTag whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CustomerToCustomerTag whereCustomerId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CustomerToCustomerTag whereCustomerTagId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CustomerToCustomerTag whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CustomerToCustomerTag newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CustomerToCustomerTag newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CustomerToCustomerTag query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CustomerToCustomerTag whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CustomerToCustomerTag whereCustomerId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CustomerToCustomerTag whereCustomerTagId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CustomerToCustomerTag whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class CustomerToCustomerTag extends Model

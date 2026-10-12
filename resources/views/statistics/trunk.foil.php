@@ -68,7 +68,7 @@
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>
-    <script>
+    <script type="module">
         let base_route   = "<?= route( 'statistics@trunk' ) ?>";
         let sel_trunkid  = $("#form-select-trunkid");
         let sel_category = $("#form-select-category");

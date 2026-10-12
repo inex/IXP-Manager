@@ -1,0 +1,11 @@
+route:          8.8.8.0/24
+origin:         AS15169
+descr:          Google
+notify:         radb-contact@google.com
+mnt-by:         MAINT-AS15169
+changed:        radb-contact@google.com 20230208
+source:         RADB
+last-modified:  2023-11-13T16:14:55Z
+rpki-ov-state:  valid
+
+

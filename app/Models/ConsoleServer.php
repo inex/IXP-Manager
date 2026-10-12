@@ -50,20 +50,20 @@ use IXP\Traits\Observable;
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\ConsoleServerConnection> $consoleServerConnections
  * @property-read int|null $console_server_connections_count
  * @property-read \IXP\Models\Vendor|null $vendor
- * @method static Builder|ConsoleServer newModelQuery()
- * @method static Builder|ConsoleServer newQuery()
- * @method static Builder|ConsoleServer query()
- * @method static Builder|ConsoleServer whereActive($value)
- * @method static Builder|ConsoleServer whereCabinetId($value)
- * @method static Builder|ConsoleServer whereCreatedAt($value)
- * @method static Builder|ConsoleServer whereHostname($value)
- * @method static Builder|ConsoleServer whereId($value)
- * @method static Builder|ConsoleServer whereModel($value)
- * @method static Builder|ConsoleServer whereName($value)
- * @method static Builder|ConsoleServer whereNotes($value)
- * @method static Builder|ConsoleServer whereSerialNumber($value)
- * @method static Builder|ConsoleServer whereUpdatedAt($value)
- * @method static Builder|ConsoleServer whereVendorId($value)
+ * @method static Builder<static>|ConsoleServer newModelQuery()
+ * @method static Builder<static>|ConsoleServer newQuery()
+ * @method static Builder<static>|ConsoleServer query()
+ * @method static Builder<static>|ConsoleServer whereActive($value)
+ * @method static Builder<static>|ConsoleServer whereCabinetId($value)
+ * @method static Builder<static>|ConsoleServer whereCreatedAt($value)
+ * @method static Builder<static>|ConsoleServer whereHostname($value)
+ * @method static Builder<static>|ConsoleServer whereId($value)
+ * @method static Builder<static>|ConsoleServer whereModel($value)
+ * @method static Builder<static>|ConsoleServer whereName($value)
+ * @method static Builder<static>|ConsoleServer whereNotes($value)
+ * @method static Builder<static>|ConsoleServer whereSerialNumber($value)
+ * @method static Builder<static>|ConsoleServer whereUpdatedAt($value)
+ * @method static Builder<static>|ConsoleServer whereVendorId($value)
  * @mixin \Eloquent
  */
 class ConsoleServer extends Model

@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Tests\Utils\DotEnv;
 
 /*
- * Copyright (C) 2009 - 2025 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -144,66 +144,77 @@ final class DotEnvParserTest extends TestCase
     }
 
 
-    /**
-     * @throws DotEnvParserException
-     */
-    public function testParseContentBlankCommentLines(): void
+    public static function blankLineCommentDataProvider(): array
     {
-        foreach( [ "#\n", "#\r\n", "#\r", "#\n\r", "#\r\n\r", "#   \n", "#  \r\n", "#     \r", "#\t   \n\r", "#   \t\r\n\r" ] as $line ) {
-            $p = $this->makeParser()
-                ->setContent( $line )
-                ->parse();
+        return [
+            ["#\n"], ["#\r\n"], ["#\r"], ["#\n\r"], ["#\r\n\r"], ["#   \n"], ["#  \r\n"], ["#     \r"], ["#\t   \n\r"], ["#   \t\r\n\r"],
+        ];
 
-            $this->assertEquals(
-                [ 0 => [
-                    "key"     => null,
-                    "value"   => null,
-                    "comment" => "",
-                ] ],
-                $p->settings()
-            );
-        }
     }
 
     /**
      * @throws DotEnvParserException
      */
-    public function testParseContentCommentLines(): void
+    #[DataProvider('blankLineCommentDataProvider')]
+    public function testParseContentBlankCommentLines($line): void
     {
-        foreach(
-                [
-                    "# comment \n" => "comment",
-                    "# comment comment \r\n" => "comment comment",
-                    "# this is at !! comment   \r" => "this is at !! comment",
-                    "# hey \$ho yolo\tthhe\n\r" => "hey \$ho yolo\tthhe",
-                    "#    thesis yo\r\n\r" => "thesis yo",
-                    "#  yes, sisko was the best star trek captain! \n" => "yes, sisko was the best star trek captain!",
-                    "#     no, it was't kirk. or picard. <====\r\n" => "no, it was't kirk. or picard. <====",
-                    "#yes the defiant WAS a cool ship     \r" => "yes the defiant WAS a cool ship",
-                    "#\tncc1701\t   \n\r" => "ncc1701",
-                ] as $line => $expected ) {
+        $p = $this->makeParser()
+            ->setContent( $line )
+            ->parse();
 
+        $this->assertEquals(
+            [ 0 => [
+                "key"     => null,
+                "value"   => null,
+                "comment" => "",
+                "raw"     => rtrim($line, "\r\n"),  ## Lines are split by \r|\n so they will not be found in raw
+            ] ],
+            $p->settings()
+        );
+    }
 
-            $p = $this->makeParser()
-                ->setContent( $line )
-                ->parse();
+    public static function contentCommentLinesDataProvider(): array
+    {
+        return [
+            ["# comment \n", "comment"],
+            ["# comment comment \r\n", "comment comment"],
+            ["# this is at !! comment   \r", "this is at !! comment"],
+            ["# hey \$ho yolo\tthhe\n\r", "hey \$ho yolo\tthhe"],
+            ["#    thesis yo\r\n\r", "thesis yo"],
+            ["#  yes, sisko was the best star trek captain! \n", "yes, sisko was the best star trek captain!"],
+            ["#     no, it was't kirk. or picard. <====\r\n", "no, it was't kirk. or picard. <===="],
+            ["#yes the defiant WAS a cool ship     \r", "yes the defiant WAS a cool ship"],
+            ["#\tncc1701\t   \n\r", "ncc1701"],
+        ];
+    }
 
-            $this->assertEquals(
-                [ 0 => [
-                    "key"     => null,
-                    "value"   => null,
-                    "comment" => $expected,
-                ] ],
-                $p->settings()
-            );
-        }
+    /**
+     * @throws DotEnvParserException
+     */
+    #[DataProvider('contentCommentLinesDataProvider')]
+    public function testParseContentCommentLines($line, $expected): void
+    {
+        $p = $this->makeParser()
+            ->setContent( $line )
+            ->parse();
+
+        $this->assertEquals(
+            [ 0 => [
+                "key"     => null,
+                "value"   => null,
+                "comment" => $expected,
+                "raw"     => rtrim($line, "\r\n"), ## Lines are split by \r|\n so they will not be found in raw
+            ] ],
+            $p->settings()
+        );
     }
 
     public static function unparsableValuesProvider(): array
     {
         return [
-            [ "=jkkjk"], [ "  =jkkfewfew" ], [ "THT_JKHK= hjkhke" ], [ "TEST =kdjfdf" ],
-            [ "TEST=\${OTHER_VAR}"], [ "TEST=\"there was \${SOME_OTHER_VAR} also\""], [ "TEST_VAR='\${OTHER_VAR}'"], [ "TEST=\"aa\${OTHER_VAR}aa\" # comment" ],
+            [ "=jkkjk"], [ "  =jkkfewfew" ], [ "THT_JKHK= hjkhke" ], [ "TEST =kdjfdf" ], [ "SOME#VAR=1" ], [ "TEST= kdjfdf" ],
+            [ "TEST=\${OTHER_VAR}"], [ "TEST=\"there was \${SOME_OTHER_VAR} also\""], [ "TEST_VAR='\${OTHER_VAR}'"], [ "TEST=\"aa\${OTHER_VAR}aa\" # comment" ], [ "TEST=\$VAR" ], [ "TEST=\"\$VAR\"" ],
+            [ "FOO=\${BAR:-localhost}" ], [ "FOO=\${!PREFIX}" ],
             [ "kjjdf k e\n" ], [ "=kjjdf\n" ]
         ];
     }
@@ -302,6 +313,7 @@ final class DotEnvParserTest extends TestCase
             [ "TEST=\"true false something else\"\n", "TEST", '"true false something else"', null ],
             [ "TEST_VAR=\"there once was a \"   ### comment\n", "TEST_VAR", '"there once was a "', "## comment" ],
             [ "APP_KEY=\"base64:01234567899876543210abcdefghijjihgfedcba123=\"", "APP_KEY", '"base64:01234567899876543210abcdefghijjihgfedcba123="', null ],
+            [ 'API_RESPONSE="{\"status\": \"ok\"}" # API payload default', "API_RESPONSE", '"{\"status\": \"ok\"}"', "API payload default" ],
         ];
     }
 
@@ -325,5 +337,53 @@ final class DotEnvParserTest extends TestCase
         );
     }
 
+    /**
+     * @throws DotEnvParserException
+     */
+    public function testQuotedHashIsPartOfValue(): void
+    {
+        $p = $this->makeParser()
+            ->setContent( 'DB_PASSWORD="&k3RUT@5PFPeE%A#qv^NUgsC7"' )
+            ->parse();
 
+        $this->assertSame( '"&k3RUT@5PFPeE%A#qv^NUgsC7"', $p->settings()[0]['value'] );
+        $this->assertNull( $p->settings()[0]['comment'] );
+    }
+
+    /**
+     * @throws DotEnvParserException
+     */
+    public function testQuotedHashValueWithInlineComment(): void
+    {
+        $p = $this->makeParser()
+            ->setContent( 'DB_PASSWORD="&k3RUT@5PFPeE%A#qv^NUgsC7" # database password' )
+            ->parse();
+
+        $this->assertSame( '"&k3RUT@5PFPeE%A#qv^NUgsC7"', $p->settings()[0]['value'] );
+        $this->assertSame( 'database password', $p->settings()[0]['comment'] );
+    }
+
+    public function testParserWithNoContent()
+    {
+        $p = $this->makeParser()
+            ->setContent( "" )
+            ->parse();
+        $this->assertCount(0, $p->settings());
+
+        $p->setContent("\n")
+            ->parse();
+        $this->assertCount(0, $p->settings());
+    }
+
+    public function testParserResets()
+    {
+        $p = $this->makeParser()
+            ->setContent( "TEST=\n" )
+            ->parse();
+        $this->assertCount(1, $p->settings());
+
+        $p->setContent("")
+            ->parse();
+        $this->assertCount(0, $p->settings());
+    }
 }

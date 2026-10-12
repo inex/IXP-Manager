@@ -32,16 +32,16 @@
 
 HANDLES="rc1-vix1-ipv4 rc1-vix1-ipv6 rc1-vix2-ipv4 rc1-vix2-ipv6"
 
-APIKEY="r8sFfkGamCjrbbLC12yIoCJooIRXzY9CYPaLVz92GFQyGqLq"
+APIKEY="ixpm_7fwTNH5XMKcR_2v4Na6muGvvoIonPtL2pllqdSxdmzzos44Prjv"
 URLROOT="http://127.0.0.1"
 BIRDBIN="/usr/sbin/bird"
 
 
 # --- the following should be fine on a typical Debian / Ubuntu system:
 
-URL_LOCK="${URLROOT}/api/v4/router/get-update-lock"
-URL_CONF="${URLROOT}/api/v4/router/gen-config"
-URL_DONE="${URLROOT}/api/v4/router/updated"
+URL_LOCK="${URLROOT}/admin/api/v4/router/get-update-lock"
+URL_CONF="${URLROOT}/admin/api/v4/router/gen-config"
+URL_DONE="${URLROOT}/admin/api/v4/router/updated"
 
 ETCPATH="/usr/local/etc/bird"
 RUNPATH="/var/run/bird"

@@ -290,4 +290,55 @@ class LocationControllerTest extends DuskTestCase
             $this->assertTrue( Location::whereName( 'Infrastructure Test2' )->doesntExist() );
         });
     }
+
+
+    /**
+     * Tests scenario where location country is null - pages should not error
+     *
+     */
+    public function testEditformWhenCountryIsNull(): void
+    {
+        $this->browse(function (Browser $browser) {
+            $browser->resize( 1600, 1200 )
+                ->visit( '/logout' )
+                ->visit( '/login' )
+                ->type( 'username', 'travis' )
+                ->type( 'password', 'travisci' )
+                ->press( '#login-btn' )
+                ->waitForLocation( '/admin/dashboard' );
+
+            $location = new Location();
+            $location->name = "Test Location";
+            $location->shortname = "SHRTX";
+            $location->city = "Pago Pago";
+            $location->tag = "um";
+            $location->officephone = "1234567890";
+            $location->save();
+
+            $browser->visit( route( 'facility@list' ) )
+                ->assertSee( 'Facilities' )
+                ->assertSee( 'Location 1' )
+                ->assertSee( 'Test Location' )
+            ;
+
+            $browser->click("#e2f-list-edit-" . $location->id )
+                ->waitForLocation( route( 'facility@edit', [ 'id' => $location->id ] ) )
+                ->assertSee("Edit Facility")
+                ->type("nocemail", "invalid")
+                ->press("Save Changes")
+                ->waitForLocation( route( 'facility@edit', [ 'id' => $location->id ] ) )
+                ->assertSee("The nocemail must be a valid email address.")
+                ->assertSee("The country field is required.")
+            ;
+
+            $browser
+                ->type("nocemail", "test@ixp.local")
+                ->select("country", "AM")
+                ->press("Save Changes")
+                ->waitForLocation( route( 'facility@list' ) )
+                ->assertSee( "Facility updated" )
+            ;
+
+        });
+    }
 }

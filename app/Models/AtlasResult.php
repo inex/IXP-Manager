@@ -41,15 +41,15 @@ use Illuminate\Database\Eloquent\{
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \IXP\Models\AtlasMeasurement|null $atlasMeasurement
- * @method static Builder|AtlasResult newModelQuery()
- * @method static Builder|AtlasResult newQuery()
- * @method static Builder|AtlasResult query()
- * @method static Builder|AtlasResult whereCreatedAt($value)
- * @method static Builder|AtlasResult whereId($value)
- * @method static Builder|AtlasResult whereMeasurementId($value)
- * @method static Builder|AtlasResult wherePath($value)
- * @method static Builder|AtlasResult whereRouting($value)
- * @method static Builder|AtlasResult whereUpdatedAt($value)
+ * @method static Builder<static>|AtlasResult newModelQuery()
+ * @method static Builder<static>|AtlasResult newQuery()
+ * @method static Builder<static>|AtlasResult query()
+ * @method static Builder<static>|AtlasResult whereCreatedAt($value)
+ * @method static Builder<static>|AtlasResult whereId($value)
+ * @method static Builder<static>|AtlasResult whereMeasurementId($value)
+ * @method static Builder<static>|AtlasResult wherePath($value)
+ * @method static Builder<static>|AtlasResult whereRouting($value)
+ * @method static Builder<static>|AtlasResult whereUpdatedAt($value)
  * @mixin Eloquent
  */
 

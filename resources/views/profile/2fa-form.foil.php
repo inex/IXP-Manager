@@ -11,7 +11,7 @@
         </p>
 
         <p>
-            <?php if( !Auth::getUser()->user2FA || !Auth::getUser()->user2FA->enabled ): ?>
+            <?php if( !Auth::getUser()->user2FA || !Auth::getUser()->user2FA->isEnabled() ): ?>
                 You do not have 2fa enabled. To enable it, click here:
             <?php else: ?>
                 You have 2fa enabled. To manage it, click here:

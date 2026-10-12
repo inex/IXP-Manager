@@ -25,13 +25,15 @@ namespace IXP\Models;
 
 use Eloquent;
 
-use Illuminate\Database\Eloquent\{Builder,
+use Illuminate\Database\Eloquent\{
+    Builder,
     Model,
     Relations\BelongsTo,
     Relations\BelongsToMany,
     Relations\HasMany,
     Relations\HasOne};
 
+use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Notifications\Notifiable;
 
 use Illuminate\Auth\Authenticatable;
@@ -60,18 +62,20 @@ use IXP\Traits\Observable;
  * @property string|null $email
  * @property string|null $authorisedMobile
  * @property int|null $uid
- * @property int|null $privs
  * @property int|null $disabled
  * @property int|null $lastupdatedby
  * @property string|null $creator
  * @property string|null $name
  * @property int|null $peeringdb_id
- * @property array|null $extra_attributes
- * @property array|null $prefs
- * @property \Illuminate\Support\Carbon|null $created_at
+ * @property array<array-key, mixed>|null $extra_attributes (DC2Type:json)
+ * @property array<array-key, mixed>|null $prefs
+ * @property \Illuminate\Support\Carbon $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\ApiKey> $apiKeys
  * @property-read int|null $api_keys_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\AppPassword> $appPasswords
+ * @property-read int|null $app_passwords_count
+ * @property-read \IXP\Models\CustomerToUser|null $currentCustomerToUser
  * @property-read \IXP\Models\Customer|null $customer
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\CustomerToUser> $customerToUser
  * @property-read int|null $customer_to_user_count
@@ -82,38 +86,32 @@ use IXP\Traits\Observable;
  * @property-read \IXP\Models\User2FA|null $user2FA
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\UserRememberToken> $userRememberTokens
  * @property-read int|null $user_remember_tokens_count
- * @method static Builder|User activeOnly()
- * @method static Builder|User byPrivs(?int $priv = null)
- * @method static Builder|User newModelQuery()
- * @method static Builder|User newQuery()
- * @method static Builder|User query()
- * @method static Builder|User whereAuthorisedMobile($value)
- * @method static Builder|User whereCreatedAt($value)
- * @method static Builder|User whereCreator($value)
- * @method static Builder|User whereCustid($value)
- * @method static Builder|User whereDisabled($value)
- * @method static Builder|User whereEmail($value)
- * @method static Builder|User whereExtraAttributes($value)
- * @method static Builder|User whereId($value)
- * @method static Builder|User whereLastupdatedby($value)
- * @method static Builder|User whereName($value)
- * @method static Builder|User wherePassword($value)
- * @method static Builder|User wherePeeringdbId($value)
- * @method static Builder|User wherePrefs($value)
- * @method static Builder|User wherePrivs($value)
- * @method static Builder|User whereUid($value)
- * @method static Builder|User whereUpdatedAt($value)
- * @method static Builder|User whereUsername($value)
- * @property string|null $lastupdated
- * @property string|null $created
- * @method static Builder|User whereCreated($value)
- * @method static Builder|User whereLastupdated($value)
+ * @method static Builder<static>|User activeOnly()
+ * @method static Builder<static>|User byPrivs(?int $priv = null)
+ * @method static Builder<static>|User newModelQuery()
+ * @method static Builder<static>|User newQuery()
+ * @method static Builder<static>|User query()
+ * @method static Builder<static>|User whereAuthorisedMobile($value)
+ * @method static Builder<static>|User whereCreatedAt($value)
+ * @method static Builder<static>|User whereCreator($value)
+ * @method static Builder<static>|User whereCustid($value)
+ * @method static Builder<static>|User whereDisabled($value)
+ * @method static Builder<static>|User whereEmail($value)
+ * @method static Builder<static>|User whereExtraAttributes($value)
+ * @method static Builder<static>|User whereId($value)
+ * @method static Builder<static>|User whereLastupdatedby($value)
+ * @method static Builder<static>|User whereName($value)
+ * @method static Builder<static>|User wherePassword($value)
+ * @method static Builder<static>|User wherePeeringdbId($value)
+ * @method static Builder<static>|User wherePrefs($value)
+ * @method static Builder<static>|User whereUid($value)
+ * @method static Builder<static>|User whereUpdatedAt($value)
+ * @method static Builder<static>|User whereUsername($value)
  * @mixin Eloquent
  */
 class User extends Model implements AuthenticatableContract, CanResetPasswordContract
 {
-
-    use Authenticatable, CanResetPassword, Notifiable, Observable;
+    use Authenticatable, Authorizable, CanResetPassword, Notifiable, Observable;
     /**
      * The table associated with the model.
      *
@@ -136,47 +134,64 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         'prefs'             => '{}',
     ];
 
-    public const AUTH_PUBLIC    = 0;
-    public const AUTH_CUSTUSER  = 1;
-    public const AUTH_CUSTADMIN = 2;
-    public const AUTH_SUPERUSER = 3;
+    public const int AUTH_PUBLIC    = 0;
+    public const int AUTH_CUSTUSER  = 1;
+    public const int AUTH_CUSTADMIN = 2;
+    public const int AUTH_SUPERUSER = 3;
 
-    public static $PRIVILEGES = [
+    /**
+     * @var array<int, string>
+     */
+    public static array $PRIVILEGES = [
         self::AUTH_CUSTUSER  => 'CUSTUSER',
         self::AUTH_CUSTADMIN => 'CUSTADMIN',
         self::AUTH_SUPERUSER => 'SUPERUSER',
     ];
 
-    public static $PRIVILEGES_ALL = [
+    public static array $PRIVILEGES_ALL = [
         self::AUTH_PUBLIC    => 'PUBLIC',
         self::AUTH_CUSTUSER  => 'CUSTUSER',
         self::AUTH_CUSTADMIN => 'CUSTADMIN',
         self::AUTH_SUPERUSER => 'SUPERUSER',
     ];
 
-    public static $PRIVILEGES_TEXT = [
+    public static array $PRIVILEGES_TEXT = [
         self::AUTH_CUSTUSER  => 'Customer User',
         self::AUTH_CUSTADMIN => 'Customer Administrator',
         self::AUTH_SUPERUSER => 'Superuser',
     ];
 
-    public static $PRIVILEGES_TEXT_ALL = [
+    public static array $PRIVILEGES_TEXT_ALL = [
         self::AUTH_PUBLIC    => 'Public / Non-User',
         self::AUTH_CUSTUSER  => 'Customer User',
         self::AUTH_CUSTADMIN => 'Customer Administrator',
         self::AUTH_SUPERUSER => 'Superuser',
     ];
 
-    public static $PRIVILEGES_TEXT_NONSUPERUSER = [
+    public static array $PRIVILEGES_TEXT_NONSUPERUSER = [
         self::AUTH_CUSTUSER  => 'Customer User',
         self::AUTH_CUSTADMIN => 'Customer Administrator',
     ];
 
-    public static $PRIVILEGES_TEXT_VSHORT = [
+    public static array $PRIVILEGES_TEXT_VSHORT = [
         self::AUTH_CUSTUSER  => 'CU',
         self::AUTH_CUSTADMIN => 'CA',
         self::AUTH_SUPERUSER => 'SU',
     ];
+
+    /**
+     * This ensures that when changes affecting custid are saved, that we purge 'currentCustomerToUser' relation from memory
+     * Otherwise we are keeping around the old record referring to a different customer to user record.
+     */
+    #[\Override]
+    protected static function booted(): void
+    {
+        static::updated(function (User $user) {
+            if ($user->wasChanged('custid')) {
+                $user->unsetRelation('currentCustomerToUser');
+            }
+        });
+    }
 
     /**
      * Get the remember tokens for the user
@@ -219,7 +234,18 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     }
 
     /**
+     * Get the app passwords for the user
+     *
+     * @return HasMany<AppPassword, User>
+     */
+    public function appPasswords(): HasMany
+    {
+        return $this->hasMany(AppPassword::class, "user_id" );
+    }
+
+    /**
      * Get all the customers for the user
+     * @return BelongsToMany<Customer, User>
      */
     public function customers(): BelongsToMany
     {
@@ -301,11 +327,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
      */
     public function privs(): ?int
     {
-        $c2u = CustomerToUser::where( 'customer_id' , $this->custid )->where( 'user_id' , $this->id )->first();
-        if( $c2u ) {
-            return $c2u->privs;
-        }
-        return null;
+        return $this->currentCustomerToUser?->privs;
     }
 
     /**
@@ -320,7 +342,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         }
 
         return $this->privs() >= config( "google2fa.ixpm_2fa_enforce_for_users" )
-            && ( !$this->user2FA || !$this->user2FA->enabled );
+            && ( !$this->user2FA || !$this->user2FA->isEnabled() );
     }
 
     /**
@@ -334,7 +356,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
             return false;
         }
 
-        if( !$this->user2FA || !$this->user2FA->enabled ) {
+        if( !$this->user2FA || !$this->user2FA->isEnabled() ) {
             // If the user does not have 2fa configured or enabled but it is required, then return true:
             if( $this->is2faEnforced() ) {
                 return true;
@@ -351,20 +373,24 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     }
 
     /**
-     * Get the current customer to user - if one exists.
+     * Defines a relationship to query against the **current** customer-to-user
+     * record for the user. Benefits from memoization instead of querying every
+     * single time.
      *
-     * @return CustomerToUser|null
+     * This is a relation that relies on a composite key, which is why the subquery
+     * is required.
+     *
+     * @return HasOne
      */
-    public function currentCustomerToUser(): ?CustomerToUser
+    public function currentCustomerToUser(): HasOne
     {
-        if( !$this->customer ) {
-            return null;
-        }
-
-        $c2u = CustomerToUser::where( 'customer_id', $this->custid )
-            ->where( 'user_id', $this->id )->first();
-
-        return $c2u ?? null;
+        return $this->hasOne(CustomerToUser::class, 'user_id')
+            ->where('customer_id', function ($query) {
+                $query->select('custid')
+                    ->from($this->getTable() . " as search_users")
+                    ->whereColumn('search_users.id', 'customer_to_users.user_id')
+                    ->limit(1);
+            });
     }
 
     /**
@@ -375,7 +401,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
      * @return void
      */
     #[\Override]
-    public function sendPasswordResetNotification( $token ): void
+    public function sendPasswordResetNotification( #[\SensitiveParameter] $token ): void
     {
         event( new ForgotPasswordEvent( $token, $this ) );
     }
@@ -396,6 +422,15 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         // However, some Laravel functionality if triggered on this returning a non-false value
         // to execute certain functionality. As such, we'll just return something random:
         return Str::random(60);
+    }
+
+    /**
+     * Mark users remember me token (if there is any) as having completed 2FA
+     */
+    public function markRememberToken2faComplete(#[\SensitiveParameter] string $token): bool
+    {
+        return $this->userRememberTokens()->whereToken($token)->first()
+            ?->record2faIsComplete() ?? false;
     }
 
     /**

@@ -3,7 +3,7 @@
 namespace Tests\Browser;
 
 /*
- * Copyright (C) 2009 - 2025 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -26,6 +26,7 @@ namespace Tests\Browser;
 use Laravel\Dusk\Browser;
 
 use Tests\DuskTestCase;
+use Tests\Trait\ModifiesEnv;
 use Throwable;
 
 /**
@@ -39,33 +40,25 @@ use Throwable;
  */
 class SettingsControllerTest extends DuskTestCase
 {
-    
+    use ModifiesEnv;
+
     /**
      * The expected .env file contents before we go messing with it
      * @var string|null
      */
-    private ?string $oenv = null;
-    
-    /**
-     * @throws
-     */
-    public function setUp(): void
-    {
-        $this->oenv = file_get_contents( __DIR__ . '/../../.env.ci' );
-        
-        file_put_contents( __DIR__ . '/../../.env', $this->oenv );
-        usleep( 500_000 );
-        parent::setUp();
-    }
+    private ?string $test_env = null;
 
     /**
      * @throws
      */
-    public function tearDown(): void
+    #[\Override]
+    public function setUp(): void
     {
-        file_put_contents( __DIR__ . '/../../.env', $this->oenv );
-        usleep( 500_000 );
-        parent::tearDown();
+        $this->test_env = file_get_contents( __DIR__ . '/../../.env.ci' );
+        $this->overwriteEnvFile($this->test_env);
+        $this->awaitArtisanEnvReload();
+
+        parent::setUp();
     }
     
     /**
@@ -83,7 +76,8 @@ class SettingsControllerTest extends DuskTestCase
                 ->waitForLocation( '/admin/dashboard' );
 
             $browser->visit( route( 'settings@index' ) )
-                ->assertSee( 'IXP Manager Settings' );
+                ->assertSee( 'IXP Manager Settings' )
+                ->assertSee( '.env last modified: ' );
             
             $browser->driver->executeScript( 'window.scrollTo(0, 3000);' );
             
@@ -91,7 +85,7 @@ class SettingsControllerTest extends DuskTestCase
                 ->waitForLocation( route( 'settings@index' ) );
             
             // ensure a save with no changes yields no changes in the .env file
-            $this->assertEquals( $this->oenv, file_get_contents( __DIR__ . '/../../.env' ));
+            $this->assertEquals( $this->test_env, file_get_contents( __DIR__ . '/../../.env' ));
             
             // change some values to check validation
             $browser->press( 'Route Servers' )
@@ -104,12 +98,12 @@ class SettingsControllerTest extends DuskTestCase
                 ->assertSee( 'The rs rpki rtr1 port must be an integer' );
             
             // ensure still no changes
-            $this->assertEquals( $this->oenv, file_get_contents( __DIR__ . '/../../.env' ));
+            $this->assertEquals( $this->test_env, file_get_contents( __DIR__ . '/../../.env' ));
             
             // change some values to check validation
             $browser->press( 'Route Servers' )
                 ->waitForText( 'Minimum IPv4 Subnet Size' )
-                ->type( 'rs_rpki_rtr1_port', 12345 )
+                ->type( 'rs_rpki_rtr1_port', "12345" )
                 ->driver->executeScript( 'window.scrollTo(0, 3000);' );
             
             $browser->press( 'Save Changes' )
@@ -118,17 +112,71 @@ class SettingsControllerTest extends DuskTestCase
             $nenv = file_get_contents( __DIR__ . '/../../.env' );
             
             // now we have a change
-            $this->assertNotEquals( $this->oenv, $nenv );
+            $this->assertNotEquals( $this->test_env, $nenv );
 
             // we substituted 3323 for 12345
-            $this->assertEquals( strlen( $nenv ), strlen( $this->oenv ) + 1 );
+            $this->assertEquals( strlen( $nenv ), strlen( $this->test_env ) + 1 );
             
-            $this->assertStringContainsString( 'IXP_RPKI_RTR1_PORT=3323', $this->oenv );
-            $this->assertStringNotContainsString( 'IXP_RPKI_RTR1_PORT=12345', $this->oenv );
+            $this->assertStringContainsString( 'IXP_RPKI_RTR1_PORT=3323', $this->test_env );
+            $this->assertStringNotContainsString( 'IXP_RPKI_RTR1_PORT=12345', $this->test_env );
             
             $this->assertStringNotContainsString( 'IXP_RPKI_RTR1_PORT=3323', $nenv );
             $this->assertStringContainsString( 'IXP_RPKI_RTR1_PORT=12345', $nenv );
-            
+
+            // Test unsetting a text value, should be removed from the .env
+            $browser->press( 'Route Servers' )
+                ->waitForText( 'Minimum IPv4 Subnet Size' )
+                ->clear( 'rs_rpki_rtr1_port' )
+                ->driver->executeScript( 'window.scrollTo(0, 3000);' );
+            $browser->press( 'Save Changes' )
+                ->waitForText( 'Settings have been successfully updated' );
+
+            $nenv = file_get_contents( __DIR__ . '/../../.env' );
+            $this->assertStringNotContainsString( 'IXP_RPKI_RTR1_PORT', $nenv );
+
+            // the env var is empty, it'll go back to the configured default
+            $browser->press( 'Route Servers' )
+                ->waitForText( 'Minimum IPv4 Subnet Size' );
+            $element = $browser->element("#rs_rpki_rtr1_port");
+            $this->assertEquals("3323", $element->getAttribute('value'));
+
+            // Test out changing a boolean setting, since we write true/false to config now
+            $this->assertStringContainsString( 'IXP_FE_FRONTEND_DISABLED_APP_PASSWORD=0', $nenv );
+
+            $browser
+                ->press( 'Features' )
+                ->waitForText('Application-Specific Passwords')
+                ->uncheck('app-passwords')
+                ->driver->executeScript( 'window.scrollTo(0, 3000);' );
+            $browser->press( 'Save Changes' )
+                ->waitForText( 'Settings have been successfully updated' );
+
+            $nenv = file_get_contents( __DIR__ . '/../../.env' );
+            $this->assertStringContainsString( 'IXP_FE_FRONTEND_DISABLED_APP_PASSWORD=true', $nenv );
+
+            $browser->check('app-passwords')
+                ->driver->executeScript( 'window.scrollTo(0, 3000);' );
+            $browser->press( 'Save Changes' )
+                ->waitForText( 'Settings have been successfully updated' );
+
+            $nenv = file_get_contents( __DIR__ . '/../../.env' );
+            $this->assertStringContainsString( 'IXP_FE_FRONTEND_DISABLED_APP_PASSWORD=false', $nenv );
+
+            // Test not-writable warning, and that form submit is disabled
+            $originalMode = fileperms( __DIR__ . '/../../.env' ) & 0777;
+
+            chmod(__DIR__ . '/../../.env', $originalMode & ~0222); # remove readable bit from permissions
+            sleep(1);
+
+            $browser->visit( route( 'settings@index' ) )
+                ->assertSee( 'Server has no write permissions for .env file. Changes disabled.' );
+
+            $this->assertEquals("true", $browser->element("#envForm #updateButton")->getAttribute("disabled"), "expect form to be disabled when .env is not writable");
+
+            chmod(__DIR__ . '/../../.env', $originalMode); # restore original permissions, whatever they were
+
+            $browser->visit( route( 'settings@index' ) )
+                ->assertDontSee( 'Server has no write permissions for .env file. Changes disabled.' );
         } );
     }
 }

@@ -160,7 +160,7 @@ class DirectoryController extends Controller
      *
      * @throws AuthorizationException
      */
-    public function create( Request $r, Customer $cust ): view
+    public function create( Request $r, Customer $cust ): View
     {
         $this->authorize( 'create', [ DocstoreCustomerDirectory::class, $cust ] );
 

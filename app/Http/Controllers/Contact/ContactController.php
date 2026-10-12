@@ -108,8 +108,6 @@ class ContactController extends EloquentController
                         'title'      => 'Customer',
                         'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
                         'route'      => 'customer@overview',
-                        'controller' => 'customer',
-                        'action'     => 'overview',
                         'idField'    => 'custid'
                     ],
                     'name'      => 'Name',
@@ -443,6 +441,10 @@ class ContactController extends EloquentController
         $us = Auth::getUser();
 
         $this->object = Contact::findOrFail( $id );
+        if( !$us->isSuperUser() && $us->custid !== $this->object->customer->id ) {
+            $this->unauthorized();
+        }
+
         $this->checkForm( $r );
 
         $custid = $us->custid;

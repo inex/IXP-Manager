@@ -57,23 +57,23 @@ use IXP\Traits\Observable;
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\TrafficDailyPhysInt> $trafficDailiesPhysInt
  * @property-read int|null $traffic_dailies_phys_int_count
  * @property-read \IXP\Models\VirtualInterface|null $virtualInterface
- * @method static Builder|PhysicalInterface connected()
- * @method static Builder|PhysicalInterface graphable()
- * @method static Builder|PhysicalInterface newModelQuery()
- * @method static Builder|PhysicalInterface newQuery()
- * @method static Builder|PhysicalInterface query()
- * @method static Builder|PhysicalInterface whereAutoneg($value)
- * @method static Builder|PhysicalInterface whereCreatedAt($value)
- * @method static Builder|PhysicalInterface whereDuplex($value)
- * @method static Builder|PhysicalInterface whereFanoutPhysicalInterfaceId($value)
- * @method static Builder|PhysicalInterface whereId($value)
- * @method static Builder|PhysicalInterface whereNotes($value)
- * @method static Builder|PhysicalInterface whereRateLimit($value)
- * @method static Builder|PhysicalInterface whereSpeed($value)
- * @method static Builder|PhysicalInterface whereStatus($value)
- * @method static Builder|PhysicalInterface whereSwitchportid($value)
- * @method static Builder|PhysicalInterface whereUpdatedAt($value)
- * @method static Builder|PhysicalInterface whereVirtualinterfaceid($value)
+ * @method static Builder<static>|PhysicalInterface connected()
+ * @method static Builder<static>|PhysicalInterface graphable()
+ * @method static Builder<static>|PhysicalInterface newModelQuery()
+ * @method static Builder<static>|PhysicalInterface newQuery()
+ * @method static Builder<static>|PhysicalInterface query()
+ * @method static Builder<static>|PhysicalInterface whereAutoneg($value)
+ * @method static Builder<static>|PhysicalInterface whereCreatedAt($value)
+ * @method static Builder<static>|PhysicalInterface whereDuplex($value)
+ * @method static Builder<static>|PhysicalInterface whereFanoutPhysicalInterfaceId($value)
+ * @method static Builder<static>|PhysicalInterface whereId($value)
+ * @method static Builder<static>|PhysicalInterface whereNotes($value)
+ * @method static Builder<static>|PhysicalInterface whereRateLimit($value)
+ * @method static Builder<static>|PhysicalInterface whereSpeed($value)
+ * @method static Builder<static>|PhysicalInterface whereStatus($value)
+ * @method static Builder<static>|PhysicalInterface whereSwitchportid($value)
+ * @method static Builder<static>|PhysicalInterface whereUpdatedAt($value)
+ * @method static Builder<static>|PhysicalInterface whereVirtualinterfaceid($value)
  * @mixin Eloquent
  */
 class PhysicalInterface extends Model
@@ -118,18 +118,18 @@ class PhysicalInterface extends Model
      * @param  ?int  $value
      * @return void
      */
-    public function setRateLimitAttribute($value)
+    protected function setRateLimitAttribute($value)
     {
         $this->attributes['rate_limit'] = $value ?: null;
     }
 
-    public const STATUS_CONNECTED       = 1;
-    public const STATUS_DISABLED        = 2;
-    public const STATUS_NOTCONNECTED    = 3;
-    public const STATUS_XCONNECT        = 4;
-    public const STATUS_QUARANTINE      = 5;
+    public const int STATUS_CONNECTED       = 1;
+    public const int STATUS_DISABLED        = 2;
+    public const int STATUS_NOTCONNECTED    = 3;
+    public const int STATUS_XCONNECT        = 4;
+    public const int STATUS_QUARANTINE      = 5;
 
-    public static $STATES = [
+    public static array $STATES = [
         self::STATUS_CONNECTED    => 'Connected',
         self::STATUS_DISABLED     => 'Disabled',
         self::STATUS_NOTCONNECTED => 'Not Connected',
@@ -137,7 +137,7 @@ class PhysicalInterface extends Model
         self::STATUS_QUARANTINE   => 'Quarantine'
     ];
 
-    public static $APISTATES = [
+    public static array $APISTATES = [
         self::STATUS_CONNECTED    => 'connected',
         self::STATUS_DISABLED     => 'disabled',
         self::STATUS_NOTCONNECTED => 'notconnected',
@@ -145,7 +145,7 @@ class PhysicalInterface extends Model
         self::STATUS_QUARANTINE   => 'quarantine'
     ];
 
-    public static $SPEED = [
+    public static array $SPEED = [
         10    => '10 Mbps',
         100   => '100 Mbps',
         1000  => '1 Gbps',
@@ -156,7 +156,7 @@ class PhysicalInterface extends Model
         400000 => '400 Gbps'
     ];
 
-    public static $DUPLEX = [
+    public static array $DUPLEX = [
         'full'   => 'full',
         'half'   => 'half'
     ];

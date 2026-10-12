@@ -22,7 +22,7 @@
 
 // variables - you need to change these!
 $key="your-api-key";
-$url="https://ixp.example.com/api/v4/router/locked-longer-than";
+$url="https://ixp.example.com/admin/api/v4/router/locked-longer-than";
 $threshold=7200;
 
 // is curl available?

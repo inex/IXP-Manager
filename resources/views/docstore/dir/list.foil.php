@@ -45,27 +45,27 @@
     <?php endif; ?>
 
     <?php if( $t->dir && $t->dir->description ): ?>
-        <div class="row tw-my-8 tw-p-4 tw-border-2 tw-border-gray-500 tw-rounded-lg tw-bg-gray-200">
-            <?= @parsedown( $t->ee( $t->dir->description ) ) ?>
+        <div class="row tw:my-8 tw:p-4 tw:border-2 tw:border-gray-500 tw:rounded-lg tw:bg-gray-200">
+            <?= clean( @parsedown( $t->dir->description ) ) ?>
         </div>
     <?php endif; ?>
 
     <div class="docstore">
-        <table class="tw-mt-8">
+        <table class="tw:mt-8">
             <tbody>
                 <?php if( $t->dir ): ?>
                     <tr>
                         <td class="top icon">
                             <?php if( $t->dir ): ?>
-                                <a class="tw-text-black" href="<?= route('docstore-dir@list', ['dir' => $t->dir->parentDirectory->id ?? null ] ) ?>">
-                                    <i class="fa fa-lg fa-caret-square-o-left tw-inline-block tw-w-full"></i>
+                                <a class="tw:text-black" href="<?= route('docstore-dir@list', ['dir' => $t->dir->parentDirectory->id ?? null ] ) ?>">
+                                    <i class="fa fa-lg fa-square-caret-left tw:inline-block tw:w-full"></i>
                                 </a>
                             <?php endif; ?>
                         </td>
                         <td class="top icon">
-                            <i class="fa fa-lg fa-folder-open tw-inline-block tw-w-full"></i>
+                            <i class="fa fa-lg fa-folder-open tw:inline-block tw:w-full"></i>
                         </td>
-                        <td class="top tw-px-4 tw-w-auto">
+                        <td class="top tw:px-4 tw:w-auto">
                             <?= $t->ee( $t->dir->name ) ?>
                         </td>
                         <td class="top meta">&nbsp;</td>
@@ -80,9 +80,9 @@
                     <tr>
                         <td class="<?= $i ? '' : 'top' ?> icon"></td>
                         <td class="<?= $i ? '' : 'top' ?> icon">
-                            <i class="fa fa-lg fa-folder tw-inline-block tw-w-full"></i>
+                            <i class="fa fa-lg fa-folder tw:inline-block tw:w-full"></i>
                         </td>
-                        <td class="<?= $i ? '' : 'top' ?> tw-px-4 tw-py-2 tw-w-auto">
+                        <td class="<?= $i ? '' : 'top' ?> tw:px-4 tw:py-2 tw:w-auto">
                              <a href="<?= route('docstore-dir@list', ['dir' => $dir['id']] ) ?>"><?= $t->ee( $dir['name'] ) ?></a>
                         </td>
                         <td class="<?= $i ? '' : 'top' ?> meta"></td>
@@ -91,7 +91,7 @@
                         <td class="<?= $i ? '' : 'top' ?> meta">
                             <?php if( Auth::check() && $isSuperUser ): ?>
                                 <div class="dropdown">
-                                    <button class="btn btn-light btn-sm tw-my-0 tw-py-0" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <button class="btn btn-light btn-sm tw:my-0 tw:py-0" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         &middot;&middot;&middot;
                                     </button>
                                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
@@ -110,34 +110,34 @@
 
                 <?php foreach( $t->files as $file ): ?>
                     <tr class="">
-                        <td class="<?= $i ? '' : 'tw-border-t-2' ?> icon"></td>
-                        <td class="<?= $i ? '' : 'tw-border-t-2' ?> icon">
-                            <i class="fa fa-lg fa-file-o tw-inline-block tw-w-full"></i>
+                        <td class="<?= $i ? '' : 'tw:border-t-2' ?> icon"></td>
+                        <td class="<?= $i ? '' : 'tw:border-t-2' ?> icon">
+                            <i class="fa fa-lg fa-file tw:inline-block tw:w-full"></i>
                         </td>
-                        <td class="<?= $i ? '' : 'tw-border-t-2' ?> tw-px-4 tw-w-auto">
+                        <td class="<?= $i ? '' : 'tw:border-t-2' ?> tw:px-4 tw:w-auto">
                             <a href="<?= route($file->isViewable() ? 'docstore-file@view' : 'docstore-file@download', ['file' => $file->id] ) ?>"
                                 <?php if( trim( $file->description ) ): ?>
-                                    data-toggle="tooltip" data-placement="top" data-html="true" title="<?= parsedown( $file->description ) ?>"
+                                    data-toggle="tooltip" data-placement="top" data-html="true" title="<?= clean( @parsedown( $file->description ) ) ?>"
                                 <?php endif; ?>><?= $t->ee( $file->name ) ?></a>
                         </td>
 
-                        <td class="<?= $i ? '' : 'tw-border-t-2' ?> meta tw-text-center">
+                        <td class="<?= $i ? '' : 'tw:border-t-2' ?> meta tw:text-center">
                             <?php if( Auth::check() && $isSuperUser ): ?>
-                                <span class="tw-w-full tw-inline-block tw-border-gray-200 tw-border-1 tw-rounded-sm tw-bg-gray-200 tw-px-1 tw-text-xs tw-text-gray-700">
+                                <span class="tw:w-full tw:inline-block tw:border-gray-200 tw:border-1 tw:rounded-sm tw:bg-gray-200 tw:px-1 tw:text-xs tw:text-gray-700">
                                     <?= \IXP\Models\User::$PRIVILEGES_ALL[ $file->min_privs ] ?>
                                 </span>
                             <?php endif; ?>
                         </td>
 
-                        <td class="<?= $i ? '' : 'tw-border-t-2' ?> meta tw-text-right" style="font-variant-numeric: tabular-nums;">
+                        <td class="<?= $i ? '' : 'tw:border-t-2' ?> meta tw:text-right" style="font-variant-numeric: tabular-nums;">
                             <?php if( Auth::check() && $isSuperUser ): ?>
                                 <?php if( $file->created_at < $sixmonthsago ): ?>
-                                    <span class="tw-align-middle tw-border-gray-200 tw-border-1 tw-rounded-sm tw-bg-gray-200 tw-px-1 tw-text-sm tw-text-gray-700"
+                                    <span class="tw:align-middle tw:border-gray-200 tw:border-1 tw:rounded-sm tw:bg-gray-200 tw:px-1 tw:text-sm tw:text-gray-700"
                                           data-toggle="tooltip" data-placement="left" data-html="true" title="Unique User Downloads: <?= $file->unique_downloads_count ?>">
                                         <?= $file->unique_downloads_count ?>
                                     </span>
                                 <?php else: ?>
-                                    <span class="tw-align-middle tw-border-gray-200 tw-border-1 tw-rounded-sm tw-bg-gray-200 tw-px-1 tw-text-sm tw-text-gray-700"
+                                    <span class="tw:align-middle tw:border-gray-200 tw:border-1 tw:rounded-sm tw:bg-gray-200 tw:px-1 tw:text-sm tw:text-gray-700"
                                             data-toggle="tooltip" data-placement="left" data-html="true" title="Unique User Downloads:<br> <?= $file->downloads_count ?> Total (<?= $file->unique_downloads_count ?> Unique)">
                                         <?= $file->downloads_count ?> (<?= $file->unique_downloads_count ?>)
                                     </span>
@@ -145,15 +145,15 @@
                             <?php endif; ?>
                         </td>
 
-                        <td class="<?= $i ? '' : 'tw-border-t-2' ?> meta">
-                            <span class="tw-text-gray-700 tw-text-sm tw-align-middle tw-border-gray-200 tw-border-1 tw-rounded-sm tw-bg-gray-200 tw-px-1">
+                        <td class="<?= $i ? '' : 'tw:border-t-2' ?> meta">
+                            <span class="tw:text-gray-700 tw:text-sm tw:align-middle tw:border-gray-200 tw:border-1 tw:rounded-sm tw:bg-gray-200 tw:px-1">
                                 <?= \Carbon\Carbon::parse($file->file_last_updated)->toFormattedDateString() ?>
                             </span>
                         </td>
 
-                        <td class="<?= $i ? '' : 'tw-border-t-2' ?> meta">
+                        <td class="<?= $i ? '' : 'tw:border-t-2' ?> meta">
                             <div class="dropdown">
-                                <button class="btn btn-light btn-sm tw-my-0 tw-py-0" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <button class="btn btn-light btn-sm tw:my-0 tw:py-0" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     &middot;&middot;&middot;
                                 </button>
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
@@ -161,7 +161,7 @@
                                         <a class="dropdown-item" href="<?= route( 'docstore-file@download', ['file' => $file->id] ) ?>">Download</a>
                                     <?php endif; ?>
                                     <?php if( Auth::check() && $isSuperUser ): ?>
-                                        <a class="dropdown-item btn-infos" data-object-type="file" href="<?= route( "docstore-file@info", [ "file" => $file ] ) ?>">Metadata</a>
+                                        <a class="dropdown-item btn-infos" data-object-type="file" href="<?= route( "docstore-file-api@info", [ "file" => $file ] ) ?>">Metadata</a>
                                     <?php endif; ?>
                                     <a class="dropdown-item" href="#"
                                        onclick="bootbox.alert({ message: 'SHA checksums can be used to check the authenticity / integrity of files.<br><br><?= $file->sha256 ? "SHA256 checksum: [<code>" . $t->ee( $file->sha256 ) . "</code>]" : "there is no sha256 checksum registered for this file." ?>', size: 'large' }); return false;">Show SHA256</a>
@@ -190,6 +190,62 @@
             </tbody>
         </table>
     </div>
+
+    <template id="file-metadata-template">
+        <!-- meta-filename -->
+        <!-- meta-created-by -->
+        <!-- meta-dspath -->
+        <!-- meta-created-at -->
+        <!-- meta-last-modified -->
+        <!-- meta-size -->
+        <div>
+            <h4>Metadata for <span id="meta-filename"></span></h4>
+
+            <table class="tw:mt-8">
+                <tr class="tw:border-t-1 tw:border-blue-500">
+                    <td class="tw:text-right tw:font-bold tw:p-2">
+                        Created By
+                    </td>
+                    <td class="tw:pl-4 tw:font-mono tw:text-sm tw:p-2">
+                        <span id="meta-created-by"></span>
+                    </td>
+                </tr>
+                <tr class="tw:border-t-1 tw:border-blue-500">
+                    <td class="tw:text-right tw:font-bold tw:p-2">
+                        Path
+                    </td>
+                    <td class="tw:pl-4 tw:font-mono tw:text-sm tw:p-2">
+                        <span id="meta-dspath"></span>
+                    </td>
+                </tr>
+                <tr class="tw:border-t-1 tw:border-blue-500">
+                    <td class="tw:text-right tw:font-bold tw:p-2">
+                        Created
+                    </td>
+                    <td class="tw:pl-4 tw:font-mono tw:text-sm tw:p-2">
+                        <span id="meta-created-at"></span>
+                    </td>
+                </tr>
+                <tr class="tw:border-t-1 tw:border-blue-500">
+                    <td class="tw:text-right tw:font-bold tw:p-2">
+                        Last Modified
+                    </td>
+                    <td class="tw:pl-4 tw:font-mono tw:text-sm tw:p-2">
+                        <span id="meta-last-modified"></span>
+                    </td>
+                </tr>
+                <tr class="tw:border-t-1 tw:border-b-1 tw:border-blue-500">
+                    <td class="tw:text-right tw:font-bold tw:p-2">
+                        Size
+                    </td>
+                    <td class="tw:pl-4 tw:font-mono tw:text-sm tw:p-2">
+                        <span id="meta-size"></span>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </template>
+
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>

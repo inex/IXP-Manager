@@ -1,7 +1,4 @@
 <?php
-
-namespace IXP\Models;
-
 /*
  * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
@@ -23,6 +20,10 @@ namespace IXP\Models;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+declare(strict_types=1);
+
+namespace IXP\Models;
+
 use Illuminate\Database\Eloquent\{
     Builder,
     Model,
@@ -35,23 +36,23 @@ use Illuminate\Database\Eloquent\{
  * @property int $id
  * @property int|null $user_id
  * @property string $ip
- * @property string $at
+ * @property \Illuminate\Support\Carbon $at
  * @property int|null $customer_to_user_id
  * @property string|null $via
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \IXP\Models\CustomerToUser|null $customerToUser
- * @method static Builder|UserLoginHistory newModelQuery()
- * @method static Builder|UserLoginHistory newQuery()
- * @method static Builder|UserLoginHistory query()
- * @method static Builder|UserLoginHistory whereAt($value)
- * @method static Builder|UserLoginHistory whereCreatedAt($value)
- * @method static Builder|UserLoginHistory whereCustomerToUserId($value)
- * @method static Builder|UserLoginHistory whereId($value)
- * @method static Builder|UserLoginHistory whereIp($value)
- * @method static Builder|UserLoginHistory whereUpdatedAt($value)
- * @method static Builder|UserLoginHistory whereUserId($value)
- * @method static Builder|UserLoginHistory whereVia($value)
+ * @method static Builder<static>|UserLoginHistory newModelQuery()
+ * @method static Builder<static>|UserLoginHistory newQuery()
+ * @method static Builder<static>|UserLoginHistory query()
+ * @method static Builder<static>|UserLoginHistory whereAt($value)
+ * @method static Builder<static>|UserLoginHistory whereCreatedAt($value)
+ * @method static Builder<static>|UserLoginHistory whereCustomerToUserId($value)
+ * @method static Builder<static>|UserLoginHistory whereId($value)
+ * @method static Builder<static>|UserLoginHistory whereIp($value)
+ * @method static Builder<static>|UserLoginHistory whereUpdatedAt($value)
+ * @method static Builder<static>|UserLoginHistory whereUserId($value)
+ * @method static Builder<static>|UserLoginHistory whereVia($value)
  * @mixin \Eloquent
  */
 class UserLoginHistory extends Model
@@ -63,16 +64,8 @@ class UserLoginHistory extends Model
      */
     protected $table = 'user_logins';
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'ip',
-        'at',
-        'customer_to_user_id',
-        'via',
+    protected $casts = [
+        'at' => 'datetime',
     ];
 
     /**
@@ -83,5 +76,16 @@ class UserLoginHistory extends Model
     public function customerToUser(): BelongsTo
     {
         return $this->belongsTo(CustomerToUser::class, 'customer_to_user_id');
+    }
+
+    public static function recordLogin( CustomerToUser $c2u, string $ip, string $via ): self
+    {
+        $loginHistory = new self();
+        $loginHistory->customer_to_user_id = $c2u->id;
+        $loginHistory->ip = $ip;
+        $loginHistory->via = $via;
+        $loginHistory->at = now();
+        $loginHistory->save();
+        return $loginHistory;
     }
 }

@@ -27,7 +27,6 @@ use Illuminate\Support\Facades\DB;
 use IXP\Console\Commands\Command as IXPCommand;
 
 use IXP\Models\{
-    ApiKey,
     Log,
     UserLoginHistory,
     UserRememberToken};
@@ -80,11 +79,6 @@ class ExpungeLogs extends IXPCommand
         // Deleting user login logs older than 6 months
         $this->isVerbosityVerbose() && $this->output->write('Expunging user login records > 6 months...', false );
         UserLoginHistory::where( 'at', '<', $sixmonthsago )->delete();
-        $this->isVerbosityVerbose() && $this->info(' [done]' );
-
-        // Deleting expired API Keys older than 1 week
-        $this->isVerbosityVerbose() && $this->output->write('Expunging expired API Key records > 1 week...', false );
-        ApiKey::whereNotNull( 'expires' )->where( 'expires', '<', now()->subWeek()->format( 'Y-m-d 00:00:00' )  )->delete();
         $this->isVerbosityVerbose() && $this->info(' [done]' );
 
         // Deleting expired UserRememberTokens

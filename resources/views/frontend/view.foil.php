@@ -19,7 +19,7 @@ $this->layout( 'layouts/ixpv4' );
         <?php endif; ?>
 
         <a class="btn btn-white" href="<?= route($t->feParams->route_prefix.'@list') ?>">
-            <span class="fa fa-th-list"></span>
+            <span class="fa fa-table-list"></span>
         </a>
 
         <?php if( !isset( $t->feParams->readonly ) || !$t->feParams->readonly ): ?>
@@ -79,12 +79,30 @@ $this->layout( 'layouts/ixpv4' );
 
                                                         <?php if( $cconf[ 'type'] === $t->data[ 'col_types' ][ 'HAS_ONE'] ): ?>
                                                             <?php $nameIdParam = '' ; ?>
+
                                                             <?php if( isset( $cconf['nameIdParam'] ) ): ?>
                                                                 <?php $nameIdParam = $cconf['nameIdParam'].'/'; ?>
                                                             <?php endif; ?>
-                                                            <a href="<?= url( $cconf[ 'controller'] . '/' . $cconf[ 'action'] . '/'.$nameIdParam . $t->data[ 'item' ][ $cconf['idField'] ] ) ?>">
-                                                                <?= $t->ee( $t->data[ 'item' ][ $col ] ) ?>
-                                                            </a>
+
+                                                            <?php $params = '/' . $nameIdParam . $this->data[ 'item' ][ $cconf['idField'] ] ; ?>
+
+                                                            <?php if( isset( $cconf['nameIdOptionalParam'] ) ): ?>
+                                                                <?php $params = '?' . $cconf['nameIdOptionalParam'] . '=' . urlencode($this->data[ 'item' ][ $cconf['idField'] ]) ; ?>
+                                                            <?php endif; ?>
+
+                                                            <?php if( isset( $cconf['route'] ) ): ?>
+
+                                                                <a href="<?= route( $cconf[ 'route'], $this->data[ 'item' ][ $cconf['idField'] ] ) ?>">
+                                                                    <?= $t->ee( $this->data[ 'item' ][$col] ) ?>
+                                                                </a>
+
+                                                            <?php else: ?>
+
+                                                                <a href="<?= url( $cconf[ 'controller'] . '/' . $cconf[ 'action'] . $params ) ?>">
+                                                                    <?= $t->ee( $this->data[ 'item' ][$col] ) ?>
+                                                                </a>
+
+                                                            <?php endif; ?>
 
                                                         <?php elseif( $cconf[ 'type'] === $t->data[ 'col_types' ][ 'XLATE'] ): ?>
 
@@ -139,7 +157,7 @@ $this->layout( 'layouts/ixpv4' );
 
                                                         <?php elseif( $cconf[ 'type'] === $t->data[ 'col_types' ][ 'PARSDOWN'] ): ?>
 
-                                                            <?= @parsedown( $t->data[ 'item' ][ $col ] )?>
+                                                            <?= clean( @parsedown( $t->data[ 'item' ][ $col ] ) )?>
 
                                                         <?php elseif( $cconf[ 'type'] === $t->data[ 'col_types' ][ 'CONST'] ): ?>
 
@@ -201,7 +219,7 @@ $this->layout( 'layouts/ixpv4' );
 
                                                         <?php elseif( $cconf[ 'type'] === $t->data[ 'col_types' ][ 'ARRAY'] ): ?>
 
-                                                            <?= $cconf[ 'source' ][ $t->data[ 'item' ][ $col] ] ?? $t->data[ 'item' ][ $col] ?>
+                                                            <?= $this->ee( $cconf[ 'source' ][ $t->data[ 'item' ][ $col] ] ?? $t->data[ 'item' ][ $col] ) ?>
 
                                                         <?php elseif( $cconf[ 'type'] === $t->data[ 'col_types' ][ 'INTEGER'] ): ?>
 
@@ -209,7 +227,7 @@ $this->layout( 'layouts/ixpv4' );
 
                                                         <?php elseif( $cconf[ 'type'] === $t->data[ 'col_types' ][ 'LIMIT'] ): ?>
 
-                                                            <?= Str::limit( $t->data[ 'item' ][ $col ], $cconf[ 'limitTo'] )?>
+                                                            <?= $t->ee( Str::limit( $t->data[ 'item' ][ $col ], $cconf[ 'limitTo'] ) ) ?>
 
                                                         <?php elseif( $cconf[ 'type'] === $t->data[ 'col_types' ][ 'TEXT'] ): ?>
 

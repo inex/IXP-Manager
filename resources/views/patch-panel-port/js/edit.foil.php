@@ -1,4 +1,4 @@
-<script>
+<script type="module">
     //////////////////////////////////////////////////////////////////////////////////////
     // we'll need these handles to html elements in a few places:
     const dd_switch         = $( "#switch" );
@@ -128,7 +128,8 @@
                 let xid = null;
 
                 $.each( data.switches, function( key, value ){
-                    options += `<option value='${value.id}'>${value.name}</option>`;
+                    let switchName = htmlEntities(value.name);
+                    options += `<option value='${value.id}'>${switchName}</option>`;
                     xcount++;
                     xid = value.id;
                 });
@@ -157,7 +158,7 @@
         let options = `<option value=''> Choose a Switch</option>`;
 
         <?php foreach ( $t->switches as $switch ): ?>
-            options += `<option value='<?= $switch->id ?>'><?= $switch->name ?></option>`;
+            options += `<option value='<?= $switch->id ?>'><?= $t->ee( $switch->name ) ?></option>`;
         <?php endforeach; ?>
 
         dd_switch.html( options ).trigger('change.select2');
@@ -188,6 +189,11 @@
         let switchId  = dd_switch.val();
         let sptypes    = <?= json_encode( \IXP\Models\SwitchPort::$TYPES ) ?> ;
 
+        if( !switchId ) {
+            dd_switch_port.html( "<option value=\"\">Choose a Switch Port</option>" ).trigger( "change.select2" );
+            return;
+        }
+
         let currentSId          = false;
         let currentSpId         = false;
         let spOption            = false;
@@ -217,7 +223,7 @@
             currentSpId = <?= $t->ppp->switch_port_id ?>;
 
             // create the option for the switch port dropdown
-            spOption =  `<option value='<?= $t->ppp->switch_port_id ?>' > <?= $t->ppp->switchPort->name ?> ( <?= $t->ppp->switchPort->type() ?> ) </option>`;
+            spOption =  `<option value='<?= $t->ppp->switch_port_id ?>' > <?= $t->ee( $t->ppp->switchPort->name ) ?> ( <?= $t->ppp->switchPort->type() ?> ) </option>`;
         <?php endif; ?>
         console.log( currentSId , spOptionset);
 
@@ -226,7 +232,7 @@
             type: 'POST'
         })
         .done( function( data ) {
-            options = `<option value="">Choose a switch port</option>`;
+            let options = `<option value="">Choose a switch port</option>`;
 
             $.each( data.listPorts, function( key, value ) {
                 // if we have a switch port for the ppp and we did not already insert the option ( let spOption ) in the select
@@ -240,7 +246,7 @@
                         }
                     }
                 }
-                options += `<option value="${value.id}">${value.name} (${sptypes[value.type]})</option>`
+                options += `<option value="${value.id}">${htmlEntities(value.name)} (${sptypes[value.type]})</option>`
 
                 // if we have a switch port for the ppp and we did not already insert the option ( let spOption ) in the select
                 if( currentSId && !spOptionset ){
@@ -284,7 +290,7 @@
             dd_switch_port.html( options );
         })
         .fail( function() {
-            options = `<option value=''>ERROR</option>`;
+            let options = `<option value=''>ERROR</option>`;
             dd_switch_port.html( options );
             dd_customer.html('').trigger('change.select2');
             alert( "Error running ajax query for " + url );
@@ -299,7 +305,7 @@
      * set data to the customer dropdown
      */
     function setCustomer() {
-        if( dd_switch.val() !== '') {
+        if( dd_switch.val() && dd_switch_port.val() ) {
             let switchPortId = dd_switch_port.val();
             let option = '';
             dd_customer.html( `<option value=''>Loading please wait</option>` ).trigger('change.select2');
@@ -307,7 +313,7 @@
             $.ajax( "<?= url( '/admin/api/v4/switch-port' ) ?>/" + switchPortId + "/customer" )
             .done( function( data ) {
                 if( data.customer[ 'nb' ] > 0 ) {
-                    option = `<option value='${data.customer[ 'id']}'>${data.customer[ 'name']}</option>`;
+                    option = `<option value='${data.customer[ 'id']}'>${htmlEntities(data.customer[ 'name'])}</option>`;
                 }
                 dd_customer.html( option );
             })
@@ -325,14 +331,14 @@
      * reset the customer dropdown
      */
     function resetCustomer() {
-        let options = `<option value=''> Choose a <?= config( 'ixp_fe.lang.customer.one' ) ?></option>`;
+        let options = `<option value='' disabled selected> Choose a <?= config( 'ixp_fe.lang.customer.one' ) ?></option>`;
 
         <?php foreach ( $t->customers as $c ): ?>
-            options += `<option value='<?= $c->id ?>'><?= $c->name ?></option>`;
+            options += `<option value='<?= $c->id ?>'><?= $t->ee( $c->name ) ?></option>`;
         <?php endforeach; ?>
         dd_customer.html( options ).trigger('change.select2');
 
-        if( dd_switch.val() !== '' && dd_switch_port.val() === '' ){
+        if( dd_switch.val() && !dd_switch_port.val() ){
             setSwitchPort();
         }
     }

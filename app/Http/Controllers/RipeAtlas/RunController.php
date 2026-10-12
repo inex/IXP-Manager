@@ -143,20 +143,20 @@ class RunController extends Eloquent2Frontend
     protected static function additionalRoutes( string $route_prefix ): void
     {
         Route::group( [ 'prefix' => $route_prefix ], function() use ( $route_prefix ) {
-            Route::get( 'add-step-2',                   'RipeAtlas\RunController@addStep2'      )->name( $route_prefix . '@add-step-2'    );
-            Route::put( 'run/complete/{atlasrun}',      'RipeAtlas\RunController@completeRun'   )->name( $route_prefix . '@complete-run'  );
+            Route::get( 'add-step-2',                   [self::class, 'addStep2']      )->name( $route_prefix . '@add-step-2'    );
+            Route::put( 'run/complete/{atlasrun}',      [self::class, 'completeRun']   )->name( $route_prefix . '@complete-run'  );
         });
     }
 
     /**
      * Provide array of rows for the list action and view action
      *
-     * @param int $id The `id` of the row to load for `view` action`. `null` if `listAction`
+     * @param int|null $id The `id` of the row to load for `view` action`. `null` if `listAction`
      *
      * @return array
      */
     #[\Override]
-    protected function listGetData( $id = null ): array
+    protected function listGetData( ?int $id = null ): array
     {
         $feParams = $this->feParams;
 
@@ -183,7 +183,7 @@ class RunController extends Eloquent2Frontend
      *
      * @return (\Illuminate\Database\Eloquent\Collection|null|true)[]
      *
-     * @psalm-return array{object: null, vlans: \Illuminate\Database\Eloquent\Collection<int, \Illuminate\Database\Eloquent\Model>, preAddForm: true}
+     * @psalm-return array{object: null, vlans: \Illuminate\Database\Eloquent\Collection<int, Vlan>, preAddForm: true}
      */
     #[\Override]
     protected function createPrepareForm(): array

@@ -59,20 +59,20 @@ use IXP\Exceptions\GeneralException;
  * @property-read int|null $sflow_receivers_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\VlanInterface> $vlanInterfaces
  * @property-read int|null $vlan_interfaces_count
- * @method static Builder|VirtualInterfaceAggregator newModelQuery()
- * @method static Builder|VirtualInterfaceAggregator newQuery()
- * @method static Builder|VirtualInterfaceAggregator query()
- * @method static Builder|VirtualInterfaceAggregator whereChannelgroup($value)
- * @method static Builder|VirtualInterfaceAggregator whereCreatedAt($value)
- * @method static Builder|VirtualInterfaceAggregator whereCustid($value)
- * @method static Builder|VirtualInterfaceAggregator whereDescription($value)
- * @method static Builder|VirtualInterfaceAggregator whereFastlacp($value)
- * @method static Builder|VirtualInterfaceAggregator whereId($value)
- * @method static Builder|VirtualInterfaceAggregator whereLagFraming($value)
- * @method static Builder|VirtualInterfaceAggregator whereMtu($value)
- * @method static Builder|VirtualInterfaceAggregator whereName($value)
- * @method static Builder|VirtualInterfaceAggregator whereTrunk($value)
- * @method static Builder|VirtualInterfaceAggregator whereUpdatedAt($value)
+ * @method static Builder<static>|VirtualInterfaceAggregator newModelQuery()
+ * @method static Builder<static>|VirtualInterfaceAggregator newQuery()
+ * @method static Builder<static>|VirtualInterfaceAggregator query()
+ * @method static Builder<static>|VirtualInterfaceAggregator whereChannelgroup($value)
+ * @method static Builder<static>|VirtualInterfaceAggregator whereCreatedAt($value)
+ * @method static Builder<static>|VirtualInterfaceAggregator whereCustid($value)
+ * @method static Builder<static>|VirtualInterfaceAggregator whereDescription($value)
+ * @method static Builder<static>|VirtualInterfaceAggregator whereFastlacp($value)
+ * @method static Builder<static>|VirtualInterfaceAggregator whereId($value)
+ * @method static Builder<static>|VirtualInterfaceAggregator whereLagFraming($value)
+ * @method static Builder<static>|VirtualInterfaceAggregator whereMtu($value)
+ * @method static Builder<static>|VirtualInterfaceAggregator whereName($value)
+ * @method static Builder<static>|VirtualInterfaceAggregator whereTrunk($value)
+ * @method static Builder<static>|VirtualInterfaceAggregator whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class VirtualInterfaceAggregator extends VirtualInterface

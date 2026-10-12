@@ -29,7 +29,7 @@
 DEST="/usr/local/etc/tac_plus.conf"
 
 KEY="your-ixp-manager-api-key"
-URL="https://ixp.example.com/api/v4/user/formatted"
+URL="https://ixp.example.com/admin/api/v4/user/formatted"
 USERS="alice,joe,mike,mary"
 
 # paths to utilities / init.d scripts

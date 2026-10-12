@@ -56,7 +56,7 @@
                             Action
                         </th>
                     </tr>
-                <thead>
+                </thead>
                 <tbody>
                     <?php foreach( $t->users as $u ): ?>
                         <tr>
@@ -140,7 +140,7 @@
                                                 Login history
                                             </a>
                                             <?php if( $u['c2uid'] ): ?>
-                                                <a id="d2f-option-login-as-<?= $u[ 'id' ] ?>" class="dropdown-item <?= $u[ 'disabled' ] || $authId  === $u['id'] ? "disabled" : "" ?>" href="<?= route( "switch-user@switch", [ "c2u" => $u['c2uid'] ] ) ?>">
+                                                <a id="d2f-option-login-as-<?= $u[ 'id' ] ?>" class="dropdown-item <?= $u[ 'disabled' ] || $authId  === $u['id'] || session()->exists('switched_user_from') ? "disabled" : "" ?>" href="<?= route( "switch-user@switch", [ "c2u" => $u['c2uid'] ] ) ?>">
                                                     Login as
                                                 </a>
                                             <?php endif; ?>
@@ -161,8 +161,8 @@
         </div>
     </div>
 
-    <div class="tw-mt-16 tw-border-2 tw-border-gray-400 tw-rounded-lg">
-        <p class="tw-p-6 tw-m-0">
+    <div class="tw:mt-16 tw:border-2 tw:border-gray-400 tw:rounded-lg">
+        <p class="tw:p-6 tw:m-0">
             <b>Privileges:</b> CU - Cust User; CA - Cust Admin; SU - Super User.<br>
             <b>Flags:</b> <span class="badge badge-success">2FA</span> - Two-factor authentication is enabled; <span class="badge badge-success">OAuth</span> - user created via PeeringDB OAuth.<br>
             <b>Disabled Users:</b> - identified with <span class="badge badge-danger">X</span> badge beside username.

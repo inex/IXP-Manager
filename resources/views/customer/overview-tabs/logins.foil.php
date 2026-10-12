@@ -41,7 +41,7 @@
                 <td>
                     <?php if( $c2u->userLoginHistories->count() ): ?>
                         <div class="btn-group btn-group-sm">
-                            <a class="btn btn-white have-tooltip" title="History" href="<?= route( "login-history@view", [ 'id' => $c2u->id ] ) ?>">
+                            <a class="btn btn-white have-tooltip" title="History" href="<?= route( "login-history@view", [ 'id' => $c2u->user_id ] ) ?>">
                                 <i class="fa fa-history"></i>
                             </a>
                         </div>

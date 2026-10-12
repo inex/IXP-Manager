@@ -1,5 +1,5 @@
 
-<script type="text/javascript">
+<script type="module">
 
     $('#infra_reg_banner').hide();
 

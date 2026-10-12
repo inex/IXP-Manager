@@ -1,9 +1,6 @@
 <?php
-
-namespace IXP\Mail;
-
 /*
- * Copyright (C) 2009 - 2025 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,6 +19,11 @@ namespace IXP\Mail;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+
+declare(strict_types=1);
+
+namespace IXP\Mail;
+
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
@@ -36,16 +38,13 @@ use Illuminate\Queue\SerializesModels;
  * @copyright  Copyright (C) 2009 - 2025 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class Alert extends Mailable
+final class Alert extends Mailable
 {
     use Queueable, SerializesModels;
 
-    /**
-     * Create a new message instance.
-     **/
     public function __construct(
-        public string $alert,
-        public \Exception $exception,
+        public readonly string $alert,
+        public readonly \Exception $exception,
     ) {}
 
     /**

@@ -15,14 +15,14 @@
 
         <?= Former::select( 'custid' )
             ->label( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) )
-            ->fromQuery( $t->data[ 'params'][ 'custs'], 'name' )
+            ->fromQuery( $t->data[ 'params'][ 'custs'], fn ($model) => $t->ee( $model->name ) )
             ->placeholder( 'Choose a ' . config( 'ixp_fe.lang.customer.one' ) )
             ->addClass( 'chzn-select' );
         ?>
 
         <?= Former::select( 'cabinetid' )
             ->label( 'Rack' )
-            ->fromQuery( $t->data[ 'params'][ 'cabinets'], 'name' )
+            ->fromQuery( $t->data[ 'params'][ 'cabinets'], fn ($model) => $t->ee( $model->name ) )
             ->placeholder( 'Choose a rack' )
             ->addClass( 'chzn-select' );
         ?>

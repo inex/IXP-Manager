@@ -74,10 +74,6 @@ class StopAllMeasurements extends Job implements ShouldQueue
 
     /**
      * Execute the job.
-     *
-     * @return void
-     *
-     * @throws
      */
     public function handle(): void
     {

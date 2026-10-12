@@ -63,7 +63,7 @@ class RipeRestApi
      */
     public function checkConfiguration(): void
     {
-        if( !config( 'ixp_api.rir.ripe_api_key' ) ) {
+        if( config( 'ixp_api.rir.ripe_api_key' ) === null ) {
             throw new ConfigurationException( 'RIPE REST API is not set in configuration' );
         }
     }

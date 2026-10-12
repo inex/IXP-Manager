@@ -1,4 +1,4 @@
-<script>
+<script type="module">
 
     /**
      * Set the form action depending on the button clicked

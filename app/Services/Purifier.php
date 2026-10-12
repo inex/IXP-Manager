@@ -85,11 +85,13 @@ final class Purifier
         $config->loadArray($this->getConfig());
 
         // Load custom definition if set
+        /** @psalm-suppress RedundantCondition */
         if ($definitionConfig = $this->config->get('purifier.settings.custom_definition')) {
             $this->addCustomDefinition($definitionConfig, $config);
         }
 
         // Load custom elements if set
+        /** @psalm-suppress RedundantCondition */
         if ($elements = $this->config->get('purifier.settings.custom_elements')) {
             if ($def = $config->maybeGetRawHTMLDefinition()) {
                 $this->addCustomElements($elements, $def);
@@ -97,7 +99,8 @@ final class Purifier
         }
 
         // Load custom attributes if set
-        if ($attributes = $this->config->get('purifier.settings.custom_attributes')) {
+        /** @psalm-suppress RedundantCondition */
+        if ( $attributes = $this->config->get('purifier.settings.custom_attributes') ) {
             if ($def = $config->maybeGetRawHTMLDefinition()) {
                 $this->addCustomAttributes($attributes, $def);
             }

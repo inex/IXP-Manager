@@ -67,7 +67,7 @@ class VendorController extends EloquentController
             'model'             => Vendor::class,
             'pagetitle'         => 'Vendors',
             'titleSingular'     => 'Vendor',
-            'nameSingular'      => 'a vendor',
+            'nameSingular'      => 'vendor',
             'listOrderBy'       => 'name',
             'listOrderByDir'    => 'ASC',
             'viewFolderName'    => 'vendor-e2f',

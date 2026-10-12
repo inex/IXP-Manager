@@ -103,7 +103,7 @@
         </a>
 
         <a class="btn btn-white" href="<?= route( "customer@overview", [ 'cust' => $c->id ] ) ?>">
-            <span class="fa fa-refresh"></span>
+            <span class="fa fa-arrows-rotate"></span>
         </a>
 
         <a class="btn btn-white" href="<?= route( "customer@overview", [ 'cust' => $cidnext ] ) ?>">
@@ -119,27 +119,27 @@
 
 <?php $this->section('content') ?>
     <?= $t->alerts() ?>
-    <div class="tw-bg-white shadow-sm tw-p-6">
+    <div class="tw:bg-white shadow-sm tw:p-6">
         <div class="row">
             <div class="<?= $t->logoManagementEnabled() && $logo  ? "col-md-9 col-lg-7" : "col-12" ?>">
                 <h3>
                     <?= $t->ee( $c->getFormattedName() ) ?>
-                    <span class="tw-text-sm">
+                    <span class="tw:text-sm">
                         <?= $t->insert( 'customer/cust-type', [ 'cust' => $c ] ); ?>
                     </span>
                 </h3>
 
-                <p class="tw-mt-2">
+                <p class="tw:mt-2">
                     <?php if( $c->corpwww ): ?>
-                        <a href="<?= $c->corpwww ?>" target="_blank">
-                            <?= $t->nakedUrl( $c->corpwww ) ?>
+                        <a href="<?= $t->ee( $c->corpwww, "attr" ) ?>" target="_blank">
+                            <?= $t->ee( $t->nakedUrl( $c->corpwww ) ) ?>
                         </a>
-                        <span class="tw-text-gray-600">
+                        <span class="tw:text-gray-600">
                             -
                         </span>
                     <?php endif; ?>
 
-                    <span class="tw-text-gray-600">
+                    <span class="tw:text-gray-600">
                          joined <?= \Carbon\Carbon::parse( $c->datejoin )->format('Y') ?>
                         <?php if( $r = $c->resellerObject ): ?>
                            - resold via <a href="<?= route( "customer@overview" , [ 'cust' => $r->id ] ) ?>"><?= $t->ee($r->abbreviatedName)?></a>
@@ -147,11 +147,11 @@
                     </span>
                 </p>
 
-                <p class="tw-mt-6">
+                <p class="tw:mt-6">
                     <?php if( !$c->typeAssociate() ): ?>
                         <?php if( $c->in_manrs ): ?>
-                            <a href="https://www.manrs.org/" target="_blank" class="hover:tw-no-underline">
-                                <span class="tw-inline-block tw-border-1 tw-border-green-500 tw-rounded-full tw-text-green-500 tw-font-semibold tw-uppercase tw-text-xs tw-px-3 tw-py-1 tw-mr-3">
+                            <a href="https://www.manrs.org/" target="_blank" class="tw:hover:no-underline">
+                                <span class="tw:inline-block tw:border-1 tw:border-green-500 tw:rounded-full tw:text-green-500 tw:font-semibold tw:uppercase tw:text-xs tw:px-3 tw:py-1 tw:mr-3">
                                     MANRS
                                 </span>
                             </a>
@@ -165,11 +165,11 @@
                             </span>
                         <?php endforeach; ?>
 
-                        <a class="btn btn-white btn-sm tw-rounded-full tw-text-xs" href="<?= route( 'customer-tag@link-customer', [ 'cust' => $c->id ] ) ?>">
+                        <a class="btn btn-white btn-sm tw:rounded-full tw:text-xs" href="<?= route( 'customer-tag@link-customer', [ 'cust' => $c->id ] ) ?>">
                             Edit tags...
                         </a>
                     <?php elseif( \IXP\Models\CustomerTag::all()->count() ): ?>
-                        <a class="btn btn-white btn-sm tw-rounded-full tw-border-gray-500 tw-text-gray-500 tw-text-xs" href="<?= route( 'customer-tag@link-customer', [ 'cust' => $c->id ] ) ?>">
+                        <a class="btn btn-white btn-sm tw:rounded-full tw:border-gray-500 tw:text-gray-500 tw:text-xs" href="<?= route( 'customer-tag@link-customer', [ 'cust' => $c->id ] ) ?>">
                             Add tags...
                         </a>
                     <?php endif; ?>
@@ -177,8 +177,8 @@
             </div>
 
             <?php if( $t->logoManagementEnabled() && $logo ): ?>
-                <div class="col-md-3 col-lg-5 col-12 tw-mt-6 md:tw-mt-0 tw-text-center align-self-center">
-                    <img class="img-fluid lg:tw-inline-block tw-align-middle" src="<?= url( 'logos/' . $logo->shardedPath() ) ?>">
+                <div class="col-md-3 col-lg-5 col-12 tw:mt-6 tw:md:mt-0 tw:text-center align-self-center">
+                    <img class="img-fluid tw:lg:inline-block tw:align-middle" src="<?= url( 'logos/' . $logo->shardedPath() ) ?>">
                 </div>
             <?php endif; ?>
         </div>
@@ -208,14 +208,14 @@
 
                 <?php if( !$c->typeAssociate() && count( $c->virtualInterfaces ) ):?>
                     <li role="ports" class="nav-item ">
-                        <a class="nav-link <?php if( $t->tab === 'ports' ): ?> active <?php endif; ?>" data-toggle="tab" href="#ports" data-toggle="tab">
+                        <a class="nav-link <?php if( $t->tab === 'ports' ): ?> active <?php endif; ?>" data-toggle="tab" href="#ports">
                             Ports
                         </a>
                     </li>
 
                     <?php if( $c->hasPrivateVLANs() ): ?>
                         <li role="private-vlans" class="nav-item ">
-                            <a class="nav-link <?php if( $t->tab === 'private-vlans' ): ?> active <?php endif; ?>" data-toggle="tab" href="#private-vlans" data-toggle="tab">
+                            <a class="nav-link <?php if( $t->tab === 'private-vlans' ): ?> active <?php endif; ?>" data-toggle="tab" href="#private-vlans">
                                 Private VLANs
                             </a>
                         </li>
@@ -223,47 +223,47 @@
                 <?php endif; ?>
 
                 <li role="users" class="nav-item ">
-                    <a class="nav-link <?php if( $t->tab === 'users' ): ?> active <?php endif; ?>" data-toggle="tab" href="#users" data-toggle="tab">
+                    <a class="nav-link <?php if( $t->tab === 'users' ): ?> active <?php endif; ?>" data-toggle="tab" href="#users">
                         Users
                     </a>
                 </li>
 
                 <li role="contacts" class="nav-item ">
-                    <a class="nav-link <?php if( $t->tab === 'contacts' ): ?> active <?php endif; ?>" data-toggle="tab" href="#contacts" data-toggle="tab">
+                    <a class="nav-link <?php if( $t->tab === 'contacts' ): ?> active <?php endif; ?>" data-toggle="tab" href="#contacts">
                         Contacts
                     </a>
                 </li>
 
                 <li role="logins" class="nav-item">
-                    <a class="nav-link <?php if( $t->tab === 'logins' ): ?> active <?php endif; ?>" data-toggle="tab" href="#logins" data-toggle="tab">
+                    <a class="nav-link <?php if( $t->tab === 'logins' ): ?> active <?php endif; ?>" data-toggle="tab" href="#logins">
                         Logins
                     </a>
                 </li>
 
                 <li role="notes" class="nav-item ">
-                    <a class="nav-link <?php if( $t->tab === 'notes' ): ?> active <?php endif; ?>" data-toggle="tab" href="#notes" id="tab-notes" data-toggle="tab">
+                    <a class="nav-link <?php if( $t->tab === 'notes' ): ?> active <?php endif; ?>" data-toggle="tab" href="#notes" id="tab-notes">
                         Notes
                         <?php if( $t->notesInfo[ "unreadNotes"] > 0 ): ?>
-                            <span id="notes-unread-indicator" class="badge badge-success"><?= $t->notesInfo[ "unreadNotes"] ?></span>
+                            <span id="notes-unread-indicator" class="badge badge-success"><?= $t->ee( $t->notesInfo[ "unreadNotes"] ) ?></span>
                         <?php endif ?>
                     </a>
                 </li>
 
                 <li role="cross-connects" class="nav-item ">
-                    <a class="nav-link <?php if( $t->tab === 'cross-connects' ): ?> active <?php endif; ?>" data-toggle="tab" href="#cross-connects" data-toggle="tab">
+                    <a class="nav-link <?php if( $t->tab === 'cross-connects' ): ?> active <?php endif; ?>" data-toggle="tab" href="#cross-connects">
                         Cross Connects
                     </a>
                 </li>
 
                 <li role="peers" class="nav-item">
-                    <a class="nav-link peers-tab <?php if( $t->tab === 'peers' ): ?> active <?php endif; ?>" data-toggle="tab" href="#peers" data-toggle="tab">
+                    <a class="nav-link peers-tab <?php if( $t->tab === 'peers' ): ?> active <?php endif; ?>" data-toggle="tab" href="#peers">
                         Peers
                     </a>
                 </li>
 
                 <?php if( !config( 'ixp_fe.frontend.disabled.console-server-connection' ) && $c->consoleServerConnections->count() ): ?>
                     <li role="console-server-connections" class="nav-item ">
-                        <a class="nav-link <?php if( $t->tab === 'console-server-connections' ): ?>active<?php endif; ?>" data-toggle="tab" href="#console-server-connections" data-toggle="tab">
+                        <a class="nav-link <?php if( $t->tab === 'console-server-connections' ): ?>active<?php endif; ?>" data-toggle="tab" href="#console-server-connections">
                             OOB Access
                         </a>
                     </li>
@@ -279,13 +279,6 @@
 
                 <?php if( !$c->typeAssociate() && !$c->hasLeft() ): ?>
                     <?php if( $c->routeServerClient() ): ?>
-                        <?php if( !config( 'ixp_fe.frontend.disabled.rs-prefixes' ) ): ?>
-                            <li class="nav-item">
-                                <a class="nav-link" href="<?= route( "rs-prefixes@view", [ 'cust' =>  $c->id ] ) ?>">
-                                    RS Prefixes &raquo;
-                                </a>
-                            </li>
-                        <?php endif ?>
 
                         <?php if( !config( 'ixp_fe.frontend.disabled.filtered-prefixes' ) ): ?>
                             <li class="nav-item">
@@ -304,7 +297,7 @@
 
                     <?php if( config('grapher.backends.sflow.enabled') ) : ?>
                         <li class="nav-item">
-                            <a class="nav-link" href="<?= route( "statistics@p2ps-get", [ 'customer' => $c->id ] )  ?>">
+                            <a class="nav-link" href="<?= route( "statistics@p2p-table", [ 'custid' => $c->id ] )  ?>">
                               P2P &raquo;
                             </a>
                         </li>
@@ -366,7 +359,7 @@
                 </div>
 
                 <div id="peers" class="tab-pane peers-tab fade <?php if( $t->tab === 'peers' ): ?> active show <?php endif; ?>">
-                    <p class="tw-text-center">
+                    <p class="tw:text-center">
                         <br/>
                         <b>Data loading please wait...</b>
                     </p>
@@ -385,7 +378,7 @@
     <?= $t->insert( 'customer/js/overview/contacts' ); ?>
     <?= $t->insert( 'customer/js/overview/notes', [ 'isSuperUser' => $isSuperUser ] ); ?>
 
-    <script>
+    <script type="module">
         $(document).ready( function() {
             $('.table-responsive-ixp').dataTable( {
                 responsive: true,

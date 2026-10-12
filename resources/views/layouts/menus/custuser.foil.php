@@ -14,7 +14,7 @@ use PragmaRX\Google2FALaravel\Support\Authenticator as GoogleAuthenticator;
         // hide most things until 2fa complete:
         $authenticator = new GoogleAuthenticator( request() );
 
-        if( !Auth::getUser()->user2FA || !Auth::getUser()->user2FA->enabled || $authenticator->isAuthenticated() ):
+        if( !Auth::getUser()->user2FA || !Auth::getUser()->user2FA->isEnabled() || $authenticator->isAuthenticated() ):
     ?>
 
     <!-- Collect the nav links, forms, and other content for toggling -->
@@ -58,7 +58,7 @@ use PragmaRX\Google2FALaravel\Support\Authenticator as GoogleAuthenticator;
             </li>
 
             <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle <?= !request()->is( 'peering-manager' , 'lg', 'peering-matrix', 'rs-prefixes/list' ) ?: 'active' ?>" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <a class="nav-link dropdown-toggle <?= !request()->is( 'peering-manager' , 'lg', 'peering-matrix' ) ?: 'active' ?>" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Peering
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -66,13 +66,6 @@ use PragmaRX\Google2FALaravel\Support\Authenticator as GoogleAuthenticator;
                         <a class="dropdown-item <?= !request()->is( 'peering-manager' ) ?: 'active' ?>" href="<?= route('peering-manager@index') ?>">
                             Peering Manager
                         </a>
-                    <?php endif; ?>
-                    <?php if( !config( 'ixp_fe.frontend.disabled.rs-prefixes', false ) ): ?>
-                        <?php if( Auth::getUser()->customer->routeServerClient() ): ?>
-                            <a class="dropdown-item <?= !request()->is( 'rs-prefixes/list' ) ?: 'active' ?>" href="<?= route('rs-prefixes@list') ?>">
-                                Route Server Prefixes
-                            </a>
-                        <?php endif; ?>
                     <?php endif; ?>
 
                     <?php if( !config( 'ixp_fe.frontend.disabled.rs-filters', true ) ): ?>
@@ -112,7 +105,7 @@ use PragmaRX\Google2FALaravel\Support\Authenticator as GoogleAuthenticator;
                     </a>
 
                     <?php if( config('grapher.backends.sflow.enabled') ): ?>
-                        <a class="dropdown-item <?= !request()->is( 'statistics/p2p*' ) ?: 'active' ?>" href="<?= route( 'statistics@p2ps-get', ['customer' => Auth::getUser()->custid ] ) ?>">
+                        <a class="dropdown-item <?= !request()->is( 'statistics/p2p*' ) ?: 'active' ?>" href="<?= route( 'statistics@p2p-table' ) ?>">
                             My Peer to Peer Traffic
                         </a>
                     <?php endif; ?>
@@ -218,7 +211,7 @@ use PragmaRX\Google2FALaravel\Support\Authenticator as GoogleAuthenticator;
                             <a id="switch-cust-<?= $cust->id ?>" class="dropdown-item <?= Auth::getUser()->custid !== $cust->id ?: 'active cursor-default' ?>"
                                 <?= Auth::getUser()->custid !== $cust->id ?: "onclick='return false;'" ?>
                                href="<?= Auth::getUser()->custid === $cust->id ? '#' : route( 'switch-customer@switch' , [ "cust" => $cust->id ]  ) ?>">
-                                <?= $cust->name ?>
+                                <?= $this->ee( $cust->name ) ?>
                             </a>
                         <?php endforeach; ?>
                     <?php endif; ?>
@@ -233,7 +226,7 @@ use PragmaRX\Google2FALaravel\Support\Authenticator as GoogleAuthenticator;
 
             <li class="nav-item">
                 <?php if( session()->exists( "switched_user_from" ) ): ?>
-                    <a class="nav-link" href="<?= route( 'switch-user@switchBack' ) ?>">
+                    <a id="nav-item-switch-user-back" class="nav-link" href="<?= route( 'switch-user@switchBack' ) ?>">
                         Switch Back
                     </a>
                 <?php else: ?>

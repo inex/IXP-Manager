@@ -1,7 +1,7 @@
 <?php
     $hasSlave = $t->ppp->duplexSlavePorts()->exists();
 ?>
-<script>
+<script type="module">
     //////////////////////////////////////////////////////////////////////////////////////
     // we'll need these handles to html elements in a few places:
     const dd_pp         = $( "#patch_panel_id" );
@@ -56,10 +56,11 @@
                 let optionsSlave = `<option value="">Choose a switch port</option>`;
             <?php endif; ?>
             $.each( data.ports, function( key, value ){
-                options += `<option data-has-duplex="${value.isDuplex}" value="${value.id}">${value.name}</option>`;
+                let portName = htmlEntities(value.name);
+                options += `<option data-has-duplex="${value.isDuplex}" value="${value.id}">${portName}</option>`;
 
                 if( value.isDuplex === false ){
-                    optionsSlave += `<option data-has-duplex="${value.isDuplex}" value="${value.id}">${value.name}</option>`;
+                    optionsSlave += `<option data-has-duplex="${value.isDuplex}" value="${value.id}">${portName}</option>`;
                 }
 
             });

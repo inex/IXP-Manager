@@ -14,7 +14,7 @@
         </a>
 
         <a id="add-user" class="btn btn-white" href="<?= route('user@list') ?>">
-            <i class="fa fa-th-list"></i>
+            <i class="fa fa-table-list"></i>
         </a>
 
         <a id="add-user" class="btn btn-white" href="<?= route('user@edit' , [ "u" => $t->u[ 'id' ] ] ) ?>">
@@ -31,7 +31,7 @@
     <div class="row">
         <div class="col-sm-12">
             <div class="card">
-                <div class="card-header tw-flex">
+                <div class="card-header tw:flex">
                     <div class="mr-auto">
                         Details for User (DB ID: <?= $t->u[ 'id' ] ?>
                     </div>
@@ -128,7 +128,7 @@
                                     </b>
                                 </td>
                                 <td>
-                                    <?= $t->u['creator'] ?? '' ?>
+                                    <?= $t->ee( $t->u['creator'] ?? '') ?>
                                 </td>
                             </tr>
 
@@ -149,24 +149,26 @@
                                     <td colspan="2">
                                         <table class="table table-striped w-100">
                                             <thead class="thead-dark">
-                                                <th>
-                                                    <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?>
-                                                </th>
-                                                <th>
-                                                    Privilege
-                                                </th>
-                                                <th>
-                                                    Created By
-                                                </th>
-                                                <th>
-                                                    Created
-                                                </th>
-                                                <th>
-                                                    Updated
-                                                </th>
-                                                <th>
-                                                    Actions
-                                                </th>
+                                                <tr>
+                                                    <th>
+                                                        <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?>
+                                                    </th>
+                                                    <th>
+                                                        Privilege
+                                                    </th>
+                                                    <th>
+                                                        Created By
+                                                    </th>
+                                                    <th>
+                                                        Created
+                                                    </th>
+                                                    <th>
+                                                        Updated
+                                                    </th>
+                                                    <th>
+                                                        Actions
+                                                    </th>
+                                                </tr>
                                             </thead>
                                             <tbody>
                                                 <?php foreach( $t->c2us as $c2u ): ?>

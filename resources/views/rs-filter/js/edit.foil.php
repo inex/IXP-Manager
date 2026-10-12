@@ -1,4 +1,4 @@
-<script>
+<script type="module">
     /////////////////////////////////////////////////////////////////////////////////////
     // we'll need these handles to html elements in a few places:
     const dd_peer                   = $( "#peer_id" );
@@ -39,16 +39,17 @@
         })
 
         .done( function( data ) {
-            options = `<option value=''>Choose a Peer</option>
+            let options = `<option value=''>Choose a Peer</option>
                         <option value='0'>All Peers</option>`;
             $.each( data.listCustomers, function( index, value ) {
-                options += `<option value="${value['id']}">${value['name']}</option>\n`;
+                let custName = htmlEntities(value['name']);
+                options += `<option value="${value['id']}">${custName}</option>\n`;
             });
             dd_peer.html( options );
 
         })
         .fail( function() {
-            options = "<option value=\"\">ERROR</option>\n";
+            let options = "<option value=\"\">ERROR</option>\n";
             dd_peer.html( options );
             alert( "Error running ajax query for " + url );
             throw new Error( "Error running ajax query for " + url );
@@ -128,7 +129,7 @@
                           <option value="*" selected>*</option>`;
 
                 $.each( data.prefixes, function( index, value ) {
-                    select += `<option value="${value['prefix']}">${value['prefix']}</option>\n`;
+                    select += `<option value="${htmlEntities(value['prefix'])}">${htmlEntities(value['prefix'])}</option>\n`;
                 });
 
                 select += `</select>`;

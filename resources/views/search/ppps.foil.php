@@ -51,14 +51,14 @@
                 </td>
                 <td>
                     <?php if( $ppp->customer ): ?>
-                        <?= $ppp->customer->getFormattedName() ?>
+                        <?= $t->ee( $ppp->customer->getFormattedName() ) ?>
                     <?php endif; ?>
                 </td>
                 <td>
-                    <code><?= $ppp->colo_circuit_ref ?></code>
+                    <code><?= $t->ee( $ppp->colo_circuit_ref ) ?></code>
                 </td>
                 <td>
-                    <code><?= $ppp->colo_billing_ref ?></code>
+                    <code><?= $t->ee( $ppp->colo_billing_ref ) ?></code>
                 </td>
             </tr>
         <?php endforeach; ?>

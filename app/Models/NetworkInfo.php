@@ -45,19 +45,19 @@ use IXP\Traits\Observable;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \IXP\Models\Vlan|null $vlan
- * @method static Builder|NetworkInfo newModelQuery()
- * @method static Builder|NetworkInfo newQuery()
- * @method static Builder|NetworkInfo query()
- * @method static Builder|NetworkInfo whereCreatedAt($value)
- * @method static Builder|NetworkInfo whereDnsfile($value)
- * @method static Builder|NetworkInfo whereId($value)
- * @method static Builder|NetworkInfo whereMasklen($value)
- * @method static Builder|NetworkInfo whereNetwork($value)
- * @method static Builder|NetworkInfo whereProtocol($value)
- * @method static Builder|NetworkInfo whereRs1address($value)
- * @method static Builder|NetworkInfo whereRs2address($value)
- * @method static Builder|NetworkInfo whereUpdatedAt($value)
- * @method static Builder|NetworkInfo whereVlanid($value)
+ * @method static Builder<static>|NetworkInfo newModelQuery()
+ * @method static Builder<static>|NetworkInfo newQuery()
+ * @method static Builder<static>|NetworkInfo query()
+ * @method static Builder<static>|NetworkInfo whereCreatedAt($value)
+ * @method static Builder<static>|NetworkInfo whereDnsfile($value)
+ * @method static Builder<static>|NetworkInfo whereId($value)
+ * @method static Builder<static>|NetworkInfo whereMasklen($value)
+ * @method static Builder<static>|NetworkInfo whereNetwork($value)
+ * @method static Builder<static>|NetworkInfo whereProtocol($value)
+ * @method static Builder<static>|NetworkInfo whereRs1address($value)
+ * @method static Builder<static>|NetworkInfo whereRs2address($value)
+ * @method static Builder<static>|NetworkInfo whereUpdatedAt($value)
+ * @method static Builder<static>|NetworkInfo whereVlanid($value)
  * @mixin \Eloquent
  */
 class NetworkInfo extends Model

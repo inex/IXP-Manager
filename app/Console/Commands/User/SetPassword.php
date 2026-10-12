@@ -115,6 +115,7 @@ class SetPassword extends Command
             $this->validateOrExit( $this->rules['password'], 'password', $password );
         }
 
+        /** @var User $user */
         $user->password = Hash::make( $password );
         $user->save();
 

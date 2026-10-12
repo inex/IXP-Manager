@@ -1,10 +1,6 @@
 <?php
-namespace IXP\Console\Commands;
-
-define('strict_types', 1);
-
 /*
- * Copyright (C) 2009 - 2025 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,13 +19,17 @@ define('strict_types', 1);
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+
+declare(strict_types=1);
+
+namespace IXP\Console\Commands;
+
+
 use Illuminate\Support\Facades\DB;
-use Illuminate\Validation\Rules\Password;
 use Illuminate\Support\Carbon;
 
 
 use IXP\Models\{CompanyBillingDetail, CompanyRegisteredDetail, Customer, CustomerToUser, Infrastructure, User};
-use function Termwind\ask;
 
 /**
  * Artisan command to streamline the initial installation of IXP Manager
@@ -37,7 +37,7 @@ use function Termwind\ask;
  * @author     Iskren Hadzhinedev <i.hadzhinedev@gmail.com>
  * @author     Barry O'Donovan <barry@opensolutions.ie>
  * @package    IXP\Console\Commands
- * @copyright  Copyright (C) 2009 - 2025 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class SetupWizard extends Command
@@ -149,7 +149,10 @@ class SetupWizard extends Command
      * Execute the console command.
      *
      * @return int
+     *
      * @throws \Throwable
+     *
+     * @psalm-return 0|1|4
      */
     public function handle(): int
     {
@@ -160,7 +163,7 @@ class SetupWizard extends Command
         // One key element is that a number of settings, which the script will inform and ask for
         // confirmation of, are set in the .env file.
         //
-        // A handful of others are prompted from the user. In particular, the detaails for the
+        // A handful of others are prompted from the user. In particular, the details for the
         // first admin user are asked for.
         //
         // This admin user's password should preferably be set in the IXP_SETUP_ADMIN_PASSWORD
@@ -182,7 +185,10 @@ class SetupWizard extends Command
             return 1;
         }
 
-        $data = $this->gatherData();
+        [$exitCode, $data] = $this->gatherData();
+        if ($exitCode !== null) {
+            return $exitCode;
+        }
 
 
         try {
@@ -193,24 +199,18 @@ class SetupWizard extends Command
                 'name'       => $data['ixp-name'],
                 'shortname'  => $data['ixp-shortname'],
                 'isPrimary'  => 1,
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
             ] );
 
             $billingDetail = CompanyBillingDetail::create( [
-                'billingContatName' => $data['ixp-shortname'] . ' Billing Team',
-                'billingEmail'      => $data['ixp-billing-email'],
-                'billingTelephone'  => $data['ixp-billing-phone'],
-                'invoiceMethod'     => CompanyBillingDetail::INVOICE_METHOD_EMAIL,
-                'billingFrequency'  => CompanyBillingDetail::BILLING_FREQUENCY_NOBILLING,
-                'created_at'        => Carbon::now(),
-                'updated_at'        => Carbon::now(),
+                'billingContactName' => $data['ixp-shortname'] . ' Billing Team',
+                'billingEmail'       => $data['ixp-billing-email'],
+                'billingTelephone'   => $data['ixp-billing-phone'],
+                'invoiceMethod'      => CompanyBillingDetail::INVOICE_METHOD_EMAIL,
+                'billingFrequency'   => CompanyBillingDetail::BILLING_FREQUENCY_NOBILLING,
             ] );
 
             $registrationDetail = CompanyRegisteredDetail::create( [
                 'registeredName' => $data['ixp-legalname'],
-                'created_at'     => Carbon::now(),
-                'updated_at'     => Carbon::now(),
             ] );
 
             $cust = Customer::create( [
@@ -235,15 +235,11 @@ class SetupWizard extends Command
                 'company_billing_details_id'   => $billingDetail->id,
                 'abbreviatedName'              => $data['ixp-shortname'],
                 'isReseller'                   => false,
-                'created_at'                   => Carbon::now(),
-                'updated_at'                   => Carbon::now(),
             ] );
 
             $cust->contacts()->create( [
                 'name'       => $data['admin-name'],
                 'email'      => $data['admin-email'],
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
             ] );
 
             $user = new User;
@@ -251,17 +247,15 @@ class SetupWizard extends Command
             $user->username = $data['admin-username'];
             $user->password = password_hash( $data['admin-password'], PASSWORD_BCRYPT, [ 'cost' => config( 'hashing.bcrypt.rounds' ) ] );
             $user->email = $data['admin-email'];
-            $user->created_at = Carbon::now();
-            $user->updated_at = Carbon::now();
             $user->save();
 
-            CustomerToUser::create( [
-                'customer_id' => $cust->id,
-                'user_id'     => $user->id,
-                'privs'       => User::AUTH_SUPERUSER,
-                'created_at'  => Carbon::now(),
-                'updated_at'  => Carbon::now(),
-            ] );
+
+            $c2u = new CustomerToUser();
+            $c2u->customer_id = $cust->id;
+            $c2u->user_id = $user->id;
+            $c2u->privs = User::AUTH_SUPERUSER;
+            $c2u->extra_attributes = [ "created_by" => [ "type" => "artisan" , "user_id" => $user->id ] ];
+            $c2u->save();
 
             DB::commit();
 
@@ -313,6 +307,13 @@ class SetupWizard extends Command
         return $this->confirm( 'Do you want to continue?' );
     }
 
+    /**
+     * Returns an array with an exit code, and data.
+     * Exit code is null if OK, and data will be an array of collected data.
+     * If a failure occurred, exit code will be non-null and data will be null.
+     *
+     * @return array
+     */
     private function gatherData(): array {
         $table = [];
         $data = [];
@@ -342,7 +343,7 @@ class SetupWizard extends Command
 
                 } else {
 
-                    $this->ixpdata[$setting][ 'value' ] = ask( $attributes[ 'prompt' ] . ' [' . $attributes[ 'default' ] . '] ' );
+                    $this->ixpdata[$setting][ 'value' ] = $this->ask( $attributes[ 'prompt' ], $attributes[ 'default' ] );
 
                     if( !$this->ixpdata[$setting][ 'value' ] ) {
                         $this->ixpdata[$setting][ 'value' ] = $attributes[ 'default' ];
@@ -366,7 +367,7 @@ class SetupWizard extends Command
             'ixp-legalname' => 'required|string',
             'ixp-shortname' => 'required|string',
             'admin-name' => 'required|string',
-            'admin-username' => 'required|string',
+            'admin-username' => 'required|string|min:3|max:255|regex:/^[a-z0-9\-_\.]{3,255}$/',
             'admin-email' => 'required|email',
             'admin-password' => 'required|string|min:10',
             'ixp-phone' => 'required|string',
@@ -381,17 +382,17 @@ class SetupWizard extends Command
             foreach ($validator->errors()->all() as $error) {
                 $this->error("\t" . $error);
             }
-            exit(2);
+            return [2, null];
         }
 
         if( !$this->option('force') && !$this->option( 'skip-confirm' ) ) {
             if( !$this->confirm( 'Is this information correct, and do you want to continue to create the database objects?' ) ) {
                 $this->error( 'No confirmation was given. Exiting.' );
-                exit(3);
+                return [3, null];
             }
         }
 
-        return $data;
+        return [null, $data];
     }
 
 }

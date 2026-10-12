@@ -1,0 +1,16 @@
+PeeringDB Network Details of AS2128
+==================================================
+
+Name:            INEX Route Collectors
+Internet Neutral Exchange Association Ltd
+
+Website:         http://www.inex.ie/
+
+Peering Policy:  Open
+
+Notes:
+
+
+
+==================================================
+

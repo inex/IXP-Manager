@@ -32,6 +32,7 @@ use IXP\Models\SflowReceiver;
  *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin       <yann@islandbridgenetworks.ie>
+ * @author     Thomas Kerin     <thomas@islandbridgenetworks.ie>
  * @category   APIv4
  * @package    IXP\Http\Controllers\Api\V4
  * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
@@ -91,9 +92,9 @@ class SflowReceiverController extends Controller
      *
      * @return Response
      *
-     * @throws
+     * @throws \JsonException
      */
-    public function getReceiverList( string $format = null ): Response
+    public function getReceiverList( ?string $format = null ): Response
     {
         $map = [];
 

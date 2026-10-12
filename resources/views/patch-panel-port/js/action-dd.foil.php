@@ -1,4 +1,5 @@
-<script>
+<?= app(\Illuminate\Foundation\Vite::class)(['resources/js/jquery-fileuploader.js']) ?>
+<script type="module">
 
     //////////////////////////////////////////////////////////////////////////////////////
     // we'll need these handles to html elements in a few places:
@@ -31,6 +32,8 @@
 
     $( '.btn-edit-notes' ).click( function(e) {
         e.preventDefault();
+        let tab = $( this ).attr( 'data-notes-target' );
+        $('li > a[href="' + tab + '"]').tab("show");
         popup( $( this ).attr( 'data-object-id' ), 'edit-notes', $( this ).attr( 'href' ), false );
     });
 
@@ -105,9 +108,9 @@
 
         let html = `<form id="form-delete" method="POST" action="${url}">
                         <div>Do you really want to split this port?</div></br>
-                        <div>The slave port (${slavePort}) will be removed from the master port (${masterPort})
-                        and marked as available. If you want to split the other way (${slavePort} as master),
-                        split now and then use the move function on (${masterPort}) afterwards.</div>
+                        <div>The slave port (${htmlEntities(slavePort)}) will be removed from the master port (${htmlEntities(masterPort)})
+                        and marked as available. If you want to split the other way (${htmlEntities(slavePort)} as master),
+                        split now and then use the move function on (${htmlEntities(masterPort)}) afterwards.</div>
                         <input type="hidden" name="_token" value="<?= csrf_token() ?>">
                         <input type="hidden" name="_method" value="put" />
                     </form>`;
@@ -327,23 +330,23 @@
     /**
      * Display a drag'n'drop popup to attached files to patch panel ports.
      *
-     * @param pppid The ID of the patch panel port
+     * @param url The URL to upload files to
      */
     function uploadPopup( url ) {
-        let html = `<form id="upload" class="col-lg-12 tw-bg-gray-100 tw-border-gray-300 tw-border-1 tw-rounded-sm" method="post" action='${url}' enctype='multipart/form-data'>
-                        <div id='drop' class="tw-py-20 tw-px-10 tw-text-center tw-font-bold tw-text-gray-600">
+        let html = `<form id="upload" class="col-lg-12 tw:bg-gray-100 tw:border-gray-300 tw:border-1 tw:rounded-sm" method="post" action='${url}' enctype='multipart/form-data'>
+                        <div id='drop' class="tw:py-20 tw:px-10 tw:text-center tw:font-bold tw:text-gray-600">
                             Drop Files Here &nbsp;
                             <a href="#" id="upload-drop-a" class="btn btn-success color-white">
                                 <i class="fa fa-upload"></i>
                                 Browse
                             </a>
                             <br/>
-                            <span class="tw-text-xs">
-                                (max size <?= $t->maxFileUploadSize() ?>
+                            <span class="tw:text-xs">
+                                (max size <?= $t->maxFileUploadSize() ?>)
                             </span>
-                            <input type="file" class="tw-hidden" name="file" multiple />
+                            <input type="file" class="tw:hidden" name="file" multiple />
                         </div>
-                        <ul id="upload-ul" class="row tw-pl-0 tw-list-none tw-mb-0">
+                        <ul id="upload-ul" class="row tw:pl-0 tw:list-none tw:mb-0">
                         </ul>
                     </form>`;
 
@@ -386,11 +389,11 @@
                 // either via the browse button, or via drag/drop:
                 add: function (e, data) {
 
-                    let tpl = $(`<li class="col-md-12 tw-border-t-1 tw-border-gray-300 tw-relative tw-h-24 tw-p-2 tw-pl-4">
+                    let tpl = $(`<li class="col-md-12 tw:border-t-1 tw:border-gray-300 tw:relative tw:h-24 tw:p-2 tw:pl-4">
                                     <div class="row info-area">
-                                        <p class="info-text tw-font-bold col-md-8 mr-auto">
+                                        <p class="info-text tw:font-bold col-md-8 mr-auto">
                                             ${data.files[0].name}
-                                            <span class="tw-block tw-font-normal tw-text-gray-500">
+                                            <span class="tw:block tw:font-normal tw:text-gray-500">
                                                 ${ixpFormatFileSize( data.files[ 0 ].size )}
                                             </span>
                                         </p>
@@ -405,22 +408,22 @@
                         .done(function ( result, textStatus, jqXHR ){
                             if( result.success ){
                                 tpl.attr( 'id','uploaded-file-' + result.id );
-                                tpl.find('.info-area').append( `<p class="col-md-2 tw-self-center">
-                                            <i class="fa fa-check tw-text-green-600"></i>
-                                            <i id="uploaded-file-toggle-private-${result.id}" data-object-id="${result.id}" class="tw-cursor-pointer fa fa-unlock fa-lg"></i>
-                                            <i id="uploaded-file-delete-${result.id}" data-object-id="${result.id}" class="tw-cursor-pointer fa fa-trash btn-delete-file"></i>
+                                tpl.find('.info-area').append( `<p class="col-md-2 tw:self-center">
+                                            <i class="fa fa-check tw:text-green-600"></i>
+                                            <i id="uploaded-file-toggle-private-${result.id}" data-object-id="${result.id}" class="tw:cursor-pointer fa fa-unlock fa-lg"></i>
+                                            <i id="uploaded-file-delete-${result.id}" data-object-id="${result.id}" class="tw:cursor-pointer fa fa-trash btn-delete-file"></i>
                                             </p>
                                 `);
-                                tpl.find('.info-text').addClass( 'tw-text-green-600' ).append( `<span id="message-${result.id}" class="tw-text-green-600">${result.message}</span>` );
+                                tpl.find('.info-text').addClass( 'tw:text-green-600' ).append( `<span id="message-${result.id}" class="tw:text-green-600">${result.message}</span>` );
 
                                 $( '#uploaded-file-toggle-private-' + result.id ).on( 'click', toggleFilePrivacy );
                                 $( '#uploaded-file-delete-'         + result.id ).on( 'click', deleteFile        );
                             } else {
-                                tpl.find('.info-area').append( `<p class="col-md-2 tw-self-center">
-                                            <i class="fa fa-times tw-text-red-600"></i>
+                                tpl.find('.info-area').append( `<p class="col-md-2 tw:self-center">
+                                            <i class="fa fa-times tw:text-red-600"></i>
                                             </p>
                                 `);
-                                tpl.find('.info-text').addClass( 'tw-text-red-600' ).append('<i id="message-' + result.id + '" class="tw-text-red-600 "> Upload Error: ' + result.message + '</i>' );
+                                tpl.find('.info-text').addClass( 'tw:text-red-600' ).append('<i id="message-' + result.id + '" class="tw:text-red-600 "> Upload Error: ' + result.message + '</i>' );
                             }
                         });
                 },
@@ -432,16 +435,33 @@
                     // Update the hidden input field and trigger a change
                     // so that the jQuery knob plugin knows to update the dial
                     data.context.find( 'input' ).val( progress ).change();
-                    if( progress == 100 ){
+                    if( progress === 100 ){
                         data.context.removeClass('working');
                     }
                 },
 
                 fail:function(e, data){
+                    // Check if the request was aborted by client/user
+                    if (data.errorThrown === 'abort' || data.jqXHR.statusText === 'abort') {
+                        console.log('Upload was cancelled by user/client. Ignoring error display.');
+                        return;
+                    }
+
                     // Something has gone wrong!
                     data.context.addClass('error');
-                }
 
+                    let error;
+                    if (data.jqXHR.status > 0) {
+                        error = 'Server Error (' + data.jqXHR.status + '): ';
+                        error += data.errorThrown || "Unknown error occurred.";
+                    } else {
+                        error = "Unable to reach the server.";
+                    }
+
+                    data.context.find('.info-area').append( `<p class="col-md-2 tw:self-center"><i class="fa fa-times tw:text-red-600"></i></p>`);
+
+                    data.context.find('.info-text').addClass( 'tw:text-red-600' ).append('<i class="tw:text-red-600 "> Upload Error: ' + error + '</i>' );
+                }
             });
 
             // Prevent the default action when a file is dropped on the window

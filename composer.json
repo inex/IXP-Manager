@@ -3,7 +3,7 @@
     "description": "An application by INEX to manage Internet Exchange Points (IXPs) - https://www.ixpmanager.org/",
     "type": "project",
     "keywords": ["ixp manager", "ixpm", "inex", "ixp"],
-    "homepage": "https://github.com/inex/IXP-Manager/wiki",
+    "homepage": "https://github.com/inex/IXP-Manager",
     "license": "GPL-2.0",
     "authors": [
         {
@@ -53,7 +53,7 @@
         "laravel/boost": "^2.1",
         "laravel/dusk": "^8.0",
         "mockery/mockery": "^1.6",
-        "phpunit/phpunit": "^11.5.3",
+        "phpunit/phpunit": "^12.5",
         "psalm/plugin-laravel": "^4.3",
         "staudenmeir/dusk-updater": "^1.5",
         "vimeo/psalm": "dev-master"
@@ -73,14 +73,11 @@
         "files": [
             "app/Support/helpers.php"
         ]
-     },
-     "autoload-dev": {
-         "classmap": [
-             "tests/TestCase.php"
-         ],
-         "psr-4": {
-             "Tests\\": "tests/"
-         }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
     },
     "extra": {
         "laravel": {
@@ -103,7 +100,7 @@
             "Illuminate\\Foundation\\ComposerScripts::postUpdate",
             "@php artisan ide-helper:generate",
             "@php artisan ide-helper:meta --filename=.phpstorm.meta.php/laravel.meta.php",
-            "@php artisan ide-helper:models -W",
+            "@php artisan ide-helper:models -RW",
             "@php artisan telescope:publish",
             "@php artisan horizon:install"
         ]

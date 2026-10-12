@@ -31,6 +31,7 @@ use IXP\Exceptions\GeneralException;
  * Originally written 17 Feb 2014
  *
  * @author Barry O'Donovan <barry@opensolutions.ie>
+ * @author Thomas Kerin <thomas@islandbridgenetworks.ie>
  */
 class OUI
 {
@@ -57,7 +58,7 @@ class OUI
      *
      * @param string|null $file Where to get the OUI list from
      */
-    public function __construct( string $file = null )
+    public function __construct( ?string $file = null )
     {
         if( $file ) {
             $this->file = $file;

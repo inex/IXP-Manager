@@ -16,7 +16,7 @@
 <?php $this->section( 'page-header-postamble' ) ?>
     <div class="btn-group btn-group-sm" role="group">
         <a class="btn btn-white" href="<?= route('patch-panel@list' ) ?>" title="Patch panel list">
-            <i class="fa fa-th-list"></i>
+            <i class="fa fa-table-list"></i>
         </a>
         <?php if( $t->pp ): ?>
             <a class="btn btn-white" href="<?= route('patch-panel@view', [ "pp" => $t->pp->id ] ) ?>" title="Patch panel list">
@@ -33,7 +33,7 @@
                 <div class="alert alert-danger" role="alert">
                     <div class="d-flex align-items-center">
                         <div class="text-center">
-                            <i class="fa fa-warning fa-2x"></i>
+                            <i class="fa fa-triangle-exclamation fa-2x"></i>
                         </div>
                         <div class="col-sm-12">
                             Expunging a patch panel will <strong>delete all ports, historical records, notes and attachments</strong> associated with it.

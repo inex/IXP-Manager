@@ -23,8 +23,6 @@ namespace IXP\Console\Commands\MailingList;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Ds\Set;
-
 use Illuminate\Support\Collection;
 use IXP\Utils\MailingList as ML;
 

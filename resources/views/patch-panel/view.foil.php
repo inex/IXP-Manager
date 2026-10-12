@@ -5,13 +5,13 @@
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-    Patch Panels / View : <?= $pp->id.' '. $t->ee( $pp->name )?>
+    Patch Panels / View : <?= $pp->id.' '. $t->ee( $pp->name )?> <?php if( !$pp->active ): ?>[Inactive]<?php endif; ?>
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
     <div class="btn-group btn-group-sm" role="group">
         <a class="btn btn-white" href="<?= route('patch-panel@list' ) ?>" title="Patch panel list">
-            <i class="fa fa-th-list"></i>
+            <i class="fa fa-table-list"></i>
         </a>
         <a class="btn btn-white" href="<?= route ('patch-panel@edit' , [ 'pp' => $pp->id ] ) ?>" title="Edit">
             <i class="fa fa-pencil"></i>
@@ -27,7 +27,7 @@
     <div class="row">
         <div class="col-sm-12">
             <div class="card">
-                <div class="card-header tw-flex">
+                <div class="card-header tw:flex">
                     <div class="mr-auto">
                         Details
                     </div>
@@ -219,7 +219,7 @@
                                     </b>
                                 </td>
                                 <td>
-                                    <?= @parsedown( $t->ee( $pp->locationDescription() ) ) ?>
+                                    <?= clean( @parsedown( $pp->locationDescription() ) ) ?>
                                 </td>
                             </tr>
                             <tr>
@@ -229,7 +229,7 @@
                                     </b>
                                 </td>
                                 <td>
-                                    <?= @parsedown( $t->ee( $pp->location_notes ) ) ?>
+                                    <?= clean( @parsedown( $pp->location_notes ) ) ?>
                                 </td>
                             </tr>
                         </table>

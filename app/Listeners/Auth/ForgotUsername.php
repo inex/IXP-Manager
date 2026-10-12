@@ -1,9 +1,6 @@
 <?php
-
-namespace IXP\Listeners\Auth;
-
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,11 +19,16 @@ namespace IXP\Listeners\Auth;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-use Mail;
+
+declare(strict_types=1);
+
+namespace IXP\Listeners\Auth;
+
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 use IXP\Events\Auth\ForgotUsername as ForgotUsernameEvent;
-
-use IXP\Mail\Auth\ForgotUsername as ForgotPasswordMailable;
+use IXP\Mail\Auth\ForgotUsername as ForgotUsernameMailable;
 
 /**
  * ForgotUsername Listener
@@ -36,25 +38,12 @@ use IXP\Mail\Auth\ForgotUsername as ForgotPasswordMailable;
  * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class ForgotUsername
+final class ForgotUsername
 {
-    /**
-     * Create the event listener.
-     *
-     * @return void
-     */
-    public function __construct(){}
-
-    /**
-     * Handle the event.
-     *
-     * @param  ForgotUsernameEvent  $e
-     *
-     * @return void
-     */
     public function handle( ForgotUsernameEvent $e ): void
     {
         Mail::to( $e->email )
-            ->send( new ForgotPasswordMailable( $e->users ) );
+            ->send( new ForgotUsernameMailable( $e->users ) );
+        Log::notice( 'Sending username reminder email to ' . $e->email );
     }
 }

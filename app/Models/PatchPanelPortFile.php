@@ -43,25 +43,25 @@ use IXP\Traits\Observable;
  * @property string $uploaded_at
  * @property string $uploaded_by
  * @property int $size
- * @property int $is_private
+ * @property bool $is_private
  * @property string $storage_location
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \IXP\Models\PatchPanelPort|null $patchPanelPort
- * @method static Builder|PatchPanelPortFile newModelQuery()
- * @method static Builder|PatchPanelPortFile newQuery()
- * @method static Builder|PatchPanelPortFile query()
- * @method static Builder|PatchPanelPortFile whereCreatedAt($value)
- * @method static Builder|PatchPanelPortFile whereId($value)
- * @method static Builder|PatchPanelPortFile whereIsPrivate($value)
- * @method static Builder|PatchPanelPortFile whereName($value)
- * @method static Builder|PatchPanelPortFile wherePatchPanelPortId($value)
- * @method static Builder|PatchPanelPortFile whereSize($value)
- * @method static Builder|PatchPanelPortFile whereStorageLocation($value)
- * @method static Builder|PatchPanelPortFile whereType($value)
- * @method static Builder|PatchPanelPortFile whereUpdatedAt($value)
- * @method static Builder|PatchPanelPortFile whereUploadedAt($value)
- * @method static Builder|PatchPanelPortFile whereUploadedBy($value)
+ * @method static Builder<static>|PatchPanelPortFile newModelQuery()
+ * @method static Builder<static>|PatchPanelPortFile newQuery()
+ * @method static Builder<static>|PatchPanelPortFile query()
+ * @method static Builder<static>|PatchPanelPortFile whereCreatedAt($value)
+ * @method static Builder<static>|PatchPanelPortFile whereId($value)
+ * @method static Builder<static>|PatchPanelPortFile whereIsPrivate($value)
+ * @method static Builder<static>|PatchPanelPortFile whereName($value)
+ * @method static Builder<static>|PatchPanelPortFile wherePatchPanelPortId($value)
+ * @method static Builder<static>|PatchPanelPortFile whereSize($value)
+ * @method static Builder<static>|PatchPanelPortFile whereStorageLocation($value)
+ * @method static Builder<static>|PatchPanelPortFile whereType($value)
+ * @method static Builder<static>|PatchPanelPortFile whereUpdatedAt($value)
+ * @method static Builder<static>|PatchPanelPortFile whereUploadedAt($value)
+ * @method static Builder<static>|PatchPanelPortFile whereUploadedBy($value)
  * @mixin Eloquent
  */
 
@@ -92,7 +92,11 @@ class PatchPanelPortFile extends Model
         'storage_location',
     ];
 
-    PUBLIC CONST UPLOAD_PATH = 'ppp';
+    protected $casts = [
+        'is_private' => 'boolean',
+    ];
+
+    public const string UPLOAD_PATH = 'ppp';
 
     /**
      * Get the Patch Panel Port that owns this patch panel port file
@@ -148,22 +152,22 @@ class PatchPanelPortFile extends Model
     {
         switch ( $this->type ) {
             case 'image/jpeg':
-                $icon = 'fa-file-image-o';
+                $icon = 'fa-file-image';
                 break;
             case 'image/png':
-                $icon = 'fa-file-image-o';
+                $icon = 'fa-file-image';
                 break;
             case 'image/bmp':
-                $icon = 'fa-file-image-o';
+                $icon = 'fa-file-image';
                 break;
             case 'application/pdf':
-                $icon = 'fa-file-pdf-o';
+                $icon = 'fa-file-pdf';
                 break;
             case 'application/zip':
-                $icon = 'fa-file-archive-o';
+                $icon = 'fa-file-zipper';
                 break;
             case 'text/plain':
-                $icon = 'fa-file-text';
+                $icon = 'fa-file-lines';
                 break;
             default:
                 $icon = 'fa-file';
@@ -181,6 +185,12 @@ class PatchPanelPortFile extends Model
     {
         return self::UPLOAD_PATH . '/' . $this->storage_location[ 0 ] . '/'
             . $this->storage_location[ 1 ] . '/' . $this->storage_location;
+    }
+
+    public function togglePrivacy(): bool
+    {
+        $this->is_private = !$this->is_private;
+        return $this->save();
     }
 
     /**

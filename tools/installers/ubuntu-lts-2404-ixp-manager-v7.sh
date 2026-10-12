@@ -61,7 +61,7 @@ on Ubuntu LTS 24.04 **only**.
 This script should only be run on a newly installed Ubuntu
 system.
 
-If you do not meet these criteria, please Ctrl-c not to
+If you do not meet these criteria, please Ctrl-c now to
 end this script.
 
 If you want to follow progress, open a new session and (as root):
@@ -505,7 +505,7 @@ IXP_FE_FRONTEND_DISABLED_LOGO=false
 
 
 #######################################################################################
-### Graphing - see https://ixp-manager.readthedocs.org/en/latest/features/grapher.html
+### Graphing - see https://docs.ixpmanager.org/latest/grapher/introduction/
 
 # Enable the backends you have configured. E.g.:
 # GRAPHER_BACKENDS="mrtg|sflow|smokeping"
@@ -585,7 +585,7 @@ GRAPHER_BACKEND_MRTG_DBTYPE="rrd"
 #######################################################################################
 ### Skinning
 #
-# See https://ixp-manager.readthedocs.io/en/latest/features/skinning.html
+# See https://docs.ixpmanager.org/latest/features/skinning/
 #
 # VIEW_SKIN="myskin"
 
@@ -608,11 +608,10 @@ CACHE_DRIVER=memcached
 # PeeringDB Authentication
 #
 # PeeringDb's API is used, for example, to pre-populate new customer details. If you
-# provide a working PeeringDb username/password then these will be used to get more
-# complete information.
+# provide a working PeeringDb API key then these will be used to get more complete
+# information.
 #
-# IXP_API_PEERING_DB_USERNAME=username
-# IXP_API_PEERING_DB_PASSWORD=password
+# IXP_API_PEERING_DB_API_KEY=key
 
 
 
@@ -755,6 +754,7 @@ cat >/etc/apache2/sites-available/000-default.conf <<END_APACHE
     DocumentRoot ${IXPROOT}/public
 
     <Directory ${IXPROOT}/public>
+        Header Set X-Frame-Options "SAMEORIGIN"
         Options FollowSymLinks
         AllowOverride None
         Require all granted
@@ -774,7 +774,7 @@ END_APACHE
 
 log_break && cat /etc/apache2/sites-available/000-default.conf &>> /tmp/ixp-manager-install.log
 a2dismod mpm_worker mpm_event &>> /tmp/ixp-manager-install.log
-a2enmod rewrite php8.4 &>> /tmp/ixp-manager-install.log
+a2enmod headers rewrite php8.4 &>> /tmp/ixp-manager-install.log
 
 service apache2 restart &>> /tmp/ixp-manager-install.log
 echo '[done]'

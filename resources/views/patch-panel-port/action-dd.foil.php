@@ -109,7 +109,7 @@
 
 
         <?php if( $t->isSuperUser ): ?>
-            <li id="danger-dropdown-<?= $ppp->id ?>" data-master-port="<?= $ppp->number ?>" data-port-prefix="<?= $t->prefix ?>" data-slave-port="<?= $t->slaveName ?>" class="dropdown-submenu">
+            <li id="danger-dropdown-<?= $ppp->id ?>" data-master-port="<?= $ppp->number ?>" data-port-prefix="<?= $t->ee( $t->prefix, 'attr' ) ?>" data-slave-port="<?= $t->ee( $t->slaveName, 'attr' ) ?>" class="dropdown-submenu">
                 <a class="dropdown-item submenu" tabindex="-1" href="#" >
                     Admin Actions <i class="fa fa-caret-down"></i>
                 </a>

@@ -13,7 +13,7 @@
             Documentation
         </a>
         <a class="btn btn-white" href="<?= route('user@list') ?>">
-            <span class="fa fa-th-list"></span>
+            <span class="fa fa-table-list"></span>
         </a>
     </div>
 <?php $this->append() ?>

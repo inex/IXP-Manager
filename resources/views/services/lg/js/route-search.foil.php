@@ -1,4 +1,4 @@
-<script>
+<script type="module">
     const dd_source   = $( '#source' );
     const btn_submit  = $( '#submit' );
 
@@ -22,7 +22,7 @@
             masklen = 128;
         }
 
-        $.get('<?= url('lg/' . $t->lg->router()->handle  . '/route') ?>/' + encodeURIComponent( net ) + '/' +
+        $.get('<?= url('lg/' . $t->ee( $t->lg->router()->handle, "js" )  . '/route') ?>/' + encodeURIComponent( net ) + '/' +
             encodeURIComponent( masklen ) + '/' +
             source + '/' + encodeURIComponent( dd_source.val() ), function( html ) {
                 $( '#route-modal .modal-content' ).html( html );
@@ -35,6 +35,7 @@
     $( 'input:radio[name="source_selector"]' ).change( function(){
         if( $( this ).is( ':checked' ) ) {
             dd_source.html( '' );
+            let datas;
             if( $(this).val() === "table" ) {
                 source = 'table'
                 datas = tables;

@@ -25,7 +25,8 @@ namespace IXP\Models;
 
 use Eloquent;
 
-use Illuminate\Database\Eloquent\{Builder,
+use Illuminate\Database\Eloquent\{
+    Builder,
     Model,
     Relations\BelongsTo,
     Relations\BelongsToMany,
@@ -41,8 +42,6 @@ use Illuminate\Support\{
 use IXP\Traits\Observable;
 
 use IXP\Exceptions\GeneralException as IXP_Exception;
-use IXP\Models\AtlasProbe;
-use IXP\Models\AtlasMeasurement;
 
 /**
  * IXP\Models\Customer
@@ -53,6 +52,7 @@ use IXP\Models\AtlasMeasurement;
  * @property string|null $shortname
  * @property int|null $autsys
  * @property int|null $maxprefixes
+ * @property int|null $maxprefixesv6
  * @property string|null $peeringemail
  * @property string|null $nocphone
  * @property string|null $noc24hphone
@@ -80,13 +80,13 @@ use IXP\Models\AtlasMeasurement;
  * @property int $in_manrs
  * @property int $in_peeringdb
  * @property int $peeringdb_oauth
- * @property Carbon|null $created_at
+ * @property Carbon $created_at
  * @property Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection<int, AtlasMeasurement> $AtlasMeasurementsDest
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\AtlasMeasurement> $AtlasMeasurementsDest
  * @property-read int|null $atlas_measurements_dest_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, AtlasMeasurement> $AtlasMeasurementsSource
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\AtlasMeasurement> $AtlasMeasurementsSource
  * @property-read int|null $atlas_measurements_source_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, AtlasProbe> $AtlasProbes
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\AtlasProbe> $AtlasProbes
  * @property-read int|null $atlas_probes_count
  * @property-read \IXP\Models\CompanyBillingDetail|null $companyBillingDetail
  * @property-read \IXP\Models\CompanyRegisteredDetail|null $companyRegisteredDetail
@@ -107,6 +107,7 @@ use IXP\Models\AtlasMeasurement;
  * @property-read \IXP\Models\IrrdbConfig|null $irrdbConfig
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\IrrdbPrefix> $irrdbPrefixes
  * @property-read int|null $irrdb_prefixes_count
+ * @property-read \IXP\Models\IrrdbUpdateLog|null $irrdbUpdateLog
  * @property-read \IXP\Models\Logo|null $logo
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\PatchPanelPortHistory> $patchPanelPortHistories
  * @property-read int|null $patch_panel_port_histories_count
@@ -125,8 +126,6 @@ use IXP\Models\AtlasMeasurement;
  * @property-read int|null $route_server_filters_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\RouteServerFilterProd> $routeServerFiltersInProduction
  * @property-read int|null $route_server_filters_in_production_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\RsPrefix> $rsPrefixes
- * @property-read int|null $rs_prefixes_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\CustomerTag> $tags
  * @property-read int|null $tags_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\TrafficDaily> $trafficDailies
@@ -137,60 +136,54 @@ use IXP\Models\AtlasMeasurement;
  * @property-read int|null $virtual_interfaces_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\VlanInterface> $vlanInterfaces
  * @property-read int|null $vlan_interfaces_count
- * @method static Builder|Customer active()
- * @method static Builder|Customer addressesForVlan(int $vlanid, int $cust, int $protocol)
- * @method static Builder|Customer associate()
- * @method static Builder|Customer current()
- * @method static Builder|Customer currentActive(bool $trafficing = false, bool $externalOnly = false, bool $connected = true)
- * @method static Builder|Customer internal()
- * @method static Builder|Customer newModelQuery()
- * @method static Builder|Customer newQuery()
- * @method static Builder|Customer notDeleted()
- * @method static Builder|Customer query()
- * @method static Builder|Customer resellerOnly()
- * @method static Builder|Customer trafficking()
- * @method static Builder|Customer whereAbbreviatedName($value)
- * @method static Builder|Customer whereActivepeeringmatrix($value)
- * @method static Builder|Customer whereAutsys($value)
- * @method static Builder|Customer whereCompanyBillingDetailsId($value)
- * @method static Builder|Customer whereCompanyRegisteredDetailId($value)
- * @method static Builder|Customer whereCorpwww($value)
- * @method static Builder|Customer whereCreatedAt($value)
- * @method static Builder|Customer whereCreator($value)
- * @method static Builder|Customer whereDatejoin($value)
- * @method static Builder|Customer whereDateleave($value)
- * @method static Builder|Customer whereId($value)
- * @method static Builder|Customer whereInManrs($value)
- * @method static Builder|Customer whereInPeeringdb($value)
- * @method static Builder|Customer whereIrrdb($value)
- * @method static Builder|Customer whereIsReseller($value)
- * @method static Builder|Customer whereLastupdatedby($value)
- * @method static Builder|Customer whereMD5Support($value)
- * @method static Builder|Customer whereMaxprefixes($value)
- * @method static Builder|Customer whereName($value)
- * @method static Builder|Customer whereNoc24hphone($value)
- * @method static Builder|Customer whereNocemail($value)
- * @method static Builder|Customer whereNocfax($value)
- * @method static Builder|Customer whereNochours($value)
- * @method static Builder|Customer whereNocphone($value)
- * @method static Builder|Customer whereNocwww($value)
- * @method static Builder|Customer wherePeeringdbOauth($value)
- * @method static Builder|Customer wherePeeringemail($value)
- * @method static Builder|Customer wherePeeringmacro($value)
- * @method static Builder|Customer wherePeeringmacrov6($value)
- * @method static Builder|Customer wherePeeringpolicy($value)
- * @method static Builder|Customer whereReseller($value)
- * @method static Builder|Customer whereShortname($value)
- * @method static Builder|Customer whereStatus($value)
- * @method static Builder|Customer whereType($value)
- * @method static Builder|Customer whereUpdatedAt($value)
- * @property string|null $lastupdated
- * @property string|null $created
- * @method static Builder|Customer whereCreated($value)
- * @method static Builder|Customer whereLastupdated($value)
- * @property-read \IXP\Models\IrrdbUpdateLog|null $irrdbUpdateLog
- * @property int|null $maxprefixesv6
+ * @method static Builder<static>|Customer active()
+ * @method static Builder<static>|Customer addressesForVlan(int $vlanid, int $cust, int $protocol)
+ * @method static Builder<static>|Customer associate()
+ * @method static Builder<static>|Customer current()
+ * @method static Builder<static>|Customer currentActive(bool $trafficing = false, bool $externalOnly = false, bool $connected = true)
+ * @method static Builder<static>|Customer internal()
+ * @method static Builder<static>|Customer newModelQuery()
+ * @method static Builder<static>|Customer newQuery()
+ * @method static Builder<static>|Customer notDeleted()
+ * @method static Builder<static>|Customer query()
+ * @method static Builder<static>|Customer resellerOnly()
+ * @method static Builder<static>|Customer trafficking()
+ * @method static Builder<static>|Customer whereAbbreviatedName($value)
+ * @method static Builder<static>|Customer whereActivepeeringmatrix($value)
+ * @method static Builder<static>|Customer whereAutsys($value)
+ * @method static Builder<static>|Customer whereCompanyBillingDetailsId($value)
+ * @method static Builder<static>|Customer whereCompanyRegisteredDetailId($value)
+ * @method static Builder<static>|Customer whereCorpwww($value)
+ * @method static Builder<static>|Customer whereCreatedAt($value)
+ * @method static Builder<static>|Customer whereCreator($value)
+ * @method static Builder<static>|Customer whereDatejoin($value)
+ * @method static Builder<static>|Customer whereDateleave($value)
+ * @method static Builder<static>|Customer whereId($value)
+ * @method static Builder<static>|Customer whereInManrs($value)
+ * @method static Builder<static>|Customer whereInPeeringdb($value)
+ * @method static Builder<static>|Customer whereIrrdb($value)
+ * @method static Builder<static>|Customer whereIsReseller($value)
+ * @method static Builder<static>|Customer whereLastupdatedby($value)
+ * @method static Builder<static>|Customer whereMD5Support($value)
+ * @method static Builder<static>|Customer whereMaxprefixes($value)
  * @method static Builder<static>|Customer whereMaxprefixesv6($value)
+ * @method static Builder<static>|Customer whereName($value)
+ * @method static Builder<static>|Customer whereNoc24hphone($value)
+ * @method static Builder<static>|Customer whereNocemail($value)
+ * @method static Builder<static>|Customer whereNocfax($value)
+ * @method static Builder<static>|Customer whereNochours($value)
+ * @method static Builder<static>|Customer whereNocphone($value)
+ * @method static Builder<static>|Customer whereNocwww($value)
+ * @method static Builder<static>|Customer wherePeeringdbOauth($value)
+ * @method static Builder<static>|Customer wherePeeringemail($value)
+ * @method static Builder<static>|Customer wherePeeringmacro($value)
+ * @method static Builder<static>|Customer wherePeeringmacrov6($value)
+ * @method static Builder<static>|Customer wherePeeringpolicy($value)
+ * @method static Builder<static>|Customer whereReseller($value)
+ * @method static Builder<static>|Customer whereShortname($value)
+ * @method static Builder<static>|Customer whereStatus($value)
+ * @method static Builder<static>|Customer whereType($value)
+ * @method static Builder<static>|Customer whereUpdatedAt($value)
  * @mixin Eloquent
  */
 class Customer extends Model
@@ -293,47 +286,47 @@ class Customer extends Model
     public const SQL_CUST_CONNECTED = "cust.status = 1";
 
 
-    public const TYPE_FULL        = 1;
-    public const TYPE_ASSOCIATE   = 2;
-    public const TYPE_INTERNAL    = 3;
-    public const TYPE_PROBONO     = 4;
+    public const int TYPE_FULL        = 1;
+    public const int TYPE_ASSOCIATE   = 2;
+    public const int TYPE_INTERNAL    = 3;
+    public const int TYPE_PROBONO     = 4;
 
-    public static $CUST_TYPES_TEXT = [
+    public static array $CUST_TYPES_TEXT = [
         self::TYPE_FULL          => 'Full',
         self::TYPE_ASSOCIATE     => 'Associate',
         self::TYPE_INTERNAL      => 'Internal',
         self::TYPE_PROBONO       => 'Pro-bono',
     ];
 
-    public const STATUS_NORMAL       = 1;
-    public const STATUS_NOTCONNECTED = 2;
-    public const STATUS_SUSPENDED    = 3;
+    public const int STATUS_NORMAL       = 1;
+    public const int STATUS_NOTCONNECTED = 2;
+    public const int STATUS_SUSPENDED    = 3;
 
-    public static $CUST_STATUS_TEXT = [
+    public static array $CUST_STATUS_TEXT = [
         self::STATUS_NORMAL           => 'Normal',
         self::STATUS_NOTCONNECTED     => 'Not Connected',
         self::STATUS_SUSPENDED        => 'Suspended',
     ];
 
-    public const PEERING_POLICY_OPEN       = 'open';
-    public const PEERING_POLICY_SELECTIVE  = 'selective';
-    public const PEERING_POLICY_MANDATORY  = 'mandatory';
-    public const PEERING_POLICY_CLOSED     = 'closed';
+    public const string PEERING_POLICY_OPEN       = 'open';
+    public const string PEERING_POLICY_SELECTIVE  = 'selective';
+    public const string PEERING_POLICY_MANDATORY  = 'mandatory';
+    public const string PEERING_POLICY_CLOSED     = 'closed';
 
-    public static $PEERING_POLICIES = [
+    public static array $PEERING_POLICIES = [
         self::PEERING_POLICY_OPEN       => 'open',
         self::PEERING_POLICY_SELECTIVE  => 'selective',
         self::PEERING_POLICY_MANDATORY  => 'mandatory',
         self::PEERING_POLICY_CLOSED     => 'closed'
     ];
 
-    public const NOC_HOURS_24x7 = '24x7';
-    public const NOC_HOURS_8x5  = '8x5';
-    public const NOC_HOURS_8x7  = '8x7';
-    public const NOC_HOURS_12x5 = '12x5';
-    public const NOC_HOURS_12x7 = '12x7';
+    public const string NOC_HOURS_24x7 = '24x7';
+    public const string NOC_HOURS_8x5  = '8x5';
+    public const string NOC_HOURS_8x7  = '8x7';
+    public const string NOC_HOURS_12x5 = '12x5';
+    public const string NOC_HOURS_12x7 = '12x7';
 
-    public static $NOC_HOURS = [
+    public static array $NOC_HOURS = [
         self::NOC_HOURS_24x7 => '24x7',
         self::NOC_HOURS_8x5  => '8x5',
         self::NOC_HOURS_8x7  => '8x7',
@@ -341,13 +334,13 @@ class Customer extends Model
         self::NOC_HOURS_12x7 => '12x7'
     ];
 
-    public const MD5_SUPPORT_UNKNOWN   = 'UNKNOWN';
-    public const MD5_SUPPORT_YES       = 'YES';
-    public const MD5_SUPPORT_MANDATORY = 'MANDATORY';
-    public const MD5_SUPPORT_PREFERRED = 'PREFERRED';
-    public const MD5_SUPPORT_NO        = 'NO';
+    public const string MD5_SUPPORT_UNKNOWN   = 'UNKNOWN';
+    public const string MD5_SUPPORT_YES       = 'YES';
+    public const string MD5_SUPPORT_MANDATORY = 'MANDATORY';
+    public const string MD5_SUPPORT_PREFERRED = 'PREFERRED';
+    public const string MD5_SUPPORT_NO        = 'NO';
 
-    public static $MD5_SUPPORT = [
+    public static array $MD5_SUPPORT = [
         self::MD5_SUPPORT_UNKNOWN   => 'Unknown',
         self::MD5_SUPPORT_YES       => 'Yes',
         self::MD5_SUPPORT_MANDATORY => 'Yes - Mandatory',
@@ -904,11 +897,11 @@ class Customer extends Model
     /**
      * Get formatted name
      *
-     * @param  null  $fmt
+     * @param  string|null  $fmt
      *
      * @return null|string
      */
-    public function getFormattedName( $fmt = null ): ?string
+    public function getFormattedName( ?string $fmt = null ): ?string
     {
         if( $this->type === self::TYPE_ASSOCIATE ) {
             return $this->abbreviatedName ?? $this->name;
@@ -1079,8 +1072,6 @@ class Customer extends Model
         return false;
     }
 
-
-
     /**
      * Is this customer graphable?
      *
@@ -1193,9 +1184,9 @@ class Customer extends Model
      * ]
      * ]
      *
-     * @return (VlanInterface|self)[][][]
+     * @return array[][]
      *
-     * @psalm-return array<''|int, array{vlis: non-empty-list<IXP\Models\VlanInterface>, members?: array<''|int, self>}>
+     * @psalm-return array<''|int, array{vlis: non-empty-list<IXP\Models\VlanInterface>, members: array}>
      */
     public function privateVlanDetails(): array
     {

@@ -1,7 +1,13 @@
-<?php $this->layout( 'layouts/ixpv4' ) ?>
+<?php
+/** @var Foil\Template\Template $t */
+
+use IXP\Models\Vlan;
+
+$this->layout( 'layouts/ixpv4' )
+?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-    IP Addresses / Create IPv<?= $t->protocol ?> Address
+    IP Addresses / Create IPv<?= $t->ee( $t->protocol ) ?> Address
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
@@ -28,7 +34,7 @@
 
                 <?= Former::select( 'vlan' )
                     ->label( 'Vlan' )
-                    ->fromQuery( $t->vlans, 'name' )
+                    ->fromQuery( $t->vlans, function (Vlan $vlan) use ($t) { return $t->ee( $vlan->name ); } )
                     ->placeholder( 'Choose a VLAN...' )
                     ->addClass( 'chzn-select' )
                     ->blockHelp( 'Select the VLAN to add the new IP addresses to.' )
@@ -89,7 +95,7 @@
 
         <div class="card mt-4">
             <div class="card-header">
-                <h3>Adding IPv<?= $t->protocol ?> Addresses</h3>
+                <h3>Adding IPv<?= $t->ee( $t->protocol ) ?> Addresses</h3>
             </div>
             <div class="card-body">
                 <p>

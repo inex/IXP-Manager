@@ -24,17 +24,12 @@ namespace IXP\Services\Auth;
  */
 
 use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Contracts\Auth\UserProvider as IlluminateUserProvider;
 use Illuminate\Contracts\Hashing\Hasher;
 use Illuminate\Contracts\Support\Arrayable;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
-use Illuminate\Contracts\Auth\UserProvider as IlluminateUserProvider;
-
-use IXP\Models\{
-    User,
-    UserRememberToken
-};
+use IXP\Models\UserRememberToken;
 
 use IXP\Utils\IpAddress;
 
@@ -82,11 +77,9 @@ class EloquentUserProvider implements IlluminateUserProvider
      * @param  string   $token
      *
      * @return Authenticatable|null
-     *
-     * @throws
      */
     #[\Override]
-    public function retrieveByToken( $identifier, $token ): ?Authenticatable
+    public function retrieveByToken( $identifier, #[\SensitiveParameter] $token ): ?Authenticatable
     {
         $urt = UserRememberToken::where( [ 'user_id' => $identifier ] )->where( [ 'token' => $token ] )->first();
 
@@ -100,18 +93,16 @@ class EloquentUserProvider implements IlluminateUserProvider
     /**
      * Add a new user remember token for a "remember me" session.
      *
-     * @param User|Authenticatable $user
+     * @param Authenticatable $user
      *
      * @return UserRememberToken
-     *
-     * @throws
      */
-    public function addRememberToken( $user ): UserRememberToken
+    public function addRememberToken( Authenticatable $user ): UserRememberToken
     {
         $browser = new BrowserDetection();
 
         return UserRememberToken::create([
-            'user_id'   => $user->id,
+            'user_id'   => $user->getAuthIdentifier(),
             'token'     => Str::random(60),
             'device'    => $browser->getPlatform() . " " . $browser->getPlatformVersion(true) . " / " . $browser->getName() . " " . $browser->getVersion() ,
             'ip'        => IpAddress::getIp(),
@@ -122,13 +113,12 @@ class EloquentUserProvider implements IlluminateUserProvider
     /**
      * Purge old or expired "remember me" tokens.
      *
-     * @param  User $user
+     * @param  Authenticatable $user
      *
-     * @throws
      */
-    public function purgeExpiredRememberTokens( User $user ): void
+    public function purgeExpiredRememberTokens( Authenticatable $user ): void
     {
-        UserRememberToken::where( 'user_id', $user->id )
+        UserRememberToken::where( 'user_id', $user->getAuthIdentifier() )
             ->where( 'expires', '<=', now()->format( 'Y-m-d H:i:s' ) )
             ->delete();
     }
@@ -155,7 +145,7 @@ class EloquentUserProvider implements IlluminateUserProvider
      * @return void
      */
     #[\Override]
-    public function updateRememberToken( Authenticatable $user, $token ){}
+    public function updateRememberToken( Authenticatable $user, #[\SensitiveParameter] $token ){}
 
     /**
      * Retrieve a user by the given credentials.
@@ -165,7 +155,7 @@ class EloquentUserProvider implements IlluminateUserProvider
      * @return Authenticatable|null
      */
     #[\Override]
-    public function retrieveByCredentials( array $credentials ): ?Authenticatable
+    public function retrieveByCredentials( #[\SensitiveParameter] array $credentials ): ?Authenticatable
     {
         // First we will add each credential element to the query as a where clause.
         // Then we can execute the query and, if we found a user, return it in a
@@ -196,7 +186,7 @@ class EloquentUserProvider implements IlluminateUserProvider
      * @return bool
      */
     #[\Override]
-    public function validateCredentials( Authenticatable $user, array $credentials ): bool
+    public function validateCredentials( Authenticatable $user, #[\SensitiveParameter] array $credentials ): bool
     {
         return $this->hasher->check( $credentials['password'], $user->getAuthPassword() );
     }
@@ -211,7 +201,7 @@ class EloquentUserProvider implements IlluminateUserProvider
      * @return void
      */
     #[\Override]
-    public function rehashPasswordIfRequired( Authenticatable $user, array $credentials, bool $force = false )
+    public function rehashPasswordIfRequired( Authenticatable $user, #[\SensitiveParameter] array $credentials, bool $force = false )
     {
         // TODO: Implement rehashPasswordIfRequired() method.
     }

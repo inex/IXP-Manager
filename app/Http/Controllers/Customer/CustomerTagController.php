@@ -126,8 +126,8 @@ class CustomerTagController extends EloquentController
     protected static function additionalRoutes( string $route_prefix ): void
     {
         Route::group( [ 'prefix' => ( static::$is_admin_route ? 'admin/' : '' ) .  $route_prefix ], static function() use ( $route_prefix ) {
-            Route::get(     'cust/{cust}',  'Customer\CustomerTagController@linkCustomer' )->name( $route_prefix . '@link-customer' );
-            Route::post(    'link/{cust}',  'Customer\CustomerTagController@link'         )->name( $route_prefix . '@link'          );
+            Route::get(     'cust/{cust}',  [self::class, 'linkCustomer'] )->name( $route_prefix . '@link-customer' );
+            Route::post(    'link/{cust}',  [self::class, 'link']         )->name( $route_prefix . '@link'          );
         });
     }
 

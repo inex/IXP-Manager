@@ -23,8 +23,6 @@ namespace Tests\Utils;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Illuminate\Foundation\Testing\WithoutMiddleware;
-
 use IXP\Utils\Export\JsonSchema as JsonSchemaExporter;
 
 use Tests\TestCase;

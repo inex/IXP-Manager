@@ -1,34 +1,26 @@
 
-<?php if( isset( $t->data[ 'rows' ][ 0 ] ) ) : ?>
-    <?php $example_api_key = config( 'ixp_fe.api_keys.show_keys' ) ? $t->data[ 'rows' ][ 0 ][ 'apiKey' ] : Str::limit( $t->data[ 'rows' ][ 0 ][ 'apiKey' ] , 6 ) ?>
-<?php else: ?>
-    <?php $example_api_key = '$your_api_key' ?>
-<?php endif; ?>
+<?php $example_api_key = 'ixpm_exampleKey_uPq9H...' ?>
+
+<br><br>
 
 <div class="card mt-4">
     <div class="card-header">
-        <h3>Available API Endpoints</h3>
+        <h3>Brief Instructions and Sample API Endpoints</h3>
     </div>
     <div class="card-body">
         <p>
             Please see the <a href="https://docs.ixpmanager.org/latest/features/api/">official API documentation here.</a>
         </p>
         <p>
-
-            The API key can be passed in the header (preferred) or on the URL. For example:
-        <ul>
-            <li>
-                <code>curl -X GET -H "X-IXP-Manager-API-Key: <?= $example_api_key?>" <?= url( "/api/v4/test" ) ?></code>
-            </li>
-            <li>
-                <code>wget <?= url( "/api/v4/test" ) ?>?apikey=<?= $example_api_key ?></code>
-            </li>
-            <li>
-                <a href="<?= url( "/api/v4/test" ) ?>?apikey=<?= $example_api_key ?>"><?= url( "/api/v4/test" ) ?>?apikey=<?= $example_api_key ?></a>
-            </li>
-        </ul>
+            The API key is passed in the HTTP header, for example:
         </p>
 
+<pre>
+    curl -X GET -H "X-IXP-Manager-API-Key: <?= $t->ee( $example_api_key ) ?>" <?= url( "/api/v4/test" ) ?>
+</pre>
+
+    <hr>
+        
         <dl>
 
             <dt>IX-F Member List Export</dt>
@@ -37,9 +29,10 @@
                 (or <a href="https://github.com/euro-ix/json-schemas/">the GitHub repo</a>)
                 and <a href="https://docs.ixpmanager.org/latest/features/ixf-export/">here for IXP Manager's IX-F
                     Member List export instructions</a>.<br><br>
-                Examples:
                 <ul>
-                    <?php foreach( \IXP\Utils\Export\JsonSchema::EUROIX_JSON_VERSIONS as $v ): ?>
+                    <?php foreach( \IXP\Utils\Export\JsonSchema::EUROIX_JSON_VERSIONS as $v ):
+                        if( $v < 1.0 ) { continue; }
+                    ?>
                         <li>
                             <code>
                                 <a href="<?= url( "/api/v4/member-export/ixf/" . $v )?>">
@@ -49,6 +42,7 @@
                         </li>
                     <?php endforeach; ?>
                 </ul>
+                <br><hr>
             </dd>
 
 
@@ -60,11 +54,12 @@
                         <a target="_blank" href="<?= route('api-v4:ping') ?>"><?= route('api-v4:ping') ?></a>
                     </li>
                 </ul>
+                <br><hr>
             </dd>
 
             <dt>Test Endpoint</dt>
             <dd>
-                A simple test endpoint which is useful for testing if your are providing the API key correctly.
+                A simple test endpoint which is useful for testing if you are providing the API key correctly.
                 <em>Note that it will show that you are authenticated also if it receives a valid cookie.</em>
                 <br>
                 <ul>
@@ -72,6 +67,7 @@
                         <a target="_blank" href="<?= route('api-v4:test') ?>"><?= route('api-v4:test') ?></a>
                     </li>
                 </ul>
+                <br><hr>
             </dd>
 
 
@@ -91,12 +87,13 @@
                     You may change <code>.yaml</code> to <code>.json</code> in the URL if you prefer. If you wish to use the switch
                     database ID rather than the name, alter the URL for: <code>s#switch-name/{switchname}#switch/{id}#</code>.
                     <ul>
-                        <li>Layer2 Interfaces: <code><?= url( "/api/v4/provisioner/layer2interfaces/switch-name" ) ?>/{switchname}.yaml</code></li>
-                        <li>Layer3 Interfaces: <code><?= url( "/api/v4/provisioner/layer3interfaces/switch-name" ) ?>/{switchname}.yaml</code></li>
-                        <li>Routing: <code><?= url( "/api/v4/provisioner/routing/switch-name" ) ?>/{switchname}.yaml</code></li>
-                        <li>Basic Switch Information: <code><?= url( "/api/v4/provisioner/switch/switch-name" ) ?>/{switchname}.yaml</code></li>
-                        <li>VLANs: <code><?= url( "/api/v4/provisioner/vlans/switch-name" ) ?>/{switchname}.yaml</code></li>
+                        <li>Layer2 Interfaces: <code><?= url( "/admin/api/v4/provisioner/layer2interfaces/switch-name" ) ?>/{switchname}.yaml</code></li>
+                        <li>Layer3 Interfaces: <code><?= url( "/admin/api/v4/provisioner/layer3interfaces/switch-name" ) ?>/{switchname}.yaml</code></li>
+                        <li>Routing: <code><?= url( "/admin/api/v4/provisioner/routing/switch-name" ) ?>/{switchname}.yaml</code></li>
+                        <li>Basic Switch Information: <code><?= url( "/admin/api/v4/provisioner/switch/switch-name" ) ?>/{switchname}.yaml</code></li>
+                        <li>VLANs: <code><?= url( "/admin/api/v4/provisioner/vlans/switch-name" ) ?>/{switchname}.yaml</code></li>
                     </ul>
+                    <br><hr>
                 </dd>
 
 
@@ -110,8 +107,8 @@
                     As IXP Manager <a href="https://docs.ixpmanager.org/latest/features/layer2-addresses/">supports layer2 / MAC addresses in two ways</a>
                     (learned versus configured), there are two endpoints.
                     <ul>
-                        <li>Learned: <code><a href="<?= url( "/api/v4/sflow-db-mapper/learned-macs" ) ?>"><?= url( "/api/v4/sflow-db-mapper/learned-macs" ) ?></a></code></li>
-                        <li>Configured: <code><a href="<?= url( "/api/v4/sflow-db-mapper/configured-macs" ) ?>"><?= url( "/api/v4/sflow-db-mapper/configured-macs" ) ?></a></code></li>
+                        <li>Learned: <code><a href="<?= url( "/admin/api/v4/sflow-db-mapper/learned-macs" ) ?>"><?= url( "/admin/api/v4/sflow-db-mapper/learned-macs" ) ?></a></code></li>
+                        <li>Configured: <code><a href="<?= url( "/admin/api/v4/sflow-db-mapper/configured-macs" ) ?>"><?= url( "/admin/api/v4/sflow-db-mapper/configured-macs" ) ?></a></code></li>
                     </ul>
                     The JSON output is structured as follows:
                     <ul>
@@ -119,6 +116,7 @@
                         <li> each infrastructure object has per VLAN objects indexed by the VLAN <b>tag</b> (NB: this is not the VLAN database ID but the VLAN tag) </li>
                         <li> each VLAN object has key/value pairs of <code>macaddress: vlaninterfaceid</code> </li>
                     </ul>
+                    <br><hr>
                 </dd>
 
 

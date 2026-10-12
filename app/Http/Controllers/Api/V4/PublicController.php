@@ -46,13 +46,13 @@ class PublicController extends Controller
      *
      * Documented at: https://docs.ixpmanager.org/latest/features/api/
      *
-     * @return Response
+     * @param Request $r
      *
      * @throws
      */
-    public function test( Request $r ): Response|JsonResponse
+    public function test( Request $r ): JsonResponse|Response
     {
-        if( $r->get( 'format' ) !== 'json' ) {
+        if( $r->input( 'format' ) !== 'json' ) {
             return response()->make( "API Test Function!\n\nAuthenticated: "
                     . ( Auth::check() ? 'Yes, as: ' . Auth::getUser()->username : 'No' ) . "\n\n", 200 )
                 ->header( 'Content-Type', 'text/plain; charset=utf-8' );
@@ -66,7 +66,7 @@ class PublicController extends Controller
             'authenticated' => true,
             'user_id' => Auth::getUser()->id,
             'username' => Auth::getUser()->username,
-            'priv' => Auth::getUser()->privs,
+            'priv' => Auth::getUser()->privs(),
             'current_customer_id' => Auth::getUser()->customer->id,
             'current_customer' => Auth::getUser()->customer->name,
         ]);

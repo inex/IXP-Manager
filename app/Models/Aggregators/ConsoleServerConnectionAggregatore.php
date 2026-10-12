@@ -46,25 +46,22 @@ use IXP\Models\ConsoleServerConnection;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \IXP\Models\ConsoleServer|null $consoleServer
  * @property-read \IXP\Models\CustomerTag|null $customer
- * @property-read \IXP\Models\Switcher|null $switcher
- * @method static Builder|ConsoleServerConnectionAggregatore newModelQuery()
- * @method static Builder|ConsoleServerConnectionAggregatore newQuery()
- * @method static Builder|ConsoleServerConnectionAggregatore query()
- * @method static Builder|ConsoleServerConnectionAggregatore whereAutobaud($value)
- * @method static Builder|ConsoleServerConnectionAggregatore whereConsoleServerId($value)
- * @method static Builder|ConsoleServerConnectionAggregatore whereCreatedAt($value)
- * @method static Builder|ConsoleServerConnectionAggregatore whereCustid($value)
- * @method static Builder|ConsoleServerConnectionAggregatore whereDescription($value)
- * @method static Builder|ConsoleServerConnectionAggregatore whereFlowcontrol($value)
- * @method static Builder|ConsoleServerConnectionAggregatore whereId($value)
- * @method static Builder|ConsoleServerConnectionAggregatore whereNotes($value)
- * @method static Builder|ConsoleServerConnectionAggregatore whereParity($value)
- * @method static Builder|ConsoleServerConnectionAggregatore wherePort($value)
- * @method static Builder|ConsoleServerConnectionAggregatore whereSpeed($value)
- * @method static Builder|ConsoleServerConnectionAggregatore whereStopbits($value)
- * @method static Builder|ConsoleServerConnectionAggregatore whereUpdatedAt($value)
- * @property int|null $switchid
- * @method static Builder|ConsoleServerConnectionAggregatore whereSwitchid($value)
+ * @method static Builder<static>|ConsoleServerConnectionAggregatore newModelQuery()
+ * @method static Builder<static>|ConsoleServerConnectionAggregatore newQuery()
+ * @method static Builder<static>|ConsoleServerConnectionAggregatore query()
+ * @method static Builder<static>|ConsoleServerConnectionAggregatore whereAutobaud($value)
+ * @method static Builder<static>|ConsoleServerConnectionAggregatore whereConsoleServerId($value)
+ * @method static Builder<static>|ConsoleServerConnectionAggregatore whereCreatedAt($value)
+ * @method static Builder<static>|ConsoleServerConnectionAggregatore whereCustid($value)
+ * @method static Builder<static>|ConsoleServerConnectionAggregatore whereDescription($value)
+ * @method static Builder<static>|ConsoleServerConnectionAggregatore whereFlowcontrol($value)
+ * @method static Builder<static>|ConsoleServerConnectionAggregatore whereId($value)
+ * @method static Builder<static>|ConsoleServerConnectionAggregatore whereNotes($value)
+ * @method static Builder<static>|ConsoleServerConnectionAggregatore whereParity($value)
+ * @method static Builder<static>|ConsoleServerConnectionAggregatore wherePort($value)
+ * @method static Builder<static>|ConsoleServerConnectionAggregatore whereSpeed($value)
+ * @method static Builder<static>|ConsoleServerConnectionAggregatore whereStopbits($value)
+ * @method static Builder<static>|ConsoleServerConnectionAggregatore whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class ConsoleServerConnectionAggregatore extends ConsoleServerConnection

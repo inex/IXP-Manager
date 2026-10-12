@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateAtlasProbes extends Migration
+final class CreateAtlasProbes extends Migration
 {
     /**
      * Run the migrations.
@@ -14,7 +14,7 @@ class CreateAtlasProbes extends Migration
     public function up(): void
     {
         Schema::create('atlas_probes', function (Blueprint $table) {
-            $table->bigIncrements('id')->unsigned( false );
+            $table->bigInteger('id', true, false);
             $table->integer('cust_id');
             $table->string('address_v4', 15)->nullable();
             $table->string('address_v6', 39)->nullable();
