@@ -89,7 +89,7 @@
                   All Speed
                 </a>
                 <div class="dropdown-divider"></div>
-                <?php foreach( $t->speeds as $speed ): ?>
+                <?php foreach( array_unique( $t->speeds, SORT_NUMERIC ) as $speed ): ?>
                     <a class="dropdown-item <?= $t->speed === $speed ? "active" : "" ?>" href="<?= route( "switch@configuration", [ "speed" => $speed ] ) ?>">
                         <?= $t->scaleBits( $speed * 1000000, 0 ) ?>
                     </a>
