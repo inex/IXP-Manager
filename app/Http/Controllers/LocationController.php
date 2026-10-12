@@ -28,6 +28,7 @@ use Countries, Former;
 use Illuminate\Database\Eloquent\Builder;
 
 use IXP\Rules\IsCountry;
+use IXP\Rules\IsPhone;
 use IXP\Utils\CountryUtils;
 use Illuminate\Http\{
     Request,
@@ -261,10 +262,15 @@ class LocationController extends EloquentController
             'name'              => 'required|string|max:255',
             'shortname'         => 'required|string|max:255|unique:location,shortname' . ( $r->id ? ',' . $r->id : '' ),
             'tag'               => 'required|string|max:255',
+            'address'           => 'nullable|string|max:255',
             'city'              => 'required|string|max:50',
             'country'           => ['required', 'string', 'max:2', new IsCountry],
-            'nocemail'          => 'nullable|email',
-            'officeemail'       => 'nullable|email',
+            'nocphone'          => ['nullable', 'string', 'max:25', new IsPhone()],
+            'nocfax'            => ['nullable', 'string', 'max:25', new IsPhone()],
+            'nocemail'          => 'nullable|email|max:255',
+            'officephone'       => ['nullable', 'string', 'max:25', new IsPhone()],
+            'officefax'         => ['nullable', 'string', 'max:25', new IsPhone()],
+            'officeemail'       => 'nullable|email|max:255',
         ] );
     }
 }

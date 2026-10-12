@@ -29,6 +29,7 @@ use Illuminate\Foundation\Http\FormRequest;
 
 use IXP\Models\Customer;
 use IXP\Models\User;
+use IXP\Rules\IsPhone;
 
 /**
  * Dashboard Noc details Request
@@ -58,15 +59,15 @@ class NocDetailsRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return string[]
+     * @return array
      *
-     * @psalm-return array{nocphone: 'nullable|string|max:255', noc24hphone: 'nullable|string|max:255', nocemail: 'nullable|email|max:255', nochours: string, nocwww: 'nullable|url|max:255'}
+     * @psalm-return array{nocphone: list{'nullable', 'string', 'max:25', \IXP\Rules\IsPhone}, noc24hphone: list{'nullable', 'string', 'max:25', \IXP\Rules\IsPhone}, nocemail: 'nullable|email|max:255', nochours: string, nocwww: 'nullable|url|max:255'}
      */
     public function rules(): array
     {
         return [
-            'nocphone'              => 'nullable|string|max:255',
-            'noc24hphone'           => 'nullable|string|max:255',
+            'nocphone'              => ['nullable', 'string', 'max:25', new IsPhone()],
+            'noc24hphone'           => ['nullable', 'string', 'max:25', new IsPhone()],
             'nocemail'              => 'nullable|email|max:255',
             'nochours'              => 'nullable|string|in:' . implode( ',', array_keys( Customer::$NOC_HOURS ) ),
             'nocwww'                => 'nullable|url|max:255',

@@ -32,6 +32,7 @@ use IXP\Models\{
     Customer,
     User
 };
+use IXP\Rules\IsPhone;
 
 /**
  * Update FormRequest
@@ -65,7 +66,7 @@ class Update extends FormRequest
      *
      * @return string[]
      *
-     * @psalm-return array{name?: 'required|string|max:255', username?: string, email?: 'required|email|max:255', authorisedMobile?: 'nullable|string|max:50', privs?: string}
+     * @psalm-return array{name?: 'required|string|max:255', username?: string, email?: 'required|email|max:255', authorisedMobile?: array{'nullable', 'string', 'max:25', IsPhone}, privs?: string}
      */
     public function rules(): array
     {
@@ -78,7 +79,7 @@ class Update extends FormRequest
                 'name'                                              => 'required|string|max:255',
                 'username'                                          => 'required|string|min:3|max:255|regex:/^[a-z0-9\-_\.]{3,255}$/|unique:user,username,' . $this->u->id,
                 'email'                                             => 'required|email|max:255',
-                'authorisedMobile'                                  => 'nullable|string|max:50',
+                'authorisedMobile'                                  => ['nullable', 'string', 'max:25', new IsPhone()],
             ];
         } else  {
             $rules = [
@@ -89,7 +90,7 @@ class Update extends FormRequest
             if( $u->id == $this->u->id ) {
                 $rules = array_merge( $rules, [
                     'name'                                              => 'required|string|max:255',
-                    'authorisedMobile'                                  => 'nullable|string|max:50'
+                    'authorisedMobile'                                  => ['nullable', 'string', 'max:25', new IsPhone()],
                 ] );
             }
         }

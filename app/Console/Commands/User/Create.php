@@ -28,6 +28,7 @@ use IXP\Console\Commands\Command;
 use IXP\Events\User\UserCreated as UserCreatedEvent;
 use IXP\Models\CustomerToUser;
 use IXP\Models\User;
+use IXP\Rules\IsPhone;
 
 /**
  * Artisan command to create a new user
@@ -64,20 +65,18 @@ class Create extends Command
      */
     protected $description = 'Create a new user.';
 
-    /**
-     * Validator rules
-     *
-     * @var array
-     */
-    protected $rules = [
-        'email'             => 'required|email|unique:user,email',
-        'name'              => 'required|string|max:255',
-        'username'          => 'required|string|min:3|max:255|regex:/^[a-z0-9\-_\.]{3,255}$/|unique:user,username',
-        'mobile'            => 'nullable|string|max:50',
-        'custid'            => 'required|integer|exists:cust,id',
-        'priv'              => 'required|integer|in:' . User::AUTH_SUPERUSER . ',' . User::AUTH_CUSTADMIN  . ',' . User::AUTH_CUSTUSER ,
-        'password'          => 'required|string|min:8|max:255',
-    ];
+    private function getRules(): array
+    {
+        return [
+            'email'             => 'required|email|unique:user,email',
+            'name'              => 'required|string|max:255',
+            'username'          => 'required|string|min:3|max:255|regex:/^[a-z0-9\-_\.]{3,255}$/|unique:user,username',
+            'mobile'            => ['nullable', 'string', 'max:25', new IsPhone()],
+            'custid'            => 'required|integer|exists:cust,id',
+            'priv'              => 'required|integer|in:' . User::AUTH_SUPERUSER . ',' . User::AUTH_CUSTADMIN  . ',' . User::AUTH_CUSTUSER ,
+            'password'          => 'required|string|min:8|max:255',
+        ];
+    }
 
     /**
      * Execute the console command.
@@ -103,7 +102,7 @@ class Create extends Command
             //${$option} = $value;
 
             if( $option !== 'send-welcome-email' ){
-                $validator = \Validator::make( [ $option => $value], [$option => $this->rules[ $option ] ] );
+                $validator = \Validator::make( [ $option => $value], [$option => $this->getRules()[ $option ] ] );
                 if( $value && $validator->fails() ) {
                     $this->error( $validator->errors()->first( $option ) );
                     return 0;
@@ -128,7 +127,7 @@ class Create extends Command
                             return $this->secret('Enter '. $option);
                         }
                         return $this->ask('Enter ' . $option);
-                    }, $option, $this->rules[ $option ] );
+                    }, $option, $this->getRules()[ $option ] );
                 }
             }
         }
@@ -182,7 +181,7 @@ class Create extends Command
      *
      * @return mixed
      */
-    private function recurringAskWithValidation( \Closure $method, string $option, string $rules ): mixed
+    private function recurringAskWithValidation( \Closure $method, string $option, mixed $rules ): mixed
     {
         $value = $method();
         $validate = $this->validateInput( $option, $rules, $value );
@@ -201,7 +200,7 @@ class Create extends Command
      *
      * @return string|true
      */
-    private function validateInput( string $name, string $rules, mixed $value ): bool|string
+    private function validateInput( string $name, mixed $rules, mixed $value ): bool|string
     {
         $validator = \Validator::make( [ $name => $value ], [ $name => $rules ] );
 
