@@ -47,6 +47,9 @@
                         <th>
                             Speed
                         </th>
+                        <th>
+                            Status
+                        </th>
                         <?php if( $t->cb ): ?>
                             <th>
                                 Peering Port other side ( Core Bundle )
@@ -104,6 +107,9 @@
                                 <?php else: ?>
                                     <span class="badge badge-danger phys-int-autoneg-state" data-toggle="tooltip" title="Hard-Coded - Auto-Negotiation DISABLED">HC</span>
                                 <?php endif; ?>
+                            </td>
+                            <td>
+                                <?= $t->insert( 'interfaces/virtual/add/pi-status', [ 'pi' => $pi ] ); ?>
                             </td>
                             <?php if( $t->cb ): ?>
                                 <td>
