@@ -25,8 +25,6 @@ namespace IXP\Http\Controllers;
 
 use App, Auth, Countries, Redirect;
 
-use Illuminate\Contracts\Foundation\Application;
-use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\{
     RedirectResponse,
@@ -40,7 +38,7 @@ use IXP\Http\Requests\Dashboard\{
     BillingDetailsRequest
 };
 
-use IXP\Models\{Aggregators\RsPrefixAggregator, Customer, CustomerNote, NetworkInfo, P2pDailyStats, User};
+use IXP\Models\{Customer, CustomerNote, NetworkInfo, P2pDailyStats, User};
 
 use IXP\Utils\View\Alert\{
     Alert,
