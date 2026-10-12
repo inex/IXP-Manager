@@ -242,8 +242,6 @@ return [
 
         Former\FormerServiceProvider::class,
 
-        //LukeTowers\Purifier\PurifierServiceProvider::class,
-
         Webpatser\Countries\CountriesServiceProvider::class,
 
         Intervention\Image\ImageServiceProvider::class,
@@ -311,7 +309,6 @@ return [
         'Image'     => Intervention\Image\Facades\Image::class,
 
         'Former'    => Former\Facades\Former::class,
-        //'Purifier'  => LukeTowers\Purifier\Facades\Purifier::class,
         'PDF'       => Barryvdh\DomPDF\Facade::class,
 
         'Countries' => Webpatser\Countries\CountriesFacade::class,
