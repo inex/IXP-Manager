@@ -26,6 +26,7 @@ namespace IXP\Http\Controllers\Switches;
 use Auth, DateTime, Former, Route;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\{
     Request,
     RedirectResponse
@@ -626,7 +627,7 @@ class SwitchController extends EloquentController
      */
     public function configuration( Request $r ) : View
     {
-        $infra  = $location = $speed = $switch = $vlan = $summary = false;
+        $speed = $summary = false;
 
         $speeds = PhysicalInterface::select('speed as value')
             ->union(
@@ -636,38 +637,10 @@ class SwitchController extends EloquentController
             ->pluck('value')
             ->toArray();
 
-        if( $r->switch !== null ) {
-            if(  $switch = Switcher::find( $r->switch ) ) {
-                $r->session()->put( "switch-configuration-switch", $switch );
-            } else {
-                $r->session()->remove( "switch-configuration-switch" );
-                $switch = false;
-            }
-        } else if( $r->session()->exists( "switch-configuration-switch" ) ) {
-            $switch = $r->session()->get( "switch-configuration-switch" );
-        }
-
-        if( $r->infra !== null ) {
-            if(  $infra = Infrastructure::find( $r->infra ) ) {
-                $r->session()->put( "switch-configuration-infra", $infra );
-            } else {
-                $r->session()->remove( "switch-configuration-infra" );
-                $infra = false;
-            }
-        } else if( $r->session()->exists( "switch-configuration-infra" ) ) {
-            $infra = $r->session()->get( "switch-configuration-infra" );
-        }
-
-        if( $r->location !== null ) {
-            if( $location = Location::find( $r->location ) ) {
-                $r->session()->put( "switch-configuration-location", $location );
-            } else {
-                $r->session()->remove( "switch-configuration-location" );
-                $location = false;
-            }
-        } else if( $r->session()->exists( "switch-configuration-location" ) ) {
-            $location = $r->session()->get( "switch-configuration-location" );
-        }
+        $switch    = $this->resolveAndPersistModel($r, "switch",   Switcher::class);
+        $infra     = $this->resolveAndPersistModel($r, "infra",    Infrastructure::class);
+        $location  = $this->resolveAndPersistModel($r, "location", Location::class);
+        $vlan      = $this->resolveAndPersistModel($r, "vlan",     Vlan::class);
 
         if( $r->speed !== null ) {
             $speed = (int)$r->speed;
@@ -679,17 +652,6 @@ class SwitchController extends EloquentController
             }
         } else if( $r->session()->exists( "switch-configuration-speed" ) ) {
             $speed = $r->session()->get( "switch-configuration-speed" );
-        }
-
-        if( $r->vlan !== null ) {
-            if( $vlan = Vlan::find( $r->vlan ) ) {
-                $r->session()->put( "switch-configuration-vlan", $vlan );
-            } else {
-                $r->session()->remove( "switch-configuration-vlan" );
-                $vlan = false;
-            }
-        } else if( $r->session()->exists( "switch-configuration-vlan" ) ) {
-            $vlan = $r->session()->get( "switch-configuration-vlan" );
         }
 
         if( $switch || $infra || $location || $vlan ) {
@@ -762,6 +724,36 @@ class SwitchController extends EloquentController
             'loopback_name'     => 'nullable|string|max:255',
             'mgmt_mac_address'  => 'nullable|string|max:17|regex:/^[a-f0-9:\.\-]{12,17}$/i',
         ] );
+    }
+
+    /**
+     * Template method to resolve a requested model from the query string.
+     * Searches for a model of type $classType using the ID defined in the query string under variable with name $inputName.
+     * Persists the model in session if found. Returns false if model id is invalid, or nothing stored in the session.
+     *
+     * @template T of Model
+     * @param Request         $r - request object
+     * @param string          $inputName - name of input that contains our selection
+     * @param class-string<T> $classType - what type of Model are we looking for?
+     * @return T|false
+     */
+    private function resolveAndPersistModel( Request $r , string $inputName, string $classType ): Model|false
+    {
+        $selection  = $r->query( $inputName );
+        $sessionKey = "switch-configuration-{$inputName}";
+
+        if ( is_string($selection) && $selection !== '' ) {
+            /** @psalm-suppress InvalidMethodCall */
+            $instance = $classType::find( $selection );
+            if ( !$instance ) {
+                $r->session()->remove( $sessionKey );
+                return false;
+            }
+            $r->session()->put( $sessionKey, $instance );
+            return $instance;
+        }
+
+        return $r->session()->get( $sessionKey, false );
     }
 
     /**
