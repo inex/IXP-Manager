@@ -19,7 +19,7 @@
                     ->id( 'net' )
                     ->label( 'IP Address/Prefix' )
                     ->placeholder( '192.0.2.0/24 | 2001:db8:7:2::/64' )
-                    ->blockHelp( '' );
+                    ->blockHelp( 'Enter the target IPv4 or IPv6 address or network prefix you want to query on the route server.' );
                 ?>
 
                 <?= Former::radios( 'Internal Use' )
@@ -28,7 +28,7 @@
                         'Lookup table' => [ 'name' => 'source_selector', 'value' => 'table' ],
                         'Lookup protocol' => [ 'name' => 'source_selector', 'value' => 'protocol'],
                     ])->check( 'table' )
-                    ->blockHelp( '' );
+                    ->blockHelp( 'Select the source of the route information you want to query - a routing table or a specific protocol.' );
                 ?>
 
                 <?= Former::select( 'source' )
@@ -36,7 +36,7 @@
                     ->label( 'Source' )
                     ->placeholder( 'Choose a source' )
                     ->addClass( 'chzn-select' )
-                    ->blockHelp( '' );
+                    ->blockHelp( 'Select the protocol or table (depending on your earlier selection) on which to run your search.' );
                 ?>
 
                 <?=Former::actions( Former::primary_submit( 'Search' )->id( 'submit' )->class( "mb-2 mb-sm-0"),
