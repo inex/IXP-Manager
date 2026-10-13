@@ -1,9 +1,6 @@
 <?php
-
-namespace IXP\Http\Controllers\DocstoreCustomer;
-
 /*
- * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,36 +20,41 @@ namespace IXP\Http\Controllers\DocstoreCustomer;
  * http://www.gnu.org/licenses/gpl-2.0.html
 */
 
-use Illuminate\Auth\Access\AuthorizationException;
-use Illuminate\Contracts\Filesystem\FileNotFoundException;
-use Log, Storage;
+declare(strict_types=1);
+
+namespace IXP\Http\Controllers\DocstoreCustomer;
+
 
 use Former\Facades\Former;
 
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Http\{
     RedirectResponse,
     Request
 };
-
-use Illuminate\Validation\Rule;
-
+use Illuminate\Support\Facades\{
+    Log,
+    Storage
+};
 use Illuminate\View\View;
 
 use IXP\Http\Controllers\Controller;
-
+use IXP\Http\Requests\DocstoreCustomer\StoreDocstoreCustomerFileRequest;
+use IXP\Http\Requests\DocstoreCustomer\UpdateDocstoreCustomerFileRequest;
 use IXP\Models\{
     Customer,
     DocstoreCustomerDirectory,
     DocstoreCustomerFile,
     User
 };
-
 use IXP\Utils\View\Alert\{
     Alert,
     Container as AlertContainer
 };
 
 use League\Flysystem\FilesystemException;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 /**
  * FileController Controller
@@ -67,16 +69,16 @@ use League\Flysystem\FilesystemException;
 class FileController extends Controller
 {
     /**
-     * View a docstore customer file apply to allowed mimetype ( DocstoreFile::$
+     * View a docstore customer file apply to allowed mimetype ( DocstoreCustomerFile::$extensionViewable )
      *
      * @param  Customer  $cust
      * @param  DocstoreCustomerFile  $file
      *
-     * @return mixed
+     * @return View|RedirectResponse
      *
      * @throws AuthorizationException|FileNotFoundException
      */
-    public function view( Customer $cust, DocstoreCustomerFile $file )
+    public function view( Customer $cust, DocstoreCustomerFile $file ): View|RedirectResponse
     {
         $this->authorize( 'view', $file );
 
@@ -97,17 +99,19 @@ class FileController extends Controller
      * @param  Customer  $cust
      * @param  DocstoreCustomerFile  $file
      *
-     * @return mixed
+     * @return StreamedResponse|RedirectResponse
      *
      * @throws AuthorizationException
      */
-    public function download( Customer $cust, DocstoreCustomerFile $file )
+    public function download( Customer $cust, DocstoreCustomerFile $file ): StreamedResponse|RedirectResponse
     {
         $this->authorize( 'download', $file );
 
         try {
-            /** @psalm-suppress UndefinedInterfaceMethod */
-            return Storage::disk( $file->disk )->download( $file->path, $file->name );
+            return Storage::disk( $file->disk )->download( $file->path, $file->name, [
+                'Content-Type' => 'application/octet-stream',
+                'X-Content-Type-Options' => 'nosniff',
+            ] );
         } catch( FilesystemException $e ) {
             AlertContainer::push( "This customer file could not be found / downloaded. Please report this error to the support team.", Alert::DANGER );
             return redirect( route( 'docstore-c-dir@list', [ 'cust' => $file->customer->id , 'dir' => $file->docstore_customer_directory_id ] ) );
@@ -142,18 +146,16 @@ class FileController extends Controller
     /**
      * Store a docstore customer file uploaded
      *
-     * @param  Request  $r
+     * @param  StoreDocstoreCustomerFileRequest  $r
      * @param  Customer  $cust
      *
      * @return RedirectResponse
      *
      * @throws AuthorizationException
      */
-    public function store( Request $r, Customer $cust ): RedirectResponse
+    public function store( StoreDocstoreCustomerFileRequest $r, Customer $cust ): RedirectResponse
     {
-        $this->authorize( 'create', DocstoreCustomerFile::class );
-
-        $this->checkForm( $r );
+        // Policy check performed in StoreDocstoreCustomerFileRequest
 
         $uploadedFile = $r->file('uploadedFile' );
 
@@ -161,20 +163,20 @@ class FileController extends Controller
 
         /** @psalm-suppress InvalidArgument */
         $file = DocstoreCustomerFile::create( [
-            'name'                              => $r->name,
-            'description'                       => $r->description,
+            'name'                              => $r->validated('name'),
+            'description'                       => $r->validated('description'),
             'cust_id'                           => $cust->id,
-            'min_privs'                         => $r->min_privs,
+            'min_privs'                         => $r->validated('min_privs'),
             'path'                              => $path,
-            'sha256'                            => hash_file( 'sha256', $uploadedFile ),
+            'sha256'                            => hash_file( 'sha256', $uploadedFile->getRealPath() ),
             'created_by'                        => $r->user()->id,
             'file_last_updated'                 => now(),
-            'docstore_customer_directory_id'    => $r->docstore_customer_directory_id,
+            'docstore_customer_directory_id'    => $r->validated('docstore_customer_directory_id'),
         ] );
 
         Log::info( sprintf( "DocStore: file [%d|%s] uploaded by %s for the customer [%d|%s]", $file->id, $file->name, $r->user()->username, $cust->id, $cust->name ) );
 
-        AlertContainer::push( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) . " File <em>{$r->name}</em> uploaded.", Alert::SUCCESS );
+        AlertContainer::push( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) . " File <em>{$file->name}</em> uploaded.", Alert::SUCCESS );
         return redirect( route( 'docstore-c-dir@list', [ 'cust' => $cust , 'dir' => $file->docstore_customer_directory_id ] ) );
     }
 
@@ -211,7 +213,7 @@ class FileController extends Controller
     /**
      * Update a docstore customer file uploaded
      *
-     * @param  Request                  $r
+     * @param  UpdateDocstoreCustomerFileRequest $r
      * @param  Customer                 $cust
      * @param  DocstoreCustomerFile     $file
      *
@@ -219,24 +221,22 @@ class FileController extends Controller
      *
      * @throws AuthorizationException
      */
-    public function update( Request $r, Customer $cust, DocstoreCustomerFile $file ): RedirectResponse
+    public function update( UpdateDocstoreCustomerFileRequest $r, Customer $cust, DocstoreCustomerFile $file ): RedirectResponse
     {
-        $this->authorize( 'update', $file );
-
-        $this->checkForm( $r, $file );
+        // Policy check performed in UpdateDocstoreCustomerFileRequest
 
         // if a new file is updated
-        if( $r->uploadedFile ) {
+        if( $r->file('uploadedFile') ) {
             // get path of the old file in order to delete it later
             $oldPath = $file->path;
 
             $uploadedFile = $r->file('uploadedFile');
-            $path = $uploadedFile->store( $file->customer->id, 'docstore_customers' );
+            $path = $uploadedFile->store( (string) $file->customer->id, 'docstore_customers' );
 
             /** @psalm-suppress InvalidArgument */
             $file->update([
                 'path'                  => $path,
-                'sha256'                => hash_file( 'sha256', $uploadedFile ),
+                'sha256'                => hash_file( 'sha256', $uploadedFile->getRealPath() ),
                 'file_last_updated'     => now(),
             ]);
 
@@ -245,10 +245,10 @@ class FileController extends Controller
         }
 
         $file->update( [
-            'name'                              => $r->name,
-            'description'                       => $r->description,
-            'docstore_customer_directory_id'    => $r->docstore_customer_directory_id,
-            'min_privs'                         => $r->min_privs
+            'name'                              => $r->validated('name'),
+            'description'                       => $r->validated('description'),
+            'docstore_customer_directory_id'    => $r->validated('docstore_customer_directory_id'),
+            'min_privs'                         => $r->validated('min_privs')
         ] );
 
 
@@ -283,34 +283,5 @@ class FileController extends Controller
         $file->delete();
 
         return redirect( route( 'docstore-c-dir@list', [ 'cust' => $cust, 'dir' => $dir ] ) );
-    }
-
-    /**
-     * Check if the form is valid
-     *
-     * @param Request                       $r
-     * @param DocstoreCustomerFile|null     $file
-     *
-     * @return void
-     */
-    private function checkForm( Request $r, ?DocstoreCustomerFile $file = null ): void
-    {
-        $r->validate( [
-            'name'                              => 'required|max:100',
-            'uploadedFile'                      => Rule::requiredIf( function() use ( $r, $file ) {
-                return !$file;
-            }),
-            'sha256'                            => [ 'nullable', 'max:64',
-                function ( $attribute, $value, $fail ) use( $r ) {
-                    /** @psalm-suppress InvalidArgument */
-                    if( $value && $r->file('uploadedFile' ) && $value !== hash_file( 'sha256', $r->file( 'uploadedFile' ) ) ) {
-                        return $fail( 'The sha256 checksum calculated on the server does not match the one you provided.' );
-                    }
-                    return null;
-                },
-            ],
-            'min_privs'                         => 'required|integer|in:' . implode( ',', array_keys( User::$PRIVILEGES ) ),
-            'docstore_customer_directory_id'    => 'nullable|integer|exists:docstore_customer_directories,id',
-        ] );
     }
 }
