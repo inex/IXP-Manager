@@ -5,11 +5,7 @@
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-    <?php if( Auth::check() && Auth::getUser()->isSuperUser() ): ?>
-        <?= $t->associates ? ( 'Associate ' . ucfirst( config( 'ixp_fe.lang.customer.many' ) ) )  : ucfirst( config( 'ixp_fe.lang.customer.many' ) ) ?>
-    <?php else: ?>
-        <?= $t->associates ? 'Associate' : '' ?> <?= ucfirst( config( 'ixp_fe.lang.customer.many' ) ) ?>
-    <?php endif; ?>
+    <?= $t->associates ? 'Associate' : '' ?> <?= ucfirst( config( 'ixp_fe.lang.customer.many' ) ) ?>
 <?php $this->append() ?>
 
 
