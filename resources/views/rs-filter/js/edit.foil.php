@@ -134,9 +134,7 @@
 
                 select += `</select>`;
                 $( `#area_${input_select}_prefix` ).html( select );
-                $( `#${input_select}_prefix` ).select2({ width: '100%', placeholder: function() {
-                    $(this).data('placeholder');
-                }});
+                $( `#${input_select}_prefix` ).select2({ width: '100%'});
 
                 if( old !== '' ) {
                     $( `#${input_select}_prefix` ).val( old ).trigger( 'change.select2' );
