@@ -72,9 +72,9 @@
                                     <?php if( !is_array( $cconf ) || !isset( $cconf[ 'display'] ) ||  $cconf[ 'display']   ):?>
                                         <th>
                                             <?php if( is_array( $cconf ) ) :?>
-                                                <?= $cconf[ 'title' ] ?>
+                                                <?= $t->ee( $cconf[ 'title' ] ) ?>
                                             <?php else: ?>
-                                                <?= $cconf ?>
+                                                <?= $t->ee( $cconf ) ?>
                                             <?php endif;?>
                                         </th>
                                     <?php endif;?>

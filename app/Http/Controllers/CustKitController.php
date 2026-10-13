@@ -78,7 +78,7 @@ class CustKitController extends EloquentController
                 'id'        => [ 'title' => 'DB ID', 'display' => false ],
                 'name'      => 'Name',
                 'customer'  => [
-                    'title'         => 'Customer',
+                    'title'         => ucfirst( config( 'ixp_fe.lang.customer.one' ) ),
                     'type'          => self::$FE_COL_TYPES[ 'HAS_ONE' ],
                     'controller'    => 'admin/customer',
                     'action'        => 'overview',
