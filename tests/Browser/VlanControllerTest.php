@@ -94,6 +94,8 @@ class VlanControllerTest extends DuskTestCase
                 ->check( 'private' )
                 ->check( 'peering_matrix' )
                 ->check( 'peering_manager' )
+                ->type( 'blackhole_nexthop_ipv4', '192.0.2.66' )
+                ->type( 'blackhole_nexthop_ipv6', '2001:db8::66' )
                 ->type( 'notes', 'test notes' )
                 ->press( 'Create' )
                 ->waitForLocation( route( 'vlan@list' ) )
@@ -111,6 +113,8 @@ class VlanControllerTest extends DuskTestCase
             $this->assertEquals( true, (bool)$vlan->peering_matrix );
             $this->assertEquals( true, (bool)$vlan->peering_manager );
             $this->assertEquals( false, (bool)$vlan->export_to_ixf );
+            $this->assertEquals( '192.0.2.66', $vlan->blackhole_nexthop_ipv4 );
+            $this->assertEquals( '2001:db8::66', $vlan->blackhole_nexthop_ipv6 );
             $this->assertEquals( 'test notes', $vlan->notes );
 
             // 3. browse to edit vlan object:
@@ -127,6 +131,8 @@ class VlanControllerTest extends DuskTestCase
                 ->assertChecked( 'peering_manager' )
                 ->assertNotChecked( 'export_to_ixf' )
                 ->assertAttribute( '#export_to_ixf', 'disabled', 'true' )
+                ->assertInputValue( 'blackhole_nexthop_ipv4', '192.0.2.66' )
+                ->assertInputValue( 'blackhole_nexthop_ipv6', '2001:db8::66' )
                 ->assertInputValue( 'notes', 'test notes' );
 
             // 5. uncheck checkboxes, change selects and values, ->press('Save Changes'), assertPathIs(....)  (repeat 1)
@@ -135,6 +141,8 @@ class VlanControllerTest extends DuskTestCase
                 ->uncheck( 'peering_matrix' )
                 ->uncheck( 'peering_manager' )
                 ->check( 'export_to_ixf' )
+                ->clear( 'blackhole_nexthop_ipv4' )
+                ->clear( 'blackhole_nexthop_ipv6' )
                 ->press( 'Save Changes' )
                 ->waitForLocation( route( 'vlan@list' ) )
                 ->assertSee( "VLAN updated" );
@@ -152,6 +160,8 @@ class VlanControllerTest extends DuskTestCase
             $this->assertEquals( false, (bool)$vlan->peering_matrix );
             $this->assertEquals( false, (bool)$vlan->peering_manager );
             $this->assertEquals( true, (bool)$vlan->export_to_ixf );
+            $this->assertNull( $vlan->blackhole_nexthop_ipv4 );
+            $this->assertNull( $vlan->blackhole_nexthop_ipv6 );
             $this->assertEquals( 'test notes', $vlan->notes );
 
 
