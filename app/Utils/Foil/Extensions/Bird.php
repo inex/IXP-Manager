@@ -168,6 +168,8 @@ class Bird implements ExtensionInterface
         ':1001:1100'  => [ 'FROM IX ROUTESERVER', 'info' ],
 
         ':1001:1200'  => [ 'SAME AS NEXT HOP', 'info' ],
+
+        ':1001:1300'  => [ 'BLACKHOLE', 'warning' ],
     ];
 
     // FIXME: need to find a place for this that allows end users to customise it
