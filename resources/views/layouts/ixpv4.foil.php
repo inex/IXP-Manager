@@ -101,21 +101,19 @@
                     document.querySelector( '.select2-search__field' ).focus();
                 });
 
-                $( ".chzn-select" ).select2( { width: '100%', placeholder: function() {
-                    $( this ).data( 'placeholder' );
-                }});
+                $( ".chzn-select, .chzn-select-tag, .chzn-select-deselect, .chzn-select-deselect-tag" ).each(function() {
+                    const el = $( this );
+                    const placeholder = el.data( 'placeholder' );
+                    const isTag = el.hasClass( 'chzn-select-tag' ) || el.hasClass( 'chzn-select-deselect-tag' ) || Boolean( el.data( 'tags' ) );
+                    const isDeselect = el.hasClass( 'chzn-select-deselect' ) || el.hasClass( 'chzn-select-deselect-tag' ) || Boolean( el.data( 'allow-clear' ) );
 
-                $( ".chzn-select-tag" ).select2( { width: '100%', tags: true, placeholder: function() {
-                    $( this ).data( 'placeholder' );
-                }});
-
-                $( ".chzn-select-deselect" ).select2( { width: '100%', allowClear: true, placeholder: function() {
-                    $( this ).data('placeholder' );
-                }});
-
-                $( ".chzn-select-deselect-tag" ).select2( { width: '100%', allowClear: true, tags: true, placeholder: function() {
-                    $( this ).data( 'placeholder' );
-                }});
+                    el.select2({
+                        width: '100%',
+                        placeholder: placeholder ? placeholder : undefined,
+                        allowClear: isDeselect,
+                        tags: isTag
+                    });
+                });
 
                 <?php if( $authCheck && $privs === User::AUTH_SUPERUSER ): ?>
                     $( "#menu-select-customer" ).select2({ width: '100%',placeholder: "Jump to <?= config( 'ixp_fe.lang.customer.one' ) ?>...", allowClear: true }).change( function(){
