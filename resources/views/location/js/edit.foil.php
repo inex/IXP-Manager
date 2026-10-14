@@ -1,3 +1,8 @@
+<?php
+
+use Illuminate\Support\Js;
+
+?>
 <script type="module">
 
     let dd_pdb = $( '#pdb_facility_id' );
@@ -17,7 +22,7 @@
                 <?php if( $t->data[ 'params'][ 'object' ] && $t->data[ 'params'][ 'object' ]->pdb_facility_id ): ?>
                     selectedpdb = <?= $t->data[ 'params'][ 'object' ]->pdb_facility_id ?>;
                 <?php elseif( Request::old('pdb_facility_id' ) ): ?>
-                    selectedpdb = <?= Request::old('pdb_facility_id' ) ?>;
+                    selectedpdb = <?= Js::from( (int) Request::old('pdb_facility_id' ) ) ?>;
                 <?php else: ?>
                     selectedpdb = false;
                 <?php endif; ?>

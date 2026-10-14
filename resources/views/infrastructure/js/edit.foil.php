@@ -1,3 +1,8 @@
+<?php
+
+use Illuminate\Support\Js;
+
+?>
 <script type="module">
     let dd_ixp = $( '#ixf_ix_id' );
     let dd_pdb = $( '#peeringdb_ix_id' );
@@ -29,7 +34,7 @@
                 <?php if( $t->data[ 'params'][ 'object' ] && $t->data[ 'params'][ 'object' ]->ixf_ix_id ): ?>
                     selectedixp = <?= $t->data[ 'params'][ 'object' ]->ixf_ix_id ?>;
                 <?php elseif( Request::old('ixf_ix_id' ) ): ?>
-                    selectedixp = <?= Request::old('ixf_ix_id' ) ?>;
+                    selectedixp = <?= Js::from( (int) Request::old('ixf_ix_id' ) ) ?>;
                 <?php else: ?>
                     selectedixp = false;
                 <?php endif; ?>
@@ -75,7 +80,7 @@
                 <?php if( $t->data[ 'params'][ 'object' ] && $t->data[ 'params'][ 'object' ]->peeringdb_ix_id ): ?>
                     selectedpdb = <?= $t->data[ 'params'][ 'object' ]->peeringdb_ix_id ?>;
                 <?php elseif( Request::old('peeringdb_ix_id' ) ): ?>
-                    selectedpdb = <?= Request::old('peeringdb_ix_id' ) ?>;
+                    selectedpdb = <?= Js::from( (int) Request::old('peeringdb_ix_id' ) ) ?>;
                 <?php else: ?>
                     selectedpdb = false;
                 <?php endif; ?>
