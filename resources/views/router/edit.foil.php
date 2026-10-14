@@ -237,6 +237,16 @@
                     MD5 password set on an interface or not.' );
                     ?>
 
+                    <?= Former::checkbox( 'blackholing' )
+                        ->label( 'Blackholing' )
+                        ->text( 'Accept RFC 7999 blackhole routes' )
+                        ->value( 1 )
+                        ->inline()
+                        ->blockHelp( 'Route servers only (bird2-2025 templates). Routes tagged with 65535:666 or
+                            <code>routeserverasn:666:0</code> are accepted up to /32 or /128 when covered by the member\'s
+                            IRRDB prefixes, and their next-hop is set to the blackhole next-hop configured on the VLAN.' );
+                    ?>
+
 
 
                     <?= Former::text( 'template' )

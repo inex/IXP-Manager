@@ -71,6 +71,19 @@
                 then it should be exported. If it has another puporse, such as for quarantine procedures or testing, then it should not be exported." );
         ?>
 
+        <?= Former::text( 'blackhole_nexthop_ipv4' )
+            ->label( 'Blackhole Next-Hop IPv4' )
+            ->placeholder( '192.0.2.66' )
+            ->blockHelp( "Route servers with blackholing enabled set this as the next-hop of RFC 7999 blackhole routes. "
+                . "It must resolve to a MAC address that your switches drop on ingress. Leave empty to disable." );
+        ?>
+
+        <?= Former::text( 'blackhole_nexthop_ipv6' )
+            ->label( 'Blackhole Next-Hop IPv6' )
+            ->placeholder( '2001:db8::66' )
+            ->blockHelp( "As above, for IPv6 route servers." );
+        ?>
+
         <div class="form-group col-sm-8">
             <div class="col-lg-offset-2 col-sm-offset-2">
                 <div class="card mt-4">

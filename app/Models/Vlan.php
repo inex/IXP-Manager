@@ -45,6 +45,8 @@ use IXP\Traits\Observable;
  * @property int $peering_manager
  * @property bool $export_to_ixf
  * @property string|null $config_name
+ * @property string|null $blackhole_nexthop_ipv4
+ * @property string|null $blackhole_nexthop_ipv6
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\AtlasRun> $atlasRun
@@ -69,6 +71,8 @@ use IXP\Traits\Observable;
  * @method static Builder<static>|Vlan publicOnly()
  * @method static Builder<static>|Vlan publicProductionPeeringLan()
  * @method static Builder<static>|Vlan query()
+ * @method static Builder<static>|Vlan whereBlackholeNexthopIpv4($value)
+ * @method static Builder<static>|Vlan whereBlackholeNexthopIpv6($value)
  * @method static Builder<static>|Vlan whereConfigName($value)
  * @method static Builder<static>|Vlan whereCreatedAt($value)
  * @method static Builder<static>|Vlan whereExportToIxf($value)
@@ -108,6 +112,8 @@ class Vlan extends Model
         'peering_manager',
         'export_to_ixf',
         'config_name',
+        'blackhole_nexthop_ipv4',
+        'blackhole_nexthop_ipv6',
     ];
 
     /**
@@ -251,6 +257,17 @@ class Vlan extends Model
         return $query->where( 'export_to_ixf', 1 );
     }
 
+    /**
+     * Get the RFC 7999 blackhole next-hop for the given IP protocol (4 or 6)
+     *
+     * @param int $protocol
+     *
+     * @return string|null
+     */
+    public function blackholeNexthop( int $protocol ): ?string
+    {
+        return $protocol === 6 ? $this->blackhole_nexthop_ipv6 : $this->blackhole_nexthop_ipv4;
+    }
 
 
     /**

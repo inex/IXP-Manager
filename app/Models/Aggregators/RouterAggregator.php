@@ -59,6 +59,7 @@ use IXP\Models\User;
  * @property string|null $operating_system
  * @property string|null $operating_system_version
  * @property int $rfc1997_passthru
+ * @property bool $blackholing
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read Router|null $pair
@@ -79,6 +80,7 @@ use IXP\Models\User;
  * @method static Builder<static>|RouterAggregator whereApiType($value)
  * @method static Builder<static>|RouterAggregator whereAsn($value)
  * @method static Builder<static>|RouterAggregator whereBgpLc($value)
+ * @method static Builder<static>|RouterAggregator whereBlackholing($value)
  * @method static Builder<static>|RouterAggregator whereCreatedAt($value)
  * @method static Builder<static>|RouterAggregator whereHandle($value)
  * @method static Builder<static>|RouterAggregator whereId($value)

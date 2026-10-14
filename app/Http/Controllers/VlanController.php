@@ -36,8 +36,12 @@ use Illuminate\View\View;
 
 use IXP\Models\{
     Infrastructure,
+    IPv4Address,
+    IPv6Address,
     Vlan
 };
+
+use IXP\Rules\BlackholeNexthopNotAssigned;
 
 use IXP\Utils\Http\Controllers\Frontend\EloquentController;
 
@@ -111,6 +115,8 @@ class VlanController extends EloquentController
                     'title'          => 'Export to IX-F',
                     'type'           => self::$FE_COL_TYPES[ 'YES_NO' ],
                 ],
+                'blackhole_nexthop_ipv4' => 'Blackhole Next-Hop IPv4',
+                'blackhole_nexthop_ipv6' => 'Blackhole Next-Hop IPv6',
                 'notes' => [
                     'title'         => 'Notes',
                     'type'          => self::$FE_COL_TYPES[ 'PARSDOWN' ]
@@ -233,6 +239,8 @@ class VlanController extends EloquentController
             'peering_matrix'            =>  request()->old( 'peering_matrix',     $this->object->peering_matrix     ),
             'peering_manager'           =>  request()->old( 'peering_manager',    $this->object->peering_manager    ),
             'export_to_ixf'             =>  request()->old( 'export_to_ixf',      $this->object->export_to_ixf      ),
+            'blackhole_nexthop_ipv4'    =>  request()->old( 'blackhole_nexthop_ipv4', $this->object->blackhole_nexthop_ipv4 ),
+            'blackhole_nexthop_ipv6'    =>  request()->old( 'blackhole_nexthop_ipv6', $this->object->blackhole_nexthop_ipv6 ),
             'notes'                     =>  request()->old( 'notes',              $this->object->notes              ),
         ]);
 
@@ -346,6 +354,8 @@ class VlanController extends EloquentController
             'number'            => 'required|integer|min:1|max:4096',
             'config_name'       => 'required|string|max:32|alpha_dash',
             'infrastructureid'  => 'required|integer|exists:infrastructure,id',
+            'blackhole_nexthop_ipv4' => [ 'nullable', 'ipv4', new BlackholeNexthopNotAssigned( IPv4Address::class, 'ipv4addressid', $this->object?->id ) ],
+            'blackhole_nexthop_ipv6' => [ 'nullable', 'ipv6', new BlackholeNexthopNotAssigned( IPv6Address::class, 'ipv6addressid', $this->object?->id ) ],
         ] );
     }
 
