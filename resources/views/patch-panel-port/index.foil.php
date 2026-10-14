@@ -173,7 +173,7 @@
                                 </td>
                                 <td>
                                     <span title="" class="badge badge-<?= \IXP\Models\PatchPanelPort::stateCssClass( $ppp->state, $isSuperUser ) ?>">
-                                        <?= \IXP\Models\PatchPanelPort::$STATES[ $ppp->state ] ?>
+                                        <?= $t->ee( $ppp->states() ) ?>
                                     </span>
                                 </td>
                                 <td width="200px">
