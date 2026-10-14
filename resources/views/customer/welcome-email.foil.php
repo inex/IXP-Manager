@@ -57,7 +57,7 @@
 
                     <div class="tab-content card-body">
                         <div role="tabpanel" class="tab-pane show active" id="body">
-                            <textarea class="bootbox-input bootbox-input-textarea form-control" style="font-family:monospace;" rows="30" id="message" name="message"><?= old( 'message' ) ?? $t->body ?></textarea>
+                            <textarea class="bootbox-input bootbox-input-textarea form-control" style="font-family:monospace;" rows="30" id="message" name="message"><?= $t->ee( old( 'message' ) ?? $t->body ) ?></textarea>
                         </div>
                         <div role="tabpanel" class="tab-pane" id="preview">
                             <div class="bg-light p-4 well-preview">
