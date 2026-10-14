@@ -180,7 +180,9 @@
                         dd_peering_policy.val( peering_policy ).trigger( "change" ).addClass( 'is-valid' );
 
                     } else {
-                        $( '#form' ).prepend( `<div id="error-message" class="alert alert-danger" role="alert"> ${response.error} </div>` );
+                        $( '#form' ).prepend(
+                            $('<div>', {id: "error-message", class: "alert alert-danger", role: "alert", text: response.error })
+                        );
                     }
                 })
                 .fail( function() {
