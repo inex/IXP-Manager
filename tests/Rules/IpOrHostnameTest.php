@@ -24,11 +24,11 @@ declare(strict_types=1);
 
 namespace Tests\Rules;
 
+use Illuminate\Foundation\Testing\TestCase;
 use IXP\Rules\IpOrHostname;
-use Tests\LiteTestCase;
 use Tests\TestUtils\ValidationErrorLogger;
 
-class IpOrHostnameTest extends LiteTestCase
+class IpOrHostnameTest extends TestCase
 {
     public function testIpv4(): void
     {
