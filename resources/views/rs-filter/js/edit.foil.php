@@ -1,3 +1,8 @@
+<?php
+
+use Illuminate\Support\Js;
+
+?>
 <script type="module">
     /////////////////////////////////////////////////////////////////////////////////////
     // we'll need these handles to html elements in a few places:
@@ -87,7 +92,7 @@
     function setAdvertisePrefixes() {
         // if protocol is not 'all', get the prefixes
         if( dd_protocol.val() !== '' ) {
-            let old = '<?= old( 'advertised_prefix' ) ?>';
+            let old = <?= Js::from( old( 'advertised_prefix' ) ) ?>;
             console.log(old);
             getPrefixes( <?= $this->c->id ?>, 'advertised', old );
         } else {
