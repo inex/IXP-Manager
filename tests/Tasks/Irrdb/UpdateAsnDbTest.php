@@ -20,7 +20,7 @@
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-
+declare(strict_types=1);
 namespace Tests\Tasks\Irrdb;
 
 use Illuminate\Support\Carbon;
@@ -61,18 +61,6 @@ class UpdateAsnDbTest extends TestCase
             'virtualinterfaceid' => $this->vi->id,
             'rsclient' => true,
         ] );
-    }
-
-    public function tearDown(): void
-    {
-        $this->customer->irrdbUpdateLog()->delete();
-        $this->customer->delete();
-
-        unset($this->customer);
-        unset($this->vi);
-        unset($this->vli);
-
-        parent::tearDown();
     }
 
     private function getAsnsForProtocol( $protocol ): array
