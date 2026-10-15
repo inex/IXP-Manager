@@ -24,64 +24,50 @@ declare(strict_types=1);
 
 namespace Tests\Console;
 
-use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Illuminate\Support\Facades\DB;
-use IXP\Models\Aggregators\CustomerAggregator;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\RefreshDatabaseState;
+use Illuminate\Foundation\Testing\TestCase;
 use IXP\Models\CompanyBillingDetail;
 use IXP\Models\CompanyRegisteredDetail;
 use IXP\Models\Customer;
 use IXP\Models\CustomerToUser;
 use IXP\Models\Infrastructure;
-use IXP\Models\Log;
 use IXP\Models\User;
 use PHPUnit\Framework\Attributes\WithEnvironmentVariable;
-use Tests\TestCase;
+use Tests\CreatesApplication;
 /**
  * This test covers the setup wizard
  */
 class SetupWizardTest extends TestCase
 {
-    use DatabaseTransactions;
+    use CreatesApplication;
+    use RefreshDatabase;
 
-    /**
-     * This is to be used with DatabaseTransactions trait otherwise other tests will fail
-     * See test down the bottom, which checks some of the models here are present in the final test.
-     */
-    private function clearDatabaseForTest(): void
+    protected $seed = false;
+    protected $seeder = null;
+
+    public static function setUpBeforeClass(): void
     {
-        $customers = Customer::all();
-        foreach ($customers as $customer) {
-            $users = $customer->customerToUser()->get();
+        parent::setUpBeforeClass();
 
-            // not cleared with delete..
-            foreach ($users as $user) {
-                Log::whereUserId($user->id)->delete();
-            }
+        // Force Laravel to forget the migration state once for this entire class,
+        // triggering a fresh migrate:fresh (without seeders) when the first test runs.
+        RefreshDatabaseState::$migrated = false;
+    }
 
-            // hack required because it has a global scope that sets id = null
-            DB::unprepared("DELETE FROM docstore_customer_files WHERE cust_id = " . $customer->id);
-            DB::unprepared("DELETE FROM docstore_customer_directories WHERE cust_id = " . $customer->id);
-            CustomerAggregator::deleteObject($customer);
-        }
-
-        foreach (Infrastructure::all() as $infra) {
-            foreach ($infra->switchers as $sw) {
-                $sw->switchPorts()->delete();
-            }
-            $infra->switchers()->delete();
-            foreach ($infra->vlans as $vlan) {
-                $vlan->routers()->delete();
-                $vlan->networksInfo()->delete();
-                $vlan->ipv4Addresses()->delete();
-                $vlan->ipv6Addresses()->delete();
-            }
-            $infra->vlans()->delete();
-            $infra->delete();
-        }
+    public static function tearDownAfterClass(): void
+    {
+        // Force Laravel to forget the migration state once for this entire class,
+        // triggering a fresh migrate:fresh (without seeders) when the first test runs.
+        RefreshDatabaseState::$migrated = false;
+        parent::tearDownAfterClass();
     }
 
     public function testHasCustomersAlready()
     {
+        $customer = new Customer();
+        $customer->save();
+
         $this->assertGreaterThan(0, Customer::count(), "check our test. there should be customers at the start.");
 
         $this->artisan("ixp-manager:setup-wizard", [])
@@ -93,7 +79,6 @@ class SetupWizardTest extends TestCase
     #[WithEnvironmentVariable('IXP_SETUP_ADMIN_PASSWORD', 'SomeTestPassword1')]
     public function testSuccessfulWhileAnsweringPrompts(): void
     {
-        $this->clearDatabaseForTest();
         // why do we have these IXP_NAME etc vars which are not used by config() vars?
 
         $this->artisan("ixp-manager:setup-wizard")
@@ -193,7 +178,6 @@ class SetupWizardTest extends TestCase
 
     public function testSuccessfulWithArgs(): void
     {
-        $this->clearDatabaseForTest();
         // why do we have these IXP_NAME etc vars which are not used by config() vars?
 
         $this->artisan("ixp-manager:setup-wizard", [
@@ -281,7 +265,6 @@ class SetupWizardTest extends TestCase
     #[WithEnvironmentVariable('IXP_SETUP_ADMIN_PASSWORD', 'SomeTestPassword1')]
     public function testSuccessfulWithAllDefaults(): void
     {
-        $this->clearDatabaseForTest();
         // why do we have these IXP_NAME etc vars which are not used by config() vars?
 
         $this->artisan("ixp-manager:setup-wizard")
@@ -356,7 +339,6 @@ class SetupWizardTest extends TestCase
     #[WithEnvironmentVariable('IXP_SETUP_ADMIN_PASSWORD', 'SomeTestPassword1')]
     public function testAdminPasswordNotEchoed(): void
     {
-        $this->clearDatabaseForTest();
         $this->assertCount(0, Customer::all());
         $this->assertCount(0, Infrastructure::all());
 
@@ -379,7 +361,6 @@ class SetupWizardTest extends TestCase
     #[WithEnvironmentVariable('IXP_SETUP_ADMIN_PASSWORD', 'SomeTestPassword1')]
     public function testAdminPasswordEchoed(): void
     {
-        $this->clearDatabaseForTest();
         $this->assertCount(0, Customer::all());
         $this->assertCount(0, Infrastructure::all());
 
@@ -403,8 +384,6 @@ class SetupWizardTest extends TestCase
      */
     public function testRejectDotEnv()
     {
-        $this->clearDatabaseForTest();
-
         $this->artisan("ixp-manager:setup-wizard")
             ->assertExitCode(0)
             ->expectsConfirmation("Do you want to continue?", "no")
@@ -417,8 +396,6 @@ class SetupWizardTest extends TestCase
      */
     public function testForceSkipsPrompt()
     {
-        $this->clearDatabaseForTest();
-
         $this->artisan("ixp-manager:setup-wizard", ['--force' => '1'])
             ->assertExitCode(0)
             ->expectsQuestion("Enter the short name of your IXP", "SCIX")
@@ -436,8 +413,6 @@ class SetupWizardTest extends TestCase
      */
     public function testSkipConfirmSkipsFinalPrompt()
     {
-        $this->clearDatabaseForTest();
-
         $this->artisan("ixp-manager:setup-wizard", ['--skip-confirm' => '1'])
             ->assertExitCode(0)
             ->expectsConfirmation("Do you want to continue?", "yes")
@@ -458,8 +433,6 @@ class SetupWizardTest extends TestCase
      */
     public function testRejectFinalConfirmation()
     {
-        $this->clearDatabaseForTest();
-
         $this->artisan("ixp-manager:setup-wizard", [])
             ->assertExitCode(0)
             ->expectsConfirmation("Do you want to continue?", "yes")
@@ -478,10 +451,6 @@ class SetupWizardTest extends TestCase
 
     public function testCheckValidatorIsUsed(): void
     {
-        $this->clearDatabaseForTest();
-        $this->assertCount(0, Customer::all());
-        $this->assertCount(0, Infrastructure::all());
-
         // why do we have these IXP_NAME etc vars which are not used by config() vars?
 
         $this->artisan("ixp-manager:setup-wizard", [
@@ -503,13 +472,5 @@ class SetupWizardTest extends TestCase
     private function getTableName(string $class): string
     {
         return (new $class)->getTable();
-    }
-
-    public function testTestsWereRunInATransaction(): void
-    {
-        // We use DatabaseTransactions trait to rollback the database after each test
-        // Add a test here to catch accidental removal
-        $this->assertGreaterThan(0, Customer::count());
-        $this->assertGreaterThan(0, Infrastructure::count());
     }
 }
