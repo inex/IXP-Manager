@@ -30,6 +30,7 @@ use Illuminate\Validation\Validator;
 
 use IXP\Models\Customer;
 use IXP\Models\User;
+use IXP\Rules\IsPhone;
 
 /**
  * Customer Store Request
@@ -58,9 +59,9 @@ class Store extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return (string|string[])[]
+     * @return array
      *
-     * @psalm-return array{name: 'required|string|max:255', type: string, shortname: string, corpwww: 'nullable|url|max:255', datejoin: 'required|date', dateleft: 'nullable|date', status: string, md5support: string, abbreviatedName: 'required|string|max:30', autsys?: 'int|min:1', maxprefixes?: 'nullable|int|min:0', maxprefixesv6?: 'nullable|int|min:0', peeringemail?: 'email', peeringmacro?: list{'nullable', 'string', 'max:255', 'regex:/^(AS-[A-Z0-9]+(?:-[A-Z0-9]+)*|AS[1-9]\d*(?::AS-[A-Z0-9]+(?:-[A-Z0-9]+)*)?)$/i'}, peeringmacrov6?: list{'nullable', 'string', 'max:255', 'regex:/^(AS-[A-Z0-9]+(?:-[A-Z0-9]+)*|AS[1-9]\d*(?::AS-[A-Z0-9]+(?:-[A-Z0-9]+)*)?)$/i'}, peeringpolicy?: string, irrdb?: 'nullable|integer|exists:irrdbconfig,id', nocphone?: 'nullable|string|max:255', noc24hphone?: 'nullable|string|max:255', nocemail?: 'email|max:255', nochours?: string, nocwww?: 'nullable|url|max:255', reseller?: 'nullable|integer|exists:cust,id'}
+     * @psalm-return array{name: 'required|string|max:255', type: string, shortname: string, corpwww: 'nullable|url|max:255', datejoin: 'required|date', dateleft: 'nullable|date', status: string, md5support: string, abbreviatedName: 'required|string|max:30', autsys?: 'int|min:1', maxprefixes?: 'nullable|int|min:0', maxprefixesv6?: 'nullable|int|min:0', peeringemail?: 'email', peeringmacro?: list{'nullable', 'string', 'max:255', 'regex:/^(AS-[A-Z0-9]+(?:-[A-Z0-9]+)*|AS[1-9]\d*(?::AS-[A-Z0-9]+(?:-[A-Z0-9]+)*)?)$/i'}, peeringmacrov6?: list{'nullable', 'string', 'max:255', 'regex:/^(AS-[A-Z0-9]+(?:-[A-Z0-9]+)*|AS[1-9]\d*(?::AS-[A-Z0-9]+(?:-[A-Z0-9]+)*)?)$/i'}, peeringpolicy?: string, irrdb?: 'nullable|integer|exists:irrdbconfig,id', nocphone?: list{'nullable', 'string', 'max:25', \IXP\Rules\IsPhone}, noc24hphone?: list{'nullable', 'string', 'max:25', \IXP\Rules\IsPhone}, nocemail?: 'email|max:255', nochours?: string, nocwww?: 'nullable|url|max:255', reseller?: 'nullable|integer|exists:cust,id'}
      */
     public function rules(): array
     {
@@ -85,8 +86,8 @@ class Store extends FormRequest
             'peeringmacrov6'        => [ 'nullable', 'string', 'max:255', 'regex:/^(AS-[A-Z0-9]+(?:-[A-Z0-9]+)*|AS[1-9]\d*(?::AS-[A-Z0-9]+(?:-[A-Z0-9]+)*)?)$/i' ],
             'peeringpolicy'         => 'string|in:' . implode( ',', array_keys( Customer::$PEERING_POLICIES ) ),
             'irrdb'                 => 'nullable|integer|exists:irrdbconfig,id',
-            'nocphone'              => 'nullable|string|max:255',
-            'noc24hphone'           => 'nullable|string|max:255',
+            'nocphone'              => ['nullable', 'string', 'max:25', new IsPhone()],
+            'noc24hphone'           => ['nullable', 'string', 'max:25', new IsPhone()],
             'nocemail'              => 'email|max:255',
             'nochours'              => 'nullable|string|in:' . implode( ',', array_keys( Customer::$NOC_HOURS ) ),
             'nocwww'                => 'nullable|url|max:255',

@@ -27,6 +27,7 @@ use Auth, Countries;
 
 use Illuminate\Foundation\Http\FormRequest;
 use IXP\Models\User;
+use IXP\Rules\IsPhone;
 
 /**
  * Dashboard Billing Store Request
@@ -58,7 +59,7 @@ class BillingDetailsRequest extends FormRequest
      *
      * @return string[]
      *
-     * @psalm-return array{billingContactName: 'nullable|string|max:255', billingAddress1: 'nullable|string|max:255', billingAddress2: 'nullable|string|max:255', billingAddress3: 'nullable|string|max:255', billingTownCity: 'nullable|string|max:255', billingPostcode: 'nullable|string|max:255', billingCountry: string, billingEmail: 'nullable|email|max:255', billingTelephone: 'nullable|string|max:255', invoiceEmail: 'nullable|email|max:255'}
+     * @psalm-return array{billingContactName: 'nullable|string|max:255', billingAddress1: 'nullable|string|max:255', billingAddress2: 'nullable|string|max:255', billingAddress3: 'nullable|string|max:255', billingTownCity: 'nullable|string|max:255', billingPostcode: 'nullable|string|max:255', billingCountry: string, billingEmail: 'nullable|email|max:255', billingTelephone: list{'nullable', 'string', 'max:25', \IXP\Rules\IsPhone}, invoiceEmail: 'nullable|email|max:255'}
      */
     public function rules(): array
     {
@@ -71,7 +72,7 @@ class BillingDetailsRequest extends FormRequest
             'billingPostcode'       => 'nullable|string|max:255',
             'billingCountry'        => 'nullable|string|max:255|in:' . implode( ',', array_values( Countries::getListForSelect( 'iso_3166_2' ) ) ),
             'billingEmail'          => 'nullable|email|max:255',
-            'billingTelephone'      => 'nullable|string|max:255',
+            'billingTelephone'      => ['nullable', 'string', 'max:25', new IsPhone()],
             'invoiceEmail'          => 'nullable|email|max:255',
         ];
     }

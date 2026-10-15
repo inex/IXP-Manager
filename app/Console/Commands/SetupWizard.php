@@ -30,6 +30,7 @@ use Illuminate\Support\Carbon;
 
 
 use IXP\Models\{CompanyBillingDetail, CompanyRegisteredDetail, Customer, CustomerToUser, Infrastructure, User};
+use IXP\Rules\IsPhone;
 
 /**
  * Artisan command to streamline the initial installation of IXP Manager
@@ -370,9 +371,9 @@ class SetupWizard extends Command
             'admin-username' => 'required|string|min:3|max:255|regex:/^[a-z0-9\-_\.]{3,255}$/',
             'admin-email' => 'required|email',
             'admin-password' => 'required|string|min:10',
-            'ixp-phone' => 'required|string',
+            'ixp-phone' => ['required', 'string', 'max:25', new IsPhone()],
             'ixp-email' => 'required|email',
-            'ixp-billing-phone' => 'required|string',
+            'ixp-billing-phone' => ['required', 'string', 'max:25', new IsPhone()],
             'ixp-billing-email' => 'required|email',
             'ixp-url' => 'required|url',
         ]);
