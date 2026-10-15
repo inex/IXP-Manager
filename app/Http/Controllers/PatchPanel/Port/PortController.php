@@ -141,8 +141,6 @@ class PortController extends Controller
      * Display the form to edit a patch panel port
      *
      * @param Request           $r
-     * @param Request           $r
-     * @param Request           $r
      * @param PatchPanelPort    $ppp        Patch panel port that need to be edited
      * @param string|null       $formType   Which type of form to show
      *
