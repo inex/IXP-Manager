@@ -141,6 +141,8 @@ class PortController extends Controller
      * Display the form to edit a patch panel port
      *
      * @param Request           $r
+     * @param Request           $r
+     * @param Request           $r
      * @param PatchPanelPort    $ppp        Patch panel port that need to be edited
      * @param string|null       $formType   Which type of form to show
      *
@@ -431,12 +433,11 @@ class PortController extends Controller
     /**
      * Change the status of a patch panel port and set the date value related to the status
      *
+     * @param Request           $r
      * @param PatchPanelPort    $ppp
      * @param int               $status
      *
      * @return RedirectResponse
-     *
-     * @throws
      */
     public function changeStatus( Request $r, PatchPanelPort $ppp, int $status ): RedirectResponse
     {
