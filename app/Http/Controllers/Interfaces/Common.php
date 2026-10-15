@@ -250,8 +250,8 @@ abstract class Common extends Controller
 
         // Limit automatic assignment to the configured range.
         // The default range of 1-1000 can assign up to 999.
-        $start = (int)config( 'ixp_fe.interfaces.channelgroup_start', 1 );
-        $end   = (int)config( 'ixp_fe.interfaces.channelgroup_end', 1000 );
+        $start = config( 'ixp_fe.interfaces.channelgroup_start', 1 );
+        $end   = config( 'ixp_fe.interfaces.channelgroup_end', 1000 );
 
         // start 0 enables automatic mode: begin at the lowest number
         // already used on the relevant switch, or at 1 for an empty range.
