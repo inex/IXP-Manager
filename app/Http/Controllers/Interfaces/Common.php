@@ -192,7 +192,7 @@ abstract class Common extends Controller
             if( $vi->lag_framing && !$vi->channelgroup ) {
                 $vi->channelgroup = $this->assignChannelGroup( $vi );
                 //$vi->save();
-                AlertContainer::push( "Channel group: $vi->channelgroup automatically assigned for LAG.", Alert::INFO );
+                AlertContainer::push( "Channel group: {$vi->channelgroup} automatically assigned for LAG.", Alert::INFO );
             }
 
             // LAGs must have a bundle name
@@ -201,7 +201,7 @@ abstract class Common extends Controller
                 if( $vendor = $vi->physicalInterfaces()->first()->switchport->switcher->vendor ) {
                     $vi->name = $vendor->bundle_name;
                     //$vi->save();
-                    AlertContainer::push( "Bundle name: $vi->name automatically set for LAG.", Alert::INFO );
+                    AlertContainer::push( "Bundle name: {$vi->name} automatically set for LAG.", Alert::INFO );
                 } else {
                     AlertContainer::push( "Missing bundle name not assigned as no bundle name set for this switch vendor (see Vendors).", Alert::WARNING );
                 }
@@ -250,8 +250,8 @@ abstract class Common extends Controller
 
         // Limit automatic assignment to the configured range.
         // The default range of 1-1000 can assign up to 999.
-        $start = config( 'ixp_fe.interfaces.channelgroup_start', 1 );
-        $end   = config( 'ixp_fe.interfaces.channelgroup_end', 1000 );
+        $start = config( 'ixp_fe.interfaces.channelgroup_start');
+        $end   = config( 'ixp_fe.interfaces.channelgroup_end');
 
         // start 0 enables automatic mode: begin at the lowest number
         // already used on the relevant switch, or at 1 for an empty range.

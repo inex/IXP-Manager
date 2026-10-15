@@ -110,8 +110,8 @@ return [
     |
     */
     'interfaces' => [
-        'channelgroup_start' => env( 'IXP_FE_CHANNELGROUP_START', 1 ),
-        'channelgroup_end'   => env( 'IXP_FE_CHANNELGROUP_END',   1000 ),
+        'channelgroup_start' => (int) env( 'IXP_FE_CHANNELGROUP_START', 1 ),
+        'channelgroup_end'   => (int) env( 'IXP_FE_CHANNELGROUP_END',   1000 ),
     ],
 
 
