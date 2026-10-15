@@ -94,10 +94,4 @@ class SendApiKeyExpiryRemindersTest extends TestCase
         $user->delete();
     }
 
-    protected function tearDown(): void
-    {
-        Carbon::setTestNow();
-
-        parent::tearDown();
-    }
 }

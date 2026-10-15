@@ -67,18 +67,6 @@ class UpdatePrivsTest extends TestCase
         $this->user->save();
     }
 
-    public function tearDown(): void
-    {
-        $this->c2u?->delete();
-        $this->c2uInternal?->delete();
-        $this->secondaryC2u?->delete();
-        $this->externalCustomer->delete();
-        $this->internalCustomer->delete();
-        $this->user->delete();
-        $this->secondaryUser?->delete();
-        parent::tearDown();
-    }
-
     /**
      * With an unrelated superuser, attempt to change a user of $externalCustomer's
      * privilege from CUSTADMIN to CUSTUSER. This should succeed.

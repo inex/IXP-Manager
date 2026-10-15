@@ -225,7 +225,6 @@ class IpAddressControllerTest extends DuskTestCase
                     ->assertDontSee($cat["ip2"]);
             }
 
-            //III. post removal of VLAN by teardown
         } );
     }
 }

@@ -93,11 +93,4 @@ class SendAppPasswordExpiryRemindersTest extends TestCase
         $password->delete();
         $user->delete();
     }
-
-    protected function tearDown(): void
-    {
-        Carbon::setTestNow();
-
-        parent::tearDown();
-    }
 }
