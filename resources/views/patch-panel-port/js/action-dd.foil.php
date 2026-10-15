@@ -10,13 +10,28 @@
     const note_modal_intro              = $('#notes-modal-body-intro' );
     const note_modal_body_div_colo_ref  = $( '#notes-modal-body-div-colo-ref' );
     const note_modal_body_div_pi_status = $( '#notes-modal-body-div-pi-status' );
+    const note_modal_body_div_unpatch   = $( '#notes-modal-body-div-unpatch' );
+    const note_modal_body_unpatch       = $( '#notes-modal-body-unpatch' );
+    const note_modal_body_div_set_prewired = $( '#notes-modal-body-div-set-prewired' );
+    const note_modal_body_set_prewired     = $( '#notes-modal-body-set-prewired' );
+    const note_modal_body_div_keep_duplex = $( '#notes-modal-body-div-keep-duplex' );
+    const note_modal_body_keep_duplex     = $( '#notes-modal-body-keep-duplex' );
 
     let notesIntro = "### <?= date("Y-m-d" ) . ' - ' . Auth::getUser()->username ?> \n\n\n";
 
     //////////////////////////////////////////////////////////////////////////////////////
     // action bindings:
 
-    toggle_potential_slave.click( () => { $('.potential-slave').toggle(); } );
+    toggle_potential_slave.click( () => { $( '.potential-slave' ).toggle(); } );
+
+    note_modal_body_unpatch.on( 'change', function() {
+        const unpatch = $( this ).is( ':checked' );
+        note_modal_body_set_prewired.prop( 'disabled', unpatch );
+
+        if( unpatch ) {
+            note_modal_body_set_prewired.prop( 'checked', false );
+        }
+    });
 
     $('.dropdown-submenu a.submenu').on("click", function(e){
         $( this) .next('ul').toggle();
@@ -128,7 +143,7 @@
                     }
                 },
                 submit: {
-                    label: 'Delete',
+                    label: 'Split',
                     className: 'btn-danger',
                     callback: function () {
                         $('#form-delete').submit();
@@ -189,6 +204,12 @@
 
         note_modal_body_div_pi_status.hide();
         note_modal_body_div_colo_ref.hide();
+        note_modal_body_div_unpatch.hide();
+        note_modal_body_unpatch.prop( 'checked', false );
+        note_modal_body_div_set_prewired.hide();
+        note_modal_body_set_prewired.prop( 'checked', false ).prop( 'disabled', false );
+        note_modal_body_div_keep_duplex.hide();
+        note_modal_body_keep_duplex.prop( 'checked', true );
 
         let options = '<option value="0"></option>\n';
         $.each( <?= json_encode( \IXP\Models\PhysicalInterface::$STATES ) ?> , function ( i, elem) {
@@ -209,6 +230,18 @@
         if( action === 'set-connected' ) {
             $('#notes-modal-body-colo-ref' ).val( ppp.coloRef );
             note_modal_body_div_colo_ref.addClass( 'd-flex' ).show();
+        }
+
+        if( action === 'set-ceased' && ppp.switch_port_id ) {
+            $( '#notes-modal-body-unpatch-label' ).text(
+                'Unpatch port ' + ppp.switch_port.switcher.name + ' :: ' + ppp.switch_port.name
+            );
+            note_modal_body_div_unpatch.show();
+            note_modal_body_div_set_prewired.show();
+        }
+
+        if( action === 'set-ceased' && ppp.duplex_slave_ports.length ) {
+            note_modal_body_div_keep_duplex.show();
         }
 
         // The logic of these two blocks is:
@@ -238,6 +271,13 @@
 
         $( '#notes-modal-body-colo-ref' ).html( '' );
         note_modal_body_div_colo_ref.removeClass( 'd-flex' ).hide();
+
+        note_modal_body_div_unpatch.hide();
+        note_modal_body_unpatch.prop( 'checked', false );
+        note_modal_body_div_set_prewired.hide();
+        note_modal_body_set_prewired.prop( 'checked', false ).prop( 'disabled', false );
+        note_modal_body_div_keep_duplex.hide();
+        note_modal_body_keep_duplex.prop( 'checked', true );
 
         $( 'body' ).removeClass( 'overflow-hidden' );
 
@@ -304,6 +344,26 @@
     }
 
     function setNotes( ppp, action, url ){
+        if( action === 'set-ceased' ) {
+            const params = new URLSearchParams();
+
+            if( note_modal_body_unpatch.is( ':checked' ) ) {
+                params.set( 'unpatch', '1' );
+            }
+
+            if( note_modal_body_set_prewired.is( ':checked' ) ) {
+                params.set( 'set_prewired', '1' );
+            }
+
+            if( !note_modal_body_keep_duplex.is( ':checked' ) ) {
+                params.set( 'keep_duplex', '0' );
+            }
+
+            if( params.toString() ) {
+                url += ( url.includes( '?' ) ? '&' : '?' ) + params.toString();
+            }
+        }
+
         $.ajax( "<?= url('admin/patch-panel-port/notes')?>/" + ppp.id, {
             data: {
                 pppId: ppp.id,
