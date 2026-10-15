@@ -53,7 +53,7 @@ class GenerateConfigurationBird2AS112Test extends TestCase
         foreach( $this->rshandles as $handle )
         {
             $router = Router::whereHandle( $handle )->get()->first();
-            $conf = new RouterConfigurationGenerator( $router )->render();
+            $conf = new RouterConfigurationGenerator( $router )->render()->render();
 
             $knownGoodConf = file_get_contents( base_path() . "/data/ci/known-good/ci-apiv4-$handle.conf" );
             $this->assertFalse( $knownGoodConf === false, "RS Conf generation - could not load known good file ci-apiv4-$handle.conf" );
