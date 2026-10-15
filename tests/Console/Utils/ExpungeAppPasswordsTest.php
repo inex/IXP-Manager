@@ -34,20 +34,6 @@ use Tests\TestCase;
  */
 class ExpungeAppPasswordsTest extends TestCase
 {
-    protected function tearDown(): void
-    {
-        DB::table('app_passwords')->whereIn('password', [
-            'phpunit-expunge-old',
-            'phpunit-expunge-recent',
-            'phpunit-expunge-no-expiry',
-            'phpunit-expunge-future',
-        ])->delete();
-
-        Carbon::setTestNow();
-
-        parent::tearDown();
-    }
-
     public function testExpungesOnlyApiKeysExpiredMoreThan28DaysAgo()
     {
         Carbon::setTestNow(Carbon::parse('2026-06-25 12:00:00'));

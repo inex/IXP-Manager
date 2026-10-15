@@ -39,16 +39,6 @@ class GenerateObjectTest extends TestCase
         ;
     }
 
-    public function setUp(): void
-    {
-        parent::setUp();
-    }
-
-    public function tearDown(): void
-    {
-        parent::tearDown();
-    }
-
     public function testPrint()
     {
         $rirObject = 'as-set-ixp-rs';

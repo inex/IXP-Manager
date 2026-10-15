@@ -74,22 +74,6 @@ class IrrdbControllerTest extends TestCase
         ] );
     }
 
-    public function tearDown(): void
-    {
-        $this->cust2User->delete();
-        $this->user->delete();
-        $this->customer->irrdbUpdateLog()->delete();
-        $this->customer->delete();
-
-        unset($this->cust2User);
-        unset($this->user);
-        unset($this->customer);
-        unset($this->vi);
-        unset($this->vli);
-
-        parent::tearDown();
-    }
-
     public function testUpdateWhenNoData()
     {
         $this->vli->ipv4enabled = true;

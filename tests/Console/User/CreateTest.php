@@ -31,27 +31,6 @@ use Tests\TestCase;
 
 class CreateTest extends TestCase
 {
-    private function cleanup() {
-        CustomerToUser::query()
-            ->join( 'user', 'user.id', '=', 'customer_to_users.user_id' )
-            ->where( 'user.username', 'testuser' )
-            ->delete();
-
-        User::query()->whereUsername( 'testuser' )->delete();
-    }
-
-    public function setUp(): void
-    {
-        parent::setUp();
-        $this->cleanup();
-    }
-
-    public function tearDown(): void
-    {
-        $this->cleanup();
-        parent::tearDown();
-    }
-
     public function testOkProvidedAllArguments_ok()
     {
         Event::fake();

@@ -37,17 +37,6 @@ use Tests\TestCase;
  */
 class UpdateAsnDatabaseTest extends TestCase
 {
-    protected function setUp(): void
-    {
-        parent::setUp();
-    }
-
-    protected function tearDown(): void
-    {
-        Asn::truncate();
-        parent::tearDown();
-    }
-
     public function testFreshFromFile()
     {
         // let's ensure we're starting with a clean slate

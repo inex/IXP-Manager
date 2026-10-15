@@ -36,14 +36,6 @@ class PublicControllerTest extends TestCase
         ] );
     }
 
-    public function tearDown(): void
-    {
-        $this->c2u->delete();
-        $this->customer->delete();
-        $this->user->delete();
-        parent::tearDown();
-    }
-
     public function testTestWhileNotAuthenticated()
     {
         $response = $this->get( '/api/v4/test?format=json' );
