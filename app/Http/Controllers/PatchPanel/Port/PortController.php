@@ -246,7 +246,7 @@ class PortController extends Controller
                 if( PatchPanelPort::where( 'switch_port_id', $sp->id )->doesntExist() ){
                     $ppp->update( [ 'switch_port_id' => $sp->id ] );
                 } else {
-                    AlertContainer::push( 'The switch port selected is already used by an other patch panel port.', Alert::DANGER );
+                    AlertContainer::push( 'The switch port selected is already used by another patch panel port.', Alert::DANGER );
                     return redirect()->back()->withInput( $r->all() );
                 }
             }
@@ -339,7 +339,7 @@ class PortController extends Controller
             }
 
         } else {
-            // if ppp has a slave port and duplex port is uncheck => unlink the slave port and reset it
+            // if ppp has a slave port and duplex port is unchecked => unlink the slave port and reset it
             foreach( $ppp->duplexSlavePorts as $slave ){
                 $slave->reset();
             }
@@ -348,7 +348,7 @@ class PortController extends Controller
         // create a history and reset the patch panel port
         if( $ppp->stateCeased() ) {
             $ppp->archive();
-            $ppp->reset();
+            $ppp->reset( true, true );
         }
 
         // set physical interface status if available
@@ -438,8 +438,11 @@ class PortController extends Controller
      *
      * @throws
      */
-    public function changeStatus( PatchPanelPort $ppp, int $status ): RedirectResponse
+    public function changeStatus( Request $r, PatchPanelPort $ppp, int $status ): RedirectResponse
     {
+        // Always apply lifecycle changes to the master half of a duplex port.
+        $ppp = $ppp->duplexMasterPort ?? $ppp;
+
         if( !array_key_exists( $status, PatchPanelPort::$STATES ) ){
             AlertContainer::push( 'The status is invalid.', Alert::DANGER );
             return redirect::back();
@@ -453,7 +456,7 @@ class PortController extends Controller
                         foreach( $ppp->duplexSlavePorts as $slave ){
                             $slave->update( [
                                 'state' => PatchPanelPort::STATE_AVAILABLE,
-                                'duplex_master_id' => null
+                                // 'duplex_master_id' => null
                             ] );
                         }
                     }
@@ -490,22 +493,38 @@ class PortController extends Controller
             'last_state_change'     => now(),
         ] );
 
+        $message = null;
+
         if( $status === PatchPanelPort::STATE_CEASED ) {
+            $unpatch     = $r->boolean( 'unpatch' );
+            $setPrewired = !$unpatch && $r->boolean( 'set_prewired' );
+            $keepDuplex  = !$r->has( 'keep_duplex' ) || $r->boolean( 'keep_duplex' );
+
             if( $sp = $ppp->switchPort ) {
-                AlertContainer::push( 'The patch panel port has been set to available again. Consider '
-                      . 'setting it as  prewired if the cable is still in place. It was connected to '
-                      . $sp->switcher->name . ' :: ' . $sp->name,
-                  Alert::SUCCESS );
+                $connectedTo = $sp->switcher->name . ' :: ' . $sp->name;
+
+                if( $unpatch ) {
+                    $message = 'available again. It was connected to ' . $connectedTo;
+                } else if( $setPrewired ) {
+                    $message = 'prewired and remains connected to ' . $connectedTo;
+                } else {
+                    $message = 'available again and remains connected to ' . $connectedTo;
+                }
             }
 
             // create a history and reset the patch panel port
             if( $ppp->stateCeased() ) {
                 $ppp->archive();
-                $ppp->reset();
+                $ppp->reset( $keepDuplex, !$unpatch );
+
+                if( $setPrewired ) {
+                    $ppp->update( [ 'state' => PatchPanelPort::STATE_PREWIRED ] );
+                }
             }
         }
 
-        AlertContainer::push( 'The patch panel port has been set to: ' . $ppp->states(), Alert::SUCCESS );
+        $message ??= $ppp->states();
+        AlertContainer::push( 'The patch panel port has been set to ' . $message, Alert::SUCCESS );
         return redirect::back();
     }
 }

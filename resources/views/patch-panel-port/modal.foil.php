@@ -8,8 +8,9 @@
             </div>
             <div class="modal-body" id="notes-modal-body">
                 <p id="notes-modal-body-intro" class="tw:mb-2" >
-                    Consider adding details to the notes such as a internal ticket reference to the cease request / whom you have been dealing with / expected cease date / etc.
+                    Consider adding details to the notes such as a ticket reference to the cease request / whom you have been dealing with / expected cease date / etc.
                 </p>
+                <hr />
 
                 <div id="notes-modal-body-div-pi-status" class="tw:mb-2">
                     <label>Update Physical Port State To: </label>
@@ -25,6 +26,21 @@
                 <div id="notes-modal-body-div-colo-ref" class="tw:mb-2">
                     <label>Colocation Reference:</label>
                     <input type="text" id="notes-modal-body-colo-ref" class="col-md-6 form-control tw:ml-4">
+                </div>
+
+                <div id="notes-modal-body-div-unpatch" class="tw:mb-2">
+                    <label id="notes-modal-body-unpatch-label" for="notes-modal-body-unpatch">Unpatch Port:</label>
+                    <input type="checkbox" id="notes-modal-body-unpatch" class="tw:ml-2">
+                </div>
+
+                <div id="notes-modal-body-div-set-prewired" class="tw:mb-2">
+                    <label for="notes-modal-body-set-prewired">Set to Prewired:</label>
+                    <input type="checkbox" id="notes-modal-body-set-prewired" class="tw:ml-2">
+                </div>
+
+                <div id="notes-modal-body-div-keep-duplex" class="tw:mb-2">
+                    <label for="notes-modal-body-keep-duplex">Keep as duplex pair:</label>
+                    <input type="checkbox" id="notes-modal-body-keep-duplex" class="tw:ml-2" checked>
                 </div>
 
                 <div class="card mt-4 mb-4">
