@@ -750,6 +750,25 @@ return [
                     'help'       => 'Default graph period on the admin dashboard.',
                 ],
 
+                'channelgroup_start' => [
+                    'config_key' => 'ixp_fe.interfaces.channelgroup_start',
+                    'dotenv_key' => 'IXP_FE_CHANNELGROUP_START',
+                    'type'       => 'text',
+                    'rules'      => 'required|integer|min:0',
+                    'name'       => 'Channel Group Start',
+                    'help'       => 'First channel group number considered for automatic LAG assignment.
+                                        Set to 0 to begin from the lowest number already in use for the switch and assign the next available number.',
+                ],
+
+                'channelgroup_end' => [
+                    'config_key' => 'ixp_fe.interfaces.channelgroup_end',
+                    'dotenv_key' => 'IXP_FE_CHANNELGROUP_END',
+                    'type'       => 'text',
+                    'rules'      => 'required|integer|min:1|gt:channelgroup_start',
+                    'name'       => 'Channel Group End',
+                    'help'       => 'End range for automatic LAG assignment. For example, 1000 allows assignments up to 999.',
+                ],
+
 
                 'billing-updates-notification' => [
 
@@ -931,4 +950,3 @@ return [
 
 
 ];
-

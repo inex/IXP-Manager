@@ -192,7 +192,7 @@ abstract class Common extends Controller
             if( $vi->lag_framing && !$vi->channelgroup ) {
                 $vi->channelgroup = $this->assignChannelGroup( $vi );
                 //$vi->save();
-                AlertContainer::push( "Missing channel group assigned as this is a LAG port", Alert::INFO );
+                AlertContainer::push( "Channel group: {$vi->channelgroup} automatically assigned for LAG.", Alert::INFO );
             }
 
             // LAGs must have a bundle name
@@ -201,9 +201,9 @@ abstract class Common extends Controller
                 if( $vendor = $vi->physicalInterfaces()->first()->switchport->switcher->vendor ) {
                     $vi->name = $vendor->bundle_name;
                     //$vi->save();
-                    AlertContainer::push( "Missing bundle name assigned as this is a LAG port", Alert::INFO );
+                    AlertContainer::push( "Bundle name: {$vi->name} automatically set for LAG.", Alert::INFO );
                 } else {
-                    AlertContainer::push( "Missing bundle name not assigned as no bundle name set for this switch vendor (see Vendors)", Alert::WARNING );
+                    AlertContainer::push( "Missing bundle name not assigned as no bundle name set for this switch vendor (see Vendors).", Alert::WARNING );
                 }
             }
         }
@@ -226,7 +226,7 @@ abstract class Common extends Controller
      *
      * @throws
      *
-     * @psalm-return int<1, 999>
+     * @psalm-return positive-int
      */
     public function assignChannelGroup( VirtualInterface $vi ): int
     {
@@ -248,8 +248,24 @@ abstract class Common extends Controller
             })->distinct()->get()->pluck('channelgroup')->toArray();
 
 
+        // Limit automatic assignment to the configured range.
+        // The default range of 1-1000 can assign up to 999.
+        $start = config( 'ixp_fe.interfaces.channelgroup_start');
+        $end   = config( 'ixp_fe.interfaces.channelgroup_end');
+
+        // start 0 enables automatic mode: begin at the lowest number
+        // already used on the relevant switch, or at 1 for an empty range.
+        if( $start === 0 ) {
+            $start = count( $usedChannelGroups ) ? min( $usedChannelGroups ) : 1;
+        }
+
+        if( $start < 1 || $end <= $start ) {
+            throw new GeneralException( 'The channel group range configuration is invalid' );
+        }
+
         $orig = $vi->channelgroup;
-        for( $i = 1; $i < 1000; $i++ ) {
+        // Select the first unused number at or above the resolved start.
+        for( $i = $start; $i < $end; $i++ ) {
             if( !in_array( $i, $usedChannelGroups, true ) ) {
                 $vi->channelgroup = $i;
                 return $i;
