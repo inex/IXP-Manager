@@ -48,9 +48,6 @@ class SettingsControllerTest extends DuskTestCase
      */
     private ?string $test_env = null;
 
-    /**
-     * @throws
-     */
     #[\Override]
     public function setUp(): void
     {

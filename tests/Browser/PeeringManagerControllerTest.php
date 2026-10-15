@@ -48,38 +48,12 @@ use Tests\DuskTestCase;
  */
 class PeeringManagerControllerTest extends DuskTestCase
 {
-
-    public function tearDown(): void
-    {
-        /** @var Customer $cust */
-        $cust = User::whereUsername( 'hecustadmin' )->get()->first()->customer;
-
-        $peers = CustomerAggregator::getPeeringManagerArrayByType(
-            $cust,
-            Vlan::peeringManager()->orderBy( 'number' )->get(),
-            [ 4, 6 ]
-        );
-
-        foreach( $peers[ "potential" ] as $as => $p ) {
-            if( $p ) {
-                $c = $peers[ "custs" ][ $as ];
-                break;
-            }
-        }
-
-        if( $p = PeeringManager::where( 'custid', $cust->id )->where( 'peerid', $c[ "id" ] )->get()->first() ) {
-            $p->delete();
-        }
-
-        parent::tearDown();
-    }
-
     /**
-     * Test the whole Interfaces functionalities (virtuel, physical, vlan)
+     * Test peering manager, save notes, mark email as sent, mark peering accepted/rejected
      *
      * @return void
      *
-     * @throws
+     * @throws \Throwable
      */
     public function testPeeringManager(): void
     {
@@ -218,12 +192,7 @@ class PeeringManagerControllerTest extends DuskTestCase
     }
 
     /**
-     * @param Browser $browser
-     * @param PeeringManager $pm
-     * @param array $c
-     * @param string $status
-     *
-     * @throws
+     * @throws \Facebook\WebDriver\Exception\TimeoutException
      */
     public function markPeering( Browser $browser, PeeringManager $pm, array $c, string $status ): void
     {

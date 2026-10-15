@@ -41,20 +41,6 @@ use Tests\DuskTestCase;
 class VendorControllerTest extends DuskTestCase
 {
     /**
-     * @throws
-     */
-    public function tearDown(): void
-    {
-        foreach( [ 'Vendor Company', 'Vendor Company2' ] as $name ) {
-            if( $c = Vendor::whereName( $name )->first() ) {
-                $c->delete();
-            }
-        }
-
-        parent::tearDown();
-    }
-
-    /**
      * Vendor list, add, edit, remove test
      *
      * @return void

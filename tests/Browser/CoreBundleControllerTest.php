@@ -47,26 +47,11 @@ use Laravel\Dusk\Browser;
  */
 class CoreBundleControllerTest extends DuskTestCase
 {
-
-    public function tearDown(): void
-    {
-        foreach( [ 51, 55 ] as $spid ) {
-            $sp = SwitchPort::find( $spid );
-
-            if( $sp ) {
-                $sp->type = SwitchPort::TYPE_CORE;
-                $sp->save();
-            }
-        }
-        parent::tearDown();
-    }
-
     /**
-     * A Dusk test example.
+     * Core bundle tests create (ECMP, L2 lag, l3 lag), core bundle edit, core link edit, core link add, core bundle delete
      *
      * @return void
-     *
-     * @throws
+     * @throws \Throwable
      */
     public function testAddWizard(): void
     {

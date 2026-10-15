@@ -42,24 +42,7 @@ use Tests\DuskTestCase;
 class VlanControllerTest extends DuskTestCase
 {
     /**
-     * @throws
-     */
-    public function tearDown(): void
-    {
-        foreach( [ 'Vlan test', 'Vlan test2' ] as $name ) {
-            if( $vlan = Vlan::whereName( $name )->first() ) {
-                $vlan->delete();
-            }
-        }
-        parent::tearDown();
-    }
-
-    /**
-     * A Dusk test example.
-     *
-     * @return void
-     *
-     * @throws
+     * @throws \Throwable
      */
     public function testAdd(): void
     {

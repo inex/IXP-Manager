@@ -35,9 +35,9 @@ class PatchPanelControllerTest extends DuskTestCase
 {
 
     /**
-     * Test Patch Panel create/list/edit
+     * Test Patch Panel create/list/edit, and that patch panel cannot be deactivated when a port is in use
      *
-     * @return void
+     * @throws \Throwable
      */
     public function testAddRemoveAndEdit(): void
     {
@@ -140,6 +140,8 @@ class PatchPanelControllerTest extends DuskTestCase
                 ->uncheck("active")
                 ->press("Save Changes");
 
+            // TODO: could assert state is unchanged here?
+
             // Once redirected, our Patch Panel name has [Inactive] after it.
             $browser
                 ->waitForRoute('patch-panel-port@list-for-patch-panel', ['pp' => $pp])
@@ -195,9 +197,6 @@ class PatchPanelControllerTest extends DuskTestCase
                 ->assertSee( " - " .$pp->name )
                 ->assertDontSee( "[Inactive]" )
             ;
-
-            //$this->assertDatabaseCount(PatchPanel::class, 1);
-
         } );
     }
 }

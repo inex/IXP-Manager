@@ -42,22 +42,11 @@ use Tests\DuskTestCase;
 class InfrastructureControllerTest extends DuskTestCase
 {
     /**
-     * @throws
-     */
-    public function tearDown(): void
-    {
-        if( $infra = Infrastructure::whereName( 'Infrastructure PHPUnit' )->first() ) {
-            $infra->delete();
-        }
-        parent::tearDown();
-    }
-
-    /**
-     * A Dusk test example.
+     * Infrastructure test list, create, edit with+without changes, delete
      *
      * @return void
      *
-     * @throws
+     * @throws \Throwable
      */
     public function testAdd(): void
     {

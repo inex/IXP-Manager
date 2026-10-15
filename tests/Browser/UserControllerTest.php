@@ -47,28 +47,6 @@ use Tests\DuskTestCase;
  */
 class UserControllerTest extends DuskTestCase
 {
-
-    public function tearDown(): void
-    {
-        foreach( [ 'test-user1@example.com', 'test13@example.com' ] as $email ) {
-            if ($user = User::whereEmail($email)->first()) {
-                CustomerToUser::where('user_id',$user->id)->delete();
-                $user->delete();
-            }
-        }
-
-        // set back the changed attributes
-        $customAdmin = User::whereEmail('imagine-custadmin@example.com')->first();
-        $customAdmin->name = "Test Test";
-        $customAdmin->authorisedMobile = null;
-        $customAdmin->save();
-
-        CustomerToUser::where('user_id',5)
-            ->where('customer_id', 1)->forceDelete();
-
-        parent::tearDown();
-    }
-
     /**
      * A Dusk test example.
      *

@@ -38,6 +38,8 @@ class SwitchUserControllerTest extends DuskTestCase
 
     /**
      * Test basic login-as and switch back flow
+     *
+     * @throws \Throwable
      */
     public function testLoginAs(): void
     {

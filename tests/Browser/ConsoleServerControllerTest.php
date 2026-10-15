@@ -41,30 +41,9 @@ use Tests\DuskTestCase;
  */
 class ConsoleServerControllerTest extends DuskTestCase
 {
-
-    /**
-     * @throws
-     */
-    public function tearDown(): void
-    {
-        foreach( [ 'Remove test Connect to Console Server Test2', 'Server Connect to Console Server Test2', 'Server Connect2 to Console Server Test2' ] as $description ) {
-            if( $c = ConsoleServerConnection::where('description', $description )->first() ) {
-                $c->delete();
-            }
-        }
-        foreach( [ 'Console Server Test', 'Console Server Test2' ] as $name ) {
-            if( $c = ConsoleServer::whereName( $name )->first() ) {
-                $c->delete();
-            }
-        }
-
-        parent::tearDown();
-    }
-
     /**
      * Console Server list, add, edit, remove test
      *
-     * @return ConsoleServerControllerTest
      * @throws \Throwable
      */
     public function testConsoleServers(): void

@@ -41,20 +41,6 @@ use Tests\DuskTestCase;
 class CustomerEquipmentControllerTest extends DuskTestCase
 {
     /**
-     * @throws
-     */
-    public function tearDown(): void
-    {
-        foreach( [ 'Colocated Equipment #1', 'Colocated Equipment #2' ] as $name ) {
-            if( $c = CustomerEquipment::whereName( $name )->first() ) {
-                $c->delete();
-            }
-        }
-
-        parent::tearDown();
-    }
-
-    /**
      * Customer Equipment list, add, edit, remove test
      *
      * @return void

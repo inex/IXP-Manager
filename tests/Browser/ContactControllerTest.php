@@ -40,19 +40,9 @@ use Throwable;
  */
 class ContactControllerTest extends DuskTestCase
 {
-    public function tearDown(): void
-    {
-        foreach( [ 'Test Contact 1', 'Test Contact 2' ] as $name ) {
-            if( $c = Contact::whereName( $name )->first() ) {
-                $c->delete();
-            }
-        }
-
-        parent::tearDown();
-    }
-
     /**
-     * A Dusk test example.
+     * Contact tests, list (see defaults), add, edit with+without changes, delete (as SUPERADMIN)
+     * test add, edit with+without changes, delete (as CUSTADMIN)
      *
      * @return void
      *

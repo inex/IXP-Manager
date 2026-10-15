@@ -60,22 +60,12 @@ class User2FAControllerTest extends DuskTestCase
 
     }
 
-    #[\Override]
-    public function tearDown(): void
-    {
-        if( $u2fa = User2FA::whereUserId( 1 )->first() ) {
-            $u2fa->delete();
-        }
-
-        parent::tearDown();
-    }
-
     /**
      * Test workflows involving the User2FAController
      *
      * @return void
      *
-     * @throws
+     * @throws \Throwable
      */
     public function test(): void
     {

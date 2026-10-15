@@ -42,19 +42,8 @@ use Throwable;
  */
 class RouterControllerTest extends DuskTestCase
 {
-    
-    public function setUp(): void {
-        parent::setUp();
-        Router::whereHandle( 'aaa-dusk-ci-test' )->delete();
-    }
-    public function tearDown(): void
-    {
-        Router::whereHandle( 'aaa-dusk-ci-test' )->delete();
-        parent::tearDown();
-    }
-
     /**
-     * A Dusk test example.
+     * Test router controller - add, edit, make changes, delete
      *
      * @return void
      *

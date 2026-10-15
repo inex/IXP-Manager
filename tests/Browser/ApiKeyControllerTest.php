@@ -45,21 +45,12 @@ use Tests\DuskTestCase;
  */
 class ApiKeyControllerTest extends DuskTestCase
 {
-    public function tearDown(): void
-    {
-        if( $key = ApiKey::where( 'description','Temporally Test API Key' ) ) {
-            $key->delete();
-        }
-
-        parent::tearDown();
-    }
-
     /**
-     * A Dusk test example.
+     * Api Key test show default, add api key, show created api key, edit api key, delete
      *
      * @return void
      *
-     * @throws
+     * @throws \Throwable
      */
     public function test(): void
     {

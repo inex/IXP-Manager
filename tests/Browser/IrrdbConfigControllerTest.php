@@ -41,20 +41,6 @@ use Tests\DuskTestCase;
 class IrrdbConfigControllerTest extends DuskTestCase
 {
     /**
-     * @throws
-     */
-    public function tearDown(): void
-    {
-        foreach( [ 'TEST1', 'TEST1,TEST2' ] as $source ) {
-            if( $c = IrrdbConfig::where( 'source', $source )->first() ) {
-                $c->delete();
-            }
-        }
-
-        parent::tearDown();
-    }
-
-    /**
      * IRRDB Config list, add, edit, remove test
      *
      * @return void

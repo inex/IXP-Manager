@@ -42,20 +42,6 @@ use Tests\DuskTestCase;
 class CabinetControllerTest extends DuskTestCase
 {
     /**
-     * @throws
-     */
-    public function tearDown(): void
-    {
-        foreach( [ 'Cabinet Test', 'Cabinet Test2' ] as $name ) {
-            if( $c = Cabinet::whereName( $name )->first() ) {
-                $c->delete();
-            }
-        }
-
-        parent::tearDown();
-    }
-
-    /**
      * Cabinet list, add, edit, remove test
      *
      * @return void

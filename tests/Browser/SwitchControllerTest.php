@@ -42,25 +42,8 @@ use Tests\DuskTestCase;
 class SwitchControllerTest extends DuskTestCase
 {
     /**
-     * @throws
-     */
-    public function tearDown(): void
-    {
-        foreach( [ 'phpunit', 'phpunit2' ] as $name ) {
-            if( $infra = Switcher::whereName( $name )->first() ) {
-                $infra->delete();
-            }
-        }
-
-        parent::tearDown();
-    }
-
-    /**
-     * A Dusk test example.
-     *
-     * @return void
-     *
-     * @throws
+     * Test SwitchController create by SNMP, edit, delete
+     * @throws \Throwable
      */
     public function testAdd(): void
     {

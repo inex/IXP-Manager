@@ -52,7 +52,7 @@ class UserRememberTokenControllerTest extends DuskTestCase
      *
      * @return void
      *
-     * @throws
+     * @throws \Throwable
      */
     public function testAdd(): void
     {

@@ -46,7 +46,7 @@ class SwitchPortControllerTest extends DuskTestCase
      *
      * @return void
      *
-     * @throws
+     * @throws \Throwable
      */
     public function testSwitchPort(): void
     {

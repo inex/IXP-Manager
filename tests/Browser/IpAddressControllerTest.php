@@ -75,19 +75,7 @@ class IpAddressControllerTest extends DuskTestCase
     ];
 
     /**
-     * @throws
-     */
-    public function tearDown(): void
-    {
-        $vlan = Vlan::whereName( $this->vlan )->first();
-        IPv4Address::where( "vlanid", $vlan->id )->delete();
-        IPv6Address::where( "vlanid", $vlan->id )->delete();
-        Vlan::whereName( $this->vlan )->delete();
-        parent::tearDown();
-    }
-
-    /**
-     * A Dusk test example.
+     * Test empty list, create IP's on a vlan, adding more IP's, deleting single IP, mass deleting IP's
      *
      * @return void
      *
