@@ -55,8 +55,6 @@ class RouterController extends Controller
      * @param string $handle
      *
      * @return Response
-     *
-     * @throws
      */
     public function genConfig( string $handle ): Response
     {

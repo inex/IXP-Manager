@@ -377,8 +377,8 @@ class UserController extends Controller
         $u->save();
 
         if( !$isSuperUser ) {
-            /** @var $c2u CustomerToUser  */
-            if( !( $c2u = $u->customerToUser()->where( 'customer_id', Auth::user()->custid  )->first() ) ) {
+            $c2u = $u->customerToUser()->where( 'customer_id', Auth::user()->custid )->first();
+            if( is_null($c2u) ) {
                 abort(404, 'UserToCustomer not found');
             }
 

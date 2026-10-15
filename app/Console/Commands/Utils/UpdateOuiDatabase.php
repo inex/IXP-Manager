@@ -61,7 +61,7 @@ class UpdateOuiDatabase extends IXPCommand
     /**
      * Execute the console command.
      *
-     * @throws
+     * @throws \IXP\Exceptions\GeneralException
      */
     public function handle(): int
     {

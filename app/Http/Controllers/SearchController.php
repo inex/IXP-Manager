@@ -185,13 +185,13 @@ class SearchController extends Controller
      *
      * @return (\Illuminate\Database\Eloquent\Model[]|mixed)[][]
      *
-     * @psalm-return array{results: array, interfaces: array<non-empty-list<Illuminate\Database\Eloquent\Model>>}
+     * @psalm-return array{results: array, interfaces: array<non-empty-list<\Illuminate\Database\Eloquent\Model>>}
      */
     private function processIpSearch( Collection $vlis ): array
     {
         $results = $interfaces = [];
         foreach( $vlis as $vli ) {
-            /** @var $vli VlanInterface */
+            /** @var VlanInterface $vli */
             $results[ $vli->virtualInterface->custid ] = $vli->virtualInterface->customer;
             $interfaces[ $vli->virtualInterface->custid ][] = $vli;
         }
@@ -205,7 +205,7 @@ class SearchController extends Controller
      *
      * @return ((\Illuminate\Database\Eloquent\Model|null)[]|Customer|mixed|null)[][]
      *
-     * @psalm-return array{results: array<''|int, Customer|mixed|null>, interfaces: array<''|int, non-empty-list<Illuminate\Database\Eloquent\Model|null>>}
+     * @psalm-return array{results: array<''|int, Customer|mixed|null>, interfaces: array<''|int, non-empty-list<\Illuminate\Database\Eloquent\Model|null>>}
      */
     private function processMACSearch( Collection $is ): array
     {

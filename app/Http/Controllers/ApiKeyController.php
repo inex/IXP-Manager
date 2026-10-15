@@ -212,8 +212,6 @@ class ApiKeyController extends EloquentController
      * @param Request $r
      *
      * @return RedirectResponse|true
-     *
-     * @throws
      */
     #[\Override]
     public function doStore( Request $r )
@@ -269,8 +267,6 @@ class ApiKeyController extends EloquentController
      * @param int       $id
      *
      * @return true
-     *
-     * @throws
      */
     #[\Override]
     public function doUpdate( Request $r, int $id )

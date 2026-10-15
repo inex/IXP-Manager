@@ -108,7 +108,7 @@ class VlanAggregator extends Vlan
      *
      * @return array Array of addresses as defined above.
      *
-     * @throws
+     * @throws Exception
      */
     public static function ipAddresses( int $vid, int $proto ) : array
     {
@@ -200,7 +200,7 @@ class VlanAggregator extends Vlan
      *
      * @return array
      *
-     * @throws
+     * @throws Exception
      */
     public static function arpaDetails( Vlan $vlan, int $proto ): array
     {

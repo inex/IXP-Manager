@@ -58,7 +58,8 @@ class GetSubscribers extends MailingList
     /**
      * Execute the console command.
      *
-     * @throws
+     * @throws \IXP\Exceptions\MailingListException
+     * @throws \JsonException
      */
     public function handle(): int
     {

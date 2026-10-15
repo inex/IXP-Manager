@@ -48,7 +48,7 @@ class PublicController extends Controller
      *
      * @param Request $r
      *
-     * @throws
+     * @return JsonResponse|Response
      */
     public function test( Request $r ): JsonResponse|Response
     {

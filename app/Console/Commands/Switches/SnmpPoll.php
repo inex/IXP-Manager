@@ -63,8 +63,6 @@ class SnmpPoll extends Command
     /**
      * Execute the console command.
      *
-     * @throws
-     *
      * @psalm-return -1|0
      */
     public function handle(): int

@@ -55,6 +55,7 @@ class DnsController extends Controller
      * @param int   $protocol   Protocol to generate the ARPA entries for
      *
      * @return JsonResponse
+     * @throws \IXP\Exceptions\GeneralException
      */
     public function arpa( Vlan $vlan, int $protocol ): JsonResponse
     {
@@ -69,7 +70,7 @@ class DnsController extends Controller
      *
      * @return array
      *
-     * @throws
+     * @throws \IXP\Exceptions\GeneralException
      */
     private function loadRecords( Vlan $vlan, int $protocol ): array
     {
@@ -93,6 +94,7 @@ class DnsController extends Controller
      * @param string    $template   The template to use to generate the response
      *
      * @return Response
+     * @throws \IXP\Exceptions\GeneralException
      */
     public function arpaTemplated( Vlan $vlan, int $protocol, string $template ): Response
     {

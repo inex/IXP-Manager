@@ -263,8 +263,6 @@ class DocstoreDirectory extends Model
      * @param DocstoreDirectory $dir
      *
      * @return void
-     *
-     * @throws
      */
     public static function recursiveDelete( DocstoreDirectory $dir ): void
     {

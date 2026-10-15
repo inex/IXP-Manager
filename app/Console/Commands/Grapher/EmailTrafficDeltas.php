@@ -65,7 +65,7 @@ class EmailTrafficDeltas extends GrapherCommand
     /**
      * Execute the console command.
      *
-     * @return mixed
+     * @throws \IXP\Exceptions\Services\Grapher\ParameterException
      */
     public function handle(): int
     {
@@ -96,9 +96,9 @@ class EmailTrafficDeltas extends GrapherCommand
      *
      * @return (Customer|float|int|mixed|string)[][]
      *
-     * @throws
+     * @throws \IXP\Exceptions\Services\Grapher\ParameterException
      *
-     * @psalm-return list<array{count: float(0)|float(1)|float(2), cust: IXP\Models\Customer, dIn: float|int<0, max>, dOut: float|int<0, max>, days: int, meanIn: mixed, meanOut: mixed, percentIn: float|int, percentOut: float|int, pngMonth: string, pngYear: string, sIn: 'decrease'|'increase', sOut: 'decrease'|'increase', stddevIn: float, stddevOut: float, thresholdIn: float, thresholdOut: float, todayAvgIn: mixed, todayAvgOut: mixed}>
+     * @psalm-return list<array{count: float, cust: \IXP\Models\Customer, dIn: float|int<0, max>, dOut: float|int<0, max>, days: int, meanIn: mixed, meanOut: mixed, percentIn: float|int, percentOut: float|int, pngMonth: string, pngYear: string, sIn: 'decrease'|'increase', sOut: 'decrease'|'increase', stddevIn: float, stddevOut: float, thresholdIn: float, thresholdOut: float, todayAvgIn: mixed, todayAvgOut: mixed}>
      */
     private function portsWithDelta( Carbon $day, float $stddev ): array
     {

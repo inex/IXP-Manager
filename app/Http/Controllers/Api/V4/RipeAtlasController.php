@@ -44,7 +44,6 @@ class RipeAtlasController extends Controller
      *
      * @return (bool|string)[]
      *
-     * @throws
      *
      * @psalm-return array{error: bool, response: string}
      */
@@ -78,8 +77,6 @@ class RipeAtlasController extends Controller
      * @param int $atlasid
      *
      * @return (bool|string)[]
-     *
-     * @throws
      *
      * @psalm-return array{error: bool, response: string}
      */

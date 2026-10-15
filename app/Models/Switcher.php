@@ -303,7 +303,7 @@ class Switcher extends Model
                         break;
 
                     default:
-                        if( $logger && $this->$objfn != $n ){
+                        if( $this->$objfn != $n ){
                             Log::info( " [{$this->name}] Platform: Updating {$index} from {$this->$objfn} to {$n}" );
                         } else{
                             Log::info( " [{$this->name}] Platform: Found {$index}: {$n}" );
@@ -337,7 +337,7 @@ class Switcher extends Model
             //
         }
 
-        $this->lastPolled = now();
+        $this->lastPolled = (string) now();
 
         if( !$nosave ) {
             $this->save();
@@ -365,10 +365,10 @@ class Switcher extends Model
      *
      * @param SNMP $host An instance of \OSS_SNMP\SNMP for this switch
      * @param bool $logger An instance of the logger or false
-     * @param bool $result
+     * @param bool|array $result
      * @param bool $nosave Do we need to save the object in DB ?
-     *
-     * @throws
+     * @return $this
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
     public function snmpPollSwitchPorts( SNMP $host, bool $logger = false, bool|array &$result = false, bool $nosave = false ): static
     {
@@ -455,7 +455,7 @@ class Switcher extends Model
      *
      * @return (CoreBundle|null)[]
      *
-     * @psalm-return list<IXP\Models\CoreBundle|null>
+     * @psalm-return list<CoreBundle|null>
      */
     public function getCoreBundles(): array
     {

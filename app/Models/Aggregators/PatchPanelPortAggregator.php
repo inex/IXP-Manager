@@ -165,7 +165,7 @@ class PatchPanelPortAggregator extends PatchPanelPort
 
         $result = [];
         foreach ( $ppps as $ppp ){
-            /** @var $ppp PatchPanelPort */
+            /** @var PatchPanelPort $ppp */
             $result[ $ppp->id ] = [
                 'id'        => $ppp->id,
                 'name'      => $ppp->name(),

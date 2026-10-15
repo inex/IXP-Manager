@@ -59,8 +59,6 @@ class StopAllMeasurements extends Command
 
     /**
      * Execute the console command.
-     *
-     * @throws
      */
     public function handle(): int
     {

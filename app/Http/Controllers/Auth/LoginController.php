@@ -303,7 +303,7 @@ class LoginController extends Controller
      *
      * @param Request   $r
      *
-     * @throws
+     * @return RedirectResponse
      */
     public function peeringdbHandleProviderCallback( Request $r ): RedirectResponse
     {

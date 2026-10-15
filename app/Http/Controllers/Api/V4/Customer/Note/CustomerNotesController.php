@@ -62,8 +62,6 @@ class CustomerNotesController extends Controller
      * @param Customer  $cust
      *
      * @return JsonResponse
-     *
-     * @throws
      */
     public function create( Request $r, Customer $cust ): JsonResponse
     {

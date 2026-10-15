@@ -30,6 +30,7 @@ use IXP\Services\Grapher\{
     Graph
 };
 
+use IXP\Exceptions\Services\Grapher\GeneralException;
 use IXP\Services\Grapher\Graph\Latency as LatencyGraph;
 
 use IXP\Exceptions\Services\Grapher\CannotHandleRequestException;
@@ -211,9 +212,9 @@ class Dummy extends GrapherBackend implements GrapherBackendContract
      *
      * @return array
      *
-     * @throws
-     *
      * @psalm-return array<int<0, max>, mixed>
+     * @throws CannotHandleRequestException
+     * @throws GeneralException
      */
     #[\Override]
     public function data( Graph $graph ): array
@@ -280,9 +281,8 @@ class Dummy extends GrapherBackend implements GrapherBackendContract
      *
      * @return string
      *
-     * @throws
-     *
      * @psalm-param 'log'|'png' $type
+     * @throws CannotHandleRequestException
      */
     private function resolveFilePath( Graph $graph, string $type ): string
     {

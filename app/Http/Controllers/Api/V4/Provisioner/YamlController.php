@@ -60,7 +60,7 @@ class YamlController extends Controller
      *
      * @return Response
      *
-     * @throws
+     * @throws \JsonException
      */
     private function structuredResponse( array $array, string $format ): Response
     {
@@ -98,7 +98,7 @@ class YamlController extends Controller
      *
      * @return Response
      *
-     * @throws
+     * @throws \JsonException
      */
     public function forSwitch( Switcher $switch, string $format ): Response
     {
@@ -115,6 +115,7 @@ class YamlController extends Controller
      * @param string $format
      *
      * @return Response
+     * @throws \JsonException
      */
     public function forSwitchByName( string $switchname, string $format ): Response
     {
@@ -136,7 +137,7 @@ class YamlController extends Controller
      *
      * @return Response
      *
-     * @throws
+     * @throws \JsonException
      */
     public function vlansForSwitch( Switcher $switch, string $format ): Response
     {
@@ -159,6 +160,7 @@ class YamlController extends Controller
      * @param string $format
      *
      * @return Response
+     * @throws \JsonException
      */
     public function vlansForSwitchByName( string $switchname, string $format ): Response
     {
@@ -176,7 +178,7 @@ class YamlController extends Controller
      *
      * @return Response
      *
-     * @throws
+     * @throws \JsonException
      */
     public function listSwitch( string $format ): Response
     {
@@ -197,7 +199,7 @@ class YamlController extends Controller
      *
      * @return Response
      *
-     * @throws
+     * @throws \JsonException
      */
     public function showSwitch( Switcher $switch, string $format ): Response
     {
@@ -212,7 +214,7 @@ class YamlController extends Controller
      *
      * @return Response
      *
-     * @throws
+     * @throws \JsonException
      */
     public function showSwitchByName( string $switchname, string $format ): Response
     {
@@ -263,7 +265,7 @@ class YamlController extends Controller
      *
      * @return Response
      *
-     * @throws
+     * @throws \JsonException
      */
     public function coreLinkForSwitch( Switcher $switch, string $format ): Response
     {
@@ -320,6 +322,7 @@ class YamlController extends Controller
      * @param string    $format
      *
      * @return Response
+     * @throws \JsonException
      */
     public function coreLinkForSwitchByName( string $switchname, string $format ): Response
     {
@@ -342,7 +345,7 @@ class YamlController extends Controller
      *
      * @return Response
      *
-     * @throws
+     * @throws \JsonException
      */
     public function bgpForSwitch( Switcher $switch, string $format ): Response
     {
@@ -414,6 +417,7 @@ class YamlController extends Controller
      * @param string $format
      *
      * @return Response
+     * @throws \JsonException
      */
     public function bgpForSwitchByName( string $switchname, string $format ): Response
     {
@@ -427,9 +431,9 @@ class YamlController extends Controller
     /**
      * Generate a list of Core Bundles
      *
+     * @param string $format
      * @return Response
-     *
-     * @throws
+     * @throws \JsonException
      */
     public function listCoreBundle( string $format ): Response
     {

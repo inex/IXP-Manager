@@ -646,7 +646,7 @@ class PatchPanelPort extends Model
         }
 
         $this->state                = self::STATE_AVAILABLE;
-        $this->last_state_change    = now();
+        $this->last_state_change    = (string) now();
         $this->save();
     }
 
@@ -656,8 +656,6 @@ class PatchPanelPort extends Model
      * NB: does not reset the original port.
      *
      * @return PatchPanelPortHistory
-     *
-     * @throws
      */
     public function archive(): PatchPanelPortHistory
     {
@@ -699,7 +697,7 @@ class PatchPanelPort extends Model
      *
      * @return boolean
      *
-     * @throws
+     * @throws \IXP\Exceptions\GeneralException
      */
     public function move( PatchPanelPort $dest, ?PatchPanelPort $slave = null ): bool
     {
@@ -716,9 +714,7 @@ class PatchPanelPort extends Model
             $file->update( [ 'patch_panel_port_id' => $dest->id ] );
         }
 
-        if( !( $history = $this->archive() )  ) {
-            return false;
-        }
+        $history = $this->archive();
 
         // wipe source switch port as it is a unique constraint in the db
         $spid = $this->switch_port_id;
@@ -774,15 +770,12 @@ class PatchPanelPort extends Model
      * * optionally deletes the linked slave port.
      * * deletes all the history.
      * * deletes in the database and on the disk all the files/filesHistory uploaded for this port.
-     *
-     * @throws
      */
     public function remove(): void
     {
         // Delete slave port first
         if( $this->duplexSlavePorts()->count() ){
             foreach( $this->duplexSlavePorts as $slave ){
-                /** @var $slave PatchPanelPort */
                 $slave->remove();
             }
         }

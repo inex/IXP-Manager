@@ -201,8 +201,6 @@ class CabinetController extends EloquentController
      * @param Request $r
      *
      * @return true
-     *
-     * @throws
      */
     #[\Override]
     public function doStore( Request $r )
@@ -258,7 +256,8 @@ class CabinetController extends EloquentController
     /**
      * Check if the form is valid
      *
-     * @param $r
+     * @param Request $r
+     * @return void
      */
     #[\Override]
     public function checkForm( Request $r ): void

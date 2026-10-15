@@ -437,8 +437,9 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract
      * @param Graph $graph
      *
      * @return array
-     *
-     * @throws
+     * @throws CannotHandleRequestException
+     * @throws \IXP\Exceptions\Services\Grapher\GeneralException
+     * @throws \IXP\Exceptions\Services\Grapher\ParameterException
      */
     #[\Override]
     public function data( Graph $graph ): array
@@ -517,8 +518,6 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract
      * @param Graph $graph
      *
      * @return string Path or empty string
-     *
-     * @throws
      */
     #[\Override]
     public function dataPath( Graph $graph ): string
@@ -554,8 +553,7 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract
      * @param string $type
      *
      * @return string
-     *
-     * @throws
+     * @throws CannotHandleRequestException
      */
     public function resolveFilePath( Graph $graph, string $type ): string
     {

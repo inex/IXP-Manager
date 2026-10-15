@@ -66,13 +66,13 @@ class VlanController extends Controller
      *
      * @return  JsonResponse array of IP addresses
      *
-     * @throws
+     * @throws \Exception
      */
     public function ipAddresses( Vlan $v ) : JsonResponse
     {
         return response()->json([
-            'ipv4' => VlanAggregator::ipAddresses( $v->id, Router::PROTOCOL_IPV4 ),
-            'ipv6' => VlanAggregator::ipAddresses( $v->id, Router::PROTOCOL_IPV6 )
+            'ipv4' => VlanAggregator::ipAddresses( $v->id, (int) Router::PROTOCOL_IPV4 ),
+            'ipv6' => VlanAggregator::ipAddresses( $v->id, (int) Router::PROTOCOL_IPV6 )
         ]);
     }
 

@@ -86,8 +86,6 @@ class VirtualInterfaceAggregator extends VirtualInterface
      * @param bool              $externalOnly If true (default) then only external (non-internal) interfaces will be returned
      *
      * @return Collection
-     *
-     * @throws
      */
     public static function getForInfrastructure( Infrastructure $infra, $proto = false, $externalOnly = true ): Collection
     {
@@ -119,8 +117,6 @@ class VirtualInterfaceAggregator extends VirtualInterface
      * infrastructure
      *
      * @return array
-     *
-     * @throws
      */
     public static function getByLocation(): array
     {
@@ -201,7 +197,7 @@ class VirtualInterfaceAggregator extends VirtualInterface
      *
      * @return bool
      *
-     * @throws
+     * @throws GeneralException
      */
     public static function validateChannelGroup( VirtualInterface $vi ): bool
     {

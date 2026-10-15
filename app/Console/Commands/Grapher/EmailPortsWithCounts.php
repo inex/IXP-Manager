@@ -70,7 +70,7 @@ class EmailPortsWithCounts extends GrapherCommand
     /**
      * Execute the console command.
      *
-     * @return mixed
+     * @throws \IXP\Exceptions\Services\Grapher\ParameterException
      */
     public function handle(): int
     {
@@ -100,11 +100,11 @@ class EmailPortsWithCounts extends GrapherCommand
     }
 
     /**
-     * @param $category
+     * @param string $category
      *
      * @return (mixed|string)[][]
      *
-     * @throws
+     * @throws \IXP\Exceptions\Services\Grapher\ParameterException
      *
      * @psalm-param 'discs'|'errs' $category
      *

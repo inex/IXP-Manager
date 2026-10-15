@@ -236,8 +236,6 @@ class ConsoleServerConnectionController extends EloquentController
      * @param Request $r
      *
      * @return RedirectResponse|true
-     *
-     * @throws
      */
     #[\Override]
     public function doStore( Request $r )
@@ -247,7 +245,7 @@ class ConsoleServerConnectionController extends EloquentController
             return Redirect::back()->withInput();
         }
 
-        $this->object = ConsoleServerConnection::make( $r->all() );
+        $this->object = new ConsoleServerConnection( $r->all() );
         $this->object->custid = $r->custid;
         $this->object->save();
         return true;

@@ -231,9 +231,7 @@ class ConsoleServerController extends EloquentController
      *
      * @param Request $r
      *
-     * @return true
-     *
-     * @throws
+     * @return true|RedirectResponse
      */
     #[\Override]
     public function doStore( Request $r ): bool|RedirectResponse
@@ -249,9 +247,9 @@ class ConsoleServerController extends EloquentController
      * @param Request   $r
      * @param int       $id
      *
-     * @return true
+     * @return RedirectResponse|true
      *
-     * @throws
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
     #[\Override]
     public function doUpdate( Request $r, int $id ): bool|RedirectResponse

@@ -38,6 +38,7 @@ use IXP\Models\{
     Vlan
 };
 use Illuminate\Support\Collection;
+use Throwable;
 
 /**
  * IXP\Models\Aggregators\CustomerAggregator
@@ -310,7 +311,8 @@ class CustomerAggregator extends Customer
      *
      * @return ((((int|mixed)[]|mixed|string|true)[]|Vlan|bool|mixed)[]|mixed|null)[]|null
      *
-     * @psalm-return array{me: mixed|null, potential: array<array-key|array<0|1|2>|mixed, bool>, potential_bilat: array<array-key|array<0|1|2>|mixed, bool>, peered: array<array-key|array<0|1|2>|mixed, bool>, rejected: array<array-key|array<0|1|2>|mixed, bool>, peers: array|mixed, custs: array<array<array<0|1|2>|mixed|true>|mixed>, bilat: array<array<int, array|string>>, vlan: array<Vlan>, protos: array}|null
+     * @psalm-return array{me: mixed|null, potential: array<array-key, bool>, potential_bilat: array<array-key, bool>, peered: array<array-key, bool>, rejected: array<array-key, bool>, peers: array|mixed, custs: array<array<array<0|1|2>|mixed|true>|mixed>, bilat: array<array<int, array|string>>, vlan: array<Vlan>, protos: array}|null
+     * @throws \IXP\Exceptions\GeneralException
      */
     public static function getPeeringManagerArrayByType( Customer $cust, $vlans, array $protos ): array|null
     {
@@ -453,8 +455,7 @@ class CustomerAggregator extends Customer
      * @param Customer $cust The customer Object
      *
      * @return true
-     *
-     * @throws
+     * @throws Throwable
      */
     public static function deleteObject( Customer $cust ): bool
     {
@@ -511,7 +512,7 @@ class CustomerAggregator extends Customer
                 ->where( 'vi.custid', $cust->id )->distinct()->get();
 
             foreach( $cbs as $cb ){
-                /** @var $cb CoreBundle */
+                /** @var CoreBundle $cb */
                 $cb->deleteObject();
             }
             $cust->tags()->detach();

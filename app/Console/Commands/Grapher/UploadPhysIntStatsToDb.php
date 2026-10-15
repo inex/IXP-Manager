@@ -63,7 +63,7 @@ class UploadPhysIntStatsToDb extends GrapherCommand
     /**
      * Execute the console command.
      *
-     * @throws
+     * @throws \IXP\Exceptions\Services\Grapher\ParameterException
      */
     public function handle(): int
     {

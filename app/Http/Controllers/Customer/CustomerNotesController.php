@@ -54,7 +54,6 @@ class CustomerNotesController extends Controller
 {
     /**
      * @return RedirectResponse
-     * @throws
      */
     public function readAll() : RedirectResponse
     {

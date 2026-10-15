@@ -62,8 +62,6 @@ class ReindexIfIndex extends Command
     /**
      * Execute the console command.
      *
-     * @throws
-     *
      * @psalm-return -2|-1|0
      */
     public function handle(): int

@@ -55,14 +55,12 @@ class InPeeringDb extends  Command
     /**
      * Execute the console command.
      *
-     * @throws
-     *
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
+     * @throws \Throwable
      * @psalm-return 0|2
      */
-    public function handle(): int
+    public function handle(PeeringDb $pdb): int
     {
-        $pdb = app()->make( PeeringDb::class );
-        
         foreach( $pdb->warnOnBadAuthMethods() as $w ) {
             $this->warn( $w );
         }

@@ -138,7 +138,7 @@ class UserAggregator extends User
      *
      * @return ((Customer|mixed)[]|User|mixed|null)[]
      *
-     * @psalm-return array{user: User|mixed|null, added_to: list<mixed>, removed_from: list<IXP\Models\Customer>}
+     * @psalm-return array{user: User|mixed|null, added_to: list<mixed>, removed_from: list<Customer>}
      */
     public static function findOrCreateFromPeeringDb( array $pdbuser ): array
     {

@@ -69,6 +69,8 @@ class IrrdbUpdateLog extends Model
      * - relevant: if customer is not v6 enabled, ignore these fields
      *
      * @param Customer $c
+     * @return \Illuminate\Support\Carbon|null
+     * @throws \IXP\Exceptions\GeneralException
      */
     public static function lastUpdatedMax( Customer $c ): \Illuminate\Support\Carbon|null
     {

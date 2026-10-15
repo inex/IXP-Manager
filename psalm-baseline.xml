@@ -1,22 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <files psalm-version="6.16.1@f1f5de594dc76faf8784e02d3dc4716c91c6f6ac">
-  <file src="app/Console/Commands/Grapher/EmailPortsWithCounts.php">
-    <MissingDocblockType>
-      <code><![CDATA[private function emailPortsWithCounts( string $category ): array]]></code>
-    </MissingDocblockType>
-  </file>
-  <file src="app/Console/Commands/Grapher/EmailTrafficDeltas.php">
-    <MissingDocblockType>
-      <code><![CDATA[private function portsWithDelta( Carbon $day, float $stddev ): array]]></code>
-    </MissingDocblockType>
-  </file>
   <file src="app/Console/Commands/Grapher/UploadPhysIntStatsToDb.php">
     <ImplicitToStringCast>
       <code><![CDATA[$today]]></code>
     </ImplicitToStringCast>
-    <MissingDocblockType>
-      <code><![CDATA[public function handle(): int]]></code>
-    </MissingDocblockType>
   </file>
   <file src="app/Console/Commands/Grapher/UploadStatsToDb.php">
     <ImplicitToStringCast>
@@ -40,9 +27,6 @@
     <InvalidPropertyAssignmentValue>
       <code><![CDATA[true]]></code>
     </InvalidPropertyAssignmentValue>
-    <MissingDocblockType>
-      <code><![CDATA[public function handle(): int]]></code>
-    </MissingDocblockType>
   </file>
   <file src="app/Console/Commands/Irrdb/UpdateDb.php">
     <RedundantCondition>
@@ -50,17 +34,11 @@
     </RedundantCondition>
   </file>
   <file src="app/Console/Commands/MailingList/GetSubscribers.php">
-    <MissingDocblockType>
-      <code><![CDATA[public function handle(): int]]></code>
-    </MissingDocblockType>
     <RedundantCondition>
       <code><![CDATA[!config( 'mailinglists.enabled' )]]></code>
     </RedundantCondition>
   </file>
   <file src="app/Console/Commands/MailingList/Init.php">
-    <MissingDocblockType>
-      <code><![CDATA[public function handle(): int]]></code>
-    </MissingDocblockType>
     <RedundantCondition>
       <code><![CDATA[!config( 'mailinglists.enabled' )]]></code>
     </RedundantCondition>
@@ -77,48 +55,21 @@
     <InvalidArgument>
       <code><![CDATA[$ar]]></code>
     </InvalidArgument>
-    <MissingDocblockType>
-      <code><![CDATA[public function handle(): int]]></code>
-    </MissingDocblockType>
   </file>
   <file src="app/Console/Commands/RipeAtlas/CreateMeasurements.php">
     <InvalidArgument>
       <code><![CDATA[$ar]]></code>
     </InvalidArgument>
-    <MissingDocblockType>
-      <code><![CDATA[public function handle(): int]]></code>
-    </MissingDocblockType>
   </file>
   <file src="app/Console/Commands/RipeAtlas/RunMeasurements.php">
     <InvalidArgument>
       <code><![CDATA[$am]]></code>
     </InvalidArgument>
-    <MissingDocblockType>
-      <code><![CDATA[public function handle(): int]]></code>
-    </MissingDocblockType>
-  </file>
-  <file src="app/Console/Commands/RipeAtlas/StopAllMeasurements.php">
-    <MissingDocblockType>
-      <code><![CDATA[public function handle(): int]]></code>
-    </MissingDocblockType>
   </file>
   <file src="app/Console/Commands/RipeAtlas/UpdateMeasurements.php">
     <InvalidArgument>
       <code><![CDATA[$am]]></code>
     </InvalidArgument>
-    <MissingDocblockType>
-      <code><![CDATA[public function handle(): int]]></code>
-    </MissingDocblockType>
-  </file>
-  <file src="app/Console/Commands/RipeAtlas/UpdateProbes.php">
-    <MissingDocblockType>
-      <code><![CDATA[public function handle(): int]]></code>
-    </MissingDocblockType>
-  </file>
-  <file src="app/Console/Commands/Rir/GenerateObject.php">
-    <MissingDocblockType>
-      <code><![CDATA[public function handle(): int]]></code>
-    </MissingDocblockType>
   </file>
   <file src="app/Console/Commands/SetupWizard.php">
     <InvalidOperand>
@@ -126,17 +77,11 @@
     </InvalidOperand>
   </file>
   <file src="app/Console/Commands/Switches/ReindexIfIndex.php">
-    <MissingDocblockType>
-      <code><![CDATA[public function handle(): int]]></code>
-    </MissingDocblockType>
     <TooManyArguments>
       <code><![CDATA[option]]></code>
     </TooManyArguments>
   </file>
   <file src="app/Console/Commands/Switches/SnmpPoll.php">
-    <MissingDocblockType>
-      <code><![CDATA[public function handle(): int]]></code>
-    </MissingDocblockType>
     <TooManyArguments>
       <code><![CDATA[option]]></code>
       <code><![CDATA[option]]></code>
@@ -144,11 +89,6 @@
       <code><![CDATA[option]]></code>
       <code><![CDATA[option]]></code>
     </TooManyArguments>
-  </file>
-  <file src="app/Console/Commands/Upgrade/ResetMysqlViews.php">
-    <MissingDocblockType>
-      <code><![CDATA[public function handle(): int]]></code>
-    </MissingDocblockType>
   </file>
   <file src="app/Console/Commands/User/Create.php">
     <RedundantCondition>
@@ -156,74 +96,15 @@
       <code><![CDATA[$option !== 'send-welcome-email']]></code>
     </RedundantCondition>
   </file>
-  <file src="app/Console/Commands/Utils/UpdateOuiDatabase.php">
-    <MissingDocblockType>
-      <code><![CDATA[public function handle(): int]]></code>
-    </MissingDocblockType>
-  </file>
-  <file src="app/Http/Controllers/AdminController.php">
-    <MissingDocblockType>
-      <code><![CDATA[private function publicPeeringGraphs( Request $r ): array]]></code>
-    </MissingDocblockType>
-  </file>
-  <file src="app/Http/Controllers/Api/V4/Customer/Note/CustomerNotesController.php">
-    <MissingDocblockType>
-      <code><![CDATA[public function create( Request $r, Customer $cust ): JsonResponse]]></code>
-    </MissingDocblockType>
-  </file>
   <file src="app/Http/Controllers/Api/V4/CustomerController.php">
     <InvalidScalarArgument>
       <code><![CDATA[$asn]]></code>
     </InvalidScalarArgument>
   </file>
-  <file src="app/Http/Controllers/Api/V4/DnsController.php">
-    <MissingDocblockType>
-      <code><![CDATA[private function loadRecords( Vlan $vlan, int $protocol ): array]]></code>
-    </MissingDocblockType>
-  </file>
-  <file src="app/Http/Controllers/Api/V4/Layer2AddressController.php">
-    <MissingDocblockType>
-      <code><![CDATA[public function delete( Layer2Address $l2a, bool $showFeMessage = false  ): JsonResponse]]></code>
-    </MissingDocblockType>
-  </file>
   <file src="app/Http/Controllers/Api/V4/MailingListController.php">
     <RedundantCondition>
       <code><![CDATA[!config( 'mailinglists.enabled' )]]></code>
     </RedundantCondition>
-  </file>
-  <file src="app/Http/Controllers/Api/V4/Provisioner/YamlController.php">
-    <MissingDocblockType>
-      <code><![CDATA[private function structuredResponse( array $array, string $format ): Response]]></code>
-      <code><![CDATA[public function bgpForSwitch( Switcher $switch, string $format ): Response]]></code>
-      <code><![CDATA[public function coreLinkForSwitch( Switcher $switch, string $format ): Response]]></code>
-      <code><![CDATA[public function forSwitch( Switcher $switch, string $format ): Response]]></code>
-      <code><![CDATA[public function listCoreBundle( string $format ): Response]]></code>
-      <code><![CDATA[public function listSwitch( string $format ): Response]]></code>
-      <code><![CDATA[public function showSwitch( Switcher $switch, string $format ): Response]]></code>
-      <code><![CDATA[public function showSwitchByName( string $switchname, string $format ): Response]]></code>
-      <code><![CDATA[public function vlansForSwitch( Switcher $switch, string $format ): Response]]></code>
-    </MissingDocblockType>
-  </file>
-  <file src="app/Http/Controllers/Api/V4/PublicController.php">
-    <MissingDocblockType>
-      <code><![CDATA[public function test( Request $r ): JsonResponse|Response]]></code>
-    </MissingDocblockType>
-  </file>
-  <file src="app/Http/Controllers/Api/V4/RipeAtlasController.php">
-    <MissingDocblockType>
-      <code><![CDATA[public function getAtlasMeasurementDetail( int $atlasId ): array]]></code>
-      <code><![CDATA[public function getAtlasProbeDetail( int $atlasid ): array]]></code>
-    </MissingDocblockType>
-  </file>
-  <file src="app/Http/Controllers/Api/V4/RouterController.php">
-    <MissingDocblockType>
-      <code><![CDATA[public function genConfig( string $handle ): Response]]></code>
-    </MissingDocblockType>
-  </file>
-  <file src="app/Http/Controllers/Api/V4/SflowReceiverController.php">
-    <MissingDocblockType>
-      <code><![CDATA[private function structuredResponse( array $array, string $format ): Response]]></code>
-    </MissingDocblockType>
   </file>
   <file src="app/Http/Controllers/Api/V4/SwitchController.php">
     <UndefinedDocblockClass>
@@ -234,29 +115,13 @@
       <code><![CDATA[$cb->enabled]]></code>
     </UndefinedDocblockClass>
   </file>
-  <file src="app/Http/Controllers/Api/V4/VlanController.php">
-    <InvalidScalarArgument>
-      <code><![CDATA[Router::PROTOCOL_IPV4]]></code>
-      <code><![CDATA[Router::PROTOCOL_IPV6]]></code>
-    </InvalidScalarArgument>
-    <MissingDocblockType>
-      <code><![CDATA[public function ipAddresses( Vlan $v ) : JsonResponse]]></code>
-    </MissingDocblockType>
-  </file>
   <file src="app/Http/Controllers/ApiKeyController.php">
-    <MissingDocblockType>
-      <code><![CDATA[#[\Override]]]></code>
-      <code><![CDATA[#[\Override]]]></code>
-    </MissingDocblockType>
     <RedundantCondition>
       <code><![CDATA[User::AUTH_CUSTADMIN]]></code>
       <code><![CDATA[User::AUTH_CUSTUSER]]></code>
     </RedundantCondition>
   </file>
   <file src="app/Http/Controllers/Auth/LoginController.php">
-    <MissingDocblockType>
-      <code><![CDATA[public function peeringdbHandleProviderCallback( Request $r ): RedirectResponse]]></code>
-    </MissingDocblockType>
     <NoInterfaceProperties>
       <code><![CDATA[$suser->user]]></code>
     </NoInterfaceProperties>
@@ -271,26 +136,6 @@
     <InvalidReturnType>
       <code><![CDATA[bool]]></code>
     </InvalidReturnType>
-    <MissingDocblockType>
-      <code><![CDATA[#[\Override]]]></code>
-    </MissingDocblockType>
-  </file>
-  <file src="app/Http/Controllers/ConsoleServer/ConsoleServerConnectionController.php">
-    <MissingDocblockType>
-      <code><![CDATA[#[\Override]]]></code>
-    </MissingDocblockType>
-    <ModelMakeDiscouraged>
-      <code><![CDATA[ConsoleServerConnection::make( $r->all() )]]></code>
-    </ModelMakeDiscouraged>
-  </file>
-  <file src="app/Http/Controllers/ConsoleServer/ConsoleServerController.php">
-    <ImplementedReturnTypeMismatch>
-      <code><![CDATA[bool]]></code>
-    </ImplementedReturnTypeMismatch>
-    <MissingDocblockType>
-      <code><![CDATA[#[\Override]]]></code>
-      <code><![CDATA[#[\Override]]]></code>
-    </MissingDocblockType>
   </file>
   <file src="app/Http/Controllers/Contact/ContactController.php">
     <ImplementedReturnTypeMismatch>
@@ -381,11 +226,6 @@
       <code><![CDATA[$r->reseller]]></code>
       <code><![CDATA[$r->reseller]]></code>
     </UndefinedMagicPropertyFetch>
-  </file>
-  <file src="app/Http/Controllers/Customer/CustomerNotesController.php">
-    <MissingDocblockType>
-      <code><![CDATA[public function readAll() : RedirectResponse]]></code>
-    </MissingDocblockType>
   </file>
   <file src="app/Http/Controllers/Customer/CustomerTagController.php">
     <MissingDocblockType>
@@ -724,11 +564,6 @@
       <code><![CDATA[$r->username]]></code>
     </UndefinedMagicPropertyFetch>
   </file>
-  <file src="app/Http/Controllers/RipeAtlas/MeasurementController.php">
-    <MissingDocblockType>
-      <code><![CDATA[StopAllMeasurementsJob::dispatchAfterResponse( $am->atlas_id );]]></code>
-    </MissingDocblockType>
-  </file>
   <file src="app/Http/Controllers/RipeAtlas/RunController.php">
     <ImplementedReturnTypeMismatch>
       <code><![CDATA[bool]]></code>
@@ -776,10 +611,6 @@
       <code><![CDATA[$vis]]></code>
       <code><![CDATA[$vlis]]></code>
     </InvalidArgument>
-    <UndefinedDocblockClass>
-      <code><![CDATA[array{results: array, interfaces: array<non-empty-list<Illuminate\Database\Eloquent\Model>>}]]></code>
-      <code><![CDATA[array{results: array<''|int, Customer|mixed|null>, interfaces: array<''|int, non-empty-list<Illuminate\Database\Eloquent\Model|null>>}]]></code>
-    </UndefinedDocblockClass>
   </file>
   <file src="app/Http/Controllers/Services/LookingGlass.php">
     <MissingDocblockType>
@@ -899,11 +730,6 @@
     </TypeDoesNotContainNull>
   </file>
   <file src="app/Http/Controllers/User/UserController.php">
-    <MissingDocblockType>
-      <code><![CDATA[if( !( $c2u = $u->customerToUser()->where( 'customer_id', Auth::user()->custid  )->first() ) ) {
-                abort(404, 'UserToCustomer not found');
-            }]]></code>
-    </MissingDocblockType>
     <RedundantFunctionCall>
       <code><![CDATA[sprintf]]></code>
     </RedundantFunctionCall>
@@ -1097,25 +923,6 @@
       <code><![CDATA[public static function getPeers( ?int $vlan = null, int $protocol = 6, ?int $asn = null, bool $forceDb = false ): array|string]]></code>
     </MissingDocblockType>
   </file>
-  <file src="app/Models/Aggregators/CustomerAggregator.php">
-    <InvalidDocblock>
-      <code><![CDATA[public static function getPeeringManagerArrayByType( Customer $cust, $vlans, array $protos ): array|null]]></code>
-    </InvalidDocblock>
-    <MissingDocblockType>
-      <code><![CDATA[$cb->deleteObject();]]></code>
-      <code><![CDATA[public static function deleteObject( Customer $cust ): bool]]></code>
-    </MissingDocblockType>
-  </file>
-  <file src="app/Models/Aggregators/IpAddressAggregator.php">
-    <MissingDocblockType>
-      <code><![CDATA[public static function bulkAdd( array $addresses, Vlan $vlan, string $model, bool $skip = true ): array]]></code>
-    </MissingDocblockType>
-  </file>
-  <file src="app/Models/Aggregators/PatchPanelPortAggregator.php">
-    <MissingDocblockType>
-      <code><![CDATA[$result[ $ppp->id ]]]></code>
-    </MissingDocblockType>
-  </file>
   <file src="app/Models/Aggregators/SwitcherAggregator.php">
     <InvalidOperand>
       <code><![CDATA[$mask]]></code>
@@ -1124,24 +931,6 @@
       <code><![CDATA[$firstip]]></code>
       <code><![CDATA[$firstip + 1]]></code>
     </InvalidScalarArgument>
-  </file>
-  <file src="app/Models/Aggregators/UserAggregator.php">
-    <UndefinedDocblockClass>
-      <code><![CDATA[array{user: User|mixed|null, added_to: list<mixed>, removed_from: list<IXP\Models\Customer>}]]></code>
-    </UndefinedDocblockClass>
-  </file>
-  <file src="app/Models/Aggregators/VirtualInterfaceAggregator.php">
-    <MissingDocblockType>
-      <code><![CDATA[public static function getByLocation(): array]]></code>
-      <code><![CDATA[public static function getForInfrastructure( Infrastructure $infra, $proto = false, $externalOnly = true ): Collection]]></code>
-      <code><![CDATA[public static function validateChannelGroup( VirtualInterface $vi ): bool]]></code>
-    </MissingDocblockType>
-  </file>
-  <file src="app/Models/Aggregators/VlanAggregator.php">
-    <MissingDocblockType>
-      <code><![CDATA[public static function arpaDetails( Vlan $vlan, int $proto ): array]]></code>
-      <code><![CDATA[public static function ipAddresses( int $vid, int $proto ) : array]]></code>
-    </MissingDocblockType>
   </file>
   <file src="app/Models/Aggregators/VlanInterfaceAggregator.php">
     <MissingDocblockType>
@@ -1173,9 +962,6 @@
     <TypeDoesNotContainNull>
       <code><![CDATA[( $fmt = config('ixp_fe.customer_name_format') ) === null]]></code>
     </TypeDoesNotContainNull>
-    <UndefinedDocblockClass>
-      <code><![CDATA[array<''|int, array{vlis: non-empty-list<IXP\Models\VlanInterface>, members: array}>]]></code>
-    </UndefinedDocblockClass>
   </file>
   <file src="app/Models/CustomerTag.php">
     <MissingTemplateParam>
@@ -1188,15 +974,7 @@
       <code><![CDATA[public static function recursiveDelete( DocstoreCustomerDirectory $dir ): void]]></code>
     </MissingDocblockType>
   </file>
-  <file src="app/Models/DocstoreDirectory.php">
-    <MissingDocblockType>
-      <code><![CDATA[public static function recursiveDelete( DocstoreDirectory $dir ): void]]></code>
-    </MissingDocblockType>
-  </file>
   <file src="app/Models/IrrdbUpdateLog.php">
-    <InvalidDocblock>
-      <code><![CDATA[IrrdbUpdateLog]]></code>
-    </InvalidDocblock>
     <RedundantCondition>
       <code><![CDATA[!$oldest]]></code>
       <code><![CDATA[!$oldest]]></code>
@@ -1204,21 +982,6 @@
     <TypeDoesNotContainType>
       <code><![CDATA[$oldest]]></code>
       <code><![CDATA[$oldest]]></code>
-    </TypeDoesNotContainType>
-  </file>
-  <file src="app/Models/PatchPanelPort.php">
-    <ImplicitToStringCast>
-      <code><![CDATA[now()]]></code>
-    </ImplicitToStringCast>
-    <MissingDocblockType>
-      <code><![CDATA[$slave->remove();]]></code>
-      <code><![CDATA[$user]]></code>
-      <code><![CDATA[public function archive(): PatchPanelPortHistory]]></code>
-      <code><![CDATA[public function move( PatchPanelPort $dest, ?PatchPanelPort $slave = null ): bool]]></code>
-      <code><![CDATA[public function remove(): void]]></code>
-    </MissingDocblockType>
-    <TypeDoesNotContainType>
-      <code><![CDATA[!( $history = $this->archive() )]]></code>
     </TypeDoesNotContainType>
   </file>
   <file src="app/Models/PatchPanelPortHistory.php">
@@ -1226,41 +989,10 @@
       <code><![CDATA[public static function createFromPort( PatchPanelPort $ppp ): PatchPanelPortHistory]]></code>
     </MissingDocblockType>
   </file>
-  <file src="app/Models/SwitchPort.php">
-    <ImplicitToStringCast>
-      <code><![CDATA[now()]]></code>
-    </ImplicitToStringCast>
-    <MissingDocblockType>
-      <code><![CDATA[public function snmpUpdate( SNMP $host, bool $logger = false, bool $nosave = false ): static]]></code>
-    </MissingDocblockType>
-  </file>
-  <file src="app/Models/Switcher.php">
-    <ImplicitToStringCast>
-      <code><![CDATA[now()]]></code>
-    </ImplicitToStringCast>
-    <MissingDocblockType>
-      <code><![CDATA[public function snmpPollSwitchPorts( SNMP $host, bool $logger = false, bool|array &$result = false, bool $nosave = false ): static]]></code>
-    </MissingDocblockType>
-    <RedundantCondition>
-      <code><![CDATA[$logger]]></code>
-    </RedundantCondition>
-    <UndefinedDocblockClass>
-      <code><![CDATA[list<IXP\Models\CoreBundle|null>]]></code>
-    </UndefinedDocblockClass>
-  </file>
   <file src="app/Models/User.php">
     <MissingTemplateParam>
       <code><![CDATA[BelongsToMany<Customer, User>]]></code>
     </MissingTemplateParam>
-  </file>
-  <file src="app/Models/VirtualInterface.php">
-    <InvalidDocblock>
-      <code><![CDATA[return $ci->coreLink()->coreBundle;]]></code>
-    </InvalidDocblock>
-    <UndefinedDocblockClass>
-      <code><![CDATA[list<IXP\Models\PhysicalInterface>]]></code>
-      <code><![CDATA[list<IXP\Models\PhysicalInterface|null>]]></code>
-    </UndefinedDocblockClass>
   </file>
   <file src="app/Models/VlanInterface.php">
     <MissingDocblockType>
@@ -1335,9 +1067,6 @@
     <InvalidArgument>
       <code><![CDATA[$this->arping( $this->vli )]]></code>
     </InvalidArgument>
-    <UndefinedDocblockClass>
-      <code><![CDATA[list<IXP\Services\Diagnostics\DiagnosticResult>]]></code>
-    </UndefinedDocblockClass>
   </file>
   <file src="app/Services/Grapher.php">
     <MissingDocblockType>
@@ -1360,23 +1089,6 @@
       <code><![CDATA[!is_array( $config ) || !count( $config )]]></code>
       <code><![CDATA[!is_array( $config ) || !count( $config )]]></code>
     </TypeDoesNotContainType>
-  </file>
-  <file src="app/Services/Grapher/Backend/Dummy.php">
-    <MissingDocblockType>
-      <code><![CDATA[#[\Override]]]></code>
-      <code><![CDATA[private function resolveFilePath( Graph $graph, string $type ): string]]></code>
-    </MissingDocblockType>
-  </file>
-  <file src="app/Services/Grapher/Backend/Mrtg.php">
-    <MissingDocblockType>
-      <code><![CDATA[#[\Override]]]></code>
-      <code><![CDATA[#[\Override]]]></code>
-      <code><![CDATA[public function resolveFilePath( Graph $graph, string $type ): string]]></code>
-    </MissingDocblockType>
-    <UndefinedDocblockClass>
-      <code><![CDATA[$cb->corelinks]]></code>
-      <code><![CDATA[$cb->id]]></code>
-    </UndefinedDocblockClass>
   </file>
   <file src="app/Services/Grapher/Backend/Sflow.php">
     <MissingDocblockType>

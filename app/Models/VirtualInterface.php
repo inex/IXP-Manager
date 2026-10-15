@@ -52,7 +52,7 @@ use IXP\Traits\Observable;
  * @property-read \IXP\Models\Customer|null $customer
  * @property-read Collection<int, \IXP\Models\MacAddress> $macAddresses
  * @property-read int|null $mac_addresses_count
- * @property-read Collection<int, \IXP\Models\PhysicalInterface> $physicalInterfaces
+ * @property-read Collection<int, PhysicalInterface> $physicalInterfaces
  * @property-read int|null $physical_interfaces_count
  * @property-read Collection<int, \IXP\Models\SflowReceiver> $sflowReceivers
  * @property-read int|null $sflow_receivers_count
@@ -197,9 +197,7 @@ class VirtualInterface extends Model
     public function getCoreBundle(): CoreBundle|false|null
     {
         foreach( $this->physicalInterfaces as $pi ) {
-            if( $pi->coreinterface()->exists() ) {
-                $ci = $pi->coreinterface;
-                /** @var $ci CoreInterface */
+            if( $ci = $pi->coreInterface ) {
                 return $ci->coreLink()->coreBundle;
             }
         }
@@ -211,7 +209,7 @@ class VirtualInterface extends Model
      *
      * @return PhysicalInterface[]
      *
-     * @psalm-return list<IXP\Models\PhysicalInterface>
+     * @psalm-return list<PhysicalInterface>
      */
     public function peeringPhysicalInterface(): array
     {
@@ -229,7 +227,7 @@ class VirtualInterface extends Model
      *
      * @return (PhysicalInterface|null)[]
      *
-     * @psalm-return list<IXP\Models\PhysicalInterface|null>
+     * @psalm-return list<PhysicalInterface|null>
      */
     public function fanoutPhysicalInterface(): array
     {

@@ -66,8 +66,9 @@ class GenerateObject extends Command
     /**
      * Execute the console command.
      *
-     * @throws
-     *
+     * @throws \IXP\Exceptions\GeneralException
+     * @throws \Illuminate\Http\Client\ConnectionException
+     * @throws \Psr\SimpleCache\InvalidArgumentException
      * @psalm-return 0|1
      */
     public function handle(): int

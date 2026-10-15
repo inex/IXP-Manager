@@ -41,16 +41,14 @@ final class IpAddressAggregator
      *
      * @param array $addresses
      * @param Vlan $vlan
-     * @param IPv4Address|IPv6Address $model
+     * @param string $model
      * @param bool $skip If the address already exists, then skip over it (default). Otherwise, do not add any addresses.
      *
      * @return array[]
      *
-     * @throws
-     *
      * @psalm-param IPv4Address::class|IPv6Address::class $model
      *
-     * @psalm-return array{preexisting: list<non-empty-mixed>, new: list<mixed>}
+     * @psalm-return array{preexisting: list<IPv4Address|IPv6Address>, new: list<string>}
      */
     public static function bulkAdd( array $addresses, Vlan $vlan, string $model, bool $skip = true ): array
     {

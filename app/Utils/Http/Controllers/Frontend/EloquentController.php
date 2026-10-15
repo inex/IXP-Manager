@@ -571,7 +571,7 @@ abstract class EloquentController extends Controller
      *
      * The object to be deleted is available via `$this->>object`
      *
-     * @return true Return false to stop / cancel the deletion
+     * @return bool Return false to stop / cancel the deletion
      */
     protected function preDelete(): bool
     {

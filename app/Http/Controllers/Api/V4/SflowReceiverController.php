@@ -132,7 +132,7 @@ class SflowReceiverController extends Controller
      *
      * @return Response
      *
-     * @throws
+     * @throws \JsonException
      */
     private function structuredResponse( array $array, string $format ): Response
     {

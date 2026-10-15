@@ -132,7 +132,6 @@ class Layer2AddressController extends Controller
      *
      * @return  JsonResponse
      *
-     * @throws
      */
     public function delete( Layer2Address $l2a, bool $showFeMessage = false  ): JsonResponse
     {

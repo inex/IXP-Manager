@@ -52,7 +52,6 @@ class ResetMysqlViews extends IXPCommand
     /**
      * Execute the console command.
      *
-     * @throws
      */
     public function handle(): int
     {

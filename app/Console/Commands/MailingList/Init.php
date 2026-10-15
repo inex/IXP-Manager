@@ -66,7 +66,8 @@ class Init extends MailingList
      * NB: This function is NON-DESTRUCTIVE. It will *NOT* affect any users with *EXISTING* settings
      * but set those without a setting to on / off as appropriate.
      *
-     * @throws
+     * @throws \IXP\Exceptions\MailingListException
+     * @throws \JsonException
      */
     public function handle(): int
     {

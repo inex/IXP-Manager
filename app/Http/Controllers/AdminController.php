@@ -23,7 +23,7 @@ namespace IXP\Http\Controllers;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use App, Cache;
+use Cache;
 
 use Carbon\Carbon;
 
@@ -59,14 +59,15 @@ class AdminController extends Controller
      * Display the home page
      *
      * @param Request $r
-     *
+     * @param Grapher $grapher
      * @return View
+     * @throws \IXP\Exceptions\Services\Grapher\ParameterException
      */
-    public function dashboard( Request $r ): View
+    public function dashboard( Request $r, Grapher $grapher ): View
     {
         return view( 'admin/dashboard' )->with([
             'stats'                 => $this->dashboardStats( $r ),
-            'graphs'                => $this->publicPeeringGraphs( $r ),
+            'graphs'                => $this->publicPeeringGraphs( $r, $grapher ),
             'graph_period'          => $r->query( 'graph_period', config( 'ixp_fe.admin_dashboard.default_graph_period' ) ),
             'graph_periods'         => Graph::PERIOD_DESCS,
         ]);
@@ -252,16 +253,11 @@ class AdminController extends Controller
     /**
      * Get public peering graphs
      *
-     * @param Request $r
-     *
      * @return array array of graphs
-     *
-     * @throws
+     * @throws \IXP\Exceptions\Services\Grapher\ParameterException
      */
-    private function publicPeeringGraphs( Request $r ): array
+    private function publicPeeringGraphs( Request $r, Grapher $grapher ): array
     {
-        $grapher = App::make( Grapher::class );
-
         $period   = Graph::processParameterPeriod( $r->query( 'graph_period', config( 'ixp_fe.admin_dashboard.default_graph_period' ) ) );
 
         if( $r->query( 'refresh_cache' ) || !( $graphs = Cache::get( 'admin_stats_'.$period ) ) ) {

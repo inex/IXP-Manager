@@ -298,7 +298,7 @@ class MeasurementController extends Eloquent2Frontend
      */
     public function stopMeasurements( AtlasRun $atlasrun ): RedirectResponse
     {
-        $atlasrun->atlasMeasurements()->each( function( $am ) {/** @var $am AtlasMeasurement */
+        $atlasrun->atlasMeasurements()->each( function( AtlasMeasurement $am ) {
             StopAllMeasurementsJob::dispatchAfterResponse( $am->atlas_id );
         });
 
