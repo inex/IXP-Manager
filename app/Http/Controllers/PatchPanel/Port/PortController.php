@@ -383,12 +383,7 @@ class PortController extends Controller
         } else {
             // only load history if we're a super user
             // get the patch panel port histories
-            foreach(
-                $ppp->patchPanelPortHistories()
-                    ->orderByDesc( 'created_at' )
-                    ->orderByDesc( 'id' )
-                    ->get() as $history
-            ){
+            foreach( $ppp->patchPanelPortHistories as $history ){
                 $listHistory[] = $history->load( [
                     'patchPanelPort.patchPanel'
                 ] );
