@@ -35,6 +35,32 @@
             $('#adv-search-select-cabinets').html( opts );
         });
 
+        $( '.dropdown-submenu a.submenu' ).on( 'click', function( e ) {
+            const submenu = $( this ).next( 'ul' );
+
+            $( this ).parent().siblings( '.dropdown-submenu' ).children( 'ul.dropdown-menu' ).hide();
+            submenu.toggle();
+
+            e.stopPropagation();
+            e.preventDefault();
+        });
+
+        $( '.btn-set-unused-ports' ).on( 'click', function( e ) {
+            e.preventDefault();
+
+            $( '<form>', {
+                method: 'POST',
+                action: $( this ).attr( 'href' )
+            })
+                .append( $( '<input>', {
+                    type: 'hidden',
+                    name: '_token',
+                    value: '<?= csrf_token() ?>'
+                }) )
+                .appendTo( 'body' )
+                .submit();
+        });
+
         $( '.btn-change-status' ).click( function( event ) {
             event.preventDefault();
             let url = this.href;

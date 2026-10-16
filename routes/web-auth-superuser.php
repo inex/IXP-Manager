@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -81,6 +81,8 @@ Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'admin/patch-panel' ], 
     Route::get(     'edit/{pp}',                        'PatchPanelController@edit'             )->name( 'patch-panel@edit'             );
     Route::get(     'view/{pp}',                        'PatchPanelController@view'             )->name( 'patch-panel@view'             );
     Route::patch(   'change-status/{pp}',               'PatchPanelController@changeStatus'     )->name( 'patch-panel@change-status'    );
+    Route::post(    'unused-ports/state/{pp}/{scope}/{state}',    'PatchPanelController@setUnusedPortsState'  )->name( 'patch-panel@set-unused-ports-state'  );
+    Route::post(    'unused-ports/duplex/{pp}/{mode}',           'PatchPanelController@setUnusedPortsDuplex' )->name( 'patch-panel@set-unused-ports-duplex' );
     Route::post(    'store',                            'PatchPanelController@store'            )->name( 'patch-panel@store'            );
     Route::put(    'update/{pp}',                      'PatchPanelController@update'            )->name( 'patch-panel@update'           );
     Route::get(     'expunge/{pp}',                    'PatchPanelController@expunge'           )->name( 'patch-panel@expunge'          );

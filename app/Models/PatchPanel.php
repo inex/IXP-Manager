@@ -3,7 +3,7 @@
 namespace IXP\Models;
 
 /*
- * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -361,6 +361,96 @@ class PatchPanel extends Model
         $total     = ($divide)? floor( $portCount / 2 ) : $portCount;
 
         return $available . ' / ' . $total;
+    }
+
+    /**
+     * Set the state of unused ports on this patch panel.
+     *
+     * @param int       $state
+     * @param list<int> $includeStates Only update ports currently in these states
+     * @param list<int> $excludeStates Do not update ports currently in these states
+     *
+     * @return int
+     */
+    public function setUnusedPortsState( int $state, array $includeStates = [], array $excludeStates = [] ): int
+    {
+        $validStates = array_keys( PatchPanelPort::$STATES );
+
+        if( !in_array( $state, $validStates, true )
+            || array_diff( [ ...$includeStates, ...$excludeStates ], $validStates )
+        ) {
+            throw new \InvalidArgumentException( 'Invalid patch panel port state.' );
+        }
+
+        $ports = $this->patchPanelPorts()
+            ->whereNull( 'customer_id' )
+            ->whereNull( 'switch_port_id' );
+
+        if( $includeStates ) {
+            $ports->whereIn( 'state', $includeStates );
+        }
+
+        if( $excludeStates ) {
+            $ports->whereNotIn( 'state', $excludeStates );
+        }
+
+        return $ports->update( [
+            'state'             => $state,
+            'last_state_change' => now(),
+        ] );
+    }
+
+    /**
+     * Pair unused odd-numbered ports with the next even-numbered port.
+     * Existing duplex ports are left unchanged.
+     *
+     * @return int The number of duplex pairs created
+     */
+    public function pairUnusedPortsAsDuplex(): int
+    {
+        $ports = $this->patchPanelPorts()
+            ->whereNull( 'customer_id' )
+            ->whereNull( 'switch_port_id' )
+            ->whereNull( 'duplex_master_id' )
+            ->whereDoesntHave( 'duplexSlavePorts' )
+            ->get()
+            ->filter( fn( PatchPanelPort $port ): bool => is_numeric( $port->number ) )
+            ->keyBy( fn( PatchPanelPort $port ): int => (int)$port->number );
+
+        $pairsCreated = 0;
+
+        foreach( $ports as $number => $master ) {
+            if( $number % 2 === 0 || !( $slave = $ports->get( $number + 1 ) ) ) {
+                continue;
+            }
+
+            $slave->update( [ 'duplex_master_id' => $master->id ] );
+            $pairsCreated++;
+        }
+
+        return $pairsCreated;
+    }
+
+    /**
+     * Split unused duplex pairs into simplex ports.
+     * Pairs with an assigned master or slave are left unchanged.
+     *
+     * @return int The number of duplex pairs split
+     */
+    public function setUnusedPortsAsSimplex(): int
+    {
+        $slaveIds = $this->patchPanelPorts()
+            ->whereNotNull( 'duplex_master_id' )
+            ->whereNull( 'customer_id' )
+            ->whereNull( 'switch_port_id' )
+            ->whereHas( 'duplexMasterPort', function( Builder $q ): void {
+                $q->whereNull( 'customer_id' )
+                    ->whereNull( 'switch_port_id' );
+            } )
+            ->pluck( 'id' );
+
+        return PatchPanelPort::whereIn( 'id', $slaveIds )
+            ->update( [ 'duplex_master_id' => null ] );
     }
 
     /**

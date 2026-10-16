@@ -25,7 +25,57 @@ use IXP\Models\PatchPanelPort;
             <i class="fa fa-table-list"></i>
         </a>
         <?php if( $t->pp ): ?>
-            <a class="btn btn-white" href="<?= route('patch-panel@view', [ "pp" => $t->pp->id ] ) ?>" title="Patch panel list">
+            <a class="btn btn-white" href="<?= route( 'patch-panel-port@list-for-patch-panel', [ 'pp' => $t->pp->id ] ) ?>" title="Show patch panel ports">
+                <i class="fa fa-list"></i>
+            </a>
+            <div class="btn-group btn-group-sm" role="group">
+                <button type="button" class="d-flex btn btn-white dropdown-toggle extra-action center-dd-caret" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Action
+                </button>
+                <ul class="dropdown-menu dropdown-menu-right">
+                    <li class="dropdown-submenu">
+                        <a class="dropdown-item submenu" tabindex="-1" href="#">
+                            Change unused ports <i class="fa fa-caret-down"></i>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-l">
+                            <li class="dropdown-submenu">
+                                <a class="dropdown-item submenu" tabindex="-1" href="#">
+                                    Set duplex <i class="fa fa-caret-down"></i>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-l">
+                                    <?php foreach( [ 'duplex' => 'Duplex', 'simplex' => 'Simplex' ] as $mode => $name ): ?>
+                                        <a class="dropdown-item btn-set-unused-ports" tabindex="-1" href="<?= route( 'patch-panel@set-unused-ports-duplex', [ 'pp' => $t->pp->id, 'mode' => $mode ] ) ?>">
+                                            <?= $name ?>
+                                        </a>
+                                    <?php endforeach; ?>
+                                </ul>
+                            </li>
+
+                            <?php foreach( [
+                                'all'        => 'Set status',
+                                'reserved'   => 'Set reserved ports',
+                                'unreserved' => 'Set unreserved ports',
+                            ] as $scope => $label ): ?>
+                                <li class="dropdown-submenu">
+                                    <a class="dropdown-item submenu" tabindex="-1" href="#">
+                                        <?= $label ?> <i class="fa fa-caret-down"></i>
+                                    </a>
+                                    <ul class="dropdown-menu dropdown-menu-l">
+                                        <?php foreach( PatchPanelPort::$INITIAL_PORT_STATES as $state => $name ): ?>
+                                            <?php if( $scope === 'reserved' && $state === PatchPanelPort::STATE_RESERVED ) { continue; } ?>
+                                            <a class="dropdown-item btn-set-unused-ports" tabindex="-1" href="<?= route( 'patch-panel@set-unused-ports-state', [ 'pp' => $t->pp->id, 'scope' => $scope, 'state' => $state ] ) ?>">
+                                                <?= $t->ee( $name ) ?>
+                                            </a>
+                                        <?php endforeach; ?>
+                                    </ul>
+                                </li>
+                            <?php endforeach; ?>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+
+            <a class="btn btn-white" href="<?= route( 'patch-panel@view', [ "pp" => $t->pp->id ] ) ?>" title="Patch panel view">
                 <i class="fa fa-eye"></i>
             </a>
         <?php endif; ?>
@@ -116,6 +166,23 @@ use IXP\Models\PatchPanelPort;
                                 : 'Please set the number of ports that you want to create for this patch panel. <b>Note that duplex ports should be entered as two ports.</b>'
                         );
                     ?>
+
+                    <?php if( !$t->pp ): ?>
+                        <?= Former::checkbox( 'create_ports_as_duplex' )
+                            ->label( 'Create ports as duplex pairs' )
+                            ->text( '&nbsp;' )
+                            ->value( 1 )
+                            ->inline()
+                            ->blockHelp( 'Pair each unused odd-numbered port with the following even-numbered port.' );
+                        ?>
+
+                        <?= Former::select( 'initial_port_state' )
+                            ->label( 'Initial port state' )
+                            ->options( PatchPanelPort::$INITIAL_PORT_STATES )
+                            ->addClass( 'chzn-select' )
+                            ->blockHelp( 'Set the initial state of all ports created for this patch panel.' );
+                        ?>
+                    <?php endif; ?>
 
                     <?= Former::text( 'port_prefix' )
                         ->label( 'Port Name Prefix' )

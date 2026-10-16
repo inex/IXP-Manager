@@ -3,7 +3,7 @@
 namespace IXP\Http\Requests;
 
 /*
- * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -27,7 +27,7 @@ use Auth;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-use IXP\Models\PatchPanel;
+use IXP\Models\{PatchPanel, PatchPanelPort};
 use IXP\Models\User;
 
 /**
@@ -37,7 +37,7 @@ use IXP\Models\User;
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @category   IXP
  * @package    IXP\Http\Requests
- * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class StorePatchPanel extends FormRequest
@@ -60,7 +60,7 @@ class StorePatchPanel extends FormRequest
      *
      * @return string[]
      *
-     * @psalm-return array{name: 'required|string|max:255', colo_reference: 'required|string|max:255', cabinet_id: 'required|integer|exists:cabinet,id', cable_type: 'required|integer', connector_type: 'required|integer', installation_date: 'date', port_prefix: 'string|nullable', u_position: 'numeric|nullable', colo_pp_type: 'numeric', mounted_at: string, numberOfPorts: 'required|integer', active: 'required|integer'}
+     * @psalm-return array{name: 'required|string|max:255', colo_reference: 'required|string|max:255', cabinet_id: 'required|integer|exists:cabinet,id', cable_type: 'required|integer', connector_type: 'required|integer', installation_date: 'date', port_prefix: 'string|nullable', u_position: 'numeric|nullable', colo_pp_type: 'numeric', mounted_at: string, numberOfPorts: 'required|integer', active: 'required|integer', create_ports_as_duplex: 'sometimes|boolean', initial_port_state: 'sometimes|integer'}
      */
     public function rules(): array
     {
@@ -76,7 +76,9 @@ class StorePatchPanel extends FormRequest
             'colo_pp_type'      => 'numeric',
             'mounted_at'        => 'string|nullable|in:' . implode( ',', array_keys( PatchPanel::$MOUNTED_AT ) ),
             'numberOfPorts'     => 'required|integer',
-            'active'            => 'required|integer',
+            'active'                 => 'required|integer',
+            'create_ports_as_duplex' => 'sometimes|boolean',
+            'initial_port_state'      => 'sometimes|integer|in:' . implode( ',', array_keys( PatchPanelPort::$INITIAL_PORT_STATES ) ),
         ];
     }
 }
