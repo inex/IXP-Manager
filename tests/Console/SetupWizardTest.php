@@ -43,9 +43,7 @@ class SetupWizardTest extends TestCase
     use CreatesApplication;
     use RefreshDatabase;
 
-    protected $seed = false;
-    protected $seeder = null;
-
+    #[\Override]
     public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
@@ -55,10 +53,10 @@ class SetupWizardTest extends TestCase
         RefreshDatabaseState::$migrated = false;
     }
 
+    #[\Override]
     public static function tearDownAfterClass(): void
     {
-        // Force Laravel to forget the migration state once for this entire class,
-        // triggering a fresh migrate:fresh (without seeders) when the first test runs.
+        // Wipe out migration history so next tests migrate for themselves (with seeds)
         RefreshDatabaseState::$migrated = false;
         parent::tearDownAfterClass();
     }
