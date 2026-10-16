@@ -108,11 +108,6 @@ class RouterTest extends TestCase
         return $this->withHeader( 'X-IXP-Manager-API-Key', self::API_KEY);
     }
     
-    public function tearDown(): void {
-        Router::whereIn('handle', [ 'test-router', 'test-router-pair' ] )->delete();
-        parent::tearDown();
-    }
-    
     public function testApiRouterNotExists(): void
     {
         $response = $this->withKey()->get( '/admin/api/v4/router/updated/test-router-xxx' );

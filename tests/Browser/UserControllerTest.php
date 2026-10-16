@@ -1,7 +1,4 @@
 <?php
-
-namespace Tests\Browser;
-
 /*
  * Copyright (C) 2009 - 2025 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
@@ -22,6 +19,11 @@ namespace Tests\Browser;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+
+declare(strict_types=1);
+
+namespace Tests\Browser;
+
 
 use Throwable;
 
@@ -47,28 +49,6 @@ use Tests\DuskTestCase;
  */
 class UserControllerTest extends DuskTestCase
 {
-
-    public function tearDown(): void
-    {
-        foreach( [ 'test-user1@example.com', 'test13@example.com' ] as $email ) {
-            if ($user = User::whereEmail($email)->first()) {
-                CustomerToUser::where('user_id',$user->id)->delete();
-                $user->delete();
-            }
-        }
-
-        // set back the changed attributes
-        $customAdmin = User::whereEmail('imagine-custadmin@example.com')->first();
-        $customAdmin->name = "Test Test";
-        $customAdmin->authorisedMobile = null;
-        $customAdmin->save();
-
-        CustomerToUser::where('user_id',5)
-            ->where('customer_id', 1)->forceDelete();
-
-        parent::tearDown();
-    }
-
     /**
      * A Dusk test example.
      *

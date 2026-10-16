@@ -1,7 +1,4 @@
 <?php
-
-namespace Tests\Browser;
-
 /*
  * Copyright (C) 2009 - 2025 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
@@ -23,6 +20,10 @@ namespace Tests\Browser;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+declare(strict_types=1);
+
+namespace Tests\Browser;
+
 use IXP\Models\Vlan;
 
 use Laravel\Dusk\Browser;
@@ -42,24 +43,7 @@ use Tests\DuskTestCase;
 class VlanControllerTest extends DuskTestCase
 {
     /**
-     * @throws
-     */
-    public function tearDown(): void
-    {
-        foreach( [ 'Vlan test', 'Vlan test2' ] as $name ) {
-            if( $vlan = Vlan::whereName( $name )->first() ) {
-                $vlan->delete();
-            }
-        }
-        parent::tearDown();
-    }
-
-    /**
-     * A Dusk test example.
-     *
-     * @return void
-     *
-     * @throws
+     * @throws \Throwable
      */
     public function testAdd(): void
     {

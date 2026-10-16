@@ -1,7 +1,4 @@
 <?php
-
-namespace Tests\Browser;
-
 /*
  * Copyright (C) 2009 - 2025 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
@@ -22,6 +19,10 @@ namespace Tests\Browser;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+
+declare(strict_types=1);
+
+namespace Tests\Browser;
 
 use Illuminate\Support\Facades\DB;
 use IXP\Models\IPv4Address;
@@ -75,19 +76,7 @@ class IpAddressControllerTest extends DuskTestCase
     ];
 
     /**
-     * @throws
-     */
-    public function tearDown(): void
-    {
-        $vlan = Vlan::whereName( $this->vlan )->first();
-        IPv4Address::where( "vlanid", $vlan->id )->delete();
-        IPv6Address::where( "vlanid", $vlan->id )->delete();
-        Vlan::whereName( $this->vlan )->delete();
-        parent::tearDown();
-    }
-
-    /**
-     * A Dusk test example.
+     * Test empty list, create IP's on a vlan, adding more IP's, deleting single IP, mass deleting IP's
      *
      * @return void
      *
@@ -236,7 +225,6 @@ class IpAddressControllerTest extends DuskTestCase
                     ->assertDontSee($cat["ip2"]);
             }
 
-            //III. post removal of VLAN by teardown
         } );
     }
 }
