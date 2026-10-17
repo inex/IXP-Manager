@@ -220,7 +220,7 @@
                                                                             Change State
                                                                         </button>
                                                                         <div class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                                                                            <?php if( $ppp->stateAvailable() || $ppp->stateReserved() || $ppp->statePrewired() ): ?>
+                                                                            <?php if( $ppp->stateAvailable() || $ppp->stateReserved() || $ppp->statePrewired() || $ppp->stateOther() ): ?>
                                                                                 <a class="dropdown-item" id="allocate-<?= $ppp->id ?>" href="<?= route( 'patch-panel-port@edit-allocate' , [ 'ppp' => $ppp->id ] ) ?>">
                                                                                     Allocate
                                                                                 </a>
@@ -235,6 +235,12 @@
                                                                             <?php if( $ppp->statePrewired() ): ?>
                                                                                 <a class="dropdown-item" id="prewired-<?= $ppp->id ?>" href="<?= route( 'patch-panel-port@change-status' , [ 'ppp' => $ppp->id , 'status' => PatchPanelPort::STATE_AVAILABLE ] ) ?>">
                                                                                     Unset Prewired
+                                                                                </a>
+                                                                            <?php endif; ?>
+
+                                                                            <?php if( $ppp->stateOther() ): ?>
+                                                                                <a class="dropdown-item" id="other-<?= $ppp->id ?>" href="<?= route( 'patch-panel-port@change-status' , [ 'ppp' => $ppp->id , 'status' => PatchPanelPort::STATE_AVAILABLE ] ) ?>">
+                                                                                    Set Available
                                                                                 </a>
                                                                             <?php endif; ?>
 
@@ -268,8 +274,8 @@
                                                                                 </a>
                                                                             <?php endif; ?>
                                                                         </div>
+                                                                    </div>
                                                                 <?php endif; /* isSuperUser() */ ?>
-                                                            </div>
                                                         </td>
                                                     </tr>
                                                     <?php if( !config( 'ixp_fe.frontend.disabled.logs' ) && $isSuperUser && method_exists( \IXP\Models\PatchPanelPort::class, 'logSubject') ): ?>

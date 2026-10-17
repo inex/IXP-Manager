@@ -3,7 +3,7 @@
 namespace IXP\Models;
 
 /*
- * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -201,6 +201,16 @@ class PatchPanelPort extends Model
     public const int EMAIL_CEASE                   = 2;
     public const int EMAIL_INFO                    = 3;
     public const int EMAIL_LOA                     = 4;
+
+    /**
+     * States available when initially creating new patch panels.
+     */
+    public static array $INITIAL_PORT_STATES = [
+        self::STATE_AVAILABLE           => "Available",
+        self::STATE_RESERVED            => "Reserved",
+        self::STATE_OTHER               => "Other",
+        self::STATE_AWAITING_XCONNECT   => "Awaiting Xconnect",
+    ];
 
     /**
      * Array STATES
@@ -551,13 +561,23 @@ class PatchPanelPort extends Model
     }
 
     /**
-     * Is the state STATE_RESERVED?
+     * Is the state STATE_PREWIRED?
      *
      * @return bool
      */
     public function statePrewired(): bool
     {
         return $this->state === self::STATE_PREWIRED;
+    }
+
+    /**
+     * Is the state STATE_OTHER?
+     *
+     * @return bool
+     */
+    public function stateOther(): bool
+    {
+        return $this->state === self::STATE_OTHER;
     }
 
     /**
