@@ -13,7 +13,7 @@
                 <hr />
 
                 <div id="notes-modal-body-div-pi-status" class="tw:mb-2">
-                    <label>Update Physical Port State To: </label>
+                    <label for="notes-modal-body-pi-status" class="col-md-6">Update Physical Port State To:</label>
                     <div class="col-md-6">
                         <select title="Physical Interface States" id="notes-modal-body-pi-status" class="chzn-select">
                             <?php foreach( \IXP\Models\PhysicalInterface::$STATES as $i => $s ): ?>
@@ -24,22 +24,24 @@
                 </div>
 
                 <div id="notes-modal-body-div-colo-ref" class="tw:mb-2">
-                    <label>Colocation Reference:</label>
-                    <input type="text" id="notes-modal-body-colo-ref" class="col-md-6 form-control tw:ml-4">
+                    <label for="notes-modal-body-colo-ref" class="col-md-6">Colocation Reference:</label>
+                    <div class="col-md-6">
+                        <input type="text" id="notes-modal-body-colo-ref" class="form-control">
+                    </div>
                 </div>
 
                 <div id="notes-modal-body-div-unpatch" class="tw:mb-2">
-                    <label id="notes-modal-body-unpatch-label" for="notes-modal-body-unpatch">Unpatch Port:</label>
+                    <label id="notes-modal-body-unpatch-label" for="notes-modal-body-unpatch" class="col-md-8">Unpatch Port:</label>
                     <input type="checkbox" id="notes-modal-body-unpatch" class="tw:ml-2">
                 </div>
 
                 <div id="notes-modal-body-div-set-prewired" class="tw:mb-2">
-                    <label for="notes-modal-body-set-prewired">Set to Prewired:</label>
+                    <label for="notes-modal-body-set-prewired" class="col-md-8">Set to Prewired:</label>
                     <input type="checkbox" id="notes-modal-body-set-prewired" class="tw:ml-2">
                 </div>
 
                 <div id="notes-modal-body-div-keep-duplex" class="tw:mb-2">
-                    <label for="notes-modal-body-keep-duplex">Keep as duplex pair:</label>
+                    <label for="notes-modal-body-keep-duplex" class="col-md-8">Keep as duplex pair:</label>
                     <input type="checkbox" id="notes-modal-body-keep-duplex" class="tw:ml-2" checked>
                 </div>
 
