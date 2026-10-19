@@ -19,6 +19,7 @@
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+
 declare(strict_types=1);
 
 namespace Tests\Browser;
@@ -38,6 +39,8 @@ class SwitchUserControllerTest extends DuskTestCase
 
     /**
      * Test basic login-as and switch back flow
+     *
+     * @throws \Throwable
      */
     public function testLoginAs(): void
     {

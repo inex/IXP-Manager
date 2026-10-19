@@ -43,13 +43,6 @@ use Tests\TestCase;
  */
 class NagiosControllerTest extends TestCase
 {
-    #[\Override]
-    public function tearDown(): void
-    {
-        TaskLastRun::truncate();
-        parent::tearDown();
-    }
-
     public function testCustomersVlanNotFound(): void
     {
         $this->withHeader( 'X-IXP-Manager-API-Key', self::API_KEY_SUPERUSER )

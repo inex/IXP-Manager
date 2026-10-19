@@ -1,7 +1,4 @@
 <?php
-
-namespace Tests\Browser;
-
 /*
  * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
@@ -22,6 +19,10 @@ namespace Tests\Browser;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+
+declare(strict_types=1);
+
+namespace Tests\Browser;
 
 use Str;
 
@@ -45,21 +46,12 @@ use Tests\DuskTestCase;
  */
 class ApiKeyControllerTest extends DuskTestCase
 {
-    public function tearDown(): void
-    {
-        if( $key = ApiKey::where( 'description','Temporally Test API Key' ) ) {
-            $key->delete();
-        }
-
-        parent::tearDown();
-    }
-
     /**
-     * A Dusk test example.
+     * Api Key test show default, add api key, show created api key, edit api key, delete
      *
      * @return void
      *
-     * @throws
+     * @throws \Throwable
      */
     public function test(): void
     {

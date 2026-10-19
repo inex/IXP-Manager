@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Tests\Tasks\Router;
 
@@ -53,7 +54,7 @@ class GenerateConfigurationBird1CollectorTest extends TestCase
         foreach( $this->rchandles as $handle )
         {
             $router = Router::whereHandle( $handle )->get()->first();
-            $conf = ( new RouterConfigurationGenerator( $router ) )->render();
+            $conf = new RouterConfigurationGenerator( $router )->render()->render();
 
             $knownGoodConf = file_get_contents( base_path() . "/data/ci/known-good/ci-apiv4-{$handle}.conf" );
             $this->assertFalse( $knownGoodConf === false, "RC Conf generation - could not load known good file ci-apiv4-{$handle}.conf" );

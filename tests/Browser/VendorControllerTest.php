@@ -1,7 +1,5 @@
 <?php
 
-namespace Tests\Browser;
-
 /*
  * Copyright (C) 2009 - 2025 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
@@ -22,6 +20,9 @@ namespace Tests\Browser;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+declare(strict_types=1);
+
+namespace Tests\Browser;
 
 use IXP\Models\Vendor;
 use Laravel\Dusk\Browser;
@@ -40,20 +41,6 @@ use Tests\DuskTestCase;
  */
 class VendorControllerTest extends DuskTestCase
 {
-    /**
-     * @throws
-     */
-    public function tearDown(): void
-    {
-        foreach( [ 'Vendor Company', 'Vendor Company2' ] as $name ) {
-            if( $c = Vendor::whereName( $name )->first() ) {
-                $c->delete();
-            }
-        }
-
-        parent::tearDown();
-    }
-
     /**
      * Vendor list, add, edit, remove test
      *

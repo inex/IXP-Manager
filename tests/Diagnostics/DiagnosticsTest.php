@@ -1,7 +1,4 @@
 <?php
-
-namespace Tests\Diagnostics;
-
 /*
  * Copyright (C) 2009 - 2024 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
@@ -22,6 +19,10 @@ namespace Tests\Diagnostics;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+
+declare(strict_types=1);
+
+namespace Tests\Diagnostics;
 
 use IXP\Models\Customer;
 use IXP\Services\Diagnostics;

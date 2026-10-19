@@ -1,7 +1,4 @@
 <?php
-
-namespace Tests\Browser;
-
 /*
  * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
@@ -23,6 +20,10 @@ namespace Tests\Browser;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+declare(strict_types=1);
+
+namespace Tests\Browser;
+
 use Illuminate\Support\Facades\Hash;
 use IXP\Models\AppPassword;
 
@@ -31,7 +32,7 @@ use Laravel\Dusk\Browser;
 use Tests\DuskTestCase;
 
 /**
- * Test Apikey Controller
+ * Test App Passwords Controller
  *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Thomas Kerin <thomas@islandbridgenetworks.ie>
@@ -42,17 +43,8 @@ use Tests\DuskTestCase;
  */
 class AppPasswordsControllerTest extends DuskTestCase
 {
-    public function tearDown(): void
-    {
-        if( $key = AppPassword::where( 'description','Temporary app password' ) ) {
-            $key->delete();
-        }
-
-        parent::tearDown();
-    }
-
     /**
-     * A Dusk test example.
+     * App Passwords - create, display app-password, display, delete
      *
      * @return void
      *
@@ -73,7 +65,7 @@ class AppPasswordsControllerTest extends DuskTestCase
                 ->assertSee( 'Application-Specific Passwords' )
                 ->assertSee( 'No app password exists.' );
 
-            // 1. test add empty inputs - descriptino is required
+            // 1. test add empty inputs - description is required
             $browser->visit( '/admin/app-password/create' )
                 ->assertSee( 'Create Application-Specific Password' )
                 ->press( 'Create' )
@@ -117,7 +109,7 @@ class AppPasswordsControllerTest extends DuskTestCase
             // 4. Check Value
             $this->assertEquals( "Temporary app password", $appPassword->description );
 
-            // 9. Delete API KEY
+            // 9. Delete app password
             $browser->click( "#e2f-list-delete-" . $appPassword->id )
                 ->waitForText( 'Do you really want to delete this app password?' )
                 ->press( 'Delete' )

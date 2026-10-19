@@ -53,8 +53,6 @@ abstract class TestCase extends BaseTestCase
     use CreatesApplication;
     use RefreshDatabase;
 
-    protected $seed = true;
-
     protected $seeder = CiTestDataSeeder::class;
 
     public const API_KEY_CUSTUSER  = 'ixpm_v7zO4TmaX3Ft_bo4NB55lMRFPSqoNDCv34xDkwg8d2WK01bMzif';

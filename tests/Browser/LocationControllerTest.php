@@ -1,7 +1,4 @@
 <?php
-
-namespace Tests\Browser;
-
 /*
  * Copyright (C) 2009 - 2025 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
@@ -23,6 +20,10 @@ namespace Tests\Browser;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+declare(strict_types=1);
+
+namespace Tests\Browser;
+
 use IXP\Models\Location;
 
 use Laravel\Dusk\Browser;
@@ -42,25 +43,11 @@ use Tests\DuskTestCase;
 class LocationControllerTest extends DuskTestCase
 {
     /**
-     * @throws
-     */
-    public function tearDown(): void
-    {
-        foreach( [ 'Infrastructure Test', 'Infrastructure Test2' ] as $name ) {
-            if( $c = Location::whereName( $name )->first() ) {
-                $c->delete();
-            }
-        }
-
-        parent::tearDown();
-    }
-
-    /**
-     * A Dusk test example.
+     * Test location controller - list, see CI seeded default location, create, edit with + without changes, and delete
      *
      * @return void
      *
-     * @throws
+     * @throws \Throwable
      */
     public function testAdd(): void
     {
@@ -294,7 +281,7 @@ class LocationControllerTest extends DuskTestCase
 
     /**
      * Tests scenario where location country is null - pages should not error
-     *
+     * @throws \Throwable
      */
     public function testEditformWhenCountryIsNull(): void
     {

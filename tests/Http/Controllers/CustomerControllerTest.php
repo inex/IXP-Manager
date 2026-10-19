@@ -20,6 +20,7 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+declare(strict_types=1);
 namespace Tests\Http\Controllers;
 
 use Illuminate\Database\Eloquent\Model;
@@ -34,23 +35,6 @@ use Tests\TestCase;
 
 class CustomerControllerTest extends TestCase
 {
-    protected $deleteRows = [];
-
-    public function tearDown(): void
-    {
-        foreach ($this->deleteRows as [$table, $id]) {
-            \DB::table( $table )->where( 'id', $id )->delete();
-        }
-        parent::tearDown();
-    }
-
-    protected function deleteLater(Model... $models)
-    {
-        foreach ($models as $model) {
-            $this->deleteRows[] = [$model->getTable(), $model->id];
-        }
-    }
-
     public function testCannotDeleteResellerWithCustomers()
     {
         $resellerRegisteredDetails = new CompanyRegisteredDetail();
@@ -63,12 +47,10 @@ class CustomerControllerTest extends TestCase
         $reseller->company_registered_detail_id = $resellerRegisteredDetails->id;
         $reseller->company_billing_details_id = $resellerBillingDetails->id;
         $reseller->save();
-        $this->deleteLater($reseller, $resellerBillingDetails, $resellerRegisteredDetails);
 
         $resoldCustomer = new Customer();
         $resoldCustomer->reseller = $reseller->id;
         $resoldCustomer->save();
-        $this->deleteLater($resoldCustomer);
 
         $this->actingAs($this->getSuperUser());
 
@@ -126,7 +108,6 @@ class CustomerControllerTest extends TestCase
         $customer->company_registered_detail_id = $regDetail->id;
         $customer->company_billing_details_id = $billingDetail->id;
         $customer->save();
-        $this->deleteLater($customer, $billingDetail, $regDetail);
 
         $location = new Location();
         $location->save();
@@ -143,7 +124,6 @@ class CustomerControllerTest extends TestCase
         $ppp->customer_id = $customer->id;
         $ppp->patch_panel_id = $pp->id;
         $ppp->save();
-        $this->deleteLater($ppp, $pp, $cabinet, $location);
         $this->actingAs($this->getSuperUser());
 
         // Can't go to delete-recap if they have active patch panel ports

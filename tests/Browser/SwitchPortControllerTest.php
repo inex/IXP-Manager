@@ -1,7 +1,4 @@
 <?php
-
-namespace Tests\Browser;
-
 /*
  * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
@@ -22,6 +19,10 @@ namespace Tests\Browser;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+
+declare(strict_types=1);
+
+namespace Tests\Browser;
 
 use IXP\Models\SwitchPort;
 
@@ -46,7 +47,7 @@ class SwitchPortControllerTest extends DuskTestCase
      *
      * @return void
      *
-     * @throws
+     * @throws \Throwable
      */
     public function testSwitchPort(): void
     {

@@ -1,7 +1,4 @@
 <?php
-
-namespace Tests\Browser;
-
 /*
  * Copyright (C) 2009 - 2025 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
@@ -23,6 +20,10 @@ namespace Tests\Browser;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+declare(strict_types=1);
+
+namespace Tests\Browser;
+
 use IXP\Models\Contact;
 use Tests\DuskTestCase;
 use Laravel\Dusk\Browser;
@@ -40,19 +41,9 @@ use Throwable;
  */
 class ContactControllerTest extends DuskTestCase
 {
-    public function tearDown(): void
-    {
-        foreach( [ 'Test Contact 1', 'Test Contact 2' ] as $name ) {
-            if( $c = Contact::whereName( $name )->first() ) {
-                $c->delete();
-            }
-        }
-
-        parent::tearDown();
-    }
-
     /**
-     * A Dusk test example.
+     * Contact tests, list (see defaults), add, edit with+without changes, delete (as SUPERADMIN)
+     * test add, edit with+without changes, delete (as CUSTADMIN)
      *
      * @return void
      *
