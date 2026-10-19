@@ -77,6 +77,11 @@ class SettingsControllerTest extends DuskTestCase
             $browser->visit( route( 'settings@index' ) )
                 ->assertSee( 'IXP Manager Settings' )
                 ->assertSee( '.env last modified: ' );
+
+            $browser->press( 'Admin' )
+                ->waitForText( 'Channel Group Start' )
+                ->assertInputValue( 'channelgroup_start', '1' )
+                ->assertInputValue( 'channelgroup_end', '1000' );
             
             $browser->driver->executeScript( 'window.scrollTo(0, 3000);' );
             

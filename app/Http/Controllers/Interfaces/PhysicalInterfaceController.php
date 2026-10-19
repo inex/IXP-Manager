@@ -149,7 +149,7 @@ class PhysicalInterfaceController extends Common
 	    // when presenting the add PI form, we include peering, reseller and unknown port types;
 	    // set the selected port as peering unless already reseller
         if ( $sp->type !== SwitchPort::TYPE_RESELLER ) {
-                $sp->update( [ 'type' => SwitchPort::TYPE_PEERING ] );
+            $sp->update( [ 'type' => SwitchPort::TYPE_PEERING ] );
         }
 
         $this->setBundleDetails( $vi );
