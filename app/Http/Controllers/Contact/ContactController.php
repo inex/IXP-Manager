@@ -105,7 +105,7 @@ class ContactController extends EloquentController
             case User::AUTH_SUPERUSER:
                 $this->feParams->listColumns = [
                     'customer'  => [
-                        'title'      => 'Customer',
+                        'title'      => ucfirst( config( 'ixp_fe.lang.customer.one' ) ),
                         'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
                         'route'      => 'customer@overview',
                         'idField'    => 'custid'

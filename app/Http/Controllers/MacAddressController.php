@@ -76,7 +76,7 @@ class MacAddressController extends EloquentController
             'readonly'          => self::$read_only,
             'documentation'     => 'https://docs.ixpmanager.org/latest/features/layer2-addresses/',
             'listColumns'       => [
-                'customer'       => 'Customer',
+                'customer'       => ucfirst( config( 'ixp_fe.lang.customer.one' ) ),
                 'switchport'     => 'Interface(s)',
                 'ip4'            => 'IPv4',
                 'ip6'            => 'IPv6',

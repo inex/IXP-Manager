@@ -97,7 +97,7 @@ class Layer2AddressController extends EloquentController
             'readonly'          => self::$read_only,
             'documentation'     => 'https://docs.ixpmanager.org/latest/features/layer2-addresses/',
             'listColumns'       => [
-                'customer'          => 'Customer',
+                'customer'          => ucfirst( config( 'ixp_fe.lang.customer.one' ) ),
                 'switchport'        => 'Interface(s)',
                 'vlan'              => 'VLAN',
                 'ip4'               => 'IPv4',
