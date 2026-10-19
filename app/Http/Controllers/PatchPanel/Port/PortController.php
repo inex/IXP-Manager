@@ -444,7 +444,7 @@ class PortController extends Controller
 
         if( !array_key_exists( $status, PatchPanelPort::$STATES ) ){
             AlertContainer::push( 'The status is invalid.', Alert::DANGER );
-            return redirect::back();
+            return Redirect::back();
         }
 
         switch ( $status ) {
@@ -524,6 +524,6 @@ class PortController extends Controller
 
         $message ??= $ppp->states();
         AlertContainer::push( 'The patch panel port has been set to ' . $message, Alert::SUCCESS );
-        return redirect::back();
+        return Redirect::back();
     }
 }
