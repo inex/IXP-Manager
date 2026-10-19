@@ -66,4 +66,27 @@ class GenerateConfigurationBird22025ServerTest extends TestCase
             $this->assertEquals( $knownGoodConf, $conf, "Known good and generated RS configuration for $handle do not match" );
         }
     }
+
+    public function testRouteServerBlackholingConfigurationGeneration(): void
+    {
+        foreach( $this->rchandles as $knowngood => $handle )
+        {
+            $router = Router::whereHandle( $handle )->get()->first();
+            $router->template    = 'api/v4/router/server/bird2-2025/standard';
+            $router->blackholing = true;
+            $router->vlan->blackhole_nexthop_ipv4 = '10.1.0.66';
+            $router->vlan->blackhole_nexthop_ipv6 = '2001:db8:1::66';
+            $conf = new RouterConfigurationGenerator( $router )->render();
+
+            $knownGoodConf = file_get_contents( base_path() . "/data/ci/known-good/ci-apiv4-$knowngood-blackhole.conf" );
+            $this->assertFalse( $knownGoodConf === false, "RS Conf generation - could not load known good file ci-apiv4-$knowngood-blackhole.conf" );
+
+            $conf          = preg_replace( "/^#.*$/m", "", $conf          );
+            $knownGoodConf = preg_replace( "/^#.*$/m", "", $knownGoodConf );
+            $conf          = preg_replace( "/^\s+$/m", "", $conf          );
+            $knownGoodConf = preg_replace( "/^\s+$/m", "", $knownGoodConf );
+
+            $this->assertEquals( $knownGoodConf, $conf, "Known good and generated blackholing RS configuration for $handle do not match" );
+        }
+    }
 }

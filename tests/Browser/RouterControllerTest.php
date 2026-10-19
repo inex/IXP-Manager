@@ -157,7 +157,17 @@ class RouterControllerTest extends DuskTestCase
                 ->assertChecked( 'bgp_lc' )
                 ->assertChecked( 'rpki' )
                 ->assertChecked( 'skip_md5' )
+                ->assertNotChecked( 'blackholing' )
                 ->assertInputValue( 'template', 'api/v4/router/server/bird/standard' );
+
+            // blackholing requires a blackhole next-hop on the VLAN
+            $browser->driver->executeScript( 'window.scrollTo(0, 3000);' );
+            $browser->check( 'blackholing' )
+                ->press( 'Save Changes' )
+                ->assertSee( 'Set a blackhole next-hop for this protocol on the VLAN before enabling blackholing.' );
+
+            $browser->driver->executeScript( 'window.scrollTo(0, 3000);' );
+            $browser->uncheck( 'blackholing' );
 
             // 5. uncheck checkboxes, change selects and values, ->press('Save Changes'), assertPathIs(....)  (repeat 1)
             $browser->select( 'vlan_id', '1' )

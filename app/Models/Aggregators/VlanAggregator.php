@@ -44,6 +44,8 @@ use IXP\Models\{
  * @property int $peering_manager
  * @property bool $export_to_ixf
  * @property string|null $config_name
+ * @property string|null $blackhole_nexthop_ipv4
+ * @property string|null $blackhole_nexthop_ipv6
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\AtlasRun> $atlasRun
@@ -68,6 +70,8 @@ use IXP\Models\{
  * @method static Builder<static>|VlanAggregator publicOnly()
  * @method static Builder<static>|VlanAggregator publicProductionPeeringLan()
  * @method static Builder<static>|VlanAggregator query()
+ * @method static Builder<static>|VlanAggregator whereBlackholeNexthopIpv4($value)
+ * @method static Builder<static>|VlanAggregator whereBlackholeNexthopIpv6($value)
  * @method static Builder<static>|VlanAggregator whereConfigName($value)
  * @method static Builder<static>|VlanAggregator whereCreatedAt($value)
  * @method static Builder<static>|VlanAggregator whereExportToIxf($value)

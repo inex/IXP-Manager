@@ -180,6 +180,7 @@ class RouterController extends Controller
             'rpki'                      => request()->old( 'rpki',              (string)$router->rpki               ),
             'rfc1997_passthru'          => request()->old( 'rfc1997_passthru',  (string)$router->rfc1997_passthru   ),
             'skip_md5'                  => request()->old( 'skip_md5',          (string)$router->skip_md5           ),
+            'blackholing'               => request()->old( 'blackholing',       (string)$router->blackholing        ),
             'template'                  => request()->old( 'template',          $router->template           ),
         ]);
 
