@@ -113,6 +113,30 @@ class CustomerController extends Controller
             $type = $r->session()->get( "cust-list-type" );
         }
 
+        $resellerTypes = [
+            'resold'               => 'Resold',
+            'reseller'             => 'Reseller',
+            'not-resold'           => 'Not resold',
+            'not-reseller'         => 'Not reseller',
+            'not-resold-reseller'  => 'Not resold/reseller',
+        ];
+
+        if( !$this->resellerMode() ) {
+            $resellerType = false;
+            $r->session()->remove( 'cust-list-reseller-type' );
+        } elseif( ( $resellerType = $r->input( 'reseller-type' ) ) !== null ) {
+            if( isset( $resellerTypes[ $resellerType ] ) ) {
+                $r->session()->put( 'cust-list-reseller-type', $resellerType );
+            } else {
+                $resellerType = false;
+                $r->session()->remove( 'cust-list-reseller-type' );
+            }
+        } elseif( $r->session()->exists( 'cust-list-reseller-type' ) ) {
+            $resellerType = $r->session()->get( 'cust-list-reseller-type' );
+        } else {
+            $resellerType = false;
+        }
+
         if( ( $showCurrentOnly = $r->input( 'current-only' ) ) !== null ) {
             $r->session()->put( "cust-list-current-only", $showCurrentOnly );
         } else if( $r->session()->exists( "cust-list-current-only" ) ) {
@@ -140,6 +164,8 @@ class CustomerController extends Controller
         return view( 'customer/list' )->with([
             'state'                 => $state           ?? false,
             'type'                  => $type            ?? false,
+            'resellerType'          => $resellerType,
+            'resellerTypes'         => $resellerTypes,
             'showCurrentOnly'       => $showCurrentOnly ?? false,
             'tag'                   => $tid ?? false,
             'tags'                  => $tags,
@@ -151,6 +177,17 @@ class CustomerController extends Controller
                     return $q->where( 'cust.status', $state );
                 } )->when( $type && isset( Customer::$CUST_TYPES_TEXT[ $type ] ), function( Builder $q ) use( $type ) {
                     return $q->where( 'cust.type', $type );
+                } )->when( $resellerType === 'resold', function( Builder $q ) {
+                    return $q->whereNotNull( 'cust.reseller' );
+                } )->when( $resellerType === 'reseller', function( Builder $q ) {
+                    return $q->where( 'cust.isReseller', true );
+                } )->when( $resellerType === 'not-resold', function( Builder $q ) {
+                    return $q->whereNull( 'cust.reseller' );
+                } )->when( $resellerType === 'not-reseller', function( Builder $q ) {
+                    return $q->where( 'cust.isReseller', false );
+                } )->when( $resellerType === 'not-resold-reseller', function( Builder $q ) {
+                    return $q->whereNull( 'cust.reseller' )
+                        ->where( 'cust.isReseller', false );
                 } )->when( $showCurrentOnly, function( Builder $q ) {
                     return $q->whereRaw( Customer::SQL_CUST_CURRENT );
                 } )->orderByRaw( 'cust.name' )->get(),
