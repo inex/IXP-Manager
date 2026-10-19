@@ -26,6 +26,7 @@ namespace IXP\Http\Controllers\Contact;
 use Auth, Former, Redirect, stdClass;
 
 use Illuminate\Database\Eloquent\Builder;
+use IXP\Rules\IsPhone;
 use Illuminate\Http\{
     Request,
     RedirectResponse
@@ -569,9 +570,9 @@ class ContactController extends EloquentController
         $rules = [
             'name'                  => 'required|string|max:255',
             'position'              => 'nullable|string|max:255',
-            'email'                 => 'nullable|email',
-            'phone'                 => 'nullable|string|max:50',
-            'mobile'                => 'nullable|string|max:50',
+            'email'                 => 'nullable|string|email|max:255',
+            'phone'                 => ['nullable', 'string', 'max:25', new IsPhone()],
+            'mobile'                => ['nullable', 'string', 'max:25', new IsPhone()],
             'notes'                 => 'nullable|string|max:255',
         ];
 
