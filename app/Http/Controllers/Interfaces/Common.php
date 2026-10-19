@@ -256,7 +256,9 @@ abstract class Common extends Controller
         // start 0 enables automatic mode: begin at the lowest number
         // already used on the relevant switch, or at 1 for an empty range.
         if( $start === 0 ) {
-            $start = count( $usedChannelGroups ) ? min( $usedChannelGroups ) : 1;
+            // Restrict our search to channelgroups within the auto-assignment range
+            $groupsInAutoRange = array_filter( $usedChannelGroups, fn ( int $channelGroup ) => $channelGroup >= 1 && $channelGroup < $end );
+            $start = count( $groupsInAutoRange ) ? min( $groupsInAutoRange ) : 1;
         }
 
         if( $start < 1 || $end <= $start ) {
