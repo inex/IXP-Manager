@@ -50,16 +50,16 @@ class IsPhoneTest extends TestCase
         $rule->validate("", '0209122000', ($fails = new ValidationErrorLogger)(...));
         $this->assertEquals([], $fails->fails);
 
-        // 4 digits is shortest allowed phone number
-        $rule->validate("", "1234", ($fails = new ValidationErrorLogger)(...));
+        // 7 digits is shortest allowed phone number
+        $rule->validate("", "1234567", ($fails = new ValidationErrorLogger)(...));
         $this->assertEquals([], $fails->fails);
 
         // 25 digits is longest allowed phone number
         $rule->validate("", "0123456789012345678901234", ($fails = new ValidationErrorLogger)(...));
-        $this->assertCount(0, $fails->fails);
+        $this->assertEquals([], $fails->fails);
 
         // we do accept nonsense symbols within the whitelist, as long as there is 4 digits
-        $rule->validate("", '+() -..-1234', ($fails = new ValidationErrorLogger)(...));
+        $rule->validate("", '+() -..-1234567', ($fails = new ValidationErrorLogger)(...));
         $this->assertEquals([], $fails->fails);
 
         // unicode numbers allowed
@@ -84,7 +84,7 @@ class IsPhoneTest extends TestCase
 
         // min 4 digits
         $rule->validate("", '+()-----()', ($fails = new ValidationErrorLogger)(...));
-        $this->assertEquals(["The :attribute must contain at least 4 digits."], $fails->fails);
+        $this->assertEquals(["The :attribute must contain at least 7 digits."], $fails->fails);
 
         // the plus has to be at the start of the string
         $rule->validate("", "1234+", ($fails = new ValidationErrorLogger)(...));

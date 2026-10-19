@@ -39,14 +39,14 @@ class IsPhone implements ValidationRule
             return;
         }
 
-        if (!preg_match('/^\+?[\p{N}\s\-\(\)\.]{4,25}$/u', $value)) {
+        if (!preg_match('/^\+?[\p{N}\s\-\(\)\.]{7,25}$/u', $value)) {
             $fail("The :attribute format is invalid. Allowed characters besides digits are: +, -, (, ), .");
             return;
         }
 
         $digitCount = preg_match_all('/\p{N}/u', $value);
-        if ($digitCount < 4) {
-            $fail("The :attribute must contain at least 4 digits.");
+        if ($digitCount < 7) {
+            $fail("The :attribute must contain at least 7 digits.");
             return;
         }
     }
