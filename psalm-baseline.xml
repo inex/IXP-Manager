@@ -454,11 +454,6 @@
       <code><![CDATA[config( 'filesystems.disks.' . $file->disk . '.root', '*** UNKNOWN LOCATION ***' )]]></code>
     </InvalidOperand>
   </file>
-  <file src="app/Http/Controllers/DocstoreCustomer/FileController.php">
-    <InvalidArgument>
-      <code><![CDATA[$file->customer->id]]></code>
-    </InvalidArgument>
-  </file>
   <file src="app/Http/Controllers/FilteredPrefixesController.php">
     <MissingDocblockType>
       <code><![CDATA[public function list( Request $r, Customer $cust ): View]]></code>
