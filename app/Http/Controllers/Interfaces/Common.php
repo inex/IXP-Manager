@@ -263,16 +263,13 @@ abstract class Common extends Controller
             throw new GeneralException( 'The channel group range configuration is invalid' );
         }
 
-        $orig = $vi->channelgroup;
         // Select the first unused number at or above the resolved start.
         for( $i = $start; $i < $end; $i++ ) {
             if( !in_array( $i, $usedChannelGroups, true ) ) {
-                $vi->channelgroup = $i;
                 return $i;
             }
         }
 
-        $vi->channelgroup = $orig;
         throw new GeneralException("Could not assign a free channel group number");
     }
 
