@@ -490,7 +490,7 @@
                         $('#uploaded-file-' + pppfid ).remove();
                     });
                 } else {
-                    $( '#message-' + pppfid ).removeClass( 'success' ).addClass( 'error' ).html( data.message );
+                    $( '#message-' + pppfid ).removeClass( 'success' ).addClass( 'error' ).text( data.message );
                 }
             });
     }
