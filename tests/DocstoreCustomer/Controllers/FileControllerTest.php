@@ -436,6 +436,33 @@ class FileControllerTest extends TestCase
     }
 
     /**
+     * Test update to sha256 without file is ignored
+     *
+     * @return void
+     */
+    public function testUpdateToSha256WithoutFileIsIgnored(): void
+    {
+        $uploadedFile = UploadedFile::fake()->create( self::testInfo[ 'fileName' ], '2000' );
+        $file = $this->insertDocstoreCustomerFileFixture1($uploadedFile);
+        $originalHash = $file->sha256;
+
+        $this->actingAs( $user = $this->getSuperUser( 'travis' ) )
+            ->put( route( 'docstore-c-file@update', [ 'cust' => self::testInfo[ 'customerId'] , 'file' => $file ] ), [
+                'name'                  => self::testInfo[ 'fileName2' ],
+                'description'           => self::testInfo[ 'fileDescription2' ],
+                'docstore_customer_directory_id' => null,
+                'min_privs'             => self::testInfo[ 'filePrivs2' ],
+                'uploadedFile'          => null,
+                'sha256'                => hash('sha256', "attempting to change has of current file..")
+            ] )
+            ->assertRedirectToRoute('docstore-c-dir@list', [ 'cust' => self::testInfo[ 'customerId' ] ]);
+
+        $this->assertDatabaseHas( 'docstore_customer_files', [
+            'id' => $file->id, 'docstore_customer_directory_id' => null, 'name' =>  self::testInfo[ 'fileName2' ], 'sha256' => $originalHash
+        ] );
+    }
+
+    /**
      * Test store an object with a wrong min priv
      *
      * @return void
