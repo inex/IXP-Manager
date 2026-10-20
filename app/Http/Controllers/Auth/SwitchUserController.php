@@ -67,19 +67,19 @@ class SwitchUserController extends Controller
         /** @var User $originalUser */
         $originalUser = Auth::getUser();
         if( !$originalUser->isSuperUser() ) {
-            AlertContainer::push( __( "You are not allowed to switch users!" ), Alert::DANGER );
+            AlertContainer::push( __( 'You are not allowed to switch users!' ), Alert::DANGER );
             return redirect()->to( "/" );
         }
 
         if( session()->exists( "switched_user_from" ) ) {
-            AlertContainer::push( __( "You are already logged in as another user. If you want to login as someone else, switch back first." ), Alert::DANGER );
+            AlertContainer::push( __( 'You are already logged in as another user. If you want to login as someone else, switch back first.' ), Alert::DANGER );
             return redirect()->to( "/" );
         }
 
         $changeToUser = $c2u->user;
 
         if( $changeToUser->disabled ){
-            AlertContainer::push( __( "You cannot login as this user" ), Alert::DANGER );
+            AlertContainer::push( __( 'You cannot login as this user' ), Alert::DANGER );
             return redirect( '/' );
         }
 

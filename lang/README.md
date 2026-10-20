@@ -120,6 +120,28 @@ one new key plus one orphaned key rather than as a modification. So that the
 previous work is not lost, `lang:export` puts the translation of the closest
 orphaned key in the `notes` column as a starting suggestion.
 
+### What this looked like in practice (v7.4.0 -> v7.4.1)
+
+The first real upgrade, for reference on effort:
+
+- 506 files changed upstream, 169 changed by the translation, **80 overlapping**.
+- 31 files conflicted, 42 hunks. Almost all had the same cause: upstream
+  migrated Tailwind class syntax (`tw-mb-6` -> `tw:mb-6`) on the very lines the
+  sweep had wrapped.
+- Every conflict was resolved the same way: **take upstream's content, re-apply
+  the wrapping on top** - never the reverse. `git checkout --theirs` on the
+  conflicted files, re-run the codemod, then re-apply by hand the things a
+  codemod cannot reproduce (`__c()` conversions and the placeholder sentence
+  merges).
+- `lang:audit` drove the rest: 22 untranslated and 25 orphaned immediately
+  after the merge, back to the steady state once each orphan had been chased
+  back to the hand edit it came from.
+- Upstream added exactly **one** new user-facing string in the release.
+
+Roughly half a day, most of it mechanical. The audit is what makes it
+tractable: it names every string that drifted instead of leaving you to find
+them by clicking around.
+
 ## Adding a language
 
 1. Add it to `locales` in `config/ixp_fe.php`.

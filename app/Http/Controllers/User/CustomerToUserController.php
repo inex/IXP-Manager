@@ -213,11 +213,17 @@ class CustomerToUserController extends Controller
         if( $r->user()->id === $disassociatedUser->id && $initialCust->id === $disassociatedCust->id ) {
             Auth::logout();
             // note: Auth::logout performs session invalidation, so push this message here too
-            AlertContainer::push( __( ':name/:username deleted from :customer', [ 'name' => $disassociatedUser->name, 'username' => $disassociatedUser->username, 'customer' => $disassociatedCust->name ] ), Alert::SUCCESS );
+            AlertContainer::push( __( ':name/:username deleted from :customer', [
+                'name'     => $disassociatedUser->name,
+                'username' => $disassociatedUser->username,
+                'customer' => $disassociatedCust->name ] ), Alert::SUCCESS );
             return redirect( route( "login@showForm" ) );
         }
 
-        AlertContainer::push( __( ':name/:username deleted from :customer', [ 'name' => $disassociatedUser->name, 'username' => $disassociatedUser->username, 'customer' => $disassociatedCust->name ] ), Alert::SUCCESS );
+        AlertContainer::push( __( ':name/:username deleted from :customer', [
+            'name'     => $disassociatedUser->name,
+            'username' => $disassociatedUser->username,
+            'customer' => $disassociatedCust->name ] ), Alert::SUCCESS );
 
         // retrieve the customer ID
         if( strpos( $r->headers->get( 'referer', "" ), "customer/overview" ) !== false ) {

@@ -199,7 +199,7 @@
         <!-- meta-last-modified -->
         <!-- meta-size -->
         <div>
-            <h4>Metadata for <span id="meta-filename"></span></h4>
+            <h4><?= __( 'Metadata for :file', [ 'file' => '<span id="meta-filename"></span>' ] ) ?></h4>
 
             <table class="tw:mt-8">
                 <tr class="tw:border-t-1 tw:border-blue-500">

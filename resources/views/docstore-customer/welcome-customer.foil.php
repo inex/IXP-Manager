@@ -20,9 +20,9 @@
 
         <p>
             <b><?= __( 'For more information, :seeTheDocs.', [
-                'seeTheDocs' => '<a target="_blank" href="https://docs.ixpmanager.org/latest/features/docstore/">'
-                    . __( 'see the official documentation' ) . '</a>',
-            ] ) ?></b>
+            'seeTheDocs' => '<a target="_blank" href="https://docs.ixpmanager.org/latest/features/docstore/">'
+                . __( 'see the official documentation' ) . '</a>',
+        ] ) ?></b>
         </p>
 
     <?php else: ?>
@@ -41,9 +41,9 @@
 
         <p>
             <b><?= __( 'For more information, :seeTheDocs.', [
-                'seeTheDocs' => '<a target="_blank" href="https://docs.ixpmanager.org/latest/features/docstore/">'
-                    . __( 'see the official documentation' ) . '</a>',
-            ] ) ?></b>
+            'seeTheDocs' => '<a target="_blank" href="https://docs.ixpmanager.org/latest/features/docstore/">'
+                . __( 'see the official documentation' ) . '</a>',
+        ] ) ?></b>
         </p>
     <?php endif; ?>
 </div>
