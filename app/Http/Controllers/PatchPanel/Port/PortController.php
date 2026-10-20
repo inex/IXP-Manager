@@ -451,11 +451,11 @@ class PortController extends Controller
             case PatchPanelPort::STATE_AVAILABLE:
                 if( $ppp->statePrewired() ) {
                     // we get here via 'Unset Prewired'
+                    // Since #1147 we no longer disconnect duplex slave ports
                     if( $ppp->isDuplexPort() ) {
                         foreach( $ppp->duplexSlavePorts as $slave ){
                             $slave->update( [
                                 'state' => PatchPanelPort::STATE_AVAILABLE,
-                                // 'duplex_master_id' => null
                             ] );
                         }
                     }
