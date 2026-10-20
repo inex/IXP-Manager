@@ -68,9 +68,9 @@ services:
             # composer and friends a writable home:
             HOME: /tmp/ixpm-home
             COMPOSER_HOME: /tmp/ixpm-home/composer
-            # the built-in server is single threaded by default, which makes
-            # asset-heavy pages queue and blow Dusk's 5s waitForLocation():
-            PHP_CLI_SERVER_WORKERS: "10"
+            # no PHP_CLI_SERVER_WORKERS: `artisan serve` ignores it unless run
+            # with --no-reload, and the Dusk tests that edit .env rely on the
+            # reload. The server is single threaded.
         ports:
             # `php artisan serve --host=0.0.0.0` - matches APP_URL in .env.ci
             - "8000:8000"

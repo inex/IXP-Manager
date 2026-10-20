@@ -82,35 +82,53 @@ with `Undefined constant "DOCUMENTATION_VERSION"`. `.github/workflows/ci-dusk.ym
 uses the default `phpunit.xml` with `--testsuite 'Dusk / Browser Test Suite'`,
 and so should you.
 
-### Known-failing tests at v7.4.1
+### `.env.ci` needs `DB_HOST=mysql` too
 
-The Dusk suite is substantially broken in this environment on a clean upstream
-checkout - not by anything local. Measured on plain `v7.4.1`:
+`SettingsControllerTest` copies `.env.ci` over `.env` in its `setUp()`. With the
+stock `DB_HOST=127.0.0.1`, every test after it runs without a database and fails
+with `Connection refused`. Point `.env.ci` at the stack's MySQL as well, and don't
+commit the change:
 
+```bash
+sed -i "s/^DB_HOST=.*/DB_HOST=mysql/" .env.ci
 ```
-Tests: 37, Assertions: ~1240-1340, Errors: 20-21, Failures: 1, Risky: 8
-```
 
-The error count varies by one between runs of identical code, so compare
-**failing test names**, not counts. The set is stable:
+### Known-failing tests
+
+On upstream `main` (measured at `339790898`), the Dusk suite runs 44 tests here, and 9 fail.
+None of the failures is an application regression:
 
 ```
 ApiKeyControllerTest::test
 RsFilterControllerTest::testSuperUser / testCustAdmin / testCustUser
 SettingsControllerTest::testSettings
-SwitchControllerTest::testAdd
-SwitchPortControllerTest::testSwitchPort
-SwitchUserControllerTest::testLoginAs / testLoginAs2FA
-User2FAControllerTest::test / testWithRememberMe
-UserControllerTest::testAdd / testAddCustAdmin / testSuperAdminPrivs
-UserRememberTokenControllerTest::testAdd
-ValidationControllerTest::testRunValidations
-VendorControllerTest::testVendor
-VirtualInterfaceControllerTest::testAddWizard
-    / testDisabledMaxPrefixesPerVlan / testViRateLimitAndAutoneg
-VlanControllerTest::testAdd
-Failure: ExampleTest::test_basic_example   (Laravel's stock scaffold test)
+SwitchUserControllerTest::testSwitchUserWithRememberMe
+UserControllerTest::testAdd
+VirtualInterfaceControllerTest::testDisabledMaxPrefixesPerVlan / testViRateLimitAndAutoneg
 ```
+
+- **`ApiKeyControllerTest`** types a `d-m-Y` date into an `<input type=date>`.
+  Chromium reads it as `mm/dd/yyyy`, so the test passes on days 1-12 of the month
+  and fails from the 13th on.
+- **The other 8** are each the first test after a Dusk test edited `.env`, which
+  makes `artisan serve` restart. They fail like this:
+  1. The first request after a restart printed a PHP 8.4 deprecation from
+     `aura/html` into the `/logout` response, ahead of the headers.
+  2. That turned the redirect into a meta-refresh page, so Chrome reached
+     `/login` with `Referer: /logout`.
+  3. `LoginController::showLoginForm()` stored that URL as the post-login
+     target, so the login succeeded and was immediately undone. The symptom is
+     `Waited 5 seconds for location [/admin/dashboard]`, with a "You have been
+     logged out." screenshot.
+
+  `php-dev.ini` now sets `display_errors = stderr`, which keeps errors out of
+  responses and so removes the trigger.
+- **`SettingsControllerTest`** has a second problem: each save rewrites `.env`,
+  and the restart can kill the redirect that follows.
+
+All 9 are fixed in the tests and `LoginController` on
+`ptx-tech/IXP-Manager:fix/dusk-flakes` (an upstream PR of its own). With that
+applied, the suite passes in full here.
 
 **Always re-measure the baseline back to back with the branch**, on the same
 day and the same container. Four separate comparisons during the v7.4.1
@@ -124,7 +142,9 @@ different reason:
   nothing restores it;
 - a `grep` anchored to `^Tests:` that never matched, because PHPUnit wraps the
   summary in ANSI colour codes - use `--colors=never`;
-- `composer update` reinstalling `laravel/dusk` and deleting the chromedriver.
+- `composer update` reinstalling `laravel/dusk` and deleting the chromedriver;
+- `.env.ci` still at `DB_HOST=127.0.0.1`, so everything after
+  `SettingsControllerTest` failed on `Connection refused` (see above).
 
 A comparison script should assert its own preconditions - which ref is checked
 out, that the server answers, that the database has rows - and print them, so
