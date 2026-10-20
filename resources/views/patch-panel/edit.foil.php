@@ -120,7 +120,7 @@ use IXP\Models\PatchPanelPort;
                     <?= Former::text( 'port_prefix' )
                         ->label( 'Port Name Prefix' )
                         ->placeholder( 'Optional port prefix' )
-                        ->blockHelp( "This is optional. As an example, you may was to prefix individual fibre strands in a duplex port with "
+                        ->blockHelp( "This is optional. As an example, you may want to prefix individual fibre strands in a duplex port with "
                             . "<code>F</code> which would mean the name of a duplex port would be displayed as <code>F1/F2</code>." );
                     ?>
 
