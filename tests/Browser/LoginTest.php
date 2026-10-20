@@ -11,7 +11,7 @@
  *
  * IXP Manager is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the GpNU General Public License for
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
  * more details.
  *
  * You should have received a copy of the GNU General Public License v2.0
@@ -46,6 +46,7 @@ class LoginTest extends DuskTestCase
 {
     /**
      * Test invalid credentials are rejected with a generic message
+     * @throws \Throwable
      */
     public function testLoginFailed(): void
     {
@@ -63,6 +64,7 @@ class LoginTest extends DuskTestCase
 
     /**
      * Test the superuser can login and see the dashboard
+     * @throws \Throwable
      */
     public function testLoginToDashboard(): void
     {
@@ -79,6 +81,7 @@ class LoginTest extends DuskTestCase
 
     /**
      * Test that we are logged out if we try to present a remember me token belonging to a different user
+     * @throws \Throwable
      */
     public function testCannotUseAnotherUsersRememberMeToken(): void
     {
@@ -113,6 +116,7 @@ class LoginTest extends DuskTestCase
 
     /**
      * Test that the current remember me token is deleted on logout
+     * @throws \Throwable
      */
     public function testRememberMeTokenDeletedOnLogout(): void
     {
@@ -144,6 +148,7 @@ class LoginTest extends DuskTestCase
 
     /**
      * Test that we are logged out if we try to present an expired remember me token
+     * @throws \Throwable
      */
     public function testCannotUseExpiredRememberMeToken(): void
     {
@@ -170,6 +175,7 @@ class LoginTest extends DuskTestCase
 
     /**
      * Test that we are logged out if we present a token which doesn't exist (was deleted)
+     * @throws \Throwable
      */
     public function testCannotUseDeletedRememberMeToken(): void
     {
@@ -196,6 +202,7 @@ class LoginTest extends DuskTestCase
 
     /**
      * Test that we are logged out if we have a remember me token with invalid syntax
+     * @throws \Throwable
      */
     public function testCannotUseInvalidRememberMeToken(): void
     {

@@ -454,11 +454,6 @@
       <code><![CDATA[config( 'filesystems.disks.' . $file->disk . '.root', '*** UNKNOWN LOCATION ***' )]]></code>
     </InvalidOperand>
   </file>
-  <file src="app/Http/Controllers/DocstoreCustomer/FileController.php">
-    <InvalidArgument>
-      <code><![CDATA[$file->customer->id]]></code>
-    </InvalidArgument>
-  </file>
   <file src="app/Http/Controllers/FilteredPrefixesController.php">
     <MissingDocblockType>
       <code><![CDATA[public function list( Request $r, Customer $cust ): View]]></code>
@@ -1607,11 +1602,6 @@
     <TooManyArguments>
       <code><![CDATA[fake]]></code>
     </TooManyArguments>
-  </file>
-  <file src="app/Services/Purifier.php">
-    <TypeDoesNotContainType>
-      <code><![CDATA[is_string($config)]]></code>
-    </TypeDoesNotContainType>
   </file>
   <file src="app/Services/RipeAtlas/ApiCall.php">
     <MissingDocblockType>

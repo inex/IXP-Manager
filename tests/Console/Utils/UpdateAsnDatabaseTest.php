@@ -20,6 +20,7 @@
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+declare(strict_types=1);
 
 namespace Tests\Console\Utils;
 
@@ -36,17 +37,6 @@ use Tests\TestCase;
  */
 class UpdateAsnDatabaseTest extends TestCase
 {
-    protected function setUp(): void
-    {
-        parent::setUp();
-    }
-
-    protected function tearDown(): void
-    {
-        Asn::truncate();
-        parent::tearDown();
-    }
-
     public function testFreshFromFile()
     {
         // let's ensure we're starting with a clean slate

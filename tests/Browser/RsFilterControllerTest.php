@@ -44,16 +44,10 @@ class RsFilterControllerTest extends DuskTestCase
         parent::setUp();
     }
 
-    #[\Override]
-    public function tearDown(): void
-    {
-        $user = User::whereUsername( 'imcustadmin' )->firstOrFail();
-        $user->customer->routeServerFilters()->delete();
-        $user->customer->routeServerFiltersInProduction()->delete();
-        parent::tearDown();
-    }
-
-    public function testSuperUser()
+    /**
+     * @throws \Throwable
+     */
+    public function testSuperUser(): void
     {
         $this->browse( function( Browser $browser ) {
             $browser->resize( 1600, 1200 )
@@ -75,7 +69,10 @@ class RsFilterControllerTest extends DuskTestCase
         } );
     }
 
-    public function testCustAdmin()
+    /**
+     * @throws \Throwable
+     */
+    public function testCustAdmin(): void
     {
         $this->browse( function( Browser $browser ) {
             $browser->resize( 1600, 1200 )
@@ -112,7 +109,12 @@ class RsFilterControllerTest extends DuskTestCase
         } );
     }
 
-
+    /**
+     * @throws \Facebook\WebDriver\Exception\ElementClickInterceptedException
+     * @throws \Facebook\WebDriver\Exception\NoSuchElementException
+     * @throws \Facebook\WebDriver\Exception\TimeoutException
+     * @throws \Throwable
+     */
     private function testRsFiltersAsCustomer(Browser $browser, Customer $customer): void
     {
         // Can see own RsFilters. CustomerPolicy::listRsFilters
@@ -364,7 +366,10 @@ class RsFilterControllerTest extends DuskTestCase
         }
     }
 
-    public function testCustUser()
+    /**
+     * @throws \Throwable
+     */
+    public function testCustUser(): void
     {
         $this->browse( function( Browser $browser ) {
             // Create an RSF as custadmin so we have something to see

@@ -99,6 +99,21 @@ return [
         ],
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Interface Controller Options
+    |--------------------------------------------------------------------------
+    |
+    | The range of channel group numbers considered when automatically
+    | assigning one to a LAG. A start of 0 automatically begins at the
+    | lowest channel group already assigned on the relevant switch(es).
+    |
+    */
+    'interfaces' => [
+        'channelgroup_start' => (int) env( 'IXP_FE_CHANNELGROUP_START', 1 ),
+        'channelgroup_end'   => (int) env( 'IXP_FE_CHANNELGROUP_END',   1000 ),
+    ],
+
 
     /*
     |--------------------------------------------------------------------------

@@ -18,7 +18,7 @@
     <div id="message-vli" class="col-md-12"></div>
     <div  class="col-md-12">
         <?php if( $t->vi->vlanInterfaces()->count()  ) : ?>
-            <table id="table-vli" class="table table-striped table-responsive-ixp-no-header">
+            <table id="table-vli" class="table table-striped table-responsive-ixp-no-header w-100">
                 <thead class="thead-dark">
                     <tr>
                         <th>

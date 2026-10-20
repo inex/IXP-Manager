@@ -84,7 +84,7 @@ class ConsoleServerConnectionController extends EloquentController
             'viewFolderName'    => 'console-server-connection',
             'listColumns'    => [
                 'customer'  => [
-                    'title'      => 'Customer',
+                    'title'      => ucfirst( config( 'ixp_fe.lang.customer.one' ) ),
                     'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
                     'controller' => 'admin/customer',
                     'action'     => 'overview',

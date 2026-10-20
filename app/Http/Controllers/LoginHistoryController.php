@@ -81,7 +81,7 @@ class LoginHistoryController extends EloquentController
                 'username'          =>  'Username',
                 'email'             =>  'Email',
                 'cust_name'  => [
-                    'title'      => 'Customer',
+                    'title'      => ucfirst( config( 'ixp_fe.lang.customer.one' ) ),
                     'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
                     'controller' => 'admin/customer',
                     'action'     => 'overview',

@@ -20,6 +20,7 @@
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+declare(strict_types=1);
 
 namespace Tests\Console\Utils;
 
@@ -33,20 +34,6 @@ use Tests\TestCase;
  */
 class ExpungeApiKeysTest extends TestCase
 {
-    protected function tearDown(): void
-    {
-        DB::table('api_keys')->whereIn('api_key', [
-            'phpunit-expunge-old',
-            'phpunit-expunge-recent',
-            'phpunit-expunge-no-expiry',
-            'phpunit-expunge-future',
-        ])->delete();
-
-        Carbon::setTestNow();
-
-        parent::tearDown();
-    }
-
     public function testExpungesOnlyApiKeysExpiredMoreThan28DaysAgo()
     {
         Carbon::setTestNow(Carbon::parse('2026-06-25 12:00:00'));

@@ -27,6 +27,7 @@ use Auth, Hash;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Validator;
+use IXP\Rules\IsPhone;
 
 /**
  * Profile details Store Request
@@ -55,7 +56,7 @@ class Profile extends FormRequest
      *
      * @return string[]
      *
-     * @psalm-return array{name: 'required|string|min:2|max:255', username: string, email: 'required|email|max:255', authorisedMobile: 'nullable|string|max:30', actual_password: 'required|string|max:255'}
+     * @psalm-return array{name: 'required|string|min:2|max:255', username: string, email: 'required|email|max:255', authorisedMobile: list{'nullable', 'string', 'max:25', \IXP\Rules\IsPhone}, actual_password: 'required|string|max:255'}
      */
     public function rules(): array
     {
@@ -63,7 +64,7 @@ class Profile extends FormRequest
             'name'              => 'required|string|min:2|max:255',
             'username'          => 'required|string|min:3|max:255|regex:/^[a-z0-9\-_\.]{3,255}$/|unique:user,username,' . Auth::id(),
             'email'             => 'required|email|max:255',
-            'authorisedMobile'  => 'nullable|string|max:30',
+            'authorisedMobile'  => ['nullable', 'string', 'max:25', new IsPhone()],
             'actual_password'   => 'required|string|max:255',
         ];
     }

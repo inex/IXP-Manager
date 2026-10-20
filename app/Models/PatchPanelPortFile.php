@@ -3,7 +3,7 @@
 namespace IXP\Models;
 
 /*
- * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -32,6 +32,7 @@ use Illuminate\Database\Eloquent\{
 };
 
 use IXP\Traits\Observable;
+use IXP\Utils\FilenameFormatter;
 
 /**
  * IXP\Models\PatchPanelPortFile
@@ -115,7 +116,7 @@ class PatchPanelPortFile extends Model
      */
     public function nameTruncated(): string
     {
-        return strlen( $this->name ) > 80 ? substr( $this->name,0,80 ) . '...' . explode('.', $this->name )[1] : $this->name;
+        return FilenameFormatter::truncate($this->name);
     }
 
     /**

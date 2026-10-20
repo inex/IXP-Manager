@@ -1,7 +1,4 @@
 <?php
-
-namespace Tests\Browser;
-
 /*
  * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
@@ -14,7 +11,7 @@ namespace Tests\Browser;
  *
  * IXP Manager is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the GpNU General Public License for
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
  * more details.
  *
  * You should have received a copy of the GNU General Public License v2.0
@@ -22,6 +19,11 @@ namespace Tests\Browser;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+
+declare(strict_types=1);
+
+namespace Tests\Browser;
+
 
 use IXP\Models\{
     Aggregators\CustomerAggregator,
@@ -35,7 +37,6 @@ use Laravel\Dusk\Browser;
 
 use Tests\DuskTestCase;
 
-
 /**
  * Test peering manager Controller
  *
@@ -48,38 +49,12 @@ use Tests\DuskTestCase;
  */
 class PeeringManagerControllerTest extends DuskTestCase
 {
-
-    public function tearDown(): void
-    {
-        /** @var Customer $cust */
-        $cust = User::whereUsername( 'hecustadmin' )->get()->first()->customer;
-
-        $peers = CustomerAggregator::getPeeringManagerArrayByType(
-            $cust,
-            Vlan::peeringManager()->orderBy( 'number' )->get(),
-            [ 4, 6 ]
-        );
-
-        foreach( $peers[ "potential" ] as $as => $p ) {
-            if( $p ) {
-                $c = $peers[ "custs" ][ $as ];
-                break;
-            }
-        }
-
-        if( $p = PeeringManager::where( 'custid', $cust->id )->where( 'peerid', $c[ "id" ] )->get()->first() ) {
-            $p->delete();
-        }
-
-        parent::tearDown();
-    }
-
     /**
-     * Test the whole Interfaces functionalities (virtuel, physical, vlan)
+     * Test peering manager, save notes, mark email as sent, mark peering accepted/rejected
      *
      * @return void
      *
-     * @throws
+     * @throws \Throwable
      */
     public function testPeeringManager(): void
     {
@@ -218,12 +193,7 @@ class PeeringManagerControllerTest extends DuskTestCase
     }
 
     /**
-     * @param Browser $browser
-     * @param PeeringManager $pm
-     * @param array $c
-     * @param string $status
-     *
-     * @throws
+     * @throws \Facebook\WebDriver\Exception\TimeoutException
      */
     public function markPeering( Browser $browser, PeeringManager $pm, array $c, string $status ): void
     {

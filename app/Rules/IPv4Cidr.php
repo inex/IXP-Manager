@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace IXP\Rules;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -24,6 +26,7 @@ namespace IXP\Rules;
  */
 
 use Illuminate\Contracts\Validation\Rule;
+use IXP\Rules\Trait\ParsesCidr;
 
 /**
  * IPv4Cidr
@@ -37,6 +40,8 @@ use Illuminate\Contracts\Validation\Rule;
  */
 class IPv4Cidr implements Rule
 {
+    use ParsesCidr;
+
     /**
      * Determine if the validation rule passes.
      *
@@ -48,27 +53,17 @@ class IPv4Cidr implements Rule
     #[\Override]
     public function passes( $attribute, $value): bool
     {
-        if( !strpos( $value, '/' ) ) {
+        $parsed = $this->parseCidr( $value );
+        if ($parsed === null) {
             return false;
         }
 
-        $parts = explode( '/', $value );
-
-        if( sizeof( $parts ) !== 2 ) {
-            return false;
-        }
-
-        // mask:
-        if (false === filter_var( $parts[1], FILTER_VALIDATE_INT ) ) {
-            return false;
-        }
-
-        $mask = (int) $parts[1];
+        [$ip, $mask] = $parsed;
         if( $mask < 0 || $mask > 32 ) {
             return false;
         }
 
-        if( filter_var( $parts[0], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) === false ) {
+        if( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) === false ) {
             return false;
         }
 

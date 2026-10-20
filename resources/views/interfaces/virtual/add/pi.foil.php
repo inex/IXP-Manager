@@ -30,7 +30,7 @@
                 </div>
             <?php endif; ?>
 
-            <table id="table-pi" class="table table-striped table-responsive-ixp-no-header">
+            <table id="table-pi" class="table table-striped table-responsive-ixp-no-header w-100">
                 <thead class="thead-dark">
                     <tr>
                         <th>
@@ -46,6 +46,9 @@
                         <?php endif; ?>
                         <th>
                             Speed
+                        </th>
+                        <th>
+                            Status
                         </th>
                         <?php if( $t->cb ): ?>
                             <th>
@@ -104,6 +107,9 @@
                                 <?php else: ?>
                                     <span class="badge badge-danger phys-int-autoneg-state" data-toggle="tooltip" title="Hard-Coded - Auto-Negotiation DISABLED">HC</span>
                                 <?php endif; ?>
+                            </td>
+                            <td>
+                                <?= $t->insert( 'interfaces/virtual/add/pi-status', [ 'pi' => $pi ] ); ?>
                             </td>
                             <?php if( $t->cb ): ?>
                                 <td>

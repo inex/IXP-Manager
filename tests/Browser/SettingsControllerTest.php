@@ -1,7 +1,4 @@
 <?php
-
-namespace Tests\Browser;
-
 /*
  * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
@@ -14,7 +11,7 @@ namespace Tests\Browser;
  *
  * IXP Manager is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the GpNU General Public License for
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
  * more details.
  *
  * You should have received a copy of the GNU General Public License v2.0
@@ -22,6 +19,11 @@ namespace Tests\Browser;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+
+declare(strict_types=1);
+
+namespace Tests\Browser;
+
 
 use Laravel\Dusk\Browser;
 
@@ -48,9 +50,6 @@ class SettingsControllerTest extends DuskTestCase
      */
     private ?string $test_env = null;
 
-    /**
-     * @throws
-     */
     #[\Override]
     public function setUp(): void
     {
@@ -78,6 +77,11 @@ class SettingsControllerTest extends DuskTestCase
             $browser->visit( route( 'settings@index' ) )
                 ->assertSee( 'IXP Manager Settings' )
                 ->assertSee( '.env last modified: ' );
+
+            $browser->press( 'Admin' )
+                ->waitForText( 'Channel Group Start' )
+                ->assertInputValue( 'channelgroup_start', '1' )
+                ->assertInputValue( 'channelgroup_end', '1000' );
             
             $browser->driver->executeScript( 'window.scrollTo(0, 3000);' );
             

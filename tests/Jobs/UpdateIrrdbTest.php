@@ -1,4 +1,26 @@
 <?php
+/*
+ * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * All Rights Reserved.
+ *
+ * This file is part of IXP Manager.
+ *
+ * IXP Manager is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation, version v2.0 of the License.
+ *
+ * IXP Manager is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License v2.0
+ * along with IXP Manager.  If not, see:
+ *
+ * http://www.gnu.org/licenses/gpl-2.0.html
+ */
+
+declare(strict_types=1);
 
 namespace Tests\Jobs;
 
@@ -53,23 +75,6 @@ class UpdateIrrdbTest extends TestCase
             'rsclient' => true,
             'irrdbfilter' => true,
         ] );
-    }
-
-    public function tearDown(): void
-    {
-        $this->cust2User->delete();
-        $this->user->delete();
-        $this->customer->irrdbUpdateLog()->delete();
-        $this->customer->delete();
-
-        unset($this->irrdbConfig);
-        unset($this->customer);
-        unset($this->user);
-        unset($this->cust2User);
-        unset($this->vi);
-        unset($this->vli);
-
-        parent::tearDown();
     }
 
     public function testAsnJob()

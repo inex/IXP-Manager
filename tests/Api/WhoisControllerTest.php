@@ -12,26 +12,9 @@ use Tests\TestCase;
 
 class WhoisControllerTest extends TestCase
 {
-    protected array $deleteModels = [];
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->deleteModels = [];
-    }
-
-    protected function tearDown(): void
-    {
-        foreach ($this->deleteModels as $model) {
-            $model->delete();
-        }
-        unset($this->deleteModels);
-        parent::tearDown();
-    }
-
     public function testAsnLookup(): void
     {
-        $this->deleteModels[] = Asn::create(['asn' => 2128, 'name' => 'INEX Internet Neutral Exchange Association Company Limited By Guarantee, IE', 'class' => 'Unknown', 'country_code' => 'IE']);
+        Asn::create(['asn' => 2128, 'name' => 'INEX Internet Neutral Exchange Association Company Limited By Guarantee, IE', 'class' => 'Unknown', 'country_code' => 'IE']);
 
         $this->post(  "login", [
             "username" => "travis",
