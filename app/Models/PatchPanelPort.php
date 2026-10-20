@@ -771,7 +771,7 @@ class PatchPanelPort extends Model
         foreach( $this->patchPanelPortHistories as $history ) {
             /** @var $history PatchPanelPortHistory */
 
-            $user = Auth::check() ? Auth::getUser()->username : 'unkown/unauth';
+            $user = Auth::check() ? Auth::getUser()->username : 'unknown/unauth';
             foreach( PatchPanelPortHistory::whereDuplexMasterId( $history->id )->get() as $duplex ){
                 $duplex->update([
                     'duplex_master_id'  => null,
