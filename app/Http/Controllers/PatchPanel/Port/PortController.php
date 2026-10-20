@@ -497,6 +497,7 @@ class PortController extends Controller
         if( $status === PatchPanelPort::STATE_CEASED ) {
             $unpatch     = $r->boolean( 'unpatch' );
             $setPrewired = !$unpatch && $r->boolean( 'set_prewired' );
+            // As of 1147, default to keep_duplex even if setting isn't provided.
             $keepDuplex  = !$r->has( 'keep_duplex' ) || $r->boolean( 'keep_duplex' );
 
             if( $sp = $ppp->switchPort ) {

@@ -356,6 +356,9 @@
                 params.set( 'set_prewired', '1' );
             }
 
+            // As of 1147, the default behavior is to keep duplex ports linked - which means if the
+            // setting isn't set, presume keep_duplex. This means we have to send keep_duplex=0 if
+            // we don't want them kept (absense would mean they are kept).
             if( !note_modal_body_keep_duplex.is( ':checked' ) ) {
                 params.set( 'keep_duplex', '0' );
             }
