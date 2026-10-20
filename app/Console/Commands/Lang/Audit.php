@@ -77,7 +77,7 @@ class Audit extends IXPCommand
      */
     public function handle(): int
     {
-        $locale     = (string)$this->argument( 'locale' );
+        $locale     = $this->argument( 'locale' );
         $catalogue  = Catalogue::load( $locale );
         $extracted  = ( new Extractor() )->scan( Scope::files() )->withConfiguredNouns()->keys();
 

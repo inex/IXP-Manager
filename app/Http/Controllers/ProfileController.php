@@ -196,15 +196,13 @@ class ProfileController extends Controller
      * @param LanguageRequest $r instance of the current HTTP request
      *
      * @return RedirectResponse
-     *
-     * @throws
      */
     public function updateLanguage( LanguageRequest $r ) : RedirectResponse
     {
         /** @var User $user */
         $user = Auth::getUser();
 
-        $user->setLocale( $r->locale );
+        $user->setLocale( $r->input( 'locale' ) );
         $user->save();
 
         // set it now so the alert below and the page we redirect to are

@@ -98,7 +98,7 @@ class Export extends IXPCommand
      */
     public function handle(): int
     {
-        $locale    = (string)$this->argument( 'locale' );
+        $locale    = $this->argument( 'locale' );
         $catalogue = Catalogue::load( $locale );
         $extracted = ( new Extractor() )->scan( Scope::files() )->withConfiguredNouns()->keys();
 
@@ -106,12 +106,12 @@ class Export extends IXPCommand
         $extraNotes = [];
 
         if( $notesFile = $this->option( 'notes' ) ) {
-            if( !is_readable( (string)$notesFile ) ) {
+            if( !is_readable( $notesFile ) ) {
                 $this->error( "Cannot read {$notesFile}" );
                 return self::FAILURE;
             }
 
-            $extraNotes = json_decode( (string)file_get_contents( (string)$notesFile ), true );
+            $extraNotes = json_decode( (string)file_get_contents( $notesFile ), true );
 
             if( !is_array( $extraNotes ) ) {
                 $this->error( "{$notesFile} is not a JSON object of \"key\": \"note\" pairs" );
@@ -154,7 +154,7 @@ class Export extends IXPCommand
                 'notes'        => implode( ' ', $notes ),
                 'status'       => match( true ) {
                     !$translated                => 'to translate',
-                    (bool)$this->option( 'draft' ) => 'review draft',
+                    $this->option( 'draft' )    => 'review draft',
                     default                     => 'approved',
                 },
             ];
@@ -165,7 +165,7 @@ class Export extends IXPCommand
             return self::SUCCESS;
         }
 
-        $format = (string)( $this->option( 'format' ) ?: ( class_exists( Spreadsheet::class ) ? 'xlsx' : 'csv' ) );
+        $format = $this->option( 'format' ) ?: ( class_exists( Spreadsheet::class ) ? 'xlsx' : 'csv' );
 
         if( $format === 'xlsx' && !class_exists( Spreadsheet::class ) ) {
             $this->error( 'xlsx output needs phpoffice/phpspreadsheet: composer require --dev phpoffice/phpspreadsheet' );
@@ -173,8 +173,8 @@ class Export extends IXPCommand
             return self::FAILURE;
         }
 
-        $path = (string)( $this->option( 'output' )
-            ?: base_path( 'lang/exports/' . $locale . '-' . date( 'Y-m-d' ) . '.' . $format ) );
+        $path = $this->option( 'output' )
+            ?: base_path( 'lang/exports/' . $locale . '-' . date( 'Y-m-d' ) . '.' . $format );
 
         if( !is_dir( $dir = dirname( $path ) ) ) {
             mkdir( $dir, 0755, true );

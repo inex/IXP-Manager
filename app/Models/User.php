@@ -348,6 +348,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
      *
      * @return string|null
      */
+    #[\Override]
     public function preferredLocale(): ?string
     {
         return $this->locale() ?? $this->customer?->locale() ?? config( 'app.locale' );

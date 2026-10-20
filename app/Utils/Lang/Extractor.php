@@ -109,8 +109,8 @@ class Extractor
      */
     public function withConfiguredNouns(): static
     {
-        foreach( (array)config( 'ixp_fe.lang.customer', [] ) as $form => $noun ) {
-            if( !is_string( $noun ) || trim( $noun ) === '' ) {
+        foreach( config( 'ixp_fe.lang.customer', [] ) as $form => $noun ) {
+            if( trim( $noun ) === '' ) {
                 continue;
             }
 

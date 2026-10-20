@@ -81,8 +81,8 @@ class Import extends IXPCommand
      */
     public function handle(): int
     {
-        $file   = (string)$this->argument( 'file' );
-        $locale = (string)$this->argument( 'locale' );
+        $file   = $this->argument( 'file' );
+        $locale = $this->argument( 'locale' );
 
         if( !is_readable( $file ) ) {
             $this->error( "Cannot read {$file}" );

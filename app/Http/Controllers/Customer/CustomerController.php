@@ -242,7 +242,7 @@ class CustomerController extends Controller
         // Guarded by has() as the select is not rendered when the instance only
         // offers one language - without this we would wipe any stored value:
         if( $r->has( 'locale' ) ) {
-            $cust->setLocale( $r->locale );
+            $cust->setLocale( $r->input( 'locale' ) );
             $cust->save();
         }
 
@@ -325,7 +325,7 @@ class CustomerController extends Controller
         // Guarded by has() as the select is not rendered when the instance only
         // offers one language - without this we would wipe any stored value:
         if( $r->has( 'locale' ) ) {
-            $cust->setLocale( $r->locale );
+            $cust->setLocale( $r->input( 'locale' ) );
             $cust->save();
         }
 

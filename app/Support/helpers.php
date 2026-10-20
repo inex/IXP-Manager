@@ -357,11 +357,15 @@ if( !function_exists( '__c' ) ) {
         // Resolved via the translator directly rather than __(): this is a
         // forwarder, so its $key is never a literal and lang:extract would
         // otherwise report it as an unextractable call site.
-        return $t->get( $key, array_merge( [
+        $line = $t->get( $key, array_merge( [
             'customerOwners' => $t->get( $lang[ 'owners' ] ),
             'customerOwner'  => $t->get( $lang[ 'owner' ] ),
             'customers'      => $t->get( $lang[ 'many' ] ),
             'customer'       => $t->get( $lang[ 'one' ] ),
         ], $replace ) );
+
+        // get() returns an array when the key names a whole translation file
+        // (e.g. 'validation'), which is never what a caller of this wants:
+        return is_string( $line ) ? $line : $key;
     }
 }

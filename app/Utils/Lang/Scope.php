@@ -120,9 +120,9 @@ class Scope
     ];
 
     /**
-     * All files in scope.
+     * All files in scope, as absolute paths.
      *
-     * @return SplFileInfo[]
+     * @return string[]
      */
     public static function files(): array
     {
