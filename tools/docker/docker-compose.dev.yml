@@ -31,10 +31,10 @@ services:
             # stacks can coexist:
             - "33061:3306"
         volumes:
+            # No seed file: since v7.4.1 the test suites migrate and seed the
+            # database themselves (RefreshDatabase + CiTestDataSeeder), so it
+            # only needs to exist - MYSQL_DATABASE above creates it.
             - ixpmanager-dev-db:/var/lib/mysql
-            # seeded on FIRST START ONLY (mysql only runs initdb.d against an
-            # empty data directory). To reseed later, see README-dev.md.
-            - ../../data/ci/ci_test_db.sql:/docker-entrypoint-initdb.d/01-ixpmanager.sql:ro
         healthcheck:
             test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1"]
             interval: 5s
