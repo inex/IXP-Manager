@@ -25,6 +25,7 @@
     toggle_potential_slave.click( () => { $( '.potential-slave' ).toggle(); } );
 
     note_modal_body_unpatch.on( 'change', function() {
+        // if 'unpatch' is checked, clear set_prewired (if checked) and disable the field.
         const unpatch = $( this ).is( ':checked' );
         note_modal_body_set_prewired.prop( 'disabled', unpatch );
 

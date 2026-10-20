@@ -683,7 +683,7 @@ class PatchPanelPort extends Model
     /**
      * Move details / contents of a PPP to another PPP.
      *
-     * Moves the information and files from a patch panel port to an other one
+     * Moves the information and files from a patch panel port to another one
      * (and also move duplex slave if there is one). This function also:
      *
      * * Creates history of the old patch panel port
