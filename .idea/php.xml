@@ -354,6 +354,7 @@
     </Psalm_settings>
   </component>
   <component name="PsalmOptionsConfiguration">
+    <option name="config" value="$PROJECT_DIR$/psalm.xml" />
     <option name="transferred" value="true" />
   </component>
 </project>
