@@ -376,10 +376,13 @@ class PatchPanel extends Model
     {
         $validStates = array_keys( PatchPanelPort::$STATES );
 
-        if( !in_array( $state, $validStates, true )
-            || array_diff( [ ...$includeStates, ...$excludeStates ], $validStates )
-        ) {
+        if( !in_array( $state, $validStates, true ) ) {
             throw new \InvalidArgumentException( 'Invalid patch panel port state.' );
+        } else if (
+            !empty( array_diff( [ ...$includeStates, ...$excludeStates ], $validStates ) ) ||
+            !empty( array_intersect( $includeStates, $excludeStates ) )
+        ) {
+            throw new \InvalidArgumentException( 'Invalid include or exclude states.' );
         }
 
         $ports = $this->patchPanelPorts()
