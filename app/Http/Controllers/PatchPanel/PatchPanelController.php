@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers\PatchPanel;
 
 /*
- * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -50,7 +50,7 @@ use IXP\Utils\View\Alert\{
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @category   IXP
  * @package    IXP\Http\Controllers\PatchPanel
- * @copyright  Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class PatchPanelController extends Controller
@@ -90,7 +90,10 @@ class PatchPanelController extends Controller
      */
     public function create(): View
     {
-        Former::populate(['active' => 1]);
+        Former::populate( [
+            'active'             => 1,
+            'initial_port_state' => PatchPanelPort::STATE_AVAILABLE,
+        ] );
 
         return view( 'patch-panel/edit' )->with([
             'pp'            => false,
@@ -114,8 +117,13 @@ class PatchPanelController extends Controller
             ])->all()
         );
 
-        // create the patch panel ports
+        // Create and initialise the patch panel ports.
         $pp->createPorts( $r->numberOfPorts );
+        $pp->setUnusedPortsState( (int)$r->input( 'initial_port_state', PatchPanelPort::STATE_AVAILABLE ) );
+
+        if( $r->boolean( 'create_ports_as_duplex' ) ) {
+            $pp->pairUnusedPortsAsDuplex();
+        }
         return redirect( route( 'patch-panel-port@list-for-patch-panel', [ "pp" => $pp->id ] )  );
     }
 
@@ -197,6 +205,77 @@ class PatchPanelController extends Controller
         }
 
         return redirect( route( "patch-panel@list" ) );
+    }
+
+    /**
+     * Set a scoped group of unused ports to an allowed state.
+     *
+     * @param PatchPanel $pp
+     * @param string     $scope
+     * @param int        $state
+     *
+     * @return RedirectResponse
+     */
+    public function setUnusedPortsState( PatchPanel $pp, string $scope, int $state ): RedirectResponse
+    {
+        if( !array_key_exists( $state, PatchPanelPort::$INITIAL_PORT_STATES ) ) {
+            AlertContainer::push( 'The port state is invalid.', Alert::DANGER );
+            return redirect()->back();
+        }
+
+        switch( $scope ) {
+            case 'all':
+                $includeStates = [];
+                $excludeStates = [ PatchPanelPort::STATE_BROKEN ];
+                $description   = 'unused';
+                break;
+
+            case 'reserved':
+                $includeStates = [ PatchPanelPort::STATE_RESERVED ];
+                $excludeStates = [];
+                $description   = 'unused reserved';
+                break;
+
+            case 'unreserved':
+                $includeStates = [];
+                $excludeStates = [ PatchPanelPort::STATE_RESERVED, PatchPanelPort::STATE_BROKEN ];
+                $description   = 'unused unreserved';
+                break;
+
+            default:
+                AlertContainer::push( 'The unused port scope is invalid.', Alert::DANGER );
+                return redirect()->back();
+        }
+
+        $updated = $pp->setUnusedPortsState( $state, $includeStates, $excludeStates );
+        AlertContainer::push( $updated . ' ' . $description . ' port(s) set to ' . PatchPanelPort::$STATES[ $state ] . '.', Alert::SUCCESS );
+
+        return redirect()->back();
+    }
+
+    /**
+     * Set all unused ports as duplex pairs or simplex ports.
+     *
+     * @param PatchPanel $pp
+     * @param string     $mode
+     *
+     * @return RedirectResponse
+     */
+    public function setUnusedPortsDuplex( PatchPanel $pp, string $mode ): RedirectResponse
+    {
+        if( $mode === 'duplex' ) {
+            $updated = $pp->pairUnusedPortsAsDuplex();
+            $message = $updated . ' unused port pair(s) set as duplex.';
+        } else if( $mode === 'simplex' ) {
+            $updated = $pp->setUnusedPortsAsSimplex();
+            $message = $updated . ' unused port pair(s) set as simplex.';
+        } else {
+            AlertContainer::push( 'The duplex mode is invalid.', Alert::DANGER );
+            return redirect()->back();
+        }
+
+        AlertContainer::push( $message, Alert::SUCCESS );
+        return redirect()->back();
     }
 
     /**

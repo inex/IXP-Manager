@@ -5,6 +5,32 @@
         const input_name              = $( '#name' );
         const input_colo_ref          = $( '#colo_reference' );
 
+        $( '.dropdown-submenu a.submenu' ).on( 'click', function( e ) {
+            const submenu = $( this ).next( 'ul' );
+
+            $( this ).parent().siblings( '.dropdown-submenu' ).children( 'ul.dropdown-menu' ).hide();
+            submenu.toggle();
+
+            e.stopPropagation();
+            e.preventDefault();
+        });
+
+        $( '.btn-set-unused-ports' ).on( 'click', function( e ) {
+            e.preventDefault();
+
+            $( '<form>', {
+                method: 'POST',
+                action: $( this ).attr( 'href' )
+            })
+                .append( $( '<input>', {
+                    type: 'hidden',
+                    name: '_token',
+                    value: '<?= csrf_token() ?>'
+                }) )
+                .appendTo( 'body' )
+                .submit();
+        });
+
         /**
          * set the today date on click on the today button
          */
