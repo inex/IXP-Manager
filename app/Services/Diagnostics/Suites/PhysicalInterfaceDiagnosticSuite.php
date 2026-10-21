@@ -195,7 +195,7 @@ class PhysicalInterfaceDiagnosticSuite extends DiagnosticSuite
                 narrative: "As we could not poll the switch port via SNMP, all other diagnostics tests relying on this information may not be accurate.",
             );
 
-        } catch(\Exception $e) {
+        } catch(\Throwable $e) {
 
             return new DiagnosticResult(
                 name: $mainName . ' - diagnostic failed to run',
