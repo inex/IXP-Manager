@@ -298,12 +298,8 @@ class TransceiverDiagnosticSuite extends DiagnosticSuite
                     $v = $this->snmpClient($this->pi)->get( sprintf( self::OID_XCVR_DOM_LANE_SENSOR_UNITS_THRESHOLD, $this->oidPort( $this->pi->switchPort->name ), $lane, $sensor ) );
 
                 } catch( \Throwable $e ) {
-                    if( $lane > 1) {
-                        continue;
-                    }
-
                     $results[] = new DiagnosticResult(
-                        name: $mainName . ' - diagnostic failed to run',
+                        name: $mainName . $sensors[$sensor] . ' (lane ' . $lane . ') diagnostic failed to run',
                         result: DiagnosticResult::TYPE_UNKNOWN,
                         narrativeHtml: $e->getMessage(),
                     );
