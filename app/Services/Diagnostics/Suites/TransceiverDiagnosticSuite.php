@@ -297,7 +297,7 @@ class TransceiverDiagnosticSuite extends DiagnosticSuite
 
                     $v = $this->snmpClient($this->pi)->get( sprintf( self::OID_XCVR_DOM_LANE_SENSOR_UNITS_THRESHOLD, $this->oidPort( $this->pi->switchPort->name ), $lane, $sensor ) );
 
-                } catch( \Exception $e ) {
+                } catch( \Throwable $e ) {
                     if( $lane > 1) {
                         continue;
                     }
