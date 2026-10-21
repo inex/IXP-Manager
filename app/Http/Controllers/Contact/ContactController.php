@@ -183,9 +183,9 @@ class ContactController extends EloquentController
      * Gets a listing of contacts or a single one if an ID is provided
      *
      * @param stdClass $feParams
-     * @param int|null $id
-     * @param int|null $role
-     * @param int|null $cgid
+     * @param int|null $id     id of contact
+     * @param int|null $role   id of a role in ROLE contact group
+     * @param int|null $cgid   id of an option in any contact group
      *
      * @return array
      */
@@ -237,32 +237,42 @@ class ContactController extends EloquentController
         $cgs = [];
 
         if( config('contact_group.types.ROLE') ) {
-            $activeGroups   = ContactGroupAggregator::getGroupNamesTypeArray( null, null , true);
+            // The contact group list page allows lookup by cgid even if an option is inactive.
+            // So be slightly lenient here, and just check that a filter role or filter cgid exists
+            // in complete list of options (not just the active ones)
+            $allGroups = ContactGroupAggregator::getGroupNamesTypeArray();
 
-            if( !in_array( $role = request()->role, array_column( $activeGroups[ "ROLE" ], 'id' ), false ) ) {
+            // does role option exist?
+            if( !in_array( $role = request()->role, array_column( $allGroups[ "ROLE" ], 'id' ), false ) ) {
                 $role = null;
             }
 
+            // Check if cgid refers to an actual cg
             if( $cg = request()->cgid ) {
                 // flatten the multi dimensional array
-                foreach( $activeGroups as $gname => $gvalue ) {
-                    foreach( $gvalue as $index => $val ){
-                        $cgs[ $index ] = $val[ 'name' ];
+                foreach( $allGroups as $gname => $goptions ) {
+                    foreach( $goptions as $option ){
+                        $cgs[ $option['id'] ] = $option[ 'name' ];
                     }
                 }
 
+                // does cgid option exist?
                 if( !array_key_exists( $cg, $cgs ) ) {
                     $cg = null;
                 }
             }
 
+            // The page shows a dropdown of active 'role' contact groups. Load them specifically here for display.
+            $activeRoles   = ContactGroupAggregator::getGroupNamesTypeArray( 'ROLE', null , true);
+
             $this->data[ 'params' ] = [
                 'role'              => $role,
-                'roles'             => $activeGroups[ "ROLE" ],
+                'roles'             => $activeRoles[ "ROLE" ],
                 'cg'                => $cg,
                 'contactGroups'     => $cgs,
             ];
         } else {
+            // in this branch these are all null or empty
             $this->data[ 'params' ] = [
                 'role'              => $role,
                 'roles'             => [],
@@ -514,7 +524,7 @@ class ContactController extends EloquentController
      * You can stop the deletion by returning false but you should also add a
      * message to explain why (to the AlertContainer).
      *
-     * The object to be deleted is available via `$this->>object`
+     * The object to be deleted is available via `$this->object`
      *
      * @return bool Return false to stop / cancel the deletion
      */
