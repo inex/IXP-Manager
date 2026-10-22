@@ -93,7 +93,7 @@
     </div>
 
     <div class="col-md-6">
-        <?php if( !config('ixp.reseller.no_billing') || !$t->resellerMode() || !$c->reseller ): ?>
+        <?php if( $t->isBilledByIXP( $c ) ): ?>
             <?php $bdetails = $c->companyBillingDetail /** @var $bdetails \IXP\Models\CompanyBillingDetail  */ ?>
 
             <div class="tw:rounded-sm tw:p-4 tw:shadow-md tw:border-1 tw:border-grey-light">

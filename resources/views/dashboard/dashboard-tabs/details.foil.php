@@ -67,7 +67,7 @@
         <?= Former::close() ?>
     </div>
     <div class="col-lg-6">
-        <?php if( !config('ixp.reseller.no_billing') || !$t->resellerMode() || !$c->resellerObject()->exists() ): ?>
+        <?php if( $t->isBilledByIXP( $c ) ): ?>
             <h3>
                 Billing Details
             </h3>
