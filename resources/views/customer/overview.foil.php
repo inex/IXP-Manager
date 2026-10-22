@@ -50,10 +50,10 @@
                 </a>
 
                 <a class="dropdown-item" href="<?= route( 'customer@billing-registration' , [ 'cust' => $c->id ] ) ?>" >
-                    <?php if( !config('ixp.reseller.no_billing') || !$t->resellerMode() || !$c->reseller ): ?>
-                        Edit Billing/Registration Details
-                    <?php else: ?>
+                    <?php if( $t->isBilledByReseller( $c ) ): ?>
                         Edit Registration Details
+                    <?php else: ?>
+                        Edit Billing/Registration Details
                     <?php endif; ?>
                 </a>
 

@@ -23,6 +23,7 @@ namespace IXP\Utils\Foil\Extensions;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+use IXP\Models\Customer;
 use IXP\Utils\View\Alert\Container as AlertContainer;
 
 use Foil\Contracts\ExtensionInterface;
@@ -105,6 +106,8 @@ class IXP implements ExtensionInterface
             'softwrap'               => [ $this, 'softwrap' ],
             'whoisPrefix'            => [ $this, 'whoisPrefix' ],
             'mapToSelectOptions'     => [ $this, 'mapToSelectOptions' ],
+            'isBilledByReseller'     => [ $this, 'isBilledByReseller' ],
+            'isBilledByIXP'          => [ $this, 'isBilledByIXP' ],
         ];
     }
 
@@ -477,5 +480,21 @@ class IXP implements ExtensionInterface
             $list[] = ['id' => $k, 'text' => $v];
         }
         return $list;
+    }
+
+    /**
+     * Whether the customer is billed by a reseller
+     */
+    public function isBilledByReseller( Customer $customer ): bool
+    {
+        return config('ixp.reseller.enabled') && config('ixp.reseller.no_billing') && $customer->reseller !== null;
+    }
+
+    /**
+     * Whether the customer is billed by the IXP
+     */
+    public function isBilledByIXP( Customer $customer ): bool
+    {
+        return !$this->isBilledByReseller( $customer );
     }
 }
