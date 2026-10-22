@@ -132,7 +132,7 @@ final class Config implements Validator
                             ->withDocsPath("usage/contacts/#contact-groups")
                             ->when($affected->isNotEmpty(),
                                 fn( Result $result ) => $result
-                                    ->addAdditionalInfoText("Found " . $affected->count() . " group options under truncated name, which are not visible on contact group index page.")
+                                    ->addAdditionalInfoText("Found " . $affected->count() . " group options under the truncated name, which are not visible on contact group index page.")
                                     ->addAdditionalInfoText("Renaming '$key' to '" . mb_substr($key, 0, ContactGroup::MAX_TYPE_LENGTH) . "' will allow the options to be managed again.")
                                     ->addAdditionalInfoUrl(route('contact-group@list'), "Go to contact group page")
                             );
