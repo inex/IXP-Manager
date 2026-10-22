@@ -109,7 +109,6 @@ final class Config implements Validator
         }
 
         if ( config()->has( 'contact_group' ) ) {
-            $maxKeyLen = 20;
             $backend->info("Contact groups file was found");
 
             /** @psalm-suppress RedundantCondition */
@@ -117,7 +116,7 @@ final class Config implements Validator
                 $numTypes = count(config()->array( 'contact_group.types' ) );
                 $backend->info($numTypes . " contact groups defined in configuration");
 
-                foreach (config('contact_group.types') as $key => $value) {
+                foreach ( config()->array( 'contact_group.types' ) as $key => $value) {
                     // If either of these happen, abort the loop and have them fix it
                     if (!is_string($key) || !is_string($value)) {
                         $backend->error( "The key/value pairs in contact groups configuration must be strings" )
@@ -125,16 +124,16 @@ final class Config implements Validator
                         break;
                     }
 
-                    if (mb_strlen($key) > $maxKeyLen) {
-                        $affected = ContactGroup::whereType(mb_substr($key, 0, $maxKeyLen))->get();
+                    if (mb_strlen($key) > ContactGroup::MAX_TYPE_LENGTH) {
+                        $affected = ContactGroup::whereType(mb_substr($key, 0, ContactGroup::MAX_TYPE_LENGTH))->get();
 
                         $backend
-                            ->error("Contact group key '$key' is too long. Maximum length is " . $maxKeyLen . " characters.")
+                            ->error("Contact group key '$key' is too long. Maximum length is " . ContactGroup::MAX_TYPE_LENGTH . " characters.")
                             ->withDocsPath("usage/contacts/#contact-groups")
                             ->when($affected->isNotEmpty(),
                                 fn( Result $result ) => $result
                                     ->addAdditionalInfoText("Found " . $affected->count() . " group options under truncated name, which are not visible on contact group index page.")
-                                    ->addAdditionalInfoText("Renaming '$key' to '" . mb_substr($key, 0, $maxKeyLen) . "' will allow the options to be managed again.")
+                                    ->addAdditionalInfoText("Renaming '$key' to '" . mb_substr($key, 0, ContactGroup::MAX_TYPE_LENGTH) . "' will allow the options to be managed again.")
                                     ->addAdditionalInfoUrl(route('contact-group@list'), "Go to contact group page")
                             );
                     }

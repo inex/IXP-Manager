@@ -58,6 +58,8 @@ use Illuminate\Database\Eloquent\{
  */
 class ContactGroup extends Model
 {
+    public const int MAX_TYPE_LENGTH = 20;
+
     public const string TYPE_ROLE = 'ROLE';
 
     public static array $TYPES = [
