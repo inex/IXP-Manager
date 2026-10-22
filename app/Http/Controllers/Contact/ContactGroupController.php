@@ -252,8 +252,10 @@ class ContactGroupController extends EloquentController
         $r->validate( [
             'name'                  => 'required|string|max:255|unique:contact_group,name' . ( $r->id ? ','. $r->id : '' ),
             'description'           => 'required|string|max:255',
-            'type'                  => 'required|string|in:' . implode( ',', array_keys( config( 'contact_group.types' ) ) ),
+            'type'                  => 'required|string|max:20|in:' . implode( ',', array_keys( config( 'contact_group.types' ) ) ),
             'limited_to'            => 'required|integer|min:0',
+        ] , [
+            'type.max' => "The key for this contact group exceeds :max characters, and is not allowed due to database constraints. Update your contact_group.php file to use a shorter key."
         ] );
     }
 
