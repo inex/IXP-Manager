@@ -417,7 +417,6 @@ class PatchPanel extends Model
             ->whereNull( 'duplex_master_id' )
             ->whereDoesntHave( 'duplexSlavePorts' )
             ->get()
-            ->filter( fn( PatchPanelPort $port ): bool => is_numeric( $port->number ) )
             ->keyBy( fn( PatchPanelPort $port ): int => (int)$port->number );
 
         $pairsCreated = 0;
