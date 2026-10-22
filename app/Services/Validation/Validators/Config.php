@@ -64,6 +64,11 @@ final class Config implements Validator
             if ($value !== $retrieved) {
                 $backend->error("Cache didn't return the same value that was written");
             }
+            \Cache::forget("validation:random:$key");
+            $retrieved = \Cache::get("validation:random:$key");
+            if ( $retrieved !== null ) {
+                $backend->error("Cache didn't forget the value that was written");
+            }
         } catch ( \Exception $e ) {
             $backend->error("The cache write test encountered an error: " . $e->getMessage());
         }
