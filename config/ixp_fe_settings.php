@@ -500,7 +500,7 @@ return [
                 'ixpm_2fa_enforce_for_users' => [
 
                     'config_key' => 'google2fa.ixpm_2fa_enforce_for_users',
-                    'dotenv_key' => '2FA_IXPM_ENFORCE_FOR_USERS',
+                    'dotenv_key' => '2FA_ENFORCE_FOR_USERS',
                     'type'       => 'select',
                     'options'    => [ 'type' => 'array', 'list' => \IXP\Models\User::$PRIVILEGES_TEXT + [ 4 => 'Do not enforce for any user' ] ],
                     'name'       => "Enforce 2FA for Users >=",
