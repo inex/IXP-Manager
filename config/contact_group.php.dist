@@ -37,8 +37,9 @@
 
 return [
     'types' => [
-        'ROLE'           => 'Role',
-        //'MEETING'        => 'Meeting Registration',
-        //'MARKETING_PREFERENCES'  => 'Marketing Preferences',
+        // NOTE: the fields on the left of the arrows must be <= 20 characters long
+        'ROLE'            => 'Role',
+        //'MEETING'         => 'Meeting Registration',
+        //'MARKETING_PREFS' => 'Marketing Preferences',
     ],
 ];
