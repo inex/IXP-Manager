@@ -44,6 +44,8 @@ use Illuminate\Contracts\Auth\{
     Authenticatable as AuthenticatableContract
 };
 
+use Illuminate\Contracts\Translation\HasLocalePreference;
+
 use Illuminate\Support\Str;
 
 use IXP\Events\Auth\ForgotPassword as ForgotPasswordEvent;
@@ -109,7 +111,7 @@ use IXP\Traits\Observable;
  * @method static Builder<static>|User whereUsername($value)
  * @mixin Eloquent
  */
-class User extends Model implements AuthenticatableContract, CanResetPasswordContract
+class User extends Model implements AuthenticatableContract, CanResetPasswordContract, HasLocalePreference
 {
     use Authenticatable, Authorizable, CanResetPassword, Notifiable, Observable;
     /**
@@ -318,6 +320,60 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     public function isSuperUser(): bool
     {
         return $this->privs() === self::AUTH_SUPERUSER;
+    }
+
+    /**
+     * The user's own preferred locale for the user interface.
+     *
+     * Returns null if they have not expressed a preference - it is up to the
+     * caller (see IXP\Http\Middleware\SetLocale) to fall back to the
+     * customer default and then the instance default.
+     *
+     * @return string|null
+     */
+    public function locale(): ?string
+    {
+        return $this->prefs[ 'locale' ] ?? null;
+    }
+
+    /**
+     * The locale to render mail and notifications to this user in.
+     *
+     * Implementing HasLocalePreference means Laravel localises queued mail and
+     * notifications for this recipient automatically - see
+     * https://laravel.com/docs/localization
+     *
+     * Unlike locale(), this falls back through the customer default to the
+     * instance default, as there is no request context to fall back to.
+     *
+     * @return string|null
+     */
+    #[\Override]
+    public function preferredLocale(): ?string
+    {
+        return $this->locale() ?? $this->customer?->locale() ?? config( 'app.locale' );
+    }
+
+    /**
+     * Set (or, with null, clear) the preferred locale.
+     *
+     * Does not save the model.
+     *
+     * @param   string|null $locale
+     *
+     * @return void
+     */
+    public function setLocale( ?string $locale ): void
+    {
+        $prefs = $this->prefs;
+
+        if( $locale ) {
+            $prefs[ 'locale' ] = $locale;
+        } else {
+            unset( $prefs[ 'locale' ] );
+        }
+
+        $this->prefs = $prefs;
     }
 
     /**

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html class="h-100" lang="en">
+<html class="h-100" lang="<?= app()->getLocale() ?>">
     <head>
         <!--  IXP MANAGER - template directory: resources/[views|skins] -->
 
@@ -116,7 +116,7 @@
                 });
 
                 <?php if( $authCheck && $privs === User::AUTH_SUPERUSER ): ?>
-                    $( "#menu-select-customer" ).select2({ width: '100%',placeholder: "Jump to <?= config( 'ixp_fe.lang.customer.one' ) ?>...", allowClear: true }).change( function(){
+                    $( "#menu-select-customer" ).select2({ width: '100%',placeholder: "<?= __c( 'Jump to :customer...' ) ?>", allowClear: true }).change( function(){
                         document.location.href = '<?= url( "/admin/customer/overview" ) ?>/' + $( "#menu-select-customer" ).val();
                     });
 

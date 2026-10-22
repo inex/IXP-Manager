@@ -1,14 +1,14 @@
 @component('mail::message')
 
-Hello {{ $user->name ?: $user->username }},
+{{ __( 'Hello :name,', [ 'name' => $user->name ?: $user->username ] ) }}
 
-This is a reminder that the following application password(s) for {{ config('identity.sitename') }} will expire in 14 days:
+{{ __( 'This is a reminder that the following application password(s) for :site will expire in 14 days:', [ 'site' => config( 'identity.sitename' ) ] ) }}
 
 @foreach( $appPasswords as $appPassword )
-- **{{ $appPassword->description ?: 'Application password #' . $appPassword->id }}** (expires: {{ \Carbon\Carbon::parse( $appPassword->expires )->format( 'Y-m-d' ) }})
+- **{{ $appPassword->description ?: __( 'Application password #:id', [ 'id' => $appPassword->id ] ) }}** ({{ __( 'expires' ) }}: {{ \Carbon\Carbon::parse( $appPassword->expires )->format( 'Y-m-d' ) }})
 @endforeach
 
-Please review and renew these credentials if needed.
+{{ __( 'Please review and renew these credentials if needed.' ) }}
 
 {{ config( 'identity.name' ) }}
 

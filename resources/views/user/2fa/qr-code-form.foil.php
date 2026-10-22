@@ -19,32 +19,32 @@ $this->layout( 'layouts/ixpv4' )
             <div class="card">
                 <div class="card-header">
                     <h3>
-                        Two Factor Authentication
+                        <?= __( 'Two Factor Authentication' ) ?>
                     </h3>
                 </div>
                 <div class="card-body">
                     <p>
-                        Two factor authentication (2FA) strengthens access security by requiring two authentication methods to verify your identity. Two factor authentication protects against phishing, social engineering and password brute force attacks and secures your logins from attackers exploiting weak or stolen credentials.
+                        <?= __( 'Two factor authentication (2FA) strengthens access security by requiring two authentication methods to verify your identity. Two factor authentication protects against phishing, social engineering and password brute force attacks and secures your logins from attackers exploiting weak or stolen credentials.' ) ?>
                     </p>
                     <p class="tw:pb-8 tw:border-b-2">
-                        <b>IXP Manager</b> supports a Google Authenticator compatible HMAC-Based One-time Password (HOTP) algorithm as specified in <a href="https://tools.ietf.org/html/rfc4226">RFC 4226</a>
-                        and the Time-based One-time Password (TOTP) algorithm specified in <a href="https://tools.ietf.org/html/rfc6238">RFC 6238</a>.
+                        <b><?= __( 'IXP Manager' ) ?></b> <?= __( 'supports a Google Authenticator compatible HMAC-Based One-time Password (HOTP) algorithm as specified in' ) ?> <a href="https://tools.ietf.org/html/rfc4226"><?= __( 'RFC 4226' ) ?></a>
+                        <?= __( 'and the Time-based One-time Password (TOTP) algorithm specified in' ) ?> <a href="https://tools.ietf.org/html/rfc6238"><?= __( 'RFC 6238' ) ?></a>.
                     </p>
                     <p class="tw:pt-4">
-                        To enable two factor authentication on your account, you need to do the following steps.
+                        <?= __( 'To enable two factor authentication on your account, you need to do the following steps.' ) ?>
                     </p>
                     <p>
-                        <b>Step 1:</b> Set up your two factor authentication by scanning the barcode below.
+                        <b><?= __( 'Step 1:' ) ?></b> <?= __( 'Set up your two factor authentication by scanning the barcode below.' ) ?>
                     </p>
                     <div class="tw:mx-auto">
                         <?= $t->qrCodeImg ?>
                     </div>
                     <p>
-                        Alternatively, you can enter this code manually into your authenticator application: <b class="tw:font-mono"><?= $t->ps->getSecret() ?></b>
+                        <?= __( 'Alternatively, you can enter this code manually into your authenticator application:' ) ?> <b class="tw:font-mono"><?= $t->ps->getSecret() ?></b>
                     </p>
                     <?php if( !$t->ps->enabled() ): ?>
                         <p>
-                            <b>Step 2:</b> Enter the 6-digit code you see in your authenticator app.
+                            <b><?= __( 'Step 2:' ) ?></b> <?= __( 'Enter the 6-digit code you see in your authenticator app.' ) ?>
                         </p>
                         <br/>
                         <div class="col-lg-6 mx-auto">
@@ -82,7 +82,7 @@ $this->layout( 'layouts/ixpv4' )
                     <?php else: ?>
 
                         <p>
-                            <b>Step 2:</b> Test your code - enter the 6-digit code you see in your authenticator app.
+                            <b><?= __( 'Step 2:' ) ?></b> <?= __( 'Test your code - enter the 6-digit code you see in your authenticator app.' ) ?>
                         </p>
                         <br/>
                         <div class="col-lg-6 mx-auto">
@@ -111,7 +111,7 @@ $this->layout( 'layouts/ixpv4' )
                         </div>
                         <div class="form-group col-sm-12">
                             <div class="bg-light p-4 mt-4 shadow-sm text-center col-lg-12">
-                                <a href="<?= route( "profile@edit" ) ?>" class="mb-2 mb-sm-0 btn-secondary btn">Go Back</a>
+                                <a href="<?= route( "profile@edit" ) ?>" class="mb-2 mb-sm-0 btn-secondary btn"><?= __( 'Go Back' ) ?></a>
                             </div>
                         </div>
 

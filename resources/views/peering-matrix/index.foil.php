@@ -12,18 +12,18 @@
     <div class="btn-group btn-group-sm" role="group">
         <div class="btn-group btn-group-sm" id="peer-btn-group">
             <button class="btn btn-white dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                All peerings
+                <?= __( 'All peerings' ) ?>
             </button>
             <div id="ul-dd-peer" class="dropdown-menu dropdown-menu-right">
                 <a id="peer-filter-all" href="#" class="dropdown-item active" >
-                    All Peerings
+                    <?= __( 'All Peerings' ) ?>
                 </a>
                 <div class="dropdown-divider"></div>
                 <a id="peer-filter-bi" href="#" class="dropdown-item" >
-                    Bilateral Peerings
+                    <?= __( 'Bilateral Peerings' ) ?>
                 </a>
                 <a id="peer-filter-rs" href="#" class="dropdown-item" >
-                    Route Server Peerings
+                    <?= __( 'Route Server Peerings' ) ?>
                 </a>
             </div>
         </div>
@@ -192,8 +192,7 @@
                             bilat: <?= $bilat ?>, multilat: <?= $rspeer ?>
                         </li>
                         <li>
-                            Clicking the AS number in the table header will isolate that column. Clicking individual
-                            cells in the body will freeze the dynamic highlighting.
+                            <?= __( 'Clicking the AS number in the table header will isolate that column. Clicking individual cells in the body will freeze the dynamic highlighting.' ) ?>
                         </li>
                         <li>
                             Where a <?= config( "identity.orgname" ) ?> member is not listed on this peering matrix, it is because they are

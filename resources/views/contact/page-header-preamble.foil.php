@@ -2,7 +2,7 @@
     <div class="btn-group btn-group-sm" role="group">
         <?php if( isset( $t->feParams->documentation ) && $t->feParams->documentation ): ?>
             <a target="_blank" class="btn btn-white" href="<?= $t->feParams->documentation ?>">
-                Documentation
+                <?= __( 'Documentation' ) ?>
             </a>
         <?php endif; ?>
 
@@ -12,7 +12,7 @@
             </button>
             <ul class="dropdown-menu dropdown-menu-right">
                 <a class="dropdown-item <?= isset( $t->data[ 'params'][ "role" ]) ?: "active" ?>" href="<?= route( $t->feParams->route_prefix . "@list" ) ?>">
-                    All Roles
+                    <?= __( 'All Roles' ) ?>
                 </a>
 
                 <div class="dropdown-divider"></div>

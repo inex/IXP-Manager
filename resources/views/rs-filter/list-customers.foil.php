@@ -18,10 +18,10 @@
                     <thead class="thead-dark">
                         <tr>
                             <th>
-                                Customer
+                                <?= __( 'Customer' ) ?>
                             </th>
                             <th>
-                                # Rules in Production
+                                <?= __( '# Rules in Production' ) ?>
                             </th>
                         </tr>
                     <thead>
@@ -52,7 +52,7 @@
                         </div>
                         <div class="col-sm-12 d-flex">
                             <b class="mr-auto my-auto">
-                                No customer has route server filters configured.
+                                <?= __( 'No customer has route server filters configured.' ) ?>
                             </b>
                         </div>
                     </div>

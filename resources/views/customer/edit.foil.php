@@ -137,6 +137,14 @@ $this->layout( 'layouts/ixpv4' );
                     ->blockHelp( "The Abbreviated Name is a shorter version of the name that is used in space constrained areas such as graph labels." );
                 ?>
 
+                <?php if( count( config( 'ixp_fe.locales', [] ) ) > 1 ): ?>
+                    <?= Former::select( 'locale' )
+                        ->label( 'Default Language' )
+                        ->options( [ '' => 'Use the site default (' . ( config( 'ixp_fe.locales' )[ config( 'app.locale' ) ] ?? config( 'app.locale' ) ) . ')' ] + config( 'ixp_fe.locales' ) )
+                        ->blockHelp( "The default language for this " . config( 'ixp_fe.lang.customer.one' ) . "'s users. Individual users can override this from their own profile page." );
+                    ?>
+                <?php endif; ?>
+
                 <?php if( config( 'auth.peeringdb.enabled' ) ): ?>
                     <?= Former::checkbox( 'peeringdb_oauth' )
                         ->label( '&nbsp;' )

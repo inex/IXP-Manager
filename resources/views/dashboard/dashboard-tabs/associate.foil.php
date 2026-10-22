@@ -1,5 +1,5 @@
 <div class="col-12">
-    <h4>Recent Members</h4>
+    <h4><?= __( 'Recent Members' ) ?></h4>
     <div class="mb-4 tw:text-sm">
         Our five most recent members are listed below.
 
@@ -12,13 +12,13 @@
         <thead class="thead-dark">
             <tr>
                 <th>
-                    Name
+                    <?= __( 'Name' ) ?>
                 </th>
                 <th class="tw:text-right">
-                    AS Number
+                    <?= __( 'AS Number' ) ?>
                 </th>
                 <th>
-                    Date Joined
+                    <?= __( 'Date Joined' ) ?>
                 </th>
             </tr>
         </thead>

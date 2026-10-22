@@ -1,6 +1,6 @@
 <div class="col-lg-6 col-md-12 mb-4">
     <h3>
-        Update Your Profile
+        <?= __( 'Update Your Profile' ) ?>
     </h3>
     <hr>
     <?= Former::open()

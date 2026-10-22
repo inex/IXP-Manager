@@ -18,11 +18,11 @@
     <?php if( Auth::check() && Auth::getUser()->isSuperUser() ): ?>
         <div class="btn-group btn-group-sm ml-auto" role="group">
             <a target="_blank" class="btn btn-white" href="https://docs.ixpmanager.org/latest/features/docstore/">
-                Documentation
+                <?= __( 'Documentation' ) ?>
             </a>
 
             <a id="add-dir" class="btn btn-white" href="<?= route('docstore-c-dir@list', [ 'cust' => $t->cust ] ) ?>"
-               data-toggle="tooltip" data-placement="bottom" title="Root Directory"
+               data-toggle="tooltip" data-placement="bottom" title="<?= __( 'Root Directory' ) ?>"
             >
                 <i class="fa fa-home"></i>
             </a>
@@ -63,7 +63,7 @@
                                     &middot;&middot;&middot;
                                 </button>
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-                                    <a class="dropdown-item" href="<?= route( 'patch-panel-port-file@download', [ 'file' => $file->id] ) ?>">Download</a>
+                                    <a class="dropdown-item" href="<?= route( 'patch-panel-port-file@download', [ 'file' => $file->id] ) ?>"><?= __( 'Download' ) ?></a>
                                 </div>
                             </div>
                         </td>

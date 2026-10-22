@@ -246,7 +246,7 @@ class PortController extends Controller
                 if( PatchPanelPort::where( 'switch_port_id', $sp->id )->doesntExist() ){
                     $ppp->update( [ 'switch_port_id' => $sp->id ] );
                 } else {
-                    AlertContainer::push( 'The switch port selected is already used by an other patch panel port.', Alert::DANGER );
+                    AlertContainer::push( __( 'The switch port selected is already used by an other patch panel port.' ), Alert::DANGER );
                     return redirect()->back()->withInput( $r->all() );
                 }
             }
@@ -260,13 +260,13 @@ class PortController extends Controller
                     ->where( 'sp.id', $sp->id )->get()->pluck( 'custid' )->first();
 
                 if( $cid !== null && $cid !== (int)$r->customer_id ) {
-                    AlertContainer::push( 'The selected customer does not have a relationship with the switch port', Alert::DANGER );
+                    AlertContainer::push( __( 'The selected customer does not have a relationship with the switch port' ), Alert::DANGER );
                     return redirect()->back()->withInput( $r->all() );
                 }
             }
         } else {
             if( $r->customer_id && $r->switch ) {
-                AlertContainer::push( 'You need to select a switch port when a switch is selected', Alert::DANGER );
+                AlertContainer::push( __( 'You need to select a switch port when a switch is selected' ), Alert::DANGER );
                 return redirect()->back()->withInput( $r->all() );
             }
             $ppp->update( [ 'switch_port_id' => null ] );
@@ -441,7 +441,7 @@ class PortController extends Controller
     public function changeStatus( PatchPanelPort $ppp, int $status ): RedirectResponse
     {
         if( !array_key_exists( $status, PatchPanelPort::$STATES ) ){
-            AlertContainer::push( 'The status is invalid.', Alert::DANGER );
+            AlertContainer::push( __( 'The status is invalid.' ), Alert::DANGER );
             return redirect::back();
         }
 
@@ -492,9 +492,8 @@ class PortController extends Controller
 
         if( $status === PatchPanelPort::STATE_CEASED ) {
             if( $sp = $ppp->switchPort ) {
-                AlertContainer::push( 'The patch panel port has been set to available again. Consider '
-                      . 'setting it as  prewired if the cable is still in place. It was connected to '
-                      . $sp->switcher->name . ' :: ' . $sp->name,
+                AlertContainer::push( __( 'The patch panel port has been set to available again. Consider setting it as  prewired if the cable is still in place. It was connected to :switch :: :port', [
+                      'switch' => $sp->switcher->name, 'port' => $sp->name ] ),
                   Alert::SUCCESS );
             }
 
@@ -505,7 +504,7 @@ class PortController extends Controller
             }
         }
 
-        AlertContainer::push( 'The patch panel port has been set to: ' . $ppp->states(), Alert::SUCCESS );
+        AlertContainer::push( __( 'The patch panel port has been set to: :state', [ 'state' => $ppp->states() ] ), Alert::SUCCESS );
         return redirect::back();
     }
 }

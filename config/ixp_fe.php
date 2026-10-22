@@ -68,6 +68,28 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Available user interface languages
+    |--------------------------------------------------------------------------
+    |
+    | The locales a user may choose from for the front end. The key is the
+    | locale (and so the name of the file/directory under lang/) and the value
+    | is how it is presented to the user in the language selector.
+    |
+    | The default locale for the instance is set via APP_LOCALE (see
+    | config/app.php). A user's own choice is stored in user.prefs['locale']
+    | and a customer wide default in cust.prefs['locale'].
+    |
+    | Only locales listed here are accepted - anything else falls back to
+    | config('app.locale').
+    |
+    */
+    'locales' => [
+        'en' => 'English',
+        'fr' => 'Français',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Front end components (Zend Framework Controllers)
     |--------------------------------------------------------------------------
     |

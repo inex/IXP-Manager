@@ -219,7 +219,8 @@ class ApiKeyController extends EloquentController
     public function doStore( Request $r )
     {
         if( $r->user()->apiKeys()->count() >= config( 'ixp_fe.api_keys.max_keys' ) ) {
-            AlertContainer::push( "We currently have a limit of " . config( 'ixp_fe.api_keys.max_keys' ) . " API keys per user. Please contact us if you require more.", Alert::DANGER );
+            AlertContainer::push( __( 'We currently have a limit of :max API keys per user. Please contact us if you require more.', [
+                'max' => config( 'ixp_fe.api_keys.max_keys' ) ] ), Alert::DANGER );
             return Redirect::back()->withInput();
         }
 
@@ -258,7 +259,7 @@ class ApiKeyController extends EloquentController
         $this->object->description      = $r->description;
         $this->object->save();
 
-        AlertContainer::push( "API key created: <code>" . $rawToken . "</code>", Alert::SUCCESS );
+        AlertContainer::push( __( 'API key created: :key', [ 'key' => '<code>' . $rawToken . '</code>' ] ), Alert::SUCCESS );
         return true;
     }
 

@@ -8,10 +8,10 @@
 <?php $this->section( 'page-header-preamble' ) ?>
     <?php if( Auth::check() && $isSuperUser ): ?>
         <a href="<?= route( $c->typeAssociate() ? 'customer@associates' : 'customer@details' )?>">
-            <?= $c->typeAssociate() ? 'Associate ' : '' ?><?= ucfirst( config( 'ixp_fe.lang.customer.many' ) ) ?>
+            <?= $c->typeAssociate() ? __c( 'Associate :Customers' ) : __c( ':Customers' ) ?>
         </a>
     <?php else: ?>
-        <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?> Detail
+        <?= __c( ':Customer Detail' ) ?>
     <?php endif; ?>
 
     <?php if( Auth::check() && $isSuperUser ): ?>
@@ -48,7 +48,7 @@
                                 <?php if( $c->in_manrs ): ?>
                                     <a href="https://www.manrs.org/" target="_blank" class="tw:hover:no-underline">
                                         <span class="tw:inline-block tw:border-1 tw:border-green-500 tw:p-1 tw:rounded-full tw:text-green-500 tw:font-semibold tw:uppercase tw:text-sm tw:px-3 tw:py-1 tw:mr-3">
-                                            MANRS
+                                            <?= __( 'MANRS' ) ?>
                                         </span>
                                     </a>
                                 <?php endif; ?>
@@ -76,7 +76,7 @@
                         <?php if( filter_var( $c->peeringemail, FILTER_VALIDATE_EMAIL ) ): ?>
                             <div class="row">
                                 <div class="col-12 col-md-3 tw:text-center tw:md:text-right">
-                                    <span class="tw:font-bold tw:mr-4">Peering&nbsp;Email:</span>
+                                    <span class="tw:font-bold tw:mr-4"><?= __( 'Peering&nbsp;Email:' ) ?></span>
                                 </div>
                                 <div class="col-12 col-md-9 tw:text-center tw:md:text-left">
                                     <a href="mailto:<?= $c->peeringemail ?>">
@@ -88,7 +88,7 @@
 
                         <div class="row">
                             <div class="col-12 col-md-3 tw:text-center tw:md:text-right">
-                                <span class="tw:font-bold  tw:mr-4">NOC&nbsp;Contact:</span>
+                                <span class="tw:font-bold  tw:mr-4"><?= __( 'NOC&nbsp;Contact:' ) ?></span>
                             </div>
                             <div class="col-12 col-md-9 tw:text-center tw:md:text-left">
                                 <?php if( filter_var( $c->nocemail, FILTER_VALIDATE_EMAIL ) ): ?>
@@ -113,7 +113,7 @@
                             <div class="row">
                                 <div class="col-12 col-md-3 tw:text-center tw:md:text-right">
                                     <span class="tw:font-bold tw:mr-4">
-                                      Peering&nbsp;Macro:
+                                      <?= __( 'Peering&nbsp;Macro:' ) ?>
                                     </span>
                                 </div>
                                 <div class="col-12 col-md-9 tw:text-center tw:md:text-left">
@@ -144,7 +144,7 @@
                                     <?php if( $infra = $vi->physicalInterfaces[ 0 ]->switchPort->switcher->infrastructureModel ): ?>
                                         <?= $t->ee( $infra->name ) ?>
                                     <?php else: ?>
-                                      '<em>Unknown Infrastructure</em>'
+                                      '<em><?= __( 'Unknown Infrastructure' ) ?></em>'
                                     <?php endif; ?>
 
                                     <span class="tw:block tw:float-right tw:ml-6 tw:text-lg tw:font-semibold">
@@ -156,7 +156,7 @@
                                 <?php if( $pi = $vi->physicalInterfaces[ 0 ] ):
                                     /** @var $pi \IXP\Models\PhysicalInterface */?>
                                     <p class="tw:text-grey-dark tw:text-sm">
-                                        Location
+                                        <?= __( 'Location' ) ?>
                                     </p>
                                     <p class="tw:text-grey-darker tw:text-base">
                                         <?= $t->ee( $pi->switchPort->switcher->cabinet->location->name ) ?>

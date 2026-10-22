@@ -161,7 +161,11 @@ class LoginController extends Controller
         if( ( $cust = $user->customer ) && $user->customer()->active()->notDeleted()->doesntExist() ){
             $user->custid = $newCust->id;
             $user->save();
-            AlertContainer::push( "The default " . config( "ixp_fe.lang.customer.one" ) . " " . ucfirst( $cust->abbreviatedName ) . " is no longer active. Your default " . config( "ixp_fe.lang.customer.one" ) . " is now " . ucfirst( $newCust->abbreviatedName ) . "." , Alert::WARNING );
+            AlertContainer::push( __( 'The default :customer :old is no longer active. Your default :customer is now :new.', [
+                'customer' => config( 'ixp_fe.lang.customer.one' ),
+                'old'      => ucfirst( $cust->abbreviatedName ),
+                'new'      => ucfirst( $newCust->abbreviatedName ),
+            ] ), Alert::WARNING );
         }
 
         $c2u = CustomerToUser::where( [ 'user_id' => $user->id ] )->where( [ "customer_id" => $user->custid ] )->first();
@@ -184,7 +188,7 @@ class LoginController extends Controller
      */
     protected function sendFailedLoginResponse( Request $request, ?string $msg = null ) : RedirectResponse
     {
-        AlertContainer::push( $msg ?? "Invalid username or password. Please try again." , Alert::DANGER );
+        AlertContainer::push( $msg ?? __( 'Invalid username or password. Please try again.' ), Alert::DANGER );
         return redirect()->back()->withInput( $request->only('username') );
     }
 
@@ -199,7 +203,7 @@ class LoginController extends Controller
     {
         $this->guard()->logout();
 
-        AlertContainer::push( $customMessage ? $customMessage[ "message" ] : "You have been logged out." , $customMessage ? $customMessage[ "class" ] : Alert::SUCCESS );
+        AlertContainer::push( $customMessage ? $customMessage[ "message" ] : __( 'You have been logged out.' ), $customMessage ? $customMessage[ "class" ] : Alert::SUCCESS );
         return redirect('');
     }
 
@@ -211,7 +215,7 @@ class LoginController extends Controller
     public function peeringdbRedirectToProvider(): RedirectResponseFoundation
     {
         if( Auth::check() ) {
-            AlertContainer::push( "You are already logged in - Login via PeeringDB aborted." , Alert::WARNING );
+            AlertContainer::push( __( "You are already logged in - Login via PeeringDB aborted." ) , Alert::WARNING );
             return redirect('');
         }
 
@@ -219,7 +223,7 @@ class LoginController extends Controller
             return Socialite::driver( 'peeringdb' )->redirect();
         }
 
-        AlertContainer::push( "Login with PeeringDB not enabled." , Alert::DANGER );
+        AlertContainer::push( __( "Login with PeeringDB not enabled." ) , Alert::DANGER );
         return redirect( route('login@showForm' ) );
     }
 
@@ -285,12 +289,12 @@ class LoginController extends Controller
     public function peeringdbHandleProviderCallback( Request $r ): RedirectResponse
     {
         if( Auth::check() ) {
-            AlertContainer::push( "You are already logged in - Login via PeeringDB aborted." , Alert::WARNING );
+            AlertContainer::push( __( "You are already logged in - Login via PeeringDB aborted." ) , Alert::WARNING );
             return redirect('');
         }
 
         if( !config( 'auth.peeringdb.enabled' ) ) {
-            AlertContainer::push( "Login with PeeringDB not enabled.", Alert::DANGER );
+            AlertContainer::push( __( "Login with PeeringDB not enabled." ), Alert::DANGER );
             return redirect()->route( 'login@showForm' );
         }
 
@@ -298,7 +302,7 @@ class LoginController extends Controller
 
         // valid PeeringDB login with affiliations?
         if( !$suser || !isset( $suser->user ) || !isset( $suser->user['networks'] ) || !is_array( $suser->user['networks'] ) || !count( $suser->user['networks'] ) ) {
-            AlertContainer::push( "Login with PeeringDB failed or you have no existing affiliations.", Alert::DANGER );
+            AlertContainer::push( __( "Login with PeeringDB failed or you have no existing affiliations." ), Alert::DANGER );
             return redirect()->route( 'login@login' );
         }
 
@@ -316,11 +320,13 @@ class LoginController extends Controller
 
         /** @var Customer $c */
         foreach( $result['added_to'] as $c ) {
-            AlertContainer::push( "Your PeeringDB affiliation with {$c->getFormattedName()} has been added to IXP Manager.", Alert::SUCCESS );
+            AlertContainer::push( __( 'Your PeeringDB affiliation with :customer has been added to IXP Manager.', [
+                'customer' => $c->getFormattedName() ] ), Alert::SUCCESS );
         }
 
         foreach( $result['removed_from'] as $c ) {
-            AlertContainer::push( "Your PeeringDB affiliation with {$c->getFormattedName()} has been removed from IXP Manager as you are no longer affiliated with this network on PeeringDB.", Alert::WARNING );
+            AlertContainer::push( __( 'Your PeeringDB affiliation with :customer has been removed from IXP Manager as you are no longer affiliated with this network on PeeringDB.', [
+                'customer' => $c->getFormattedName() ] ), Alert::WARNING );
         }
 
         Auth::login( $result['user'] );

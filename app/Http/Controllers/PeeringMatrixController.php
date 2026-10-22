@@ -67,12 +67,12 @@ class PeeringMatrixController extends Controller
     public function index( Request $r ): View|RedirectResponse
     {
         if( config( 'ixp_fe.frontend.disabled.peering-matrix', false ) ) {
-            AlertContainer::push( 'The peering matrix has been disabled.', Alert::DANGER );
+            AlertContainer::push( __( 'The peering matrix has been disabled.' ), Alert::DANGER );
             return redirect('');
         }
 
         if( !ixp_min_auth( config( 'ixp.peering-matrix.min-auth' ) ) ) {
-            AlertContainer::push( 'You do not have the required privileges to access the peering matrix', Alert::DANGER );
+            AlertContainer::push( __( 'You do not have the required privileges to access the peering matrix' ), Alert::DANGER );
             return redirect('');
         }
 
@@ -95,7 +95,7 @@ class PeeringMatrixController extends Controller
             $vl = Vlan::where( 'peering_matrix', 1 )->first();
             
             if( !$vl ) {
-                AlertContainer::push( 'There are no VLANs configured to be included in the peering matrix.', Alert::DANGER );
+                AlertContainer::push( __( 'There are no VLANs configured to be included in the peering matrix.' ), Alert::DANGER );
                 return redirect('');
             }
             
@@ -123,16 +123,16 @@ class PeeringMatrixController extends Controller
             ->keyBy( 'id' )->toArray();
 
         if( !count( $vlans ) ) {
-            AlertContainer::push( 'No VLANs have been enabled for the peering matrix. Please see <a href="'
-                . 'https://docs.ixpmanager.org/latest/features/peering-matrix/">these instructions</a>'
-                . ' / contact our support team.', Alert::DANGER );
+            AlertContainer::push( __( 'No VLANs have been enabled for the peering matrix. Please see :instructions / contact our support team.', [
+                'instructions' => '<a href="https://docs.ixpmanager.org/latest/features/peering-matrix/">'
+                    . __( 'these instructions' ) . '</a>',
+            ] ), Alert::DANGER );
             return redirect( '');
         }
 
 
         if( !isset( $vlans[ $vl ] ) ) {
-            AlertContainer::push( 'There are no VLANs set for the peering matrix. Please '
-                    . 'edit your VLAN(s) and set the "Peering Matrix" option to "Yes" for at least one of them.',
+            AlertContainer::push( __( 'There are no VLANs set for the peering matrix. Please edit your VLAN(s) and set the "Peering Matrix" option to "Yes" for at least one of them.' ),
             Alert::DANGER );
 
             return redirect( '');

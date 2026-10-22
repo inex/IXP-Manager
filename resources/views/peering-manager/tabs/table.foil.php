@@ -4,13 +4,13 @@
             <thead class="thead-dark">
                 <tr>
                     <th>
-                        Member
+                        <?= __( 'Member' ) ?>
                     </th>
                     <th>
-                        ASN
+                        <?= __( 'ASN' ) ?>
                     </th>
                     <th>
-                        Policy
+                        <?= __( 'Policy' ) ?>
                     </th>
                     <?php foreach( $t->vlans as $vlan ): ?>
                         <?php $vlanid = $vlan->number ?>
@@ -64,11 +64,11 @@
                                             data-days="<?= isset( $t->peers[ $cid ] ) ? $t->peers[ $cid ][ "email_days" ] : -1 ?>"
                                             class="btn btn-white btn-sm peering-request" <?= !$c[ "ispotential" ] ? "disabled" : "" ?>>
                                         <i id="peering-request-icon-<?= $cid ?>"
-                                           class="fa  <?= isset( $t->peers[ $cid ][ "emails_sent"] ) && $t->peers[ $cid ][ "emails_sent" ] ? "fa-rotate-right" : "fa-envelope" ?>"></i> Request Peering
+                                           class="fa  <?= isset( $t->peers[ $cid ][ "emails_sent"] ) && $t->peers[ $cid ][ "emails_sent" ] ? "fa-rotate-right" : "fa-envelope" ?>"></i> <?= __( 'Request Peering' ) ?>
                                     </button>
 
                                     <button id="peering-notes-<?= $cid ?>" class="btn btn-white btn-sm peering-note" data-object-id="<?= $cid ?>">
-                                        <i id="peering-notes-icon-<?= $cid ?>" class="fa fa-star" <?= isset( $t->peers[ $cid ][ "notes" ] ) && strlen( $t->peers[ $cid ][ "notes" ] ) ?: "style='color:lightgrey'" ?>></i> Notes
+                                        <i id="peering-notes-icon-<?= $cid ?>" class="fa fa-star" <?= isset( $t->peers[ $cid ][ "notes" ] ) && strlen( $t->peers[ $cid ][ "notes" ] ) ?: "style='color:lightgrey'" ?>></i> <?= __( 'Notes' ) ?>
                                     </button>
 
                                     <button id="dropdown-mark-peering-<?= $cid ?>" class="btn btn-sm <?= isset( $t->peers[ $cid ] ) && ( $t->peers[ $cid ][ "peered"] || $t->peers[ $cid ][ "rejected" ] ) ? "btn-info" : "btn-white" ?> dropdown-toggle" data-toggle="dropdown"></button>

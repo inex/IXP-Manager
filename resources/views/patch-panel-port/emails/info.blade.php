@@ -1,10 +1,9 @@
-Hi,
+{{ __( 'Hi,' ) }}
 
-You or someone in your organisation requested a details on the
-following cross connect to {{ env( 'IDENTITY_ORGNAME' ) }}.
+{{ __( 'You or someone in your organisation requested details on the following cross connect to :org.', [ 'org' => env( 'IDENTITY_ORGNAME' ) ] ) }}
 
 @if( trim( $ppp->description ) )
-**Description**: {{ $ppp->description }}
+**{{ __( 'Description' ) }}**: {{ $ppp->description }}
 @endif
 
 ```
@@ -25,11 +24,11 @@ Connected on:    {{  $ppp->connected_at }}
 ```
 
 @if( $ppp->patchPanelPortFilesPublic()->count() )
-We have attached all the documentation which we have on file regarding this connection.
+{{ __( 'We have attached all the documentation which we have on file regarding this connection.' ) }}
 @endif
 
 @if( strlen( trim( $ppp->notes ) ) )
-We have also recorded the following notes:
+{{ __( 'We have also recorded the following notes:' ) }}
 
 @foreach( explode( "\n", $ppp->notes ) as $l )
 > {{$l}}
@@ -37,6 +36,6 @@ We have also recorded the following notes:
 
 @endif
 
-If you have any queries about this, please reply to this email.
+{{ __( 'If you have any queries about this, please reply to this email.' ) }}
 
 @include('patch-panel-port/emails/signature')

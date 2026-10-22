@@ -18,10 +18,10 @@
                             <i class="fa fa-exclamation-circle fa-2x"></i>
                         </div>
                         <div class="col-sm-12">
-                            <strong>Test mode enabled.</strong>
+                            <strong><?= __( 'Test mode enabled.' ) ?></strong>
                             All peering requests will only be sent to <code><?= config( 'ixp.peering_manager.testemail' ) ?></code>.
                             The CC/BCC recipients will be ignored.
-                            This can be changed in your <code>.env</code> configuration file.
+                            This can be changed in your <code>.env</code> <?= __( 'configuration file.' ) ?>
                         </div>
                     </div>
                 </div>
@@ -32,22 +32,22 @@
                     <ul class="nav nav-tabs card-header-tabs">
                         <li id="peering-potential-li" role="potential" class="nav-item">
                             <a class="nav-link active" data-toggle="tab" href="#potential">
-                                Potential Peers
+                                <?= __( 'Potential Peers' ) ?>
                             </a>
                         </li>
                         <li id="peering-potential-bilat-li" role="potential-bilat" class="nav-item">
                             <a class="nav-link" data-toggle="tab" href="#potential-bilat">
-                                Potential Bilateral Peers
+                                <?= __( 'Potential Bilateral Peers' ) ?>
                             </a>
                         </li>
                         <li id="peering-peers-li" role="peers" class="nav-item">
                             <a class="nav-link" data-toggle="tab" href="#peers">
-                                Peers
+                                <?= __( 'Peers' ) ?>
                             </a>
                         </li>
                         <li id="peering-rejected-li" role="rejected" class="nav-item">
                             <a class="nav-link" data-toggle="tab" href="#rejected">
-                                Rejected / Ignored Peers
+                                <?= __( 'Rejected / Ignored Peers' ) ?>
                             </a>
                         </li>
                     </ul>

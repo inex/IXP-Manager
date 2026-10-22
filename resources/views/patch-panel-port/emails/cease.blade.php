@@ -1,10 +1,10 @@
-Hi,
+{{ __( 'Hi,' ) }}
 
-** ACTION REQUIRED - PLEASE SEE BELOW **
+** {{ __( 'ACTION REQUIRED - PLEASE SEE BELOW' ) }} **
 
-You have a cross connect to {{ env( 'IDENTITY_ORGNAME' ) }} which our records indicate is no longer required.
+{{ __( 'You have a cross connect to :org which our records indicate is no longer required.', [ 'org' => env( 'IDENTITY_ORGNAME' ) ] ) }}
 
-Please contact the co-location facility and request that they cease the following cross connect:
+{{ __( 'Please contact the co-location facility and request that they cease the following cross connect:' ) }}
 
 
 ```
@@ -21,11 +21,11 @@ Connected on:    {{  $ppp->connected_at }}
 ```
 
 @if( $ppp->patchPanelPortFilesPublic()->count() )
-We have attached documentation which we have on file regarding this connection which may help process this request.
+{{ __( 'We have attached documentation which we have on file regarding this connection which may help process this request.' ) }}
 @endif
 
 @if( strlen( trim( $ppp->notes ) ) )
-We have also recorded the following notes:
+{{ __( 'We have also recorded the following notes:' ) }}
 
 @foreach( explode( "\n", $ppp->notes ) as $l )
 > {{$l}}
@@ -33,9 +33,9 @@ We have also recorded the following notes:
 
 @endif
 
-If you have any queries about this, please reply to this email.
+{{ __( 'If you have any queries about this, please reply to this email.' ) }}
 
-** Please email us and confirm when this has been completed. **
+** {{ __( 'Please email us and confirm when this has been completed.' ) }} **
 
 @include('patch-panel-port/emails/signature')
 
