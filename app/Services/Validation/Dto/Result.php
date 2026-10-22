@@ -24,6 +24,7 @@ declare(strict_types=1);
 
 namespace IXP\Services\Validation\Dto;
 
+use Illuminate\Support\Traits\Conditionable;
 use IXP\Services\Validation\Dto\AdditionalInfo\Element;
 use IXP\Services\Validation\Dto\AdditionalInfo\TextElement;
 use IXP\Services\Validation\Dto\AdditionalInfo\UrlElement;
@@ -35,6 +36,8 @@ use JsonSerializable;
  */
 final class Result implements JsonSerializable
 {
+    use Conditionable;
+
     private(set) ?string           $docsUrl        = null;
     private(set) ?string           $settingsUrl    = null;
     private(set) ?CallToActionLink $callToAction   = null;

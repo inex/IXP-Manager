@@ -26,6 +26,8 @@ namespace IXP\Services\Validation\Validators;
 
 use IXP\Contracts\Validation\ValidationBackend;
 use IXP\Contracts\Validation\Validator;
+use IXP\Models\ContactGroup;
+use IXP\Services\Validation\Dto\Result;
 use Ramsey\Uuid\Uuid;
 
 /**
@@ -99,6 +101,44 @@ final class Config implements Validator
                 ->withSettingsLink("frontend_controllers", "lg");
         } else {
             $backend->info( "Looking Glass UI is enabled." );
+        }
+
+        if ( config()->has( 'contact_group' ) ) {
+            $backend->info("Contact groups file was found");
+
+            /** @psalm-suppress RedundantCondition */
+            if ( config()->has( 'contact_group.types' ) && is_array( config( 'contact_group.types' ) ) ) {
+                $numTypes = count(config()->array( 'contact_group.types' ) );
+                $backend->info($numTypes . " contact groups defined in configuration");
+
+                foreach ( config()->array( 'contact_group.types' ) as $key => $value) {
+                    // If either of these happen, abort the loop and have them fix it
+                    if (!is_string($key) || !is_string($value)) {
+                        $backend->error( "The key/value pairs in contact groups configuration must be strings" )
+                            ->withDocsPath("usage/contacts/#contact-groups");
+                        break;
+                    }
+
+                    if (mb_strlen($key) > ContactGroup::MAX_TYPE_LENGTH) {
+                        $affected = ContactGroup::whereType(mb_substr($key, 0, ContactGroup::MAX_TYPE_LENGTH))->get();
+
+                        $backend
+                            ->error("Contact group key '$key' is too long. Maximum length is " . ContactGroup::MAX_TYPE_LENGTH . " characters.")
+                            ->withDocsPath("usage/contacts/#contact-groups")
+                            ->when($affected->isNotEmpty(),
+                                fn( Result $result ) => $result
+                                    ->addAdditionalInfoText("Found " . $affected->count() . " group options under the truncated name, which are not visible on contact group index page.")
+                                    ->addAdditionalInfoText("Renaming '$key' to '" . mb_substr($key, 0, ContactGroup::MAX_TYPE_LENGTH) . "' will allow the options to be managed again.")
+                                    ->addAdditionalInfoUrl(route('contact-group@list'), "Go to contact group page")
+                            );
+                    }
+                }
+
+            } else {
+                $backend->error("Contact groups appears misconfigured. config/contact_group.php file may contain invalid structure.");
+            }
+        } else {
+            $backend->debug("Contact groups file not found");
         }
     }
 }
