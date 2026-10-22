@@ -250,7 +250,7 @@ class ContactGroupController extends EloquentController
     public function checkForm( Request $r ): void
     {
         $r->validate( [
-            'name'                  => 'required|string|max:255|unique:contact_group,name' . ( $r->id ? ','. $r->id : '' ),
+            'name'                  => 'required|string|max:20|unique:contact_group,name' . ( $r->id ? ','. $r->id : '' ),
             'description'           => 'required|string|max:255',
             'type'                  => 'required|string|max:20|in:' . implode( ',', array_keys( config( 'contact_group.types' ) ) ),
             'limited_to'            => 'required|integer|min:0',
