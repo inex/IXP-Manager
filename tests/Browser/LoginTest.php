@@ -227,6 +227,7 @@ class LoginTest extends DuskTestCase
 
     /**
      * Test that we are denied login when account is marked disabled
+     * @throws \Throwable
      */
     public function testCannotLogInToDisabledAccount(): void
     {
