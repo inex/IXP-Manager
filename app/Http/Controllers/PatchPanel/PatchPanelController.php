@@ -25,6 +25,7 @@ namespace IXP\Http\Controllers\PatchPanel;
 
 use Former;
 
+use Illuminate\Database\Eloquent\Builder;
 use IXP\Http\Requests\TogglePatchPanelActive;
 use Illuminate\Http\{
     RedirectResponse,
@@ -33,7 +34,13 @@ use Illuminate\Http\{
 
 use Illuminate\View\View;
 
-use IXP\Models\{Cabinet, Location, PatchPanel, PatchPanelPort, PatchPanelPortHistory};
+use IXP\Models\{Cabinet,
+    Location,
+    PatchPanel,
+    PatchPanelPort,
+    PatchPanelPortFile,
+    PatchPanelPortHistory,
+    PatchPanelPortHistoryFile};
 
 use IXP\Http\Controllers\Controller;
 use IXP\Http\Requests\StorePatchPanel;
@@ -299,27 +306,54 @@ class PatchPanelController extends Controller
      *
      * @param PatchPanel    $pp      the patch panel
      *
-     * @return  View
+     * @return  RedirectResponse|View
      */
-    public function expunge( PatchPanel $pp ): View
+    public function expunge( PatchPanel $pp ): RedirectResponse|View
     {
+        if ($pp->active) {
+            AlertContainer::push("{$pp->name} is active and cannot be expunged.", Alert::DANGER);
+            return redirect()->route( 'patch-panel@list', [ 'pp' => $pp ]);
+        }
+
+        $numPorts = $pp->patchPanelPorts()->count();
+
+        $numFiles = PatchPanelPortFile::whereHas('patchPanelPort.patchPanel', function ( Builder $query) use ($pp) {
+            $query->whereKey($pp->getKey());
+        })->count();
+
+        $numHistories = PatchPanelPortHistory::whereHas('patchPanelPort.patchPanel', function (Builder $query) use ($pp) {
+            $query->whereKey($pp->getKey());
+        })->count();
+
+        $numHistoryFiles = PatchPanelPortHistoryFile::whereHas('patchPanelPortHistory.patchPanelPort.patchPanel', function (Builder $query) use ($pp) {
+            $query->whereKey($pp->getKey());
+        })->count();
+
         return view( 'patch-panel/expunge' )->with([
             'pp'            => $pp,
+            'numPorts'      => $numPorts,
+            'numFiles'      => $numFiles,
+            'numHistories'  => $numHistories,
+            'numHistoryFiles' => $numHistoryFiles,
         ]);
     }
 
 
 
     /**
-     * Allow to display the form to edit a patch panel
+     * Accept submission to expunge a patch panel, and expunge it
      *
-     * @param Request       $r
      * @param PatchPanel    $pp      the patch panel
      *
      * @return RedirectResponse
      */
-    public function doExpunge( Request $r, PatchPanel $pp ): RedirectResponse
+    public function doExpunge( PatchPanel $pp ): RedirectResponse
     {
+        if ($pp->active) {
+            AlertContainer::push("{$pp->name} is active and cannot be expunged.", Alert::DANGER);
+            return redirect()->route( 'patch-panel@list', [ 'pp' => $pp ]);
+        }
+
         PatchPanelPortHistory::whereIn( 'patch_panel_port_id', $pp->patchPanelPorts->pluck('id') )
             ->update( [ 'duplex_master_id' => null ] );
 
