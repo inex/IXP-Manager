@@ -120,13 +120,13 @@ class LoginTest extends DuskTestCase
      */
     public function testRememberMeTokenDeletedOnLogout(): void
     {
-        $this->browse(function (Browser $browser1) {
+        $this->browse(function (Browser $browser) {
 
             $user = User::where('username', 'imcustadmin')->first();
 
             $this->assertDatabaseMissing('user_remember_tokens', ['user_id' => $user->id]);
 
-            $browser1->visit('/logout')
+            $browser->visit('/logout')
                 ->visit('/login')
                 ->type( 'username', 'imcustadmin' )
                 ->type( 'password', 'travisci' )
@@ -137,7 +137,7 @@ class LoginTest extends DuskTestCase
 
             $this->assertDatabaseHas('user_remember_tokens', ['user_id' => $user->id]);
 
-            $browser1->visit('/logout')
+            $browser->visit('/logout')
                 ->waitForLocation( route('login@showForm') )
                 ->assertSee('You have been logged out.');
 
@@ -152,8 +152,8 @@ class LoginTest extends DuskTestCase
      */
     public function testCannotUseExpiredRememberMeToken(): void
     {
-        $this->browse(function (Browser $browser1) {
-            $browser1->visit('/logout')
+        $this->browse(function (Browser $browser) {
+            $browser->visit('/logout')
                 ->visit('/login')
                 ->type( 'username', 'imcustadmin' )
                 ->type( 'password', 'travisci' )
@@ -167,7 +167,7 @@ class LoginTest extends DuskTestCase
             $token->expires = now()->subMonth(6);
             $token->save();
 
-            $browser1->refresh()
+            $browser->refresh()
                 ->waitForLocation( route('login@showForm') )
                 ->assertSee('Your login session has expired or was terminated from another device. Please log in again.');
         });
@@ -179,8 +179,8 @@ class LoginTest extends DuskTestCase
      */
     public function testCannotUseDeletedRememberMeToken(): void
     {
-        $this->browse(function (Browser $browser1) {
-            $browser1->visit('/logout')
+        $this->browse(function (Browser $browser) {
+            $browser->visit('/logout')
                 ->visit('/login')
                 ->type( 'username', 'imcustadmin' )
                 ->type( 'password', 'travisci' )
@@ -193,7 +193,7 @@ class LoginTest extends DuskTestCase
             $token = UserRememberToken::whereUserId($user->id)->first();
             $token->delete();
 
-            $browser1->refresh()
+            $browser->refresh()
                 ->waitForLocation( route('login@showForm') )
                 ->assertSee('Your login session has expired or was terminated from another device. Please log in again.');
         });
@@ -206,8 +206,8 @@ class LoginTest extends DuskTestCase
      */
     public function testCannotUseInvalidRememberMeToken(): void
     {
-        $this->browse(function (Browser $browser1) {
-            $browser1->visit('/logout')
+        $this->browse(function (Browser $browser) {
+            $browser->visit('/logout')
                 ->visit('/login')
                 ->type( 'username', 'imcustadmin' )
                 ->type( 'password', 'travisci' )
@@ -216,12 +216,33 @@ class LoginTest extends DuskTestCase
                 ->waitForLocation( '/dashboard' )
                 ->assertPathIs( '/dashboard' );
 
-            $browser1->deleteCookie(Auth::getRecallerName());
-            $browser1->addCookie(Auth::getRecallerName(), "somegibberish");
+            $browser->deleteCookie(Auth::getRecallerName());
+            $browser->addCookie(Auth::getRecallerName(), "somegibberish");
 
-            $browser1->refresh()
+            $browser->refresh()
                 ->waitForLocation( route('login@showForm') )
                 ->assertSee('Your login session has expired or was terminated from another device. Please log in again.');
+        });
+    }
+
+    /**
+     * Test that we are denied login when account is marked disabled
+     */
+    public function testCannotLogInToDisabledAccount(): void
+    {
+        $this->browse(function (Browser $browser) {
+            $user = User::where('username', 'travis')->first();
+            $user->disabled = true;
+            $user->save();
+
+            $browser->visit('/logout')
+                ->visit('/login')
+                ->type( 'username', 'travis' )
+                ->type( 'password', 'travisci' )
+                ->check( 'remember' )
+                ->press( '#login-btn' )
+                ->waitForLocation( '/login' )
+                ->assertSee('Your account is disabled.');
         });
     }
 }
