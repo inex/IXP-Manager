@@ -245,4 +245,29 @@ class LoginTest extends DuskTestCase
                 ->assertSee('Your account is disabled.');
         });
     }
+
+    /**
+     * Test the superuser can login and see the dashboard
+     * @throws \Throwable
+     */
+    public function testSessionTerminatedIfAccountIsDisabled(): void
+    {
+        $this->browse(function (Browser $browser) {
+            $browser->visit('/logout')
+                ->visit('/login')
+                ->type( 'username', 'travis' )
+                ->type( 'password', 'travisci' )
+                ->press( '#login-btn' )
+                ->waitForLocation( '/admin/dashboard' )
+                ->assertPathIs( '/admin/dashboard' );
+
+            $user = User::where('username', 'travis')->first();
+            $user->disabled = true;
+            $user->save();
+
+            $browser->refresh()
+                ->waitForLocation( '/login' )
+                ->assertSee('Your account is disabled.');
+        });
+    }
 }
