@@ -56,26 +56,10 @@
                     <h3>The patch panel you are going to delete has:</h3>
 
                     <ul>
-                        <li> <?= $t->pp->patchPanelPorts->count() ?> ports. </li>
-
-                        <?php
-                            $files = 0;
-                            $hists = 0;
-                            $histFiles = 0;
-
-                            foreach( $t->pp->patchPanelPorts as $ppp ) {
-                                $files += $ppp->patchPanelPortFiles->count();
-                                $hists += $ppp->patchPanelPortHistories->count();
-
-                                foreach( $ppp->patchPanelPortHistories as $ppph ) {
-                                    $histFiles += $ppph->patchPanelPortHistoryFiles->count();
-                                }
-                            }
-                        ?>
-
-                        <li> <?= $files ?> associated files. </li>
-                        <li> <?= $hists ?> historical records. </li>
-                        <li> <?= $histFiles ?> historical files. </li>
+                        <li> <?= $t->ee( $t->numPorts ) ?> ports. </li>
+                        <li> <?= $t->ee( $t->numFiles ) ?> associated files. </li>
+                        <li> <?= $t->ee( $t->numHistories ) ?> historical records. </li>
+                        <li> <?= $t->ee( $t->numHistoryFiles ) ?> historical files. </li>
                     </ul>
 
                     <?= Former::actions(

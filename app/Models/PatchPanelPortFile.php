@@ -49,6 +49,7 @@ use IXP\Utils\FilenameFormatter;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \IXP\Models\PatchPanelPort|null $patchPanelPort
+ * @method static Builder<static>|PatchPanelPortFile forPatchPanel(\IXP\Models\PatchPanel|int $pp)
  * @method static Builder<static>|PatchPanelPortFile newModelQuery()
  * @method static Builder<static>|PatchPanelPortFile newQuery()
  * @method static Builder<static>|PatchPanelPortFile query()
@@ -107,6 +108,12 @@ class PatchPanelPortFile extends Model
     public function patchPanelPort(): BelongsTo
     {
         return $this->belongsTo( PatchPanelPort::class , 'patch_panel_port_id' );
+    }
+
+    public function scopeForPatchPanel( Builder $query, PatchPanel|int $pp ): Builder
+    {
+        $id = $pp instanceof PatchPanel ? $pp->id : $pp;
+        return $query->whereHas('patchPanelPort', fn (Builder $q) => $q->wherePatchPanelId($id));
     }
 
     /**
