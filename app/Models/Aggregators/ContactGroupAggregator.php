@@ -73,15 +73,15 @@ class ContactGroupAggregator extends ContactGroup
      * ]
      * ];
      *
-     * @param string|null   $type   Optionally limit to a specific type
-     * @param int|null      $cid    Contact id to filter for a particular contact
-     * @param bool          $active Filter active
+     * @param string|null   $type       Optionally limit to a specific type
+     * @param int|null      $cid        Contact id to filter for a particular contact
+     * @param bool          $onlyActive Limit to only active
      *
      * @return array[][]
      *
      * @psalm-return array<array<array{id: mixed, name: mixed}>>
      */
-    public static function getGroupNamesTypeArray( ?string $type = null, ?int $cid = null, bool $active = false ): array
+    public static function getGroupNamesTypeArray( ?string $type = null, ?int $cid = null, bool $onlyActive = false ): array
     {
         $result = self::when( $cid , function( Builder $q, $cid ) {
             return $q->leftJoin( 'contact_to_group', function( $join ) use( $cid ) {
@@ -90,8 +90,8 @@ class ContactGroupAggregator extends ContactGroup
             });
         })->when( $type , function( Builder $q, $type ) {
             return $q->where( 'type', $type );
-        })->when( $active , function( Builder $q, $active ) {
-            return $q->where('active', $active );
+        } )->when( $onlyActive , function( Builder $q ) {
+            return $q->where('active', true );
         } )->get();
 
         $groups = [];
