@@ -29,6 +29,8 @@ use Illuminate\Support\Facades\Storage;
 use IXP\Console\Commands\Command;
 use IXP\Models\PatchPanelPortFile;
 use IXP\Models\PatchPanelPortHistoryFile;
+use League\Flysystem\FilesystemException;
+use League\Flysystem\UnableToDeleteFile;
 
 /**
  * Artisan command to remove orphaned patch panel files (due to failed expungement)
@@ -58,50 +60,39 @@ class CleanupPatchPanelFiles extends Command
     public function handle(): int
     {
         $isDryRun = $this->option('dry-run');
-        $baseDir   = Storage::path("files/ppp");
+        $baseDir   = "files/ppp";
 
         // Ensure the base directory exists
-        if ( !is_dir( $baseDir ) ) {
+        if ( !Storage::directoryExists( $baseDir ) ) {
             $this->info( "Directory does not yet exist - $baseDir" );
             return 0;
         }
 
+        $removedCount = 0;
+
         // Iterate over the first level of sharding in base dir
-        foreach ( new FilesystemIterator( $baseDir, FilesystemIterator::SKIP_DOTS ) as $shard1Dir ) {
+        foreach ( Storage::directories( $baseDir ) as $shard1Dir ) {
             if ( !$this->isPPPShardDirectory( $shard1Dir ) ) {
                 continue;
             }
 
             // Iterate over second level of sharding
-            foreach ( new FilesystemIterator( $shard1Dir->getPathname(), FilesystemIterator::SKIP_DOTS ) as $shard2Dir ) {
+            foreach ( Storage::directories( $shard1Dir ) as $shard2Dir ) {
                 if ( !$this->isPPPShardDirectory( $shard2Dir ) ) {
                     continue;
                 }
 
                 // Extract the shard names from the file path, our files should start with the same characters
-                $shards = [ basename( $shard1Dir->getPathName() ), basename( $shard2Dir->getPathName() ) ];
+                $shards = [ basename( $shard1Dir ), basename( $shard2Dir ) ];
 
                 // Inspect files in the leaf directory to find candidates for removal
-                foreach ( new FilesystemIterator( $shard2Dir->getPathname(), FilesystemIterator::SKIP_DOTS ) as $leafFile ) {
-                    if ( !$this->shouldRemoveFile( $leafFile, $shards ) ) {
+                foreach ( Storage::files( $shard2Dir ) as $pppFile ) {
+                    if ( !$this->shouldRemoveFile( $pppFile, $shards ) ) {
                         continue;
                     }
 
-                    $this->removeFile( $leafFile->getPathname(), $isDryRun );
+                    $this->removeFile( $pppFile, $isDryRun );
                 }
-
-                // Rescan leaf directory, if it's empty, it can be removed
-                $leafCheckIterator = new FilesystemIterator($shard2Dir->getPathname(), FilesystemIterator::SKIP_DOTS);
-                if (!$leafCheckIterator->valid()) {
-                    $this->removeDirectory( $shard2Dir->getPathname(), $isDryRun );
-                }
-            }
-
-            // After checking all leaf directories, check if the parent shard directory is now empty
-            $shard1CheckIterator = new FilesystemIterator( $shard1Dir->getPathname(), FilesystemIterator::SKIP_DOTS );
-            if (!$shard1CheckIterator->valid()) {
-                // Parent shard directory is empty, safe to delete
-                $this->removeDirectory( $shard1Dir->getPathname(), $isDryRun );
             }
         }
 
@@ -112,15 +103,11 @@ class CleanupPatchPanelFiles extends Command
      * Check if the directory is a valid shard directory, and something we want to inspect further. Returns
      * true if it should be traversed into.
      */
-    private function isPPPShardDirectory( \SplFileInfo $shardDir ): bool
+    private function isPPPShardDirectory( string $shardDir ): bool
     {
-        if ( !$shardDir->isDir() ) {
-            $this->warn( "SKIP $shardDir - not a directory", 'v' );
-            return false;
-        }
 
         // Shard directory name must be a single hex character
-        if ( 1 !== preg_match( '/^[a-f0-9]$/', basename( $shardDir->getPathname() ) ) ) {
+        if ( 1 !== preg_match( '/^[a-f0-9]$/', basename( $shardDir ) ) ) {
             $this->warn( "SKIP $shardDir - doesn't match shard format", 'v' );
             return false;
         }
@@ -131,15 +118,9 @@ class CleanupPatchPanelFiles extends Command
     /**
      * Check if the provided file should be removed. Returns true if it should be removed.
      */
-    private function shouldRemoveFile( \SplFileInfo $file, array $shards ): bool
+    private function shouldRemoveFile( string $filePath, array $shards ): bool
     {
-        $filePath = $file->getPathname();
         $filename = basename( $filePath );
-
-        if ( !$file->isFile() ) {
-            $this->warn( "SKIP $filePath - not a file", 'v' );
-            return false;
-        }
 
         // Files in the sharded directory format are 64 hex characters.
         if ( 1 !== preg_match( '/^[a-f0-9]{64}$/', $filename ) ) {
@@ -165,31 +146,21 @@ class CleanupPatchPanelFiles extends Command
         return true;
     }
 
-    private function removeDirectory( string $directoryPath, bool $isDryRun ): void
-    {
-        // Leaf directory is empty, safe to delete
-        if ( $isDryRun ) {
-            $this->info( "remove empty directory: $directoryPath" );
-        } else {
-            $result = rmdir( $directoryPath );
-            if (false === $result) {
-                $this->error( "Failed to remove $directoryPath" );
-            } else {
-                $this->info( "Removed $directoryPath" );
-            }
-        }
-    }
-
     private function removeFile( string $filePath, bool $isDryRun ): void
     {
         if ( $isDryRun ) {
             $this->info( "remove orphaned file: $filePath" );
         } else {
-            $result = unlink( $filePath);
-            if (false === $result) {
-                $this->error( "Failed to remove $filePath" );
-            } else {
-                $this->info( "Removed $filePath" );
+            try {
+                $result = Storage::delete( $filePath );
+            } catch (FilesystemException | UnableToDeleteFile $e) {
+                $result = false;
+            } finally {
+                if (false === $result) {
+                    $this->error( "Failed to remove $filePath" );
+                } else {
+                    $this->info( "Removed $filePath" );
+                }
             }
         }
     }
