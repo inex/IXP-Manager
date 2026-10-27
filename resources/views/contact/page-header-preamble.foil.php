@@ -8,7 +8,7 @@
 
         <?php if( config('contact_group.types.ROLE') ): ?>
             <button type="button" class="btn btn-white dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <?= isset( $t->data[ 'params'][ "role" ] ) ? $t->ee( $t->data[ 'params'][ "roles" ][ $t->data[ 'params'][ "role" ] ][ 'name'] ) : "All Roles" ?>
+                <?= $t->ee( $t->data[ 'params'][ "roles" ][ $t->data[ 'params'][ "role" ] ][ 'name' ] ?? "All Roles" ) // inactive role won't be in roles, so use nullable ?>
             </button>
             <ul class="dropdown-menu dropdown-menu-right">
                 <a class="dropdown-item <?= isset( $t->data[ 'params'][ "role" ]) ?: "active" ?>" href="<?= route( $t->feParams->route_prefix . "@list" ) ?>">
