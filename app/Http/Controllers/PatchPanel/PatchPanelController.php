@@ -365,7 +365,8 @@ class PatchPanelController extends Controller
                 ->toBase()
                 ->map(fn (PatchPanelPortFile $file) => $file->path());
 
-            $results = (object) [ 'filesToDelete' => $portFiles->concat( $historyFiles->all() )->all() ];
+            $results                   = new \stdClass();
+            $results->filesToDelete    = $portFiles->concat( $historyFiles->all() )->all();
             $results->numHistoryFiles  = PatchPanelPortHistoryFile::forPatchPanel($pp)->delete();
             $results->numPortFiles     = PatchPanelPortFile::forPatchPanel($pp)->delete();
             $results->numPortHistories = PatchPanelPortHistory::forPatchPanel($pp)->delete();
