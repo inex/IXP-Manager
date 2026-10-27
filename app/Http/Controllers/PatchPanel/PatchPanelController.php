@@ -376,7 +376,7 @@ class PatchPanelController extends Controller
             return $results;
         });
 
-        Log::info( "Expunged patch panel {$pp->name} - with {$results->numPorts} ports, {$results->numPortFiles} port files, {$results->numPortHistories} port histories, and {$results->numHistoryFiles} port history files");
+        Log::notice( "Expunged patch panel {$pp->name} - with {$results->numPorts} ports, {$results->numPortFiles} port files, {$results->numPortHistories} port histories, and {$results->numHistoryFiles} port history files");
 
         $failedToDelete = [];
         foreach ($results->filesToDelete as $filePath) {
@@ -393,7 +393,7 @@ class PatchPanelController extends Controller
             Log::error( "Error deleting " . count($failedToDelete) . " of " . count($results->filesToDelete) . " expunged patch panel files from filesystem (for panel {$pp->name})" , $failedToDelete);
             AlertContainer::push('Some errors occurred while deleting files from the filesystem. See application logs for details', Alert::WARNING);
         } else {
-            Log::info( "Deleted all expunged patch panel files from filesystem (for panel {$pp->name})" );
+            Log::debug( "Deleted all expunged patch panel files from filesystem (for panel {$pp->name})" );
         }
 
         return redirect( route( "patch-panel@list-inactive" ) );
