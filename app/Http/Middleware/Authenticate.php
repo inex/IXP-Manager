@@ -93,7 +93,7 @@ class Authenticate
         // Check if user is disabled
         if( $us->disabled ){
             Auth::logout();
-            AlertContainer::push( 'You account is disabled.', Alert::DANGER );
+            AlertContainer::push( 'Your account is disabled.', Alert::DANGER );
             return redirect()->guest( route( "login@showForm" ) );
         }
 
