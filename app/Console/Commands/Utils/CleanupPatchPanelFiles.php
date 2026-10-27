@@ -33,14 +33,14 @@ use IXP\Models\PatchPanelPortHistoryFile;
 /**
  * Artisan command to remove orphaned patch panel files (due to failed expungement)
  */
-class PruneOrphanedPatchPanelFiles extends Command
+class CleanupPatchPanelFiles extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'utils:prune-orphaned-patch-panel-files
+    protected $signature = 'utils:cleanup-patch-panel-files
                             { --dry-run : Run without deleting files }';
 
     /**
@@ -48,7 +48,7 @@ class PruneOrphanedPatchPanelFiles extends Command
      *
      * @var string
      */
-    protected $description = 'This command attempts to remove orphaned patch panel files (due to failed expungement). Left over empty directories will also be removed. A dry run mode is available which will identify and report orphaned files without deleting anything. Use the verbose flag to to see decision making for each file.';
+    protected $description = 'This command attempts to cleanup patch panel files (where expunging has failed). Empty directories will also be removed. A dry run mode is available which will identify and report orphaned files without deleting anything. Use the verbose flag to to see decision making for each file.';
 
     /**
      * Execute the console command.
@@ -58,23 +58,12 @@ class PruneOrphanedPatchPanelFiles extends Command
     public function handle(): int
     {
         $isDryRun = $this->option('dry-run');
-        $isVerbose = $this->isVerbosityVerbose();
+        $baseDir   = Storage::path("files/ppp");
 
-        $this->removeOrphanFilesAndDirectories( Storage::path( 'files/ppp'), $isDryRun, $isVerbose );
-
-        return 0;
-    }
-
-    /**
-     * Traverse filesystem tree from the specified base directory. Iterate over first level and second level of sharding
-     * and identify orphaned patch panel files (skip files / directories not following sharding convention). After scanning
-     */
-    private function removeOrphanFilesAndDirectories(string $baseDir, bool $isDryRun, bool $isVerbose): void
-    {
         // Ensure the base directory exists
         if ( !is_dir( $baseDir ) ) {
-            $this->info( "Directory does not yet exist - $baseDir", 'v' );
-            return;
+            $this->info( "Directory does not yet exist - $baseDir" );
+            return 0;
         }
 
         // Iterate over the first level of sharding in base dir
@@ -115,8 +104,9 @@ class PruneOrphanedPatchPanelFiles extends Command
                 $this->removeDirectory( $shard1Dir->getPathname(), $isDryRun );
             }
         }
-    }
 
+        return 0;
+    }
 
     /**
      * Check if the directory is a valid shard directory, and something we want to inspect further. Returns
