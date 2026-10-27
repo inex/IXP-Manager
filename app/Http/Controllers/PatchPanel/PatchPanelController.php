@@ -292,7 +292,7 @@ class PatchPanelController extends Controller
      *
      * @param   PatchPanel $pp the patch panel
      *
-     * @return  view
+     * @return  View
      */
     public function view( PatchPanel $pp ): View
     {
@@ -381,7 +381,9 @@ class PatchPanelController extends Controller
         $failedToDelete = [];
         foreach ($results->filesToDelete as $filePath) {
             try {
-                Storage::delete( '/files/' . $filePath);
+                if (!Storage::delete( 'files/' . $filePath)) {
+                    $failedToDelete[] = $filePath;
+                }
             } catch (\Throwable $e) {
                 $failedToDelete[] = $filePath;
             }
@@ -389,9 +391,9 @@ class PatchPanelController extends Controller
 
         AlertContainer::push( 'The patch panel has been expunged.', Alert::SUCCESS );
 
-        if ($failedToDelete) {
+        if (count($failedToDelete) > 0) {
             Log::error( "Error deleting " . count($failedToDelete) . " of " . count($results->filesToDelete) . " expunged patch panel files from filesystem (for panel {$pp->name})" , $failedToDelete);
-            AlertContainer::push('Some errors occurred while deleting files from the filesystem. See application logs for details', Alert::WARNING);
+            AlertContainer::push('Some errors occurred while deleting files from the filesystem. See application logs for details.', Alert::WARNING);
         } else {
             Log::debug( "Deleted all expunged patch panel files from filesystem (for panel {$pp->name})" );
         }
