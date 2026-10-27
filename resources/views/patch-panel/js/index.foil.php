@@ -73,8 +73,8 @@
                 confirmButtonText = "Reactivate";
                 confirmButtonClass = "btn-info";
             } else if (setActive === "0") {
-                title = "Delete Patch Panel";
-                prompt = "Are you sure that you want to delete this Patch Panel? It will become deactivated.";
+                title = "Deactivate Patch Panel";
+                prompt = "Are you sure that you want to deactivate this Patch Panel? It's ports and associated data will still be retained, and can be reactivated later.";
                 confirmButtonText = "Delete";
                 confirmButtonClass = "btn-danger";
             } else {

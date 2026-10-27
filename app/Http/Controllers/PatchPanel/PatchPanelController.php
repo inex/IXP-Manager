@@ -25,7 +25,6 @@ namespace IXP\Http\Controllers\PatchPanel;
 
 use Former;
 
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -319,18 +318,9 @@ class PatchPanelController extends Controller
         }
 
         $numPorts = $pp->patchPanelPorts()->count();
-
-        $numFiles = PatchPanelPortFile::whereHas('patchPanelPort', function ( Builder $query) use ($pp) {
-            $query->wherePatchPanelId( $pp->id );
-        })->count();
-
-        $numHistories = PatchPanelPortHistory::whereHas('patchPanelPort', function (Builder $query) use ($pp) {
-            $query->wherePatchPanelId( $pp->id );
-        })->count();
-
-        $numHistoryFiles = PatchPanelPortHistoryFile::whereHas('patchPanelPortHistory.patchPanelPort', function (Builder $query) use ($pp) {
-            $query->wherePatchPanelId( $pp->id );
-        })->count();
+        $numFiles = PatchPanelPortFile::forPatchPanel($pp)->count();
+        $numHistories = PatchPanelPortHistory::forPatchPanel($pp)->count();
+        $numHistoryFiles = PatchPanelPortHistoryFile::forPatchPanel($pp)->count();
 
         return view( 'patch-panel/expunge' )->with([
             'pp'            => $pp,
@@ -341,14 +331,13 @@ class PatchPanelController extends Controller
         ]);
     }
 
-
-
     /**
      * Accept submission to expunge a patch panel, and expunge it
      *
      * @param PatchPanel    $pp      the patch panel
      *
      * @return RedirectResponse
+     * @throws \Throwable
      */
     public function doExpunge( PatchPanel $pp ): RedirectResponse
     {
@@ -359,31 +348,28 @@ class PatchPanelController extends Controller
 
         $results = DB::transaction( function () use ($pp) {
             // reset foreign keys before we go deleting
-            PatchPanelPortHistory::whereIn( 'patch_panel_port_id', $pp->patchPanelPorts->pluck('id') )
+            PatchPanelPortHistory::forPatchPanel($pp)
                 ->update( [ 'duplex_master_id' => null ] );
 
-            PatchPanelPort::where( 'patch_panel_id', $pp->id )
+            PatchPanelPort::wherePatchPanelId( $pp->id )
                 ->update( [ 'duplex_master_id' => null ] );
 
-            // fetch file names to delete after transaction commits
-            $results = (object) [ 'filesToDelete' => [] ];
-            PatchPanelPortHistoryFile::whereHas('patchPanelPortHistory.patchPanelPort', function ($query) use ($pp) {
-                $query->wherePatchPanelId( $pp->id );
-            })->get()->map(function ($file) use ($results) {
-                $results->filesToDelete[] = $file->path();
-            });
+            // fetch file paths to delete after transaction commits
+            $historyFiles = PatchPanelPortHistoryFile::forPatchPanel($pp)
+                ->get()
+                ->toBase()
+                ->map(fn (PatchPanelPortHistoryFile $file) => $file->path());
 
-            PatchPanelPortFile::whereHas('patchPanelPort', function ($query) use ($pp) {
-                $query->wherePatchPanelId( $pp->id );
-            })->get()->map(function($file) use ($results) {
-                $results->filesToDelete[] = $file->path();
-            });
+            $portFiles = PatchPanelPortFile::forPatchPanel($pp)
+                ->get()
+                ->toBase()
+                ->map(fn (PatchPanelPortFile $file) => $file->path());
 
-            // Collect IDs before unlinking if needed, or query them directly for bulk deletion
-            $results->numHistoryFiles = PatchPanelPortHistoryFile::whereHas( 'patchPanelPortHistory.patchPanelPort', fn( $q ) => $q->wherePatchPanelId( $pp->id ) )->delete();
-            $results->numPortFiles = PatchPanelPortFile::whereHas( 'patchPanelPort', fn( $q ) => $q->wherePatchPanelId( $pp->id ) )->delete();
-            $results->numPortHistories = PatchPanelPortHistory::whereHas( 'patchPanelPort', fn( $q ) => $q->wherePatchPanelId( $pp->id ) )->delete();
-            $results->numPorts = PatchPanelPort::wherePatchPanelId( $pp->id )->delete();
+            $results = (object) [ 'filesToDelete' => $portFiles->concat( $historyFiles->all() )->all() ];
+            $results->numHistoryFiles  = PatchPanelPortHistoryFile::forPatchPanel($pp)->delete();
+            $results->numPortFiles     = PatchPanelPortFile::forPatchPanel($pp)->delete();
+            $results->numPortHistories = PatchPanelPortHistory::forPatchPanel($pp)->delete();
+            $results->numPorts         = PatchPanelPort::wherePatchPanelId( $pp->id )->delete();
             $pp->delete();
 
             return $results;
@@ -400,13 +386,15 @@ class PatchPanelController extends Controller
             }
         }
 
+        AlertContainer::push( 'The patch panel has been expunged.', Alert::SUCCESS );
+
         if ($failedToDelete) {
             Log::error( "Error deleting " . count($failedToDelete) . " of " . count($results->filesToDelete) . " expunged patch panel files from filesystem (for panel {$pp->name})" , $failedToDelete);
+            AlertContainer::push('Some errors occurred while deleting files from the filesystem. See application logs for details', Alert::WARNING);
         } else {
-            Log::info( "Successfully deleted all expunged patch panel files from filesystem (for panel {$pp->name})" );
+            Log::info( "Deleted all expunged patch panel files from filesystem (for panel {$pp->name})" );
         }
 
-        AlertContainer::push( 'The patch panel has been expunged.', Alert::SUCCESS );
         return redirect( route( "patch-panel@list-inactive" ) );
     }
 

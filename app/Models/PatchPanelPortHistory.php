@@ -67,6 +67,7 @@ use Illuminate\Support\Carbon;
  * @property-read \IXP\Models\PatchPanelPort|null $patchPanelPort
  * @property-read Collection<int, \IXP\Models\PatchPanelPortHistoryFile> $patchPanelPortHistoryFiles
  * @property-read int|null $patch_panel_port_history_files_count
+ * @method static Builder<static>|PatchPanelPortHistory forPatchPanel(\IXP\Models\PatchPanel|int $pp)
  * @method static Builder<static>|PatchPanelPortHistory masterPort()
  * @method static Builder<static>|PatchPanelPortHistory newModelQuery()
  * @method static Builder<static>|PatchPanelPortHistory newQuery()
@@ -152,6 +153,12 @@ class PatchPanelPortHistory extends Model
     public function patchPanelPortHistoryFiles(): HasMany
     {
         return $this->hasMany(PatchPanelPortHistoryFile::class, 'patch_panel_port_history_id' );
+    }
+
+    public function scopeForPatchPanel( Builder $query, PatchPanel|int $pp ): Builder
+    {
+        $id = $pp instanceof PatchPanel ? $pp->id : $pp;
+        return $query->whereHas('patchPanelPort', fn (Builder $q) => $q->wherePatchPanelId($id));
     }
 
     /**
