@@ -302,10 +302,10 @@ echo -n "Installing PHP, Apache, MySQL, etc. Please be very patient..."
 echo mrtg mrtg/conf_mods boolean true | debconf-set-selections
 
 log_break && apt install -qy apache2 php8.4 php8.4-intl php8.4-rrd php8.4-cgi php8.4-cli \
-    php8.4-snmp php8.4-curl  php8.4-memcached libapache2-mod-php8.4 mysql-server         \
+    php8.4-snmp php8.4-curl php8.4-memcached libapache2-mod-php8.4 mysql-server         \
     mysql-client php8.4-mysql memcached snmp php8.4-mbstring php8.4-xml php8.4-gd        \
     php8.4-bcmath bgpq3 php8.4-memcache unzip php8.4-zip git php8.4-yaml                 \
-    php8.4-ds libconfig-general-perl libnetaddr-ip-perl mrtg  libconfig-general-perl     \
+    php8.4-ds libconfig-general-perl libnetaddr-ip-perl mrtg libconfig-general-perl     \
     libnetaddr-ip-perl rrdtool librrds-perl curl                                         \
         &>> /tmp/ixp-manager-install.log
 echo '[done]'
