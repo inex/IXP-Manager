@@ -25,6 +25,9 @@ namespace IXP\Http\Controllers\PatchPanel;
 
 use Former;
 
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use IXP\Http\Requests\TogglePatchPanelActive;
 use Illuminate\Http\{
     RedirectResponse,
@@ -33,7 +36,13 @@ use Illuminate\Http\{
 
 use Illuminate\View\View;
 
-use IXP\Models\{Cabinet, Location, PatchPanel, PatchPanelPort, PatchPanelPortHistory};
+use IXP\Models\{Cabinet,
+    Location,
+    PatchPanel,
+    PatchPanelPort,
+    PatchPanelPortFile,
+    PatchPanelPortHistory,
+    PatchPanelPortHistoryFile};
 
 use IXP\Http\Controllers\Controller;
 use IXP\Http\Requests\StorePatchPanel;
@@ -283,7 +292,7 @@ class PatchPanelController extends Controller
      *
      * @param   PatchPanel $pp the patch panel
      *
-     * @return  view
+     * @return  View
      */
     public function view( PatchPanel $pp ): View
     {
@@ -295,79 +304,100 @@ class PatchPanelController extends Controller
 
 
     /**
-     * Allow to display the form to edit a patch panel
+     * Show a form confirming expunging of a patch panel
      *
-     * @param Request       $r
      * @param PatchPanel    $pp      the patch panel
      *
-     * @return  View
+     * @return  RedirectResponse|View
      */
-    public function expunge( Request $r, PatchPanel $pp ): View
+    public function expunge( PatchPanel $pp ): RedirectResponse|View
     {
-        Former::populate([
-            'cabinet_id'                => $r->old( 'cabinet_id',          (string)$pp->cabinet_id          ),
-            'name'                      => $r->old( 'name',                $pp->name                ),
-            'colo_reference'            => $r->old( 'colo_reference',      $pp->colo_reference      ),
-            'cable_type'                => $r->old( 'cable_type',          (string)$pp->cable_type          ),
-            'connector_type'            => $r->old( 'connector_type',      (string)$pp->connector_type      ),
-            'installation_date'         => $r->old( 'installation_date',   $pp->installation_date   ),
-            'port_prefix'               => $r->old( 'port_prefix',         $pp->port_prefix         ),
-            'location_notes'            => $r->old( 'location_notes',      $pp->location_notes      ),
-            'u_position'                => $r->old( 'u_position',          (string)$pp->u_position          ),
-            'colo_pp_type'              => $r->old( 'colo_pp_type',        (string)$pp->colo_pp_type        ),
-            'mounted_at'                => $r->old( 'mounted_at',          (string)$pp->mounted_at          ),
-            'numberOfPorts'             => $r->old( 'numberOfPorts','0'                         ),
-        ]);
+        if ($pp->active) {
+            AlertContainer::push("{$pp->name} is active and cannot be expunged.", Alert::DANGER);
+            return redirect()->route( 'patch-panel@list', [ 'pp' => $pp ]);
+        }
+
+        $numPorts = $pp->patchPanelPorts()->count();
+        $numFiles = PatchPanelPortFile::forPatchPanel($pp)->count();
+        $numHistories = PatchPanelPortHistory::forPatchPanel($pp)->count();
+        $numHistoryFiles = PatchPanelPortHistoryFile::forPatchPanel($pp)->count();
 
         return view( 'patch-panel/expunge' )->with([
             'pp'            => $pp,
-            'cabinets'      => Cabinet::selectRaw( "id, concat( name, ' [', colocation, ']') AS name" )
-                ->orderBy( 'name' )->get(),
+            'numPorts'      => $numPorts,
+            'numFiles'      => $numFiles,
+            'numHistories'  => $numHistories,
+            'numHistoryFiles' => $numHistoryFiles,
         ]);
     }
 
-
-
     /**
-     * Allow to display the form to edit a patch panel
+     * Accept submission to expunge a patch panel, and expunge it
      *
-     * @param Request       $r
      * @param PatchPanel    $pp      the patch panel
      *
      * @return RedirectResponse
+     * @throws \Throwable
      */
-    public function doExpunge( Request $r, PatchPanel $pp ): RedirectResponse
+    public function doExpunge( PatchPanel $pp ): RedirectResponse
     {
-        PatchPanelPortHistory::whereIn( 'patch_panel_port_id', $pp->patchPanelPorts->pluck('id') )
-            ->update( [ 'duplex_master_id' => null ] );
-
-        PatchPanelPort::where( 'patch_panel_id', $pp->id )
-            ->update( [ 'duplex_master_id' => null ] );
-
-
-        foreach( $pp->patchPanelPorts as $ppp ) {
-
-            foreach( $ppp->patchPanelPortHistories as $ppph ) {
-
-                foreach( $ppph->patchPanelPortHistoryFiles as $ppphf ) {
-                    @unlink( $ppphf->path() );
-                    $ppphf->delete();
-                }
-
-                $ppph->delete();
-            }
-
-            foreach( $ppp->patchPanelPortFiles as $pppf ) {
-                @unlink( $pppf->path() );
-                $pppf->delete();
-            }
-
-            $ppp->delete();
+        if ($pp->active) {
+            AlertContainer::push("{$pp->name} is active and cannot be expunged.", Alert::DANGER);
+            return redirect()->route( 'patch-panel@list', [ 'pp' => $pp ]);
         }
 
-        $pp->delete();
+        $results = DB::transaction( function () use ($pp) {
+            // reset foreign keys before we go deleting
+            PatchPanelPortHistory::forPatchPanel($pp)
+                ->update( [ 'duplex_master_id' => null ] );
+
+            PatchPanelPort::wherePatchPanelId( $pp->id )
+                ->update( [ 'duplex_master_id' => null ] );
+
+            // fetch file paths to delete after transaction commits
+            $historyFiles = PatchPanelPortHistoryFile::forPatchPanel($pp)
+                ->get()
+                ->toBase()
+                ->map(fn (PatchPanelPortHistoryFile $file) => $file->path());
+
+            $portFiles = PatchPanelPortFile::forPatchPanel($pp)
+                ->get()
+                ->toBase()
+                ->map(fn (PatchPanelPortFile $file) => $file->path());
+
+            $results                   = new \stdClass();
+            $results->filesToDelete    = $portFiles->concat( $historyFiles->all() )->all();
+            $results->numHistoryFiles  = PatchPanelPortHistoryFile::forPatchPanel($pp)->delete();
+            $results->numPortFiles     = PatchPanelPortFile::forPatchPanel($pp)->delete();
+            $results->numPortHistories = PatchPanelPortHistory::forPatchPanel($pp)->delete();
+            $results->numPorts         = PatchPanelPort::wherePatchPanelId( $pp->id )->delete();
+            $pp->delete();
+
+            return $results;
+        });
+
+        Log::notice( "Expunged patch panel {$pp->name} - with {$results->numPorts} ports, {$results->numPortFiles} port files, {$results->numPortHistories} port histories, and {$results->numHistoryFiles} port history files");
+
+        $failedToDelete = [];
+        foreach ($results->filesToDelete as $filePath) {
+            try {
+                if (!Storage::delete( 'files/' . $filePath)) {
+                    $failedToDelete[] = $filePath;
+                }
+            } catch (\Throwable $e) {
+                $failedToDelete[] = $filePath;
+            }
+        }
 
         AlertContainer::push( 'The patch panel has been expunged.', Alert::SUCCESS );
+
+        if (count($failedToDelete) > 0) {
+            Log::error( "Error deleting " . count($failedToDelete) . " of " . count($results->filesToDelete) . " expunged patch panel files from filesystem (for panel {$pp->name})" , $failedToDelete);
+            AlertContainer::push('Some errors occurred while deleting files from the filesystem. See application logs for details.', Alert::WARNING);
+        } else {
+            Log::debug( "Deleted all expunged patch panel files from filesystem (for panel {$pp->name})" );
+        }
+
         return redirect( route( "patch-panel@list-inactive" ) );
     }
 
