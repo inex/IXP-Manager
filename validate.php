@@ -325,15 +325,15 @@ function do_minimum_php_version_check( string $minVersion, string $recommendedPr
     $version = phpversion();
     $results[] = new SoftwareVersion('PHP', $version);
     if ( version_compare( $version, $minVersion, '<' ) ) {
-        $results[] = new CheckResult( ResultStatus::ERROR, [ "PHP version " . $minVersion . " or higher required - running " . $version ] );
+        $results[] = CheckResult::error( [ "PHP version " . $minVersion . " or higher required - running " . $version ] );
     } else if ($maxVersion !== null && version_compare( $version, $maxVersion, '>')) {
-        $results[] = new CheckResult( ResultStatus::ERROR, [ "PHP version exceeds max supported version " . $maxVersion ] );
+        $results[] = CheckResult::error( [ "PHP version exceeds max supported version " . $maxVersion ] );
     } else if ( !str_starts_with( $version, $recommendedPrefix ) ) {
         $results[] = new CheckResult( ResultStatus::WARNING, [ "Not running a recommended PHP version - running " . $version ] );
     }
 
     if ( !extension_loaded('pdo_mysql') ) {
-        $results[] = new CheckResult( ResultStatus::ERROR, [ 'PDO MySQL extension is not installed' ] );
+        $results[] = CheckResult::error( [ 'PDO MySQL extension is not installed' ] );
     }
 
     return $results;
@@ -344,7 +344,7 @@ function do_composer_check(): array
     $results = [];
 
     if ( !file_exists( dirname(__FILE__) . "/vendor/autoload.php" ) ) {
-        $results[] = new CheckResult( ResultStatus::ERROR, ['composer install has not been run'] );
+        $results[] = CheckResult::error(['composer install has not been run'] );
     }
 
     return $results;
@@ -355,17 +355,17 @@ function do_env_file_check(): array
     $results = [];
     $envfile = dirname(__FILE__) . "/.env";
     if ( !file_exists($envfile)) {
-        $results[] = new CheckResult( ResultStatus::ERROR, [ '.env file does not exist' ] );
+        $results[] = CheckResult::error( [ '.env file does not exist' ] );
         return $results;
     }
 
     if ( ( $parseEnv = load_env($envfile, $errorMessage ) ) === false ) {
-        $results[] = new CheckResult( ResultStatus::ERROR, [ $errorMessage ] );
+        $results[] = CheckResult::error( [ $errorMessage ] );
         return $results;
     }
 
     if ( !array_key_exists('APP_KEY', $parseEnv) ) {
-        $results[] = new CheckResult( ResultStatus::ERROR, [ 'APP_KEY is not set in .env' ] );
+        $results[] = CheckResult::error( [ 'APP_KEY is not set in .env' ] );
     }
 
     return $results;
@@ -376,22 +376,22 @@ function do_mysql_check( string $minVersion, string $recommendedPrefix, ?string 
     $results = [];
     // Laravel uses pdo-mysql extension to interact with MySQL databases
     if ( !extension_loaded( 'pdo_mysql' ) ) {
-        return new CheckResult( ResultStatus::ERROR, [ 'PDO MySQL extension is not installed' ] );
+        return CheckResult::error( [ 'PDO MySQL extension is not installed' ] );
     }
 
     // Load env file to perform configuration checks
     if ( ( $env = load_env( dirname(__FILE__) . "/.env", $errorMessage ) ) === false ) {
-        return new CheckResult( ResultStatus::ERROR, [ $errorMessage ] );
+        return CheckResult::error( [ $errorMessage ] );
     }
 
     // There are several required keys in the env file.
     $allKeysPresent = true;
     foreach ( [ 'DB_HOST', 'DB_DATABASE', 'DB_USERNAME' ] as $key ) {
         if ( !array_key_exists( $key, $env ) ) {
-            $results[] = new CheckResult( ResultStatus::ERROR, [ ".env is missing required environment variable: {$key}" ] );
+            $results[] = CheckResult::error( [ ".env is missing required environment variable: {$key}" ] );
             $allKeysPresent = false;
         } else if ( empty( $env[$key] ) ) {
-            $results[] = new CheckResult( ResultStatus::ERROR, [ ".env is missing required environment variable: {$key} (empty value)" ] );
+            $results[] = CheckResult::error( [ ".env is missing required environment variable: {$key} (empty value)" ] );
             $allKeysPresent = false;
         }
     }
@@ -402,7 +402,7 @@ function do_mysql_check( string $minVersion, string $recommendedPrefix, ?string 
     // If DB_CONNECTION is set, it must be mysql.
     // Note: if we implement the corresponding config check here (catch defaults) then we protect against accidental sqlite3 default in later versions
     if ( array_key_exists( 'DB_CONNECTION', $env ) && $env['DB_CONNECTION'] !== 'mysql' ) {
-        return new CheckResult( ResultStatus::ERROR, [ "DB_CONNECTION must be set to 'mysql'" ] );
+        return CheckResult::error( [ "DB_CONNECTION must be set to 'mysql'" ] );
     }
 
     // Generate the DSN from our configuration
@@ -417,22 +417,22 @@ function do_mysql_check( string $minVersion, string $recommendedPrefix, ?string 
                 \PDO::ATTR_EMULATE_PREPARES   => false,
         ] );
     } catch (\PDOException $e) {
-        return new CheckResult( ResultStatus::ERROR, [ "Connection failed: " . $e->getMessage() ] );
+        return CheckResult::error( [ "Connection failed: " . $e->getMessage() ] );
     }
 
     // Determine MySQL server version
     try {
         $version = $pdo->query( "SELECT VERSION() as version" )->fetchColumn();
     } catch (\PDOException $e) {
-        return new CheckResult( ResultStatus::ERROR, [ "Failed to determine server version: " . $e->getMessage() ] );
+        return CheckResult::error( [ "Failed to determine server version: " . $e->getMessage() ] );
     }
 
     // Min/Max/Recommended MySQL server checks:
 
     if ( version_compare( $version, $minVersion, '<' ) ) {
-        $results[] = new CheckResult( ResultStatus::ERROR, [ "MySQL version $minVersion or higher required" ] );
+        $results[] = CheckResult::error( [ "MySQL version $minVersion or higher required" ] );
     } else if ($maxVersion !== null && version_compare( $version, $maxVersion, '>')) {
-        $results[] = new CheckResult( ResultStatus::ERROR, [ "MySQL version exceeds max supported version " . $maxVersion ] );
+        $results[] = CheckResult::error( [ "MySQL version exceeds max supported version " . $maxVersion ] );
     } else if ( !str_starts_with( $version, $recommendedPrefix ) ) {
         $results[] = new CheckResult( ResultStatus::WARNING, [ "Not running a recommended MySQL version." ] );
     }
@@ -442,13 +442,13 @@ function do_mysql_check( string $minVersion, string $recommendedPrefix, ?string 
         $schemaVersion = $pdo->query( "SELECT migration FROM migrations ORDER BY id DESC LIMIT 1" )->fetchColumn();
         $results[] = new SoftwareVersion( "DB Schema", $schemaVersion );
     } catch (\PDOException $e) {
-        $results[] = new CheckResult( ResultStatus::ERROR, [ "failed to determine schema version: " . $e->getMessage() ] );
+        $results[] = CheckResult::error( [ "failed to determine schema version: " . $e->getMessage() ] );
     }
 
     return $results;
 }
 
-function do_laravel_required_extension_checks( array $requiredByLaravel): array
+function do_laravel_required_extension_checks( array $requiredByLaravel ): array
 {
     $results = [];
 
@@ -461,7 +461,7 @@ function do_laravel_required_extension_checks( array $requiredByLaravel): array
     }
 
     if ( count( $missingExtensions ) > 0 ) {
-        $results[] = new CheckResult( ResultStatus::ERROR, [ 'Missing required PHP extensions: ' . implode(', ', $missingExtensions) ] );
+        $results[] = CheckResult::error( [ 'Missing required PHP extensions: ' . implode(', ', $missingExtensions) ] );
     }
 
     return $results;
@@ -509,10 +509,10 @@ function do_laravel_writable_directory_checks(): array
 
     $results = [];
     if (count($fileFail) > 0) {
-        $results[] = new CheckResult( ResultStatus::ERROR, [ 'Missing file write permission in these storage directories: ' . implode( ', ', $fileFail ) ] );
+        $results[] = CheckResult::error( [ 'Missing file write permission in these storage directories: ' . implode( ', ', $fileFail ) ] );
     }
     if (count($dirFail) > 0) {
-        $results[] = new CheckResult( ResultStatus::ERROR, [ 'Missing directory write permission in these storage directories: ' . implode( ', ', $dirFail ) ] );
+        $results[] = CheckResult::error( [ 'Missing directory write permission in these storage directories: ' . implode( ', ', $dirFail ) ] );
     }
     if (count($results)) {
         // Not using multiple messages as we want it to be easy to copy/paste.
@@ -557,17 +557,17 @@ function do_ixp_manager_release_check(string $localVersion): array
         // Extract HTTP response code
         $regexReturnCode = preg_match( '/([0-9])\d+/', $http_response_header[0],$matches );
         if ( $regexReturnCode === false ) {
-            $results[] = new CheckResult(ResultStatus::WARNING, [ "Failed to fetch IXP-Manager release information. Invalid regex for HTTP response code" ] );
+            $results[] = CheckResult::warning( [ "Failed to fetch IXP-Manager release information. Invalid regex for HTTP response code" ] );
             return $results;
         } else if ( $regexReturnCode === 0 ) {
-            $results[] = new CheckResult(ResultStatus::WARNING, [ "Failed to fetch IXP-Manager release information. Did not find a status in HTTP response" ] );
+            $results[] = CheckResult::warning( [ "Failed to fetch IXP-Manager release information. Did not find a status in HTTP response" ] );
             return $results;
         }
 
         // Ensure HTTP response was OK
         $responsecode = intval( $matches[0] );
         if ( $responsecode !== 200 ) {
-            $results[] = new CheckResult( ResultStatus::WARNING, [ "Received non-OK response code when fetching IXP-Manager release information (file_get_contents): $responsecode" ] );
+            $results[] = CheckResult::warning( [ "Received non-OK response code when fetching IXP-Manager release information (file_get_contents): $responsecode" ] );
             return $results;
         }
 
@@ -579,27 +579,27 @@ function do_ixp_manager_release_check(string $localVersion): array
         curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
 
         if ( ( $tagsJson = curl_exec($ch) ) === false ) {
-            $results[] = new CheckResult(ResultStatus::WARNING, [ "Failed to fetch IXP-Manager release information (curl): " . curl_error($ch) ]);
+            $results[] = CheckResult::warning( ["Failed to fetch IXP-Manager release information (curl): " . curl_error($ch) ]);
             return $results;
         }
 
         // Ensure HTTP response was OK
         $info = curl_getinfo( $ch );
         if ( $info['http_code'] !== 200 ) {
-            $results[] = new CheckResult( ResultStatus::WARNING, [ "Received non-OK response code when fetching IXP-Manager release information (curl): " . $info['http_code'] ] );
+            $results[] = CheckResult::warning( ["Received non-OK response code when fetching IXP-Manager release information (curl): " . $info['http_code'] ] );
             return $results;
         }
 
         // we have $tagsJson and the response was OK
     } else {
-        $results[] = new CheckResult( ResultStatus::WARNING, [ "There was no usable method to fetch IXP-Manager release information" ] );
+        $results[] = CheckResult::warning( ["There was no usable method to fetch IXP-Manager release information" ] );
         return $results;
     }
 
     // Extract IXP Manager published versions and compare against the installed version
     $tags = json_decode( $tagsJson );
     if ( version_compare( $localVersion, ltrim( $tags[0]->name, "v" ), '<' ) ) {
-        $results[] = new CheckResult( ResultStatus::WARNING, [ "A newer version of IXP-Manager is available: " . $tags[0]->name ] );
+        $results[] = CheckResult::warning( [ "A newer version of IXP-Manager is available: " . $tags[0]->name ] );
     }
 
     return $results;
@@ -622,11 +622,6 @@ class BasicValidation
         }
         $this->results = $results;
     }
-
-    public function hasErrors(): bool
-    {
-        return array_any( $this->results, fn( $result ) => $result instanceof CheckResult && $result->status === ResultStatus::ERROR );
-    }
 }
 
 enum ResultStatus
@@ -635,10 +630,17 @@ enum ResultStatus
     case ERROR;
 }
 
-
 readonly class CheckResult
 {
     public function __construct( public ResultStatus $status, public array $messages = []) {}
+    public static function error( array $messages = []): CheckResult
+    {
+        return new CheckResult( ResultStatus::ERROR, $messages );
+    }
+    public static function warning( array $messages = []): CheckResult
+    {
+        return new CheckResult( ResultStatus::WARNING, $messages );
+    }
 }
 
 readonly class SoftwareVersion
