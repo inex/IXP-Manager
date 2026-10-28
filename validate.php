@@ -443,6 +443,14 @@ function do_mysql_check( string $minVersion, string $recommendedPrefix, ?string 
 
 function do_laravel_required_extension_checks( array $requiredByLaravel ): array
 {
+    // Some PHP extensions come from system packages with different names. (e.g. pdo_mysql comes from the mysql package).
+    // To provide installation instructions we need to map the extension name (from PHP's point of view) to the most likely system package.
+    $systemInstallAliases = [
+        'pdo_mysql' => 'mysql',
+        'pdo'       => 'mysql',
+        'tokenizer' => 'common',  // php-common is a dependency for most of the PHP packages, but include it anyway just in case.
+    ];
+
     $results = [];
 
     // Check that required extensions are installed
@@ -454,7 +462,12 @@ function do_laravel_required_extension_checks( array $requiredByLaravel ): array
     }
 
     if ( count( $missingExtensions ) > 0 ) {
-        $results[] = CheckResult::error( [ 'Missing required PHP extensions: ' . implode(', ', $missingExtensions) ] );
+        $installPackages = array_map(
+            fn (string $extension): string => sprintf("php%d.%d-%s", PHP_MAJOR_VERSION, PHP_MINOR_VERSION, $systemInstallAliases[$extension] ?? $extension),
+            $missingExtensions
+        );
+        $results[] = CheckResult::error( [ 'Required PHP extensions are missing: ' . implode(', ', $missingExtensions) ] );
+        $results[] = CheckResult::error( [ "On Ubuntu they can be installed using: sudo apt-get install " . implode(' ', $installPackages) ] );
     }
 
     return $results;
