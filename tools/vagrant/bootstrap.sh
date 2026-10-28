@@ -70,7 +70,7 @@ DEBIAN_FRONTEND=noninteractive apt-get install -y apache2 php8.4 php8.4-intl php
     mysql-client memcached snmp php8.4-mbstring php8.4-xml php8.4-gd bgpq3 bgpq4 unzip git  \
     joe php8.4-bcmath php8.4-memcache unzip php8.4-zip git php8.4-yaml phpmyadmin     \
     php8.4-ds libconfig-general-perl libnetaddr-ip-perl mrtg  libconfig-general-perl        \
-    php8.4-mcrypt libnetaddr-ip-perl rrdtool librrds-perl curl bash-completion &>/dev/null
+    libnetaddr-ip-perl rrdtool librrds-perl curl bash-completion &>/dev/null
 
 
 # Rather than packaged Bird on ubuntu which is a few versions behind, use NIX.CZ repo:
