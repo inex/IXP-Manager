@@ -652,7 +652,6 @@ readonly class SoftwareVersion
 require_confirmation_if_running_as_root();
 
 include "version.php";
-$manifest = APPLICATION_MANIFEST;
 
 if (array_any($argv, fn($v) => $v === '--github-issue')) {
     print_issue_assistance_info();
@@ -675,12 +674,12 @@ foreach ($argv as $i => $value) {
 }
 
 $tasks = [];
-$tasks[] = new BasicValidation( 'PHP', do_minimum_php_version_check(...), [ $manifest['php_version']['min'], $manifest['php_version']['recommended'], $manifest['php_version']['max'] ] );
-$tasks[] = new BasicValidation( 'Composer', do_composer_check(...), [] );
-$tasks[] = new BasicValidation( 'Env File', do_env_file_check(...), [] );
-$tasks[] = new BasicValidation( 'MySQL', do_mysql_check(...), [ $manifest['mysql_version']['min'], $manifest['mysql_version']['recommended'], $manifest['mysql_version']['max'] ] );
-$tasks[] = new BasicValidation( 'Laravel Required Extensions', do_laravel_required_extension_checks(...), [ $manifest['laravel_required_extensions'] ] );
-$tasks[] = new BasicValidation( 'Laravel Storage Directories', do_laravel_writable_directory_checks(...), [ $manifest['laravel_required_extensions'] ] );
+$tasks[] = new BasicValidation( 'PHP', do_minimum_php_version_check(...), [ APPLICATION_MANIFEST['php_version']['min'], APPLICATION_MANIFEST['php_version']['recommended'], APPLICATION_MANIFEST['php_version']['max'] ] );
+$tasks[] = new BasicValidation( 'Composer', do_composer_check(...) );
+$tasks[] = new BasicValidation( 'Env File', do_env_file_check(...) );
+$tasks[] = new BasicValidation( 'MySQL', do_mysql_check(...), [ APPLICATION_MANIFEST['mysql_version']['min'], APPLICATION_MANIFEST['mysql_version']['recommended'], APPLICATION_MANIFEST['mysql_version']['max'] ] );
+$tasks[] = new BasicValidation( 'Laravel Required Extensions', do_laravel_required_extension_checks(...), [ APPLICATION_MANIFEST['laravel_required_extensions'] ] );
+$tasks[] = new BasicValidation( 'Laravel Storage Directories', do_laravel_writable_directory_checks(...) );
 $tasks[] = new BasicValidation( 'IXP Manager', do_ixp_manager_release_check(...), [ APPLICATION_VERSION ] );
 
 $softwareVersionResults = [];
