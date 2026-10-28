@@ -50,7 +50,7 @@ class CleanupPatchPanelFiles extends Command
      *
      * @var string
      */
-    protected $description = 'This command attempts to cleanup patch panel files (where expunging has failed). Empty directories will also be removed. A dry run mode is available which will identify and report orphaned files without deleting anything. Use the verbose flag to to see decision making for each file.';
+    protected $description = 'This command attempts to cleanup patch panel files (where expunging has failed). A dry run mode is available which will identify and report orphaned files without deleting anything. Use the verbose flag to to see decision making for each file.';
 
     /**
      * Execute the console command.
@@ -60,7 +60,7 @@ class CleanupPatchPanelFiles extends Command
     public function handle(): int
     {
         $isDryRun = $this->option('dry-run');
-        $baseDir   = "files/ppp";
+        $baseDir  = "files/ppp";
 
         // Ensure the base directory exists
         if ( !Storage::directoryExists( $baseDir ) ) {
@@ -68,17 +68,15 @@ class CleanupPatchPanelFiles extends Command
             return 0;
         }
 
-        $removedCount = 0;
-
         // Iterate over the first level of sharding in base dir
         foreach ( Storage::directories( $baseDir ) as $shard1Dir ) {
-            if ( !$this->isPPPShardDirectory( $shard1Dir ) ) {
+            if ( !$this->isValidShardDirectory( $shard1Dir ) ) {
                 continue;
             }
 
             // Iterate over second level of sharding
             foreach ( Storage::directories( $shard1Dir ) as $shard2Dir ) {
-                if ( !$this->isPPPShardDirectory( $shard2Dir ) ) {
+                if ( !$this->isValidShardDirectory( $shard2Dir ) ) {
                     continue;
                 }
 
@@ -103,9 +101,8 @@ class CleanupPatchPanelFiles extends Command
      * Check if the directory is a valid shard directory, and something we want to inspect further. Returns
      * true if it should be traversed into.
      */
-    private function isPPPShardDirectory( string $shardDir ): bool
+    private function isValidShardDirectory( string $shardDir ): bool
     {
-
         // Shard directory name must be a single hex character
         if ( 1 !== preg_match( '/^[a-f0-9]$/', basename( $shardDir ) ) ) {
             $this->warn( "SKIP $shardDir - doesn't match shard format", 'v' );
