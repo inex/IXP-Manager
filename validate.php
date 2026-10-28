@@ -23,6 +23,7 @@
 
 declare(strict_types=1);
 
+include "version.php";
 
 /*
  * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
@@ -84,18 +85,10 @@ function print_issue_assistance_info(): void {
 
     // IXP Manager version
     $versionInfo = false;
-    if ($versionFile = file_get_contents(__DIR__ . "/version.php")) {
-        // Regex targeting both constants with named capture groups
-        $pattern = "/define\s*\(\s*['\"]APPLICATION_VERSION['\"]\s*,\s*['\"](?<version>[^'\"]+)['\"]\s*\).*?define\s*\(\s*['\"]APPLICATION_VERDATE['\"]\s*,\s*['\"](?<verdate>[^'\"]+)['\"]\s*\)/s";
-
-        if (preg_match($pattern, $versionFile, $matches)) {
-            $version = $matches['version'];
-            $verdate = $matches['verdate'];
-
-            $versionInfo =
-                "APPLICATION_VERSION: " . $version . "\n" .
-                "APPLICATION_VERDATE: " . $verdate . "\n";
-        }
+    if (defined('APPLICATION_VERSION') && defined('APPLICATION_VERDATE')) {
+        $versionInfo =
+            "APPLICATION_VERSION: " . APPLICATION_VERSION . "\n" .
+            "APPLICATION_VERDATE: " . APPLICATION_VERDATE . "\n";
     }
 
     try {
@@ -650,8 +643,6 @@ readonly class SoftwareVersion
 
 
 require_confirmation_if_running_as_root();
-
-include "version.php";
 
 if (array_any($argv, fn($v) => $v === '--github-issue')) {
     print_issue_assistance_info();
