@@ -1,12 +1,11 @@
 @component('mail::message')
 
-    ## {{ config('identity.sitename') }} Alert
+## {{ config('identity.sitename') }} Alert
 
-    {{ $alert }}
+{{ $alert }}
 
-    @component('mail::panel')
-        {{ $exception->getMessage() }}
-    @endcomponent
-
+@component('mail::panel')
+{{ $exception->getMessage() }}
+@endcomponent
 
 @endcomponent
