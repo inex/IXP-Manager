@@ -80,7 +80,7 @@ class PeeringManagerController extends Controller
     public function index(): View|RedirectResponse
     {
         if( config( 'ixp_fe.frontend.disabled.peering-manager', false ) ) {
-            AlertContainer::push( 'The peering manager has been disabled.', Alert::DANGER );
+            AlertContainer::push( __( 'The peering manager has been disabled.' ), Alert::DANGER );
             return Redirect::to('');
         }
 
@@ -91,9 +91,10 @@ class PeeringManagerController extends Controller
         $peers  = CustomerAggregator::getPeeringManagerArrayByType( $c , $vlans, $protos ) ?? [];
 
         if( !count( $peers ) ) {
-            AlertContainer::push( 'No peers have been found for the peering manager. Please see <a href="'
-                . 'https://docs.ixpmanager.org/latest/features/peering-manager/">these instructions</a>'
-                . ' / ensure your database is populating with peering information.', Alert::DANGER );
+            AlertContainer::push( __( 'No peers have been found for the peering manager. Please see :instructions / ensure your database is populating with peering information.', [
+                'instructions' => '<a href="https://docs.ixpmanager.org/latest/features/peering-manager/">'
+                    . __( 'these instructions' ) . '</a>',
+            ] ), Alert::DANGER );
             return redirect( '' );
         }
 
@@ -278,9 +279,13 @@ class PeeringManagerController extends Controller
         $pm->save();
 
         if( $status === "peered" ) {
-            AlertContainer::push( "Peered flag " . ( $pm->peered ? 'set' : 'cleared' ) . " for " . $peer->name . "." , Alert::SUCCESS );
+            AlertContainer::push( $pm->peered
+                ? __( 'Peered flag set for :peer.',     [ 'peer' => $peer->name ] )
+                : __( 'Peered flag cleared for :peer.', [ 'peer' => $peer->name ] ), Alert::SUCCESS );
         } else {
-            AlertContainer::push( "Ignored / rejected flag " . ( $pm->rejected ? 'set' : 'cleared' ) . " for "  . $peer->name . "." , Alert::SUCCESS );
+            AlertContainer::push( $pm->rejected
+                ? __( 'Ignored / rejected flag set for :peer.',     [ 'peer' => $peer->name ] )
+                : __( 'Ignored / rejected flag cleared for :peer.', [ 'peer' => $peer->name ] ), Alert::SUCCESS );
         }
 
         return Redirect::to( route( "peering-manager@index"  ) );

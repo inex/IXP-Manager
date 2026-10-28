@@ -1,12 +1,11 @@
 
-Hi,
+{{ __( 'Hi,' ) }}
 
-** ACTION REQUIRED - PLEASE SEE BELOW **
+** {{ __( 'ACTION REQUIRED - PLEASE SEE BELOW' ) }} **
 
-We have allocated the following cross connect demarcation point
-for your connection to {{ env( 'IDENTITY_ORGNAME' ) }}.
+{{ __( 'We have allocated the following cross connect demarcation point for your connection to :org.', [ 'org' => env( 'IDENTITY_ORGNAME' ) ] ) }}
 
-Please order a {{ $ppp->patchPanel->cableType() }} cross connect where our demarcation point is:
+{{ __( 'Please order a :cableType cross connect where our demarcation point is:', [ 'cableType' => $ppp->patchPanel->cableType() ] ) }}
 
 ```
 Facility:       {{ $ppp->patchPanel->cabinet->location->name }}
@@ -19,14 +18,14 @@ Port:           {{ $ppp->name() }} @if( $ppp->duplexSlavePorts()->count() ) *(du
 ```
 
 @if( $ppp->switchPort )
-This request is in relation the following connection:
+{{ __( 'This request is in relation the following connection:' ) }}
 
 ```
 Switch Port:   {{ $ppp->switchPort->switcher->name }}::{{ $ppp->switchPort->name }}
 ```
 @endif
 
-If you have any queries about this, please reply to this email.
+{{ __( 'If you have any queries about this, please reply to this email.' ) }}
 
 @include('patch-panel-port/emails/signature')
 

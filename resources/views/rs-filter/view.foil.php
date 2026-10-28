@@ -11,15 +11,15 @@
 
 <?php $this->section( 'page-header-postamble' ) ?>
     <div class="btn-group btn-group-sm" role="group">
-        <a class="btn btn-white" id="list-customer-rsf" href="<?= route ('rs-filter@list', [ "cust" => $rsf->customer_id ] ) ?>" title="list">
+        <a class="btn btn-white" id="list-customer-rsf" href="<?= route ('rs-filter@list', [ "cust" => $rsf->customer_id ] ) ?>" title="<?= __( 'list' ) ?>">
             <span class="fa fa-list"></span>
         </a>
 
         <?php if( !Auth::getUser()->isCustUser() ): ?>
-            <a class="btn btn-white" id="create-rsf" href="<?= route ('rs-filter@create', [ "cust" => $rsf->customer_id ] ) ?>" title="create">
+            <a class="btn btn-white" id="create-rsf" href="<?= route ('rs-filter@create', [ "cust" => $rsf->customer_id ] ) ?>" title="<?= __( 'create' ) ?>">
                 <span class="fa fa-plus"></span>
             </a>
-            <a class="btn btn-white" id="edit-rsf" href="<?= route ('rs-filter@edit' , [ 'rsf' => $rsf->id ] ) ?>" title="edit">
+            <a class="btn btn-white" id="edit-rsf" href="<?= route ('rs-filter@edit' , [ 'rsf' => $rsf->id ] ) ?>" title="<?= __( 'edit' ) ?>">
                 <span class="fa fa-pencil"></span>
             </a>
         <?php endif; ?>
@@ -32,11 +32,11 @@
             <div class="card">
                 <div class="card-header tw:flex">
                     <div class="mr-auto">
-                        Details
+                        <?= __( 'Details' ) ?>
                     </div>
                     <?php if( $isSuperUser && !config( 'ixp_fe.frontend.disabled.logs' ) && method_exists( \IXP\Models\RouteServerFilter::class, 'logSubject') ): ?>
                         <a class="btn btn-white btn-sm" href="<?= route( 'log@list', [ 'model' => 'RouteServerFilter' , 'model_id' => $rsf->id ] ) ?>">
-                            View logs
+                            <?= __( 'View logs' ) ?>
                         </a>
                     <?php endif; ?>
                 </div>
@@ -46,7 +46,7 @@
                             <tr>
                                 <td>
                                     <b>
-                                        Peer:
+                                        <?= __( 'Peer:' ) ?>
                                     </b>
                                 </td>
                                 <td>
@@ -70,7 +70,7 @@
                             <tr>
                                 <td>
                                     <b>
-                                        Customer:
+                                        <?= __( 'Customer:' ) ?>
                                     </b>
                                 </td>
                                 <td>
@@ -86,7 +86,7 @@
                             <tr>
                                 <td>
                                     <b>
-                                        VLAN:
+                                        <?= __( 'VLAN:' ) ?>
                                     </b>
                                 </td>
                                 <td>
@@ -106,7 +106,7 @@
                             <tr>
                                 <td>
                                     <b>
-                                        Protocol:
+                                        <?= __( 'Protocol:' ) ?>
                                     </b>
                                 </td>
                                 <td>
@@ -116,7 +116,7 @@
                             <tr>
                                 <td>
                                     <b>
-                                        Received Prefix:
+                                        <?= __( 'Received Prefix:' ) ?>
                                     </b>
                                 </td>
                                 <td>
@@ -126,7 +126,7 @@
                             <tr>
                                 <td>
                                     <b>
-                                        Advertised Prefix:
+                                        <?= __( 'Advertised Prefix:' ) ?>
                                     </b>
                                 </td>
                                 <td>
@@ -136,7 +136,7 @@
                             <tr>
                                 <td>
                                     <b>
-                                        Created:
+                                        <?= __( 'Created:' ) ?>
                                     </b>
                                 </td>
                                 <td>
@@ -146,7 +146,7 @@
                             <tr>
                                 <td>
                                     <b>
-                                        Updated:
+                                        <?= __( 'Updated:' ) ?>
                                     </b>
                                 </td>
                                 <td>
@@ -160,7 +160,7 @@
                             <tr>
                                 <td>
                                     <b>
-                                        Action Advertise:
+                                        <?= __( 'Action Advertise:' ) ?>
                                     </b>
                                 </td>
                                 <td>
@@ -170,7 +170,7 @@
                             <tr>
                                 <td>
                                     <b>
-                                        Action Receive:
+                                        <?= __( 'Action Receive:' ) ?>
                                     </b>
                                 </td>
                                 <td>
@@ -180,7 +180,7 @@
                             <tr>
                                 <td>
                                     <b>
-                                        Enable:
+                                        <?= __( 'Enable:' ) ?>
                                     </b>
                                 </td>
                                 <td>
@@ -190,7 +190,7 @@
                             <tr>
                                 <td>
                                     <b>
-                                        Order By:
+                                        <?= __( 'Order By:' ) ?>
                                     </b>
                                 </td>
                                 <td>
@@ -200,7 +200,7 @@
                             <tr>
                                 <td>
                                     <b>
-                                        Live:
+                                        <?= __( 'Live:' ) ?>
                                     </b>
                                 </td>
                                 <td>

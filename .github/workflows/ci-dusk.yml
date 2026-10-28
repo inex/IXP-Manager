@@ -24,6 +24,13 @@ jobs:
       run: sudo apt-get install bgpq3 bgpq4
     - name: Install Dependencies
       run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+    - name: Check translations
+      # Fails only on placeholder mismatches, which are always bugs: the string
+      # would render ':name' literally instead of the value. Untranslated
+      # strings are expected between translation rounds and fall back to
+      # English, so they do not fail the build.
+      run: php artisan lang:audit fr --placeholders-only
+
     - name: Set up Dusk chrome-driver
       run: |
         php artisan dusk:install

@@ -82,6 +82,7 @@ use IXP\Exceptions\GeneralException as IXP_Exception;
  * @property int $peeringdb_oauth
  * @property Carbon $created_at
  * @property Carbon|null $updated_at
+ * @property array<array-key, mixed>|null $prefs
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\AtlasMeasurement> $AtlasMeasurementsDest
  * @property-read int|null $atlas_measurements_dest_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\AtlasMeasurement> $AtlasMeasurementsSource
@@ -179,6 +180,7 @@ use IXP\Exceptions\GeneralException as IXP_Exception;
  * @method static Builder<static>|Customer wherePeeringmacro($value)
  * @method static Builder<static>|Customer wherePeeringmacrov6($value)
  * @method static Builder<static>|Customer wherePeeringpolicy($value)
+ * @method static Builder<static>|Customer wherePrefs($value)
  * @method static Builder<static>|Customer whereReseller($value)
  * @method static Builder<static>|Customer whereShortname($value)
  * @method static Builder<static>|Customer whereStatus($value)
@@ -196,6 +198,24 @@ class Customer extends Model
      * @var string
      */
     protected $table = 'cust';
+
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'prefs'             => 'json',
+    ];
+
+    /**
+     * Default attribute values.
+     *
+     * @var array
+     */
+    protected $attributes = [
+        'prefs'             => '{}',
+    ];
 
     /**
      * The attributes that are mass assignable.
@@ -249,6 +269,41 @@ class Customer extends Model
         'datejoin',
         'dateleave'
     ];
+
+    /**
+     * The customer wide default locale for the user interface.
+     *
+     * Used when one of this customer's users has expressed no preference of
+     * their own. Returns null if this customer has no default either.
+     *
+     * @return string|null
+     */
+    public function locale(): ?string
+    {
+        return $this->prefs[ 'locale' ] ?? null;
+    }
+
+    /**
+     * Set (or, with null, clear) the preferred locale.
+     *
+     * Does not save the model.
+     *
+     * @param   string|null $locale
+     *
+     * @return void
+     */
+    public function setLocale( ?string $locale ): void
+    {
+        $prefs = $this->prefs;
+
+        if( $locale ) {
+            $prefs[ 'locale' ] = $locale;
+        } else {
+            unset( $prefs[ 'locale' ] );
+        }
+
+        $this->prefs = $prefs;
+    }
 
     /**
      * DQL for selecting customers that are current in terms of `datejoin` and `dateleave`

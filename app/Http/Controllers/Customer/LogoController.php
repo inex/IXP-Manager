@@ -144,7 +144,7 @@ class LogoController extends Controller
 
         $img->save( $saveTo );
 
-        AlertContainer::push( "Logo uploaded.", Alert::SUCCESS );
+        AlertContainer::push( __( "Logo uploaded." ), Alert::SUCCESS );
         Log::info( sprintf( "Logo: file [%d|%s] uploaded by %s for the customer [%d|%s]", $logo->id, $logo->stored_name, $r->user()->username, $c->id, $c->name ) );
 
         return redirect( $us->isSuperUser() ? route( "customer@overview" , [ 'cust' => $c->id ] ) : route( "dashboard@index" ) );
@@ -168,7 +168,7 @@ class LogoController extends Controller
 
         // do we have a logo?
         if( !( $oldLogo = $c->logo ) ) {
-            AlertContainer::push( "Sorry, we could not find any logo for you.", Alert::DANGER );
+            AlertContainer::push( __( "Sorry, we could not find any logo for you." ), Alert::DANGER );
             return redirect( '' );
         }
 
@@ -177,7 +177,7 @@ class LogoController extends Controller
         }
 
         $oldLogo->delete();
-        AlertContainer::push( "Logo deleted.", Alert::SUCCESS );
+        AlertContainer::push( __( "Logo deleted." ), Alert::SUCCESS );
         Log::info( sprintf("%s deleted logo with ID %d for the customer [%d|%s]", Auth::getUser()->username, $oldLogo->id, $c->id, $c->name ) );
 
         return redirect( $us->isSuperUser() ? route( 'customer@overview', [ 'cust' => $c->id ] ) : route( 'dashboard@index' ) );

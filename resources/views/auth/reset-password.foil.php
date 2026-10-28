@@ -13,7 +13,7 @@
                     <img class="tw:inline img-fluid tw:w-full tw:max-w-sm tw:mx-auto" src="<?= config( "identity.biglogo" ) ?>" />
                 <?php else: ?>
                     <h2>
-                        [Your Logo Here]
+                        <?= __( '[Your Logo Here]' ) ?>
                     </h2>
                     <div>
                         Configure <code>IDENTITY_BIGLOGO</code> in <code>.env</code>.
@@ -32,15 +32,15 @@
                 ?>
 
                 <p class="tw:mb-6 tw:text-grey-dark tw:font-bold">
-                    Please enter your username, the token that was emailed to you and a new password below.
+                    <?= __( 'Please enter your username, the token that was emailed to you and a new password below.' ) ?>
                 </p>
 
                  <div class="tw:mb-6">
                      <label class="control-label" for="username">
-                         Username
+                         <?= __( 'Username' ) ?>
                      </label>
 
-                    <input name="username" class="form-control" id="username" type="text" placeholder="Username" value="<?= $t->username ? $t->ee( $t->username ) : $t->ee( old('username') ) ?>">
+                    <input name="username" class="form-control" id="username" type="text" placeholder="<?= __( 'Username' ) ?>" value="<?= $t->username ? $t->ee( $t->username ) : $t->ee( old('username') ) ?>">
                     <?php foreach( $t->errors->get( 'username' ) as $err ): ?>
                         <p class="tw:text-red-500 tw:text-xs tw:italic tw:mt-2"><?= $t->ee( $err ) ?></p>
                     <?php endforeach; ?>
@@ -48,7 +48,7 @@
 
                  <div class="tw:mb-6">
                      <label class="control-label" for="token">
-                         Token
+                         <?= __( 'Token' ) ?>
                      </label>
                     <input name="token" class="form-control" id="token" type="text" placeholder="" value="<?= $t->token ? $t->ee( $t->token ) : $t->ee( old('token') ) ?>">
                     <?php foreach( $t->errors->get( 'token' ) as $err ): ?>
@@ -58,7 +58,7 @@
 
                  <div class="tw:mb-6">
                      <label class="control-label" for="password">
-                         Password
+                         <?= __( 'Password' ) ?>
                      </label>
                     <input name="password" class="form-control" id="password" type="password" autofocus placeholder="******************">
                     <?php foreach( $t->errors->get( 'password' ) as $err ): ?>
@@ -68,7 +68,7 @@
 
                  <div class="tw:mb-6">
                      <label class="control-label" for="password_confirmation">
-                         Confirm Password
+                         <?= __( 'Confirm Password' ) ?>
                      </label>
                     <input name="password_confirmation" class="form-control" id="password_confirmation" type="password" placeholder="******************">
                     <?php foreach( $t->errors->get( 'password_confirmation' ) as $err ): ?>
@@ -78,10 +78,10 @@
 
                 <div class="tw:flex tw:items-center tw:justify-between">
                     <a href="<?= route( "login@login" ) ?>">
-                        Return to Login
+                        <?= __( 'Return to Login' ) ?>
                     </a>
                     <button class="btn btn-primary" type="submit">
-                        Reset
+                        <?= __( 'Reset' ) ?>
                     </button>
                 </div>
             </div>

@@ -1,7 +1,7 @@
 <?php if( config( 'mailinglists.enabled', false ) ): ?>
     <div class="col-lg-6 col-md-12">
         <h3>
-            Your Mailing List Subscriptions
+            <?= __( 'Your Mailing List Subscriptions' ) ?>
         </h3>
         <hr>
         <p>
@@ -9,7 +9,7 @@
             members and for our members to interact with each other.
         </p>
         <p>
-            The below are your subscriptions for <strong><?= Auth::getUser()->email ?></strong>.
+            <?= __( 'The below are your subscriptions for' ) ?> <strong><?= Auth::getUser()->email ?></strong>.
         </p>
 
         <?= Former::open()

@@ -44,13 +44,13 @@ $row = $t->row;
     </td>
     <td>
         <div class="btn-group btn-group-sm">
-            <a class="btn btn-white" href="<?= route('api-key@view' , [ 'id' => $t->row[ 'id' ] ] ) ?> " title="View">
+            <a class="btn btn-white" href="<?= route('api-key@view' , [ 'id' => $t->row[ 'id' ] ] ) ?> " title="<?= __( 'View' ) ?>">
                 <i class="fa fa-eye"></i>
             </a>
-            <a class="btn btn-white" id='e2f-list-edit-<?= $t->row[ 'id' ] ?>' href="<?= route('api-key@edit' , [ 'id' => $t->row[ 'id' ] ] ) ?> " title="Edit">
+            <a class="btn btn-white" id='e2f-list-edit-<?= $t->row[ 'id' ] ?>' href="<?= route('api-key@edit' , [ 'id' => $t->row[ 'id' ] ] ) ?> " title="<?= __( 'Edit' ) ?>">
                 <i class="fa fa-pencil"></i>
             </a>
-            <a class="btn btn-white btn-2f-list-delete" id='e2f-list-delete-<?= $t->row[ 'id' ] ?>' data-object-id="<?= $t->row[ 'id' ] ?>" href="<?= route( $t->feParams->route_prefix.'@delete' , [ 'id' => $t->row[ 'id' ] ]  )  ?>"  title="Delete">
+            <a class="btn btn-white btn-2f-list-delete" id='e2f-list-delete-<?= $t->row[ 'id' ] ?>' data-object-id="<?= $t->row[ 'id' ] ?>" href="<?= route( $t->feParams->route_prefix.'@delete' , [ 'id' => $t->row[ 'id' ] ]  )  ?>"  title="<?= __( 'Delete' ) ?>">
                 <i class="fa fa-trash"></i>
             </a>
         </div>

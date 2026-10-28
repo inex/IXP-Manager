@@ -309,3 +309,63 @@ if( !function_exists( 'ixp_manager_website_url' ) ) {
         return rtrim( config( 'ixp_api.ixp-manager-dotorg.base_url' ), "/" ) . "/" . ltrim( $path, '/' );
     }
 }
+if( !function_exists( '__c' ) ) {
+    /**
+     * Translate a string containing the configurable member / customer noun.
+     *
+     * Each IXP chooses whether its participants are called 'members' or
+     * 'customers' (IXP_FE_FRONTEND_CUSTOMER_* / config('ixp_fe.lang.customer')).
+     * Before translation those nouns were concatenated into English sentences:
+     *
+     *     ucfirst( config( 'ixp_fe.lang.customer.one' ) ) . ' Details'
+     *
+     * That cannot be translated. The translator never sees the whole sentence,
+     * and languages that need an article or agreement around the noun - French
+     * among them - cannot express it by substitution alone.
+     *
+     * This wraps __() and supplies the noun as placeholders, so the call site
+     * is a single translatable sentence:
+     *
+     *     __c( ':Customer Details' )
+     *
+     * Placeholders provided:
+     *
+     *     :customer        one         (member)
+     *     :customers       many        (members)
+     *     :customerOwner   possessive  (member's)
+     *     :customerOwners  possessive  (members')
+     *
+     * Laravel derives the capitalised forms itself, so :Customer and :CUSTOMER
+     * also work. Pass $replace for any further placeholders the string needs.
+     *
+     * @param string $key      the English source string, and the translation key
+     * @param array  $replace  further placeholders
+     *
+     * @return string
+     */
+    function __c( string $key, array $replace = [] ): string
+    {
+        $t    = app( 'translator' );
+        $lang = config( 'ixp_fe.lang.customer' );
+
+        // The configured nouns are English ('member' / 'customer'), so they
+        // are themselves translated before being substituted. A French user of
+        // an IXP configured as 'member' sees 'membre'; one configured as
+        // 'customer' sees 'client'. Untranslated, they fall back to the
+        // configured English, as everything else does.
+        //
+        // Resolved via the translator directly rather than __(): this is a
+        // forwarder, so its $key is never a literal and lang:extract would
+        // otherwise report it as an unextractable call site.
+        $line = $t->get( $key, array_merge( [
+            'customerOwners' => $t->get( $lang[ 'owners' ] ),
+            'customerOwner'  => $t->get( $lang[ 'owner' ] ),
+            'customers'      => $t->get( $lang[ 'many' ] ),
+            'customer'       => $t->get( $lang[ 'one' ] ),
+        ], $replace ) );
+
+        // get() returns an array when the key names a whole translation file
+        // (e.g. 'validation'), which is never what a caller of this wants:
+        return is_string( $line ) ? $line : $key;
+    }
+}

@@ -20,7 +20,7 @@
         <div class="btn-group btn-group-sm" role="group">
             <?php if( isset( $t->feParams->documentation ) && $t->feParams->documentation ): ?>
                 <a target="_blank" class="btn btn-white" href="<?= $t->feParams->documentation ?>">
-                    Documentation
+                    <?= __( 'Documentation' ) ?>
                 </a>
             <?php endif; ?>
 

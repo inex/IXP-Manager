@@ -81,6 +81,7 @@ Route::group( [ 'prefix' => 'profile' ], function() {
     Route::post( 'update-password',                'ProfileController@updatePassword'               )->name( 'profile@update-password'                  );
     Route::post( 'update-profile',                 'ProfileController@updateProfile'                )->name( 'profile@update-profile'                   );
     Route::post( 'update-notification-preference', 'ProfileController@updateNotificationPreference' )->name( 'profile@update-notification-preference'   );
+    Route::post( 'update-language',                'ProfileController@updateLanguage'               )->name( 'profile@update-language'                   );
     Route::post( 'update-mailing-lists',           'ProfileController@updateMailingLists'           )->name( 'profile@update-mailing-lists'             );
 });
 

@@ -53,6 +53,6 @@ final class UserAddedToCustomer extends Mailable
      */
     public function build(): self
     {
-        return $this->markdown( 'user.emails.welcome-existing' )->subject( config('identity.sitename' ) . " - Your Access Details" );
+        return $this->markdown( 'user.emails.welcome-existing' )->subject( __( ':site - Your Access Details', [ 'site' => config( 'identity.sitename' ) ] ) );
     }
 }

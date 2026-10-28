@@ -11,10 +11,10 @@
         let objectName  = 'User';
 
         if( superUser && !$(this).hasClass( "btn-delete-c2u"  )  ) {
-            message = `Are you sure you want to delete this user and its ${nbC2U} <?= config( 'ixp_fe.lang.customer.one' )  ?> links?`;
+            message = `<?= __c( 'Are you sure you want to delete this user and its :count :customer links?', [ 'count' => '${nbC2U}' ] ) ?>`;
         } else {
-            message = 'Do you really want to unlink this <?=  config( 'ixp_fe.lang.customer.one' )  ?> from this user ?';
-            objectName = '<?=  ucfirst( config( 'ixp_fe.lang.customer.one' ) )  ?> To User';
+            message = '<?= __c( 'Do you really want to unlink this :customer from this user ?' ) ?>';
+            objectName = '<?= __c( ':Customer To User' ) ?>';
         }
 
         let html = `<form id="d2f-form-delete" method="POST" action="${urlDelete}">
@@ -38,7 +38,7 @@
         if ( superUser && !$(this).hasClass( "btn-delete-user"  ) && !$(this).hasClass( "btn-delete-c2u"  ) ){
             buttons.seeC2U = {
                 id: "btn-delete-user-see-links",
-                label: `See <?= config( 'ixp_fe.lang.customer.one' )  ?> links`,
+                label: `<?= __c( 'See :customer links' ) ?>`,
                 display: 'none',
                 className: 'btn-warning',
                 callback: function () {

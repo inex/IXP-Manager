@@ -25,26 +25,26 @@
                         <ul class="nav nav-tabs card-header-tabs">
                             <li class="nav-item">
                                 <a class="nav-link <?php if( !$t->tab || $t->tab === 'overview' || $t->tab === 'index' ): ?>active<?php endif; ?>" data-toggle="tab" href="#overview">
-                                  Overview
+                                  <?= __( 'Overview' ) ?>
                                 </a>
                             </li>
 
                             <li class="nav-item">
                                 <a class="nav-link <?php if( $t->tab === 'details' ): ?>active<?php endif; ?>" data-toggle="tab" href="#details">
-                                  Details
+                                  <?= __( 'Details' ) ?>
                                 </a>
                             </li>
 
                             <li class="nav-item">
                                 <a class="nav-link <?php if( $t->tab === 'ports' ): ?>active<?php endif; ?>" data-toggle="tab" href="#ports" data-toggle="tab">
-                                  Ports
+                                  <?= __( 'Ports' ) ?>
                                 </a>
                             </li>
 
                             <?php if( $t->resellerMode() && $c->isReseller ): ?>
                                 <li class="nav-item">
                                     <a class="nav-link <?php if( $t->tab === 'resold-customers' ): ?>active<?php endif; ?>" data-toggle="tab" href="#resold-customers" data-toggle="tab">
-                                      Resold Customers
+                                      <?= __( 'Resold Customers' ) ?>
                                     </a>
                                 </li>
                             <?php endif; ?>
@@ -62,7 +62,7 @@
 
                             <li class="nav-item">
                                 <a class="nav-link <?php if( $t->tab === 'cross-connect' ): ?>active<?php endif; ?>" data-toggle="tab" href="#cross-connects" data-toggle="tab">
-                                  Cross Connects
+                                  <?= __( 'Cross Connects' ) ?>
                                 </a>
                             </li>
 
@@ -72,13 +72,13 @@
                                     <?php if( !config( 'ixp_fe.frontend.disabled.filtered-prefixes' ) ): ?>
                                         <li class="nav-item" onclick="window.location.href = '<?= route( "filtered-prefixes@list", [ 'cust' =>  $c->id ] ) ?>'">
                                           <a class="nav-link" data-toggle="tab"  href="">
-                                            Filtered Prefixes &raquo;
+                                            <?= __( 'Filtered Prefixes &raquo;' ) ?>
                                           </a>
                                         </li>
                                     <?php elseif( $c->irrdbFiltered() ): ?>
                                         <li class="nav-item" onclick="window.location.href = '<?= route( "irrdb@list", [ "cust" => $c->id, "type" => 'prefix', "protocol" => $c->isIPvXEnabled( 4 ) ? 4 : 6 ] ) ?>'">
                                           <a class="nav-link" data-toggle="tab"  href="">
-                                            IRRDB Entries &raquo;
+                                            <?= __( 'IRRDB Entries &raquo;' ) ?>
                                           </a>
                                         </li>
                                     <?php endif; ?>
@@ -89,21 +89,21 @@
                             <?php if( !config( 'ixp_fe.frontend.disabled.peering-manager' ) ): ?>
                                 <li class="nav-item">
                                     <a class="nav-link" id="peering-manager-a" href="<?= route('peering-manager@index') ?>">
-                                      Peering Manager &raquo;
+                                      <?= __( 'Peering Manager &raquo;' ) ?>
                                     </a>
                                 </li>
                             <?php endif ?>
 
                             <li class="nav-item">
                                 <a class="nav-link" href="<?= route( "statistics@member") ?>">
-                                    Statistics &raquo;
+                                    <?= __( 'Statistics &raquo;' ) ?>
                                 </a>
                             </li>
 
                             <?php if( config( 'grapher.backends.sflow.enabled' )  ): ?>
                                 <li class="nav-item">
                                     <a class="nav-link" href="<?= route( "statistics@p2p-table" ) ?>">
-                                        Peer to Peer Traffic &raquo;
+                                        <?= __( 'Peer to Peer Traffic &raquo;' ) ?>
                                     </a>
                                 </li>
                             <?php endif ?>

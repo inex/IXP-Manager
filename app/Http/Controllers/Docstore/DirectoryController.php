@@ -133,7 +133,7 @@ class DirectoryController extends Controller
         $dir = DocstoreDirectory::create( $r->all() );
 
         Log::info( sprintf( "DocStore: new directory [%d|%s] created by %s", $dir->id, $dir->name, Auth::getUser()->username ) );
-        AlertContainer::push( "New directory <em>{$dir->name}</em> created.", Alert::SUCCESS );
+        AlertContainer::push( __( 'New directory <em>:name</em> created.', [ 'name' => $dir->name ] ), Alert::SUCCESS );
         return redirect( route( 'docstore-dir@list', [ 'dir' => $dir->id ] ) );
     }
 
@@ -179,7 +179,7 @@ class DirectoryController extends Controller
         $dir->update( $r->all() );
 
         Log::info( sprintf( "DocStore: directory [%d|%s] edited by %s", $dir->id, $dir->name, Auth::user()->username ) );
-        AlertContainer::push( "Directory <em>{$dir->name}</em> updated.", Alert::SUCCESS );
+        AlertContainer::push( __( 'Directory <em>:name</em> updated.', [ 'name' => $dir->name ] ), Alert::SUCCESS );
         return redirect( route( 'docstore-dir@list', [ 'dir' => $dir->parent_dir_id ] ) );
     }
 
@@ -201,7 +201,7 @@ class DirectoryController extends Controller
         DocstoreDirectory::recursiveDelete( $dir );
         Log::notice( sprintf( "DocStore: finish recursive deletion of directory [%d|%s] by %s", $dir->id, $dir->name, $r->user()->username ) );
 
-        AlertContainer::push( "Directory <em>{$dir->name}</em> deleted.", Alert::SUCCESS );
+        AlertContainer::push( __( 'Directory <em>:name</em> deleted.', [ 'name' => $dir->name ] ), Alert::SUCCESS );
         return redirect( route( 'docstore-dir@list', [ 'dir' => $dir->parent_dir_id ] ) );
     }
 

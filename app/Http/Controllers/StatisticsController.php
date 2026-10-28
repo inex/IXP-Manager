@@ -281,7 +281,7 @@ class StatisticsController extends Controller
     {
         if( !is_array( config('grapher.backends.mrtg.trunks') ) || !count( config('grapher.backends.mrtg.trunks') ) ) {
             AlertContainer::push(
-                "Trunk graphs have not been configured. Please see <a target='_blank' href=\"https://docs.ixpmanager.org/latest/grapher/introduction/\">this documentation</a> for instructions.",
+                __( "Trunk graphs have not been configured. Please see <a target='_blank' href=\"https://docs.ixpmanager.org/latest/grapher/introduction/\">this documentation</a> for instructions." ),
                 Alert::DANGER
             );
             return redirect('');
@@ -414,7 +414,7 @@ class StatisticsController extends Controller
         }
 
         if( !$cust->hasInterfacesConnectedOrInQuarantine() ) {
-            AlertContainer::push("This customer has no graphable interfaces (i.e. no physical interfaces in quarantine or connected)", Alert::WARNING);
+            AlertContainer::push(__( "This customer has no graphable interfaces (i.e. no physical interfaces in quarantine or connected)" ), Alert::WARNING);
             return redirect()->back();
         }
 
@@ -494,7 +494,7 @@ class StatisticsController extends Controller
 
         if( !$vli->$fnEnabled || !$vli->$fnCanping ) {
             AlertContainer::push(
-                "Protocol or ping not enabled on the requested interface",
+                __( "Protocol or ping not enabled on the requested interface" ),
                 Alert::WARNING
             );
             return redirect( route( "statistics@member", [ "id" => $vli->virtualInterface->customer->id ] ) );
@@ -695,7 +695,8 @@ class StatisticsController extends Controller
         }
 
         if( !$srcVli->ipvxEnabled( $data['protocol'] ) || !$dstVli->ipvxEnabled( $data['protocol'] ) ) {
-            AlertContainer::push( Graph::resolveProtocol( $data['protocol'] ) . " is not supported on the requested VLAN interfaces.", Alert::WARNING );
+            AlertContainer::push( __( ':protocol is not supported on the requested VLAN interfaces.', [
+                'protocol' => Graph::resolveProtocol( $data['protocol'] ) ] ), Alert::WARNING );
             return redirect( route('statistics@p2ps-get', ['customer' => $srcVli->virtualInterface->custid ] ) );
         }
 
@@ -745,7 +746,7 @@ class StatisticsController extends Controller
         $days = P2pDailyStats::select('day')->distinct('day')->orderBy('day','desc')->get()->pluck('day')->toArray();
 
         if( empty( $days ) ) {
-            AlertContainer::push( "The P2P daily stats database table is empty.", Alert::WARNING );
+            AlertContainer::push( __( "The P2P daily stats database table is empty." ), Alert::WARNING );
             return redirect( route('statistics@member', ['cust' => $r->custid ] ) );
         }
 

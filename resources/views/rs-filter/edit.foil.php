@@ -10,11 +10,11 @@
 
 <?php $this->section( 'page-header-postamble' ) ?>
     <div class="btn-group btn-group-sm" role="group">
-        <a class="btn btn-white" href="<?= route ('rs-filter@list', [ "cust" => $t->c->id ] ) ?>" title="list">
+        <a class="btn btn-white" href="<?= route ('rs-filter@list', [ "cust" => $t->c->id ] ) ?>" title="<?= __( 'list' ) ?>">
             <span class="fa fa-list"></span>
         </a>
         <?php if( $t->rsf ): ?>
-            <a class="btn btn-white" href="<?= route('rs-filter@view', [ "rsf" => $t->rsf->id ] ) ?>" title="view route serve filter">
+            <a class="btn btn-white" href="<?= route('rs-filter@view', [ "rsf" => $t->rsf->id ] ) ?>" title="<?= __( 'view route serve filter' ) ?>">
                 <i class="fa fa-eye"></i>
             </a>
         <?php endif; ?>
@@ -60,18 +60,14 @@
                     ?>
 
                     <div class="form-group row">
-                        <label for="advertised_prefix" class="control-label col-sm-4 col-md-4 col-lg-3">Advertise Prefix</label>
+                        <label for="advertised_prefix" class="control-label col-sm-4 col-md-4 col-lg-3"><?= __( 'Advertise Prefix' ) ?></label>
                         <div class="col-lg-4 col-md-6 col-sm-6">
                             <div id="area_advertised_prefix"></div>
                             <?php if(  $t->errors->has( 'advertised_prefix' ) ): ?>
                                 <div class="invalid-feedback d-block"><?= $t->errors->first('advertised_prefix') ?></div>
                             <?php endif; ?>
                             <small class="form-text text-muted former-help-text">
-                                This rule can apply to every prefix you advertise (<code>*</code>) or you can select
-                                a specific prefix here. If you require the rule to apply to multiple specific prefixes, you
-                                will need to add a rule per prefix. Remember: this tool is designed to help with simple
-                                routing policies. Also, a dropdown list of prefixes is only available where a network's
-                                maximum prefix setting is less that 2,000.
+                                This rule can apply to every prefix you advertise (<code>*</code><?= __( ") or you can select a specific prefix here. If you require the rule to apply to multiple specific prefixes, you will need to add a rule per prefix. Remember: this tool is designed to help with simple routing policies. Also, a dropdown list of prefixes is only available where a network's maximum prefix setting is less that 2,000." ) ?>
                             </small>
                         </div>
                         <?= Former::hidden( 'advertised_prefix_val' )
@@ -88,16 +84,14 @@
                     ?>
 
                     <div class="form-group row">
-                        <label for="received_prefix" class="control-label col-sm-4 col-md-4 col-lg-3">Received Prefix</label>
+                        <label for="received_prefix" class="control-label col-sm-4 col-md-4 col-lg-3"><?= __( 'Received Prefix' ) ?></label>
                         <div class="col-lg-4 col-md-6 col-sm-6" >
                             <div id="area_received_prefix"></div>
                             <?php if(  $t->errors->has( 'received_prefix' ) ): ?>
                                 <div class="invalid-feedback d-block"><?= $t->errors->first('received_prefix') ?></div>
                             <?php endif; ?>
                             <small class="form-text text-muted former-help-text">
-                              This rule can apply to every prefix you receive (<code>*</code>) from the above peer(s)
-                              or you can select a specific prefix here. See above (received prefix) help text for more
-                              information as the same rules apply.
+                              This rule can apply to every prefix you receive (<code>*</code><?= __( ') from the above peer(s) or you can select a specific prefix here. See above (received prefix) help text for more information as the same rules apply.' ) ?>
                             </small>
                         </div>
                         <?= Former::hidden( 'received_prefix_val' )
@@ -139,40 +133,39 @@
             </div>
             <div>
                 <h3>
-                    Filter Action Help
+                    <?= __( 'Filter Action Help' ) ?>
                 </h3>
                 <p>
-                    There are six possible actions for prefixes you advertise or receive via the route servers:
+                    <?= __( 'There are six possible actions for prefixes you advertise or receive via the route servers:' ) ?>
                 </p>
 
                 <dl>
                     <dt>
-                        No Action
+                        <?= __( 'No Action' ) ?>
                     </dt>
                     <dd>
-                      Take no action whatsoever on the matched routes. This is important as <b>Receive As Is / Advertise As Is</b>
-                      is a matching action and processing of those routes will stop there. Using <b>No Action</b> will not match
-                      the routes and they will continue to be evaluated by any further rules.
+                      <?= __( 'Take no action whatsoever on the matched routes. This is important as :receiveAsIs is a matching action and processing of those routes will stop there. Using :noAction will not match the routes and they will continue to be evaluated by any further rules.', [
+                          'receiveAsIs' => '<b>' . __( 'Receive As Is / Advertise As Is' ) . '</b>',
+                          'noAction'    => '<b>' . __( 'No Action' ) . '</b>',
+                      ] ) ?>
                     </dd>
                     <dt>
-                        Receive As Is / Advertise As Is
+                        <?= __( 'Receive As Is / Advertise As Is' ) ?>
                     </dt>
                     <dd>
-                        Accept / advertise the matched routes as is and stop processing.
+                        <?= __( 'Accept / advertise the matched routes as is and stop processing.' ) ?>
                     </dd>
                     <dt>
-                        Do Not Advertise / Do Not Receive (Drop)
+                        <?= __( 'Do Not Advertise / Do Not Receive (Drop)' ) ?>
                     </dt>
                     <dd>
-                        For routes you are sending, do not advertise them to the matching peer(s). For matching routes you
-                        would ordinarily expect to receive, drop them.
+                        <?= __( 'For routes you are sending, do not advertise them to the matching peer(s). For matching routes you would ordinarily expect to receive, drop them.' ) ?>
                     </dd>
                     <dt>
-                        Prepend My ASN / Prepend Peer's ASN
+                        <?= __( "Prepend My ASN / Prepend Peer's ASN" ) ?>
                     </dt>
                     <dd>
-                        For a matching route, prepend the appropriate ASN 1, 2 or 3 times to make the route look less favourable
-                        in BGP routing decisions.
+                        <?= __( 'For a matching route, prepend the appropriate ASN 1, 2 or 3 times to make the route look less favourable in BGP routing decisions.' ) ?>
                     </dd>
                 </dl>
             </div>

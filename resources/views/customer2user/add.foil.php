@@ -12,7 +12,7 @@ $this->layout( 'layouts/ixpv4' );
 
 <div class="btn-group btn-group-sm ml-auto" role="group">
     <a target="_blank" class="btn btn-white" href="https://docs.ixpmanager.org/latest/usage/users/">
-        Documentation
+        <?= __( 'Documentation' ) ?>
     </a>
     <a id="add-user" class="btn btn-white" href="<?= route('user@create-wizard') ?>">
         <i class="fa fa-plus"></i>
@@ -40,13 +40,13 @@ $this->layout( 'layouts/ixpv4' );
                             <i class="fa fa-question-circle fa-2x"></i>
                         </div>
                         <div class="col-sm-12">
-                            Select a user on the list below and a privilege to add the user to your member account
+                            <?= __( 'Select a user on the list below and a privilege to add the user to your member account' ) ?>
                         </div>
                     </div>
                 </div>
 
                 <h4 class="mb-2">
-                    The following user(s) have been found:<br><br>
+                    <?= __( 'The following user(s) have been found:' ) ?><br><br>
                 </h4>
 
                 <table id="list-user" class="table table-striped table-hover" width="100%">
@@ -54,17 +54,17 @@ $this->layout( 'layouts/ixpv4' );
                         <tr>
                             <th></th>
                             <th>
-                                Name
+                                <?= __( 'Name' ) ?>
                             </th>
                             <th>
-                                Username
+                                <?= __( 'Username' ) ?>
                             </th>
                             <th>
-                                Email
+                                <?= __( 'Email' ) ?>
                             </th>
                             <?php if( Auth::user()->isSuperUser() ): ?>
                                 <th>
-                                    Customers
+                                    <?= __( 'Customers' ) ?>
                                 </th>
                             <?php endif; ?>
                         </tr>
@@ -73,7 +73,7 @@ $this->layout( 'layouts/ixpv4' );
                         <?php if ( count( $t->listUsers ) === 0 ): ?>
                             <tr>
                                 <td colspan="<?= Auth::user()->isSuperUser() ? 5 : 4 ?>">
-                                    No users found - check the provided email!
+                                    <?= __( 'No users found - check the provided email!' ) ?>
                                 </td>
                             </tr>
                         <?php endif; ?>

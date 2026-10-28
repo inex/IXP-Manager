@@ -26,10 +26,10 @@
                 <div class="card-header">
                     <ul class="nav nav-tabs card-header-tabs">
                         <li role="presentation" class="nav-item">
-                            <a class="tab-link-body-note nav-link active" href="#body">Messages</a>
+                            <a class="tab-link-body-note nav-link active" href="#body"><?= __( 'Messages' ) ?></a>
                         </li>
                         <li role="presentation" class="nav-item">
-                            <a class="tab-link-preview-note nav-link" href="#preview">Preview</a>
+                            <a class="tab-link-preview-note nav-link" href="#preview"><?= __( 'Preview' ) ?></a>
                         </li>
                     </ul>
                 </div>
@@ -40,7 +40,7 @@
                     </div>
                     <div role="tabpanel" class="tab-pane" id="preview">
                         <div class="bg-light p-4 well-preview">
-                            Loading...
+                            <?= __( 'Loading...' ) ?>
                         </div>
                     </div>
                 </div>
@@ -64,10 +64,10 @@
                 <div class="card-header">
                     <ul class="nav nav-tabs card-header-tabs">
                         <li role="presentation" class="nav-item">
-                            <a class="tab-link-body-note nav-link active" href="#body">Notes</a>
+                            <a class="tab-link-body-note nav-link active" href="#body"><?= __( 'Notes' ) ?></a>
                         </li>
                         <li role="presentation" class="nav-item">
-                            <a class="tab-link-preview-note nav-link" href="#preview">Preview</a>
+                            <a class="tab-link-preview-note nav-link" href="#preview"><?= __( 'Preview' ) ?></a>
                         </li>
                     </ul>
                 </div>
@@ -78,7 +78,7 @@
                     </div>
                     <div role="tabpanel" class="tab-pane" id="preview">
                         <div class="bg-light p-4 well-preview">
-                            Loading...
+                            <?= __( 'Loading...' ) ?>
                         </div>
                     </div>
                 </div>

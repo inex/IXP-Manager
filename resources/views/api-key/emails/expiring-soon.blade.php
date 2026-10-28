@@ -1,14 +1,14 @@
 @component('mail::message')
 
-Hello {{ $user->name ?: $user->username }},
+{{ __( 'Hello :name,', [ 'name' => $user->name ?: $user->username ] ) }}
 
-This is a reminder that the following API key(s) for {{ config('identity.sitename') }} will expire in 14 days:
+{{ __( 'This is a reminder that the following API key(s) for :site will expire in 14 days:', [ 'site' => config( 'identity.sitename' ) ] ) }}
 
 @foreach( $apiKeys as $apiKey )
-- **{{ $apiKey->description ?: 'API key #' . $apiKey->id }}** ending `{{ Str::limit( $apiKey->apiKey, 6 ) }} (expires: {{ \Carbon\Carbon::parse( $appPassword->expires )->format( 'Y-m-d' ) }})
+- **{{ $apiKey->description ?: __( 'API key #:id', [ 'id' => $apiKey->id ] ) }}** {{ __( 'ending' ) }} `{{ Str::limit( $apiKey->apiKey, 6 ) }} ({{ __( 'expires' ) }}: {{ \Carbon\Carbon::parse( $appPassword->expires )->format( 'Y-m-d' ) }})
 @endforeach
 
-Please review and renew these credentials if needed.
+{{ __( 'Please review and renew these credentials if needed.' ) }}
 
 {{ config( 'identity.name' ) }}
 

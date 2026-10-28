@@ -21,7 +21,7 @@
         <div class="btn-group btn-group-sm ml-auto" role="group">
             <?php if( isset( $t->feParams->documentation ) && $t->feParams->documentation ): ?>
                 <a target="_blank" class="btn btn-white" href="<?= $t->feParams->documentation ?>">
-                    Documentation
+                    <?= __( 'Documentation' ) ?>
                 </a>
             <?php endif; ?>
 
@@ -53,7 +53,7 @@
                             <div class="col-sm-12">
                                 <b>No <?= $t->feParams->nameSingular ?> exists.</b>
                                 <?php if( !isset( $t->feParams->readonly ) || !$t->feParams->readonly ): ?>
-                                    <a class="btn btn-white ml-2" href="<?= $t->feParams->addRoute ?? route($t->feParams->route_prefix.'@create') ?>">Create one...</a>
+                                    <a class="btn btn-white ml-2" href="<?= $t->feParams->addRoute ?? route($t->feParams->route_prefix.'@create') ?>"><?= __( 'Create one...' ) ?></a>
                                 <?php endif;?>
                             </div>
                         </div>
@@ -82,7 +82,7 @@
                                 <?php endforeach;?>
                                 <?php if( !isset( $t->feParams->hideactioncolumn ) || !$t->feParams->hideactioncolumn ): ?>
                                     <th>
-                                        Actions
+                                        <?= __( 'Actions' ) ?>
                                     </th> <!-- actions column -->
                                 <?php endif; ?>
                             </tr>
@@ -288,15 +288,15 @@
 
                                                 <div class="btn-group btn-group-sm">
 
-                                                    <a id="e2f-list-view-<?= $row[ 'id' ] ?>" class="btn btn-white" href="<?= route($t->feParams->route_prefix.'@view' , [ 'id' => $row[ 'id' ] ] ) ?>" title="Preview">
+                                                    <a id="e2f-list-view-<?= $row[ 'id' ] ?>" class="btn btn-white" href="<?= route($t->feParams->route_prefix.'@view' , [ 'id' => $row[ 'id' ] ] ) ?>" title="<?= __( 'Preview' ) ?>">
                                                         <i class="fa fa-eye"></i>
                                                     </a>
 
                                                     <?php if( !isset( $t->feParams->readonly ) || !$t->feParams->readonly ): ?>
-                                                        <a class="btn btn-white" id="e2f-list-edit-<?= $row[ 'id' ] ?>" href="<?= route($t->feParams->route_prefix.'@edit' , [ 'id' => $row[ 'id' ] ] ) ?> " title="Edit">
+                                                        <a class="btn btn-white" id="e2f-list-edit-<?= $row[ 'id' ] ?>" href="<?= route($t->feParams->route_prefix.'@edit' , [ 'id' => $row[ 'id' ] ] ) ?> " title="<?= __( 'Edit' ) ?>">
                                                             <i class="fa fa-pencil"></i>
                                                         </a>
-                                                        <a class="btn btn-white btn-2f-list-delete" id='e2f-list-delete-<?= $row[ 'id' ] ?>' data-object-id="<?= $row[ 'id' ] ?>" href="<?= route( $t->feParams->route_prefix.'@delete' , [ 'id' => $row[ 'id' ] ]  )  ?>"  title="Delete">
+                                                        <a class="btn btn-white btn-2f-list-delete" id='e2f-list-delete-<?= $row[ 'id' ] ?>' data-object-id="<?= $row[ 'id' ] ?>" href="<?= route( $t->feParams->route_prefix.'@delete' , [ 'id' => $row[ 'id' ] ]  )  ?>"  title="<?= __( 'Delete' ) ?>">
                                                             <i class="fa fa-trash"></i>
                                                         </a>
                                                     <?php endif;?>

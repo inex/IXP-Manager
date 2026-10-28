@@ -6,7 +6,7 @@
 <div class="row">
     <div class="col-lg-6 mb-4">
         <h3>
-            NOC Details
+            <?= __( 'NOC Details' ) ?>
         </h3>
         <hr>
         <?= Former::open()
@@ -22,24 +22,19 @@
         <?= Former::phone( 'nocphone' )
             ->label( 'Phone' )
             ->placeholder( config( 'ixp_fe.customer.form.placeholders.phone' ) )
-            ->blockHelp( 'Working hours phone number for contacting the ' . config( 'ixp_fe.lang.customer.one' ) . ' NOC.<br><br>'
-                . 'This is available to all other ' . config( 'ixp_fe.lang.customer.many' ) . '.' );
+            ->blockHelp( __c( 'Working hours phone number for contacting the :customer NOC.<br><br>This is available to all other :customers.' ) );
         ?>
 
         <?= Former::phone( 'noc24hphone' )
             ->label( '24h Phone' )
             ->placeholder( config( 'ixp_fe.customer.form.placeholders.phone' ) )
-            ->blockHelp( '24/7 emergency phone number for contacting the ' . config( 'ixp_fe.lang.customer.one' ) . ' NOC.<br><br>'
-                . 'This is available to all other ' . config( 'ixp_fe.lang.customer.many' ) . '.' );
+            ->blockHelp( __c( '24/7 emergency phone number for contacting the :customer NOC.<br><br>This is available to all other :customers.' ) );
         ?>
 
         <?= Former::email( 'nocemail' )
             ->label( 'Email' )
             ->placeholder( 'noc@example.com' )
-            ->blockHelp( 'The NOC email is used in ' . config( 'ixp_fe.lang.customer.one' ) . ' lists. We try to encourage '
-                . 'the use of a role alias such as noc@example.com but this does not '
-                . 'always work out.<br><br>'
-                . 'This is available to all other ' . config( 'ixp_fe.lang.customer.many' ) . '.' );
+            ->blockHelp( __c( 'The NOC email is used in :customer lists. We try to encourage the use of a role alias such as noc@example.com but this does not always work out.<br><br>This is available to all other :customers.' ) );
         ?>
 
         <?= Former::select( 'nochours' )
@@ -69,7 +64,7 @@
     <div class="col-lg-6">
         <?php if( $t->isBilledByIXP( $c ) ): ?>
             <h3>
-                Billing Details
+                <?= __( 'Billing Details' ) ?>
             </h3>
             <hr>
             <?= Former::open()
@@ -160,12 +155,12 @@
 
     <div class="col-lg-6">
         <h3>
-            AS-SETS
+            <?= __( 'AS-SETS' ) ?>
         </h3>
         <table class="table table-striped">
             <tr>
                 <td>
-                    Peering Policy
+                    <?= __( 'Peering Policy' ) ?>
                 </td>
                 <td>
                     <?= $t->ee( $c->peeringpolicy ) ?>
@@ -173,14 +168,14 @@
             </tr>
             <tr>
                 <td>
-                    IRRDB source
+                    <?= __( 'IRRDB source' ) ?>
                 </td>
                 <td>
                     <?php if( $c->irrdb ): ?>
                         <?= $t->ee( $c->irrdbConfig->source )?>
 
                         <?php if( $c->routeServerClient() && $c->irrdbFiltered() ): ?>
-                            (<a href="<?= route( "irrdb@list", [ "cust" => $c->id, "type" => 'prefix', "protocol" => $c->isIPvXEnabled( 4) ? 4 : 6 ] ) ?>">entries</a>)
+                            (<a href="<?= route( "irrdb@list", [ "cust" => $c->id, "type" => 'prefix', "protocol" => $c->isIPvXEnabled( 4) ? 4 : 6 ] ) ?>"><?= __( 'entries' ) ?></a>)
                         <?php endif; ?>
 
                     <?php endif; ?>
@@ -188,7 +183,7 @@
             </tr>
             <tr>
                 <td>
-                    ASN
+                    <?= __( 'ASN' ) ?>
                 </td>
                 <td>
                     <?= $t->asNumber( $c->autsys ) ?>
@@ -196,7 +191,7 @@
             </tr>
             <tr>
                 <td>
-                    IPv4 AS-SET
+                    <?= __( 'IPv4 AS-SET' ) ?>
                 </td>
                 <td>
                     <?= $t->ee( $c->peeringmacro ) ?>
@@ -204,7 +199,7 @@
             </tr>
             <tr>
                 <td>
-                    IPv6 AS-SET
+                    <?= __( 'IPv6 AS-SET' ) ?>
                 </td>
                 <td>
                     <?= $t->ee( $c->peeringmacrov6 ) ?>

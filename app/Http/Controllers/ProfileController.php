@@ -23,7 +23,7 @@ namespace IXP\Http\Controllers;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Auth, Hash, Redirect;
+use App, Auth, Hash, Redirect;
 
 use Illuminate\Auth\Recaller;
 
@@ -36,6 +36,7 @@ use Illuminate\Http\{
 use Illuminate\View\View;
 
 use IXP\Http\Requests\Profile\{
+    Language        as LanguageRequest,
     Notification    as NotificationRequest,
     Password        as PasswordRequest,
     Profile         as ProfileRequest
@@ -83,6 +84,12 @@ class ProfileController extends Controller
             'notify'                => Auth::getUser()->prefs[ 'notes' ][ 'global_notifs' ] ?? 'none',
         ];
 
+        // the user's own language preference - '' meaning 'no preference of my
+        // own, use my customer's / this IXP's default':
+        $language = [
+            'locale'                => $user->locale() ?? '',
+        ];
+
         $mailingListSubscriptions         = [];
 
         // are we using mailing lists?
@@ -92,6 +99,7 @@ class ProfileController extends Controller
 
         return view( 'profile/edit' )->with([
             "details"                          =>  $details,
+            "language"                         =>  $language,
             "notesNotifications"               =>  $notesNotifications,
             "mailingListSubscriptions"         =>  $mailingListSubscriptions,
         ]);
@@ -126,7 +134,7 @@ class ProfileController extends Controller
             ->where( 'token', '!=', $token ?? null )
             ->delete();
 
-        AlertContainer::push( 'Password updated.', Alert::SUCCESS );
+        AlertContainer::push( __( 'Password updated.' ), Alert::SUCCESS );
         return redirect( route( "profile@edit"  ) );
     }
 
@@ -151,7 +159,7 @@ class ProfileController extends Controller
         $user->lastupdatedby    = $user->id;
         $user->save();
 
-        AlertContainer::push( 'Profile details updated.', Alert::SUCCESS );
+        AlertContainer::push( __( 'Profile details updated.' ), Alert::SUCCESS );
         return redirect( route( "profile@edit"  ) );
     }
 
@@ -175,7 +183,33 @@ class ProfileController extends Controller
         $user->prefs = $prefs;
         $user->save();
 
-        AlertContainer::push( 'Notification preference updated.', Alert::SUCCESS );
+        AlertContainer::push( __( 'Notification preference updated.' ), Alert::SUCCESS );
+        return Redirect::to( route( "profile@edit"  ) );
+    }
+
+    /**
+     * Update the user's preferred language for the user interface
+     *
+     * An empty selection clears the preference so that the user falls back to
+     * their customer's default and then the instance default.
+     *
+     * @param LanguageRequest $r instance of the current HTTP request
+     *
+     * @return RedirectResponse
+     */
+    public function updateLanguage( LanguageRequest $r ) : RedirectResponse
+    {
+        /** @var User $user */
+        $user = Auth::getUser();
+
+        $user->setLocale( $r->input( 'locale' ) );
+        $user->save();
+
+        // set it now so the alert below and the page we redirect to are
+        // rendered in the newly chosen language:
+        App::setLocale( $user->locale() ?? $user->customer?->locale() ?? config( 'app.locale' ) );
+
+        AlertContainer::push( __( 'Language preference updated.' ), Alert::SUCCESS );
         return Redirect::to( route( "profile@edit"  ) );
     }
 
@@ -203,11 +237,11 @@ class ProfileController extends Controller
             $prefs[ 'mailinglist' ] = $mailintLists;
             $user->prefs = $prefs;
             $user->save();
-            AlertContainer::push( 'Mailing list subscriptions updated and will take effect within 12 hours.', Alert::SUCCESS );
+            AlertContainer::push( __( 'Mailing list subscriptions updated and will take effect within 12 hours.' ), Alert::SUCCESS );
             return Redirect::to( route( "profile@edit"  ) );
         }
 
-        AlertContainer::push( 'Mailing list subscriptions is not enabled.', Alert::DANGER );
+        AlertContainer::push( __( 'Mailing list subscriptions is not enabled.' ), Alert::DANGER );
         return Redirect::to( route( "profile@edit"  ) );
     }
 }

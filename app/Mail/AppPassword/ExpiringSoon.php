@@ -45,6 +45,6 @@ final class ExpiringSoon extends Mailable
     public function build(): self
     {
         return $this->markdown('app-password.emails.expiring-soon')
-            ->subject( config('identity.sitename') . ' - Application password expiry reminder' );
+            ->subject( __( ':site - Application password expiry reminder', [ 'site' => config( 'identity.sitename' ) ] ) );
     }
 }

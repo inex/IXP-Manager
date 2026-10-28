@@ -13,7 +13,7 @@
                     <img class="tw:inline img-fluid tw:w-full tw:max-w-sm tw:mx-auto" src="<?= config( "identity.biglogo" ) ?>" />
                 <?php else: ?>
                     <h2>
-                        [Your Logo Here]
+                        <?= __( '[Your Logo Here]' ) ?>
                     </h2>
                     <div>
                         Configure <code>IDENTITY_BIGLOGO</code> in <code>.env</code>.
@@ -32,14 +32,14 @@
                 ?>
 
                 <p class="tw:mb-6 tw:text-grey-dark tw:font-bold">
-                    Please enter your email address and we will send you any related username(s) by email.
+                    <?= __( 'Please enter your email address and we will send you any related username(s) by email.' ) ?>
                 </p>
 
                 <div class="tw:mb-16">
                     <label class="control-label" for="email">
-                        Email
+                        <?= __( 'Email' ) ?>
                     </label>
-                    <input name="email" class="form-control" id="email" type="text" placeholder="name@example.com" autofocus value="<?= $t->ee( old('email') ) ?>">
+                    <input name="email" class="form-control" id="email" type="text" placeholder="<?= __( 'name@example.com' ) ?>" autofocus value="<?= $t->ee( old('email') ) ?>">
                     <?php foreach( $t->errors->get( 'email' ) as $err ): ?>
                         <p class="tw:text-red-500 tw:text-xs tw:italic tw:mt-2"><?= $t->ee( $err ) ?></p>
                     <?php endforeach; ?>
@@ -47,15 +47,15 @@
 
                 <div class="tw:flex tw:items-center tw:justify-between">
                     <a href="<?= route( "forgot-password@show-form" ) ?>">
-                        Forgot Password?
+                        <?= __( 'Forgot Password?' ) ?>
                     </a>
 
                     <a class="btn btn-white" href="<?= route('login@login' ) ?>">
-                        Cancel
+                        <?= __( 'Cancel' ) ?>
                     </a>
 
                     <button class="btn btn-primary" type="submit">
-                        Submit
+                        <?= __( 'Submit' ) ?>
                     </button>
                 </div>
             </div>
