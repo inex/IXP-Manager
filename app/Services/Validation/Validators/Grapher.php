@@ -174,6 +174,11 @@ final class Grapher implements Validator
                 ->withDocsPath('grapher/mrtg/#mrtg-setup-and-configuration');
         }
 
+        if (config('grapher.backends.mrtg.dbtype') === 'rrd' && ! extension_loaded('rrd')) {
+            $backend->error("The RRD extension is missing from your system, and MRTG is configured to use the RRD format.")
+                ->addAdditionalInfoText(sprintf("On Ubuntu, this would be installed with 'sudo apt-get install php%d.%d-rrd'", PHP_MAJOR_VERSION, PHP_MINOR_VERSION));
+        }
+
         if (str_starts_with(config('grapher.backends.mrtg.logdir'), 'http://') || str_starts_with(config('grapher.backends.mrtg.logdir'), 'https://')) {
             $backend->info("MRTG files accessed via HTTP");
         } else if (str_starts_with(config('grapher.backends.mrtg.logdir'), 'ftp://') || str_starts_with(config('grapher.backends.mrtg.logdir'), 'https://')) {
@@ -206,6 +211,11 @@ final class Grapher implements Validator
         if (in_array('sflow', config('grapher.backend')) && ! config('grapher.backends.sflow.enabled')) {
             $backend->warning("sflow backend active but not enabled in frontend")
                 ->withDocsPath('features/sflow-p2p/#displaying-the-graphs');
+        }
+
+        if (in_array('sflow', config('grapher.backend')) && ! extension_loaded('rrd')) {
+            $backend->error("The RRD extension is missing from your system - this is required when using the sflow backend.")
+                ->addAdditionalInfoText(sprintf("On Ubuntu, this would be installed with 'sudo apt-get install php%d.%d-rrd'", PHP_MAJOR_VERSION, PHP_MINOR_VERSION));
         }
 
         if (str_starts_with(config('grapher.backends.sflow.root'), 'http://') || str_starts_with(config('grapher.backends.sflow.root'), 'https://')) {
