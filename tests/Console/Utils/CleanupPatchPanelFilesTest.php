@@ -223,8 +223,8 @@ class CleanupPatchPanelFilesTest extends TestCase
         Storage::put('files/ppp/4/2/4242424242424242424242424242424242424242424242424242424242424242', 'File 2');
         Storage::put('files/ppp/5/6/5647f05ec18958947d32874eeb788fa396a05d0bab7c1b71f112ceb7e9b31eee', 'File 3');
         Storage::put('files/ppp/3/0/30-not-a-hash', 'File 4');
-        Storage::put('files/ppp/directory/0/30-not-a-hash', 'File 5');
-        Storage::put('files/ppp/3/directory/30-not-a-hash', 'File 6');
+        Storage::put('files/ppp/directory/f/ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff', 'File 5');
+        Storage::put('files/ppp/f/directory/ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff', 'File 6');
         Storage::put('files/ppp/a/b/4242424242424242424242424242424242424242424242424242424242424242', 'File 7');
         Storage::put("files/" . $ppFile1->path(), 'File 8');
         Storage::put("files/" . $ppFile2->path(), 'File 9');
@@ -241,8 +241,8 @@ class CleanupPatchPanelFilesTest extends TestCase
         Storage::assertMissing('files/ppp/4/2/4242424242424242424242424242424242424242424242424242424242424242');
         Storage::assertMissing('files/ppp/5/6/5647f05ec18958947d32874eeb788fa396a05d0bab7c1b71f112ceb7e9b31eee');
         Storage::assertExists('files/ppp/3/0/30-not-a-hash');
-        Storage::assertExists('files/ppp/directory/0/30-not-a-hash');
-        Storage::assertExists('files/ppp/3/directory/30-not-a-hash');
+        Storage::assertExists('files/ppp/directory/f/ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff');
+        Storage::assertExists('files/ppp/f/directory/ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff');
         Storage::assertExists('files/ppp/a/b/4242424242424242424242424242424242424242424242424242424242424242');
         Storage::assertExists("files/" . $ppFile1->path());
         Storage::assertExists("files/" . $ppFile2->path());
