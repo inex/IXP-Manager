@@ -230,7 +230,7 @@ $this->layout( 'layouts/ixpv4' );
                     Former::primary_submit( 'Create' )->class( "mb-2 mb-sm-0" ),
                     Former::secondary_link( 'Cancel' )->href( route( 'virtual-interface@list' ) )->class( "mb-2 mb-sm-0" ),
                     Former::success_button( 'Help' )->id( 'help-btn' )->class( "mb-2 mb-sm-0" ),
-                    Former::info_link( 'External Documentation &Gt;' )->href( 'https://docs.ixpmanager.org/latest/usage/interfaces/' )->target( '_blank' )->id( 'help-btn' )->class( "mb-2 mb-sm-0" )
+                    Former::info_link( 'External Documentation &Gt;' )->href( 'https://docs.ixpmanager.org/latest/usage/interfaces/' )->target( '_blank' )->class( "mb-2 mb-sm-0" )
                 )->id('btn-group')
                 ?>
 
