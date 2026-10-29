@@ -26,10 +26,97 @@ namespace Tests\Browser;
 
 use IXP\Models\User;
 use Laravel\Dusk\Browser;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\DuskTestCase;
 
 class ProfileControllerTest extends DuskTestCase
 {
+    public static function getChangePasswordTestUsers(): array
+    {
+        return [
+            ['username' => 'travis',       'currentPassword' => 'travisci'],
+            ['username' => 'imcustadmin',  'currentPassword' => 'travisci'],
+            ['username' => 'imcustuser',   'currentPassword' => 'travisci'],
+        ];
+    }
+
+    /**
+     * Tests user change password feature
+     */
+    #[DataProvider('getChangePasswordTestUsers')]
+    public function testChangePasswordForm(string $username, string $currentPassword): void
+    {
+        $this->browse( function( Browser $browser1, Browser $browser2 ) use ($username, $currentPassword): void {
+
+            $browser2->resize( 1600, 1400 )
+                ->visit( '/logout' )
+                ->visit( '/login' )
+                ->type( 'username', $username )
+                ->type( 'password', $currentPassword )
+                ->check('remember')
+                ->press( '#login-btn' );
+
+            $user = User::where('username', $username)->first();
+
+            $browser1->resize( 1600, 1400 )
+                ->visit( '/logout' )
+                ->visit( '/login' )
+                ->type( 'username', $username )
+                ->type( 'password', $currentPassword )
+                ->press( '#login-btn' );
+
+            if ($user->isSuperUser()) {
+                $browser1->waitForLocation( '/admin/dashboard' );
+            } else {
+                $browser1->waitForLocation( '/dashboard' );
+            }
+
+            $browser1->click('#my-account')
+                ->click('#profile')
+                ->waitForLocation( route('profile@edit') )
+                ->assertSee("My Profile")
+                ->assertSee("Change Your Password");
+
+            $this->assertEquals("true", $browser1->element('#current_password')->getAttribute('required'));
+            $this->assertEquals("255", $browser1->element('#current_password')->getAttribute('maxlength'));
+            $this->assertEquals("true", $browser1->element('#new_password')->getAttribute('required'));
+            $this->assertEquals("255", $browser1->element('#new_password')->getAttribute('maxlength'));
+            $this->assertEquals("true", $browser1->element('#confirm_password')->getAttribute('required'));
+            $this->assertEquals("255", $browser1->element('#confirm_password')->getAttribute('maxlength'));
+
+            $browser1
+                ->type("#current_password",   "wrongpassword")
+                ->type("#new_password",       "H510p@9.Pz[z")
+                ->type("#confirm_password",   "H510p@9.Pz[z")
+                ->press("Update Password")
+                ->waitForLocation( route('profile@edit') )
+                ->assertSee("The current password is incorrect.");
+
+            $browser1
+                ->type("#current_password",  $currentPassword)
+                ->type("#new_password",      "H510p@9.Pz[z")
+                ->type("#confirm_password",  "H510p@9.Pz[z1111111")
+                ->press("Update Password")
+                ->waitForLocation( route('profile@edit') )
+                ->assertSee("The confirm password and new password must match.");
+
+            $browser1
+                ->type("#current_password",  "travisci")
+                ->type("#new_password",      "H510p@9.Pz[z")
+                ->type("#confirm_password",  "H510p@9.Pz[z")
+                ->press("Update Password")
+                ->waitForLocation( route('profile@edit') )
+                ->assertSee("Password updated.");
+
+            $user->refresh();
+            $this->assertTrue(password_verify("H510p@9.Pz[z", $user->password));
+
+            $browser2->refresh()
+                ->waitForLocation( route('login@showForm') )
+                ->assertSee("Your login session has expired or was terminated from another device. Please log in again.");
+        } );
+    }
+
     /**
      * Tests member notes settings for super user
      */
