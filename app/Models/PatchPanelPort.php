@@ -789,8 +789,6 @@ class PatchPanelPort extends Model
 
         // Delete port histories and files
         foreach( $this->patchPanelPortHistories as $history ) {
-            /** @var $history PatchPanelPortHistory */
-
             $user = Auth::check() ? Auth::getUser()->username : 'unknown/unauth';
             foreach( PatchPanelPortHistory::whereDuplexMasterId( $history->id )->get() as $duplex ){
                 $duplex->update([
@@ -803,14 +801,11 @@ class PatchPanelPort extends Model
             foreach( $history->patchPanelPortHistoryFiles as $historyFile ) {
                 $path = 'files/' . $historyFile->path();
 
-                $historyFile->update( [ 'patch_panel_port_history_id' => null ] );
                 $historyFile->delete();
-
                 if( Storage::exists( $path ) ){
                     Storage::delete( $path );
                 }
             }
-            $history->update( [ 'patch_panel_port_id' => null ] );
             $history->delete();
         }
 
@@ -818,7 +813,6 @@ class PatchPanelPort extends Model
         foreach( $this->patchPanelPortFiles as $file ){
             $path = 'files/' . $file->path();
 
-            $file->update( [ 'patch_panel_port_id' => null ] );
             $file->delete();
             if( Storage::exists( $path ) ){
                 Storage::delete( $path );
