@@ -80,7 +80,7 @@
                                     <div class='form-group row'>
                                         <label class='control-label col-lg-3 col-sm-6'>Type</label>
                                         <div class='col-lg-5 col-sm-6'>
-                                            <select class='form-control chzn-select gggg port-type' id="${inputPortType}" data-select2-id="${inputPortType}" name="${inputPortType}">
+                                            <select class='form-control chzn-select port-type' id="${inputPortType}" data-select2-id="${inputPortType}" name="${inputPortType}">
                                                 <?php foreach( \IXP\Models\SwitchPort::$TYPES as $index => $type ): ?>
                                                     <option value='<?= $index ?>'><?= $type ?></option>
                                                 <?php endforeach; ?>
