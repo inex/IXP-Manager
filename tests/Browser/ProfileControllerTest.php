@@ -182,4 +182,48 @@ class ProfileControllerTest extends DuskTestCase
         $this->assertArrayHasKey( 'global_notifs', $user->prefs['notes'] );
         $this->assertEquals($preference, $user->prefs['notes']['global_notifs'] );
     }
+
+    /**
+     * cust user can't doesn't get member notes preferences form
+     */
+    public function testMemberNotesCustUser(): void
+    {
+        $this->browse( function( Browser $browser ): void {
+            $browser->resize( 1600, 1400 )
+                ->visit( '/logout' )
+                ->visit( '/login' )
+                ->type( 'username', 'imcustuser' )
+                ->type( 'password', 'travisci' )
+                ->press( '#login-btn' )
+                ->waitForLocation( '/dashboard' );
+
+            $browser->click('#my-account')
+                ->click('#profile')
+                ->waitForLocation( route('profile@edit') )
+                ->assertSee("My Profile")
+                ->assertDontSee(ucfirst(config('ixp_fe.lang.customer.one') . " Notes"));
+        } );
+    }
+
+    /**
+     * cust admin can't doesn't get member notes preferences form
+     */
+    public function testMemberNotesCustAdmin(): void
+    {
+        $this->browse( function( Browser $browser ): void {
+            $browser->resize( 1600, 1400 )
+                ->visit( '/logout' )
+                ->visit( '/login' )
+                ->type( 'username', 'imcustuser' )
+                ->type( 'password', 'travisci' )
+                ->press( '#login-btn' )
+                ->waitForLocation( '/dashboard' );
+
+            $browser->click('#my-account')
+                ->click('#profile')
+                ->waitForLocation( route('profile@edit') )
+                ->assertSee("My Profile")
+                ->assertDontSee(ucfirst(config('ixp_fe.lang.customer.one') . " Notes"));
+        } );
+    }
 }
