@@ -61,7 +61,7 @@
 
             <?= Former::actions(
                 Former::primary_button( 'Generate' )->id( "generate-btn" ),
-                Former::success_button( 'Help' )->class( 'help-btn' )
+                Former::success_button( 'Help' )->id( 'help-btn' )
             )->class( "bg-light p-4 mt-4 shadow-sm text-center" );
             ?>
 
