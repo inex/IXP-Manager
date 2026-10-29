@@ -42,6 +42,7 @@ class ProfileControllerTest extends DuskTestCase
 
     /**
      * Tests user change password feature
+     * @throws \Throwable
      */
     #[DataProvider('getChangePasswordTestUsers')]
     public function testChangePasswordForm(string $username, string $currentPassword): void
@@ -119,6 +120,7 @@ class ProfileControllerTest extends DuskTestCase
 
     /**
      * Tests member notes settings for super user
+     * @throws \Throwable
      */
     public function testMemberNotesSuperUser(): void
     {
@@ -175,16 +177,9 @@ class ProfileControllerTest extends DuskTestCase
         } );
     }
 
-    private function assertUserGlobalNotifs( string $preference , User $user ): void
-    {
-        $this->assertNotNull( $user->prefs );
-        $this->assertArrayHasKey( 'notes', $user->prefs );
-        $this->assertArrayHasKey( 'global_notifs', $user->prefs['notes'] );
-        $this->assertEquals($preference, $user->prefs['notes']['global_notifs'] );
-    }
-
     /**
      * cust user can't doesn't get member notes preferences form
+     * @throws \Throwable
      */
     public function testMemberNotesCustUser(): void
     {
@@ -207,6 +202,7 @@ class ProfileControllerTest extends DuskTestCase
 
     /**
      * cust admin can't doesn't get member notes preferences form
+     * @throws \Throwable
      */
     public function testMemberNotesCustAdmin(): void
     {
@@ -225,5 +221,67 @@ class ProfileControllerTest extends DuskTestCase
                 ->assertSee("My Profile")
                 ->assertDontSee(ucfirst(config('ixp_fe.lang.customer.one') . " Notes"));
         } );
+    }
+
+
+    /**
+     * Test updating own profile
+     * @throws \Throwable
+     */
+    public function testUpdateYourProfile(): void
+    {
+        $this->browse( function( Browser $browser ): void {
+            $browser->resize( 1600, 1400 )
+                ->visit( '/logout' )
+                ->visit( '/login' )
+                ->type( 'username', 'travis' )
+                ->type( 'password', 'travisci' )
+                ->press( '#login-btn' )
+                ->waitForLocation( '/admin/dashboard' );
+
+            $browser->click('#my-account')
+                ->click('#profile')
+                ->waitForLocation( route('profile@edit') )
+                ->assertSee("My Profile")
+                ->assertSee("Update Your Profile");
+
+            $user = User::where('username', 'travis')->first();
+
+            $this->assertEquals($user->username, $browser->element("#infos input[name=username]")->getAttribute("value"));
+            $this->assertEquals($user->name, $browser->element("#infos input[name=name]")->getAttribute("value"));
+            $this->assertEquals($user->email, $browser->element("#infos input[name=email]")->getAttribute("value"));
+            $this->assertEquals($user->authorisedMobile, $browser->element("#infos input[name=authorisedMobile]")->getAttribute("value"));
+
+            $browser->type("username", "vagrant-rules")
+                ->type("name", "Vagrant Is The Best")
+                ->type("email", "vagrant@vagrant.local")
+                ->type("authorisedMobile", "07777777777")
+                ->type("actual_password", "travisci")
+                ->press("Update Profile");
+
+            $browser
+                ->waitForLocation( route('profile@edit') )
+                ->assertSee("Profile details updated.");
+
+            $user->refresh();
+            $this->assertEquals("vagrant-rules", $user->username);
+            $this->assertEquals("Vagrant Is The Best", $user->name);
+            $this->assertEquals("vagrant@vagrant.local", $user->email);
+            $this->assertEquals("07777777777", $user->authorisedMobile);
+
+            $this->assertEquals($user->username, $browser->element("#infos input[name=username]")->getAttribute("value"));
+            $this->assertEquals($user->name, $browser->element("#infos input[name=name]")->getAttribute("value"));
+            $this->assertEquals($user->email, $browser->element("#infos input[name=email]")->getAttribute("value"));
+            $this->assertEquals($user->authorisedMobile, $browser->element("#infos input[name=authorisedMobile]")->getAttribute("value"));
+
+        } );
+    }
+
+    private function assertUserGlobalNotifs( string $preference , User $user ): void
+    {
+        $this->assertNotNull( $user->prefs );
+        $this->assertArrayHasKey( 'notes', $user->prefs );
+        $this->assertArrayHasKey( 'global_notifs', $user->prefs['notes'] );
+        $this->assertEquals($preference, $user->prefs['notes']['global_notifs'] );
     }
 }
