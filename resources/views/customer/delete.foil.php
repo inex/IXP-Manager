@@ -7,7 +7,7 @@
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-    Customers / Delete :: <?= $t->ee( $c->getFormattedName() ) ?>
+    <?= $t->ee( ucfirst( config( 'ixp_fe.lang.customer.many' ) ) ) ?> / Delete :: <?= $t->ee( $c->getFormattedName() ) ?>
 <?php $this->append() ?>
 
 <?php $this->section('content') ?>
@@ -16,13 +16,13 @@
             <div class="card">
                 <div class="card-header">
                     <h3>
-                        Delete Customer: <?= $t->ee( $c->getFormattedName() ) ?>
+                        Delete <?= $t->ee( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ) ?>: <?= $t->ee( $c->getFormattedName() ) ?>
                     </h3>
                 </div>
                 <div class="card-body">
                     <p>
                         <b>
-                            Are you sure you want to delete this customer?
+                            Are you sure you want to delete this <?= $t->ee( config( 'ixp_fe.lang.customer.one' ) ) ?>?
                         </b>
                     </p>
                     <p>
@@ -32,14 +32,13 @@
                     </p>
 
                     <p>
-                        We recommend closing customer accounts (edit the customer and set <em>Date Left</em>) rather than deleting them.
-                        Deletion should generally be reserved for customers that were set up for testing / demonstration purposes / in
-                        error.
+                        We recommend closing <?= $t->ee( config( 'ixp_fe.lang.customer.one' ) ) ?> accounts (edit the <?= $t->ee( config( 'ixp_fe.lang.customer.one' ) ) ?> and set <em>Date Left</em>) rather than deleting them.
+                        Deletion should generally be reserved for <?= $t->ee( config( 'ixp_fe.lang.customer.many' ) ) ?> that were set up for testing / demonstration purposes / in error.
                     </p>
 
                     <p>
                         <b>
-                            If you proceed, as well as the customer, all the following related entities will be deleted:
+                            If you proceed, as well as the <?= $t->ee( config( 'ixp_fe.lang.customer.one' ) ) ?>, all the following related entities will be deleted:
                         </b>
                     </p>
 
@@ -52,10 +51,10 @@
                             <b><?= $c->contacts()->count() ?></b> contacts with <b><?= $c->users()->count() ?></b> user accounts;
                         </li>
                         <li>
-                            all customer notes;
+                            all <?= $t->ee( config( 'ixp_fe.lang.customer.one' ) ) ?> notes;
                         </li>
                         <li>
-                            the customer's logo;
+                            the <?= $t->ee( config( 'ixp_fe.lang.customer.owner' ) ) ?> logo;
                         </li>
                         <li>
                             all peering manager records (peering request emails sent/received, ignored status, etc.);
@@ -66,7 +65,7 @@
                         </li>
 
                         <li>
-                            <b><?= $c->customerEquipments()->count() ?></b> customer colocated kit entries;
+                            <b><?= $c->customerEquipments()->count() ?></b> <?= $t->ee( config( 'ixp_fe.lang.customer.one' ) ) ?> colocated kit entries;
                         </li>
                         <li>
                             all entries from the peering matrix;
@@ -82,7 +81,7 @@
                             IRRDB update logs
                         </li>
                         <li>
-                            <b><?= $c->docstoreCustomerDirectories()->count() ?></b> directories and <b><?= $c->docstoreCustomerFiles()->count() ?></b> files from the customers Document Store;</b>
+                            <b><?= $c->docstoreCustomerDirectories()->count() ?></b> directories and <b><?= $c->docstoreCustomerFiles()->count() ?></b> files from the <?= $t->ee( config( 'ixp_fe.lang.customer.owner' ) ) ?> Document Store;
                         </li>
                         <li>
                             any route server filters (staged or in production)
@@ -138,7 +137,7 @@
                             </div>
                             <div class="modal-body" id="notes-modal-body">
                                 <p id="notes-modal-body-intro">
-                                    Do you really really want to delete this customer?
+                                    Do you really really want to delete this <?= $t->ee( config( 'ixp_fe.lang.customer.one' ) ) ?>?
                                 </p>
                             </div>
                             <div class="modal-footer">
