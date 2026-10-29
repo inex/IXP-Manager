@@ -15,9 +15,9 @@
 
         <?=  Former::radios('')
             ->radios([
-                '&nbsp;&nbsp;&nbsp;Disable all email notifications'                                                                   => [ 'name' => 'notify', 'id' => 'notify-none',     'value' => 'none'    ],
+                '&nbsp;&nbsp;&nbsp;Disable all email notifications'                                                               => [ 'name' => 'notify', 'id' => 'notify-none',     'value' => 'none'    ],
                 '&nbsp;&nbsp;&nbsp;Email me on changes to only watched ' . config( 'ixp_fe.lang.customer.many' ) . ' and notes'   => [ 'name' => 'notify', 'id' => 'notify-watched',  'value' => 'watched' ],
-                '&nbsp;&nbsp;&nbsp;Email me on any change to any ' . config( 'ixp_fe.lang.customer.one' ) . ' note'               => [ 'name' => 'notify', 'id' => 'id="notify-all"', 'value' => 'all'     ],
+                '&nbsp;&nbsp;&nbsp;Email me on any change to any ' . config( 'ixp_fe.lang.customer.one' ) . ' note'               => [ 'name' => 'notify', 'id' => 'notify-all',      'value' => 'all'     ],
             ])
             ->name( 'notify' )
             ->label( '' )
