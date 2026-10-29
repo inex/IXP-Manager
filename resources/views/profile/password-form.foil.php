@@ -24,7 +24,7 @@
         ->rules([
             'current_password'   => 'required|max:255',
             'new_password'       => 'required|max:255',
-            'confirm_password'   => 'required|max:255|same:new_password',
+            'confirm_password'   => 'required|max:255',
         ])
     ?>
 
