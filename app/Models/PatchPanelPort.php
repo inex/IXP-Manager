@@ -816,7 +816,7 @@ class PatchPanelPort extends Model
 
         // Delete port files
         foreach( $this->patchPanelPortFiles as $file ){
-            $path = 'files/' . $file->getPath();
+            $path = 'files/' . $file->path();
 
             $file->update( [ 'patch_panel_port_id' => null ] );
             $file->delete();
