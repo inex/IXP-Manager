@@ -39,7 +39,7 @@ $( document ).ready( function(){
     /**
      * display / hide help sections on click on the help button
      */
-    $( "#help-btn" ).click( function() {
+    $( "#help-btn, .help-btn" ).click( function() {
         $( ".former-help-text" ).toggle();
         $( "#instructions-alert").toggle();
     });
