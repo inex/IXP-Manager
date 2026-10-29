@@ -148,8 +148,7 @@
 
             <?php if( !$isCustUser ): ?>
                 <?= Former::actions(
-                    Former::primary_submit( 'Update Billing Details' ),
-                    Former::success_button( 'Help' )->class( "help-btn mb-sm-0 mb-2" )
+                    Former::primary_submit( 'Update Billing Details' )
                 );
                 ?>
             <?php endif; ?>
