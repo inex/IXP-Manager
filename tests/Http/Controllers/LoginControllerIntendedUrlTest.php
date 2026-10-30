@@ -44,4 +44,21 @@ class LoginControllerIntendedUrlTest extends TestCase
 
         $this->assertEquals($target, session('url.intended'));
     }
+
+    /**
+     * End-to-end of the actual symptom: if url.intended somehow ends up as
+     * /logout, a successful login must not bounce the user back out to /logout.
+     */
+    public function testSuccessfulLoginIgnoresPoisonedLogoutIntendedUrl(): void
+    {
+        session(['url.intended' => route('login@logout')]);
+
+        $response = $this->post(route('login@login'), [
+            'username' => 'imcustadmin',
+            'password' => 'travisci',
+        ]);
+
+        $response->assertRedirect();
+        $this->assertNotEquals(route('login@logout'), $response->headers->get('Location'));
+    }
 }
