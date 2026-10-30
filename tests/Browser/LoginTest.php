@@ -125,6 +125,7 @@ class LoginTest extends DuskTestCase
             $user = User::where('username', 'imcustadmin')->first();
 
             $this->assertDatabaseMissing('user_remember_tokens', ['user_id' => $user->id]);
+            $browser->assertCookieMissing(Auth::guard('web')->getRecallerName());
 
             $browser->visit('/logout')
                 ->visit('/login')
@@ -136,12 +137,14 @@ class LoginTest extends DuskTestCase
                 ->assertPathIs( '/dashboard' );
 
             $this->assertDatabaseHas('user_remember_tokens', ['user_id' => $user->id]);
+            $browser->assertHasCookie(Auth::guard('web')->getRecallerName());
 
             $browser->visit('/logout')
                 ->waitForLocation( route('login@showForm') )
                 ->assertSee('You have been logged out.');
 
             $this->assertDatabaseMissing('user_remember_tokens', ['user_id' => $user->id]);
+            $browser->assertCookieMissing(Auth::guard('web')->getRecallerName());
         });
     }
 
@@ -162,6 +165,8 @@ class LoginTest extends DuskTestCase
                 ->waitForLocation( '/dashboard' )
                 ->assertPathIs( '/dashboard' );
 
+            $browser->assertHasCookie(Auth::guard('web')->getRecallerName());
+
             $user = User::where('username', 'imcustadmin')->first();
             $token = UserRememberToken::whereUserId($user->id)->first();
             $token->expires = now()->subMonth(6);
@@ -170,6 +175,8 @@ class LoginTest extends DuskTestCase
             $browser->refresh()
                 ->waitForLocation( route('login@showForm') )
                 ->assertSee('Your login session has expired or was terminated from another device. Please log in again.');
+
+            $browser->assertCookieMissing(Auth::guard('web')->getRecallerName());
         });
     }
 
@@ -189,6 +196,8 @@ class LoginTest extends DuskTestCase
                 ->waitForLocation( '/dashboard' )
                 ->assertPathIs( '/dashboard' );
 
+            $browser->assertHasCookie(Auth::guard('web')->getRecallerName());
+
             $user = User::where('username', 'imcustadmin')->first();
             $token = UserRememberToken::whereUserId($user->id)->first();
             $token->delete();
@@ -196,6 +205,8 @@ class LoginTest extends DuskTestCase
             $browser->refresh()
                 ->waitForLocation( route('login@showForm') )
                 ->assertSee('Your login session has expired or was terminated from another device. Please log in again.');
+
+            $browser->assertCookieMissing(Auth::guard('web')->getRecallerName());
         });
     }
 
@@ -216,12 +227,16 @@ class LoginTest extends DuskTestCase
                 ->waitForLocation( '/dashboard' )
                 ->assertPathIs( '/dashboard' );
 
+            $browser->assertHasCookie(Auth::guard('web')->getRecallerName());
             $browser->deleteCookie(Auth::getRecallerName());
             $browser->addCookie(Auth::getRecallerName(), "somegibberish");
+            $browser->assertHasCookie(Auth::guard('web')->getRecallerName());
 
             $browser->refresh()
                 ->waitForLocation( route('login@showForm') )
                 ->assertSee('Your login session has expired or was terminated from another device. Please log in again.');
+
+            $browser->assertCookieMissing(Auth::guard('web')->getRecallerName());
         });
     }
 
