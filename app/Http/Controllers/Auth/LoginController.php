@@ -28,6 +28,7 @@ use Auth, Socialite, Str;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
 use Illuminate\Http\{
+    JsonResponse,
     RedirectResponse,
     Request
 };
@@ -171,6 +172,30 @@ class LoginController extends Controller
         }
 
         return null;
+    }
+
+    /**
+     * Send the response after the user was authenticated.
+     */
+    protected function sendLoginResponse(Request $request): RedirectResponse|JsonResponse
+    {
+        $request->session()->regenerate();
+
+        $this->clearLoginAttempts($request);
+
+        if ($response = $this->authenticated($request, $this->guard()->user())) {
+            return $response;
+        }
+
+        // Catch any unwanted 'intended url' redirects after login. For example, to logout or login form.
+        $intended = $request->session()->get('url.intended');
+        if ($intended !== null && $this->isForbiddenIntendedUrlRoute( $intended )) {
+            $request->session()->forget('url.intended');
+        }
+
+        return $request->wantsJson()
+            ? new JsonResponse([], 204)
+            : redirect()->intended($this->redirectPath());
     }
 
     /**
