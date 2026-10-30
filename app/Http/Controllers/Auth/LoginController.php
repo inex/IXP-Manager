@@ -32,8 +32,6 @@ use Illuminate\Http\{
     Request
 };
 
-use Illuminate\Routing\Redirector;
-
 use Illuminate\View\View;
 
 use IXP\Http\Controllers\Controller;
@@ -50,10 +48,7 @@ use IXP\Utils\View\Alert\{
     Container as AlertContainer
 };
 
-use Symfony\Component\HttpFoundation\{
-    RedirectResponse as RedirectResponseFoundation,
-    Response
-};
+use Symfony\Component\HttpFoundation\RedirectResponse as RedirectResponseFoundation;
 
 /**
  * LoginController
@@ -117,7 +112,11 @@ class LoginController extends Controller
      */
     public function showLoginForm() : View
     {
-        if( !session()->has('url.intended') && Str::startsWith(url()->previous(), url(''))) {
+        if( !session()->has('url.intended') &&
+            Str::startsWith(url()->previous(), url('')) &&
+            url()->previous() !== route('login@logout') &&
+            url()->previous() !== route('login@showForm')
+        ) {
             if( config('google2fa.enabled') ) {
                 if( strpos( url()->previous(), route( "2fa@authenticate" ) ) !== false ) {
                     // Store intended url to redirect after login
