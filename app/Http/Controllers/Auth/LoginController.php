@@ -32,8 +32,6 @@ use Illuminate\Http\{
     Request
 };
 
-use Illuminate\Routing\Redirector;
-
 use Illuminate\View\View;
 
 use IXP\Http\Controllers\Controller;
@@ -50,10 +48,7 @@ use IXP\Utils\View\Alert\{
     Container as AlertContainer
 };
 
-use Symfony\Component\HttpFoundation\{
-    RedirectResponse as RedirectResponseFoundation,
-    Response
-};
+use Symfony\Component\HttpFoundation\RedirectResponse as RedirectResponseFoundation;
 
 /**
  * LoginController
@@ -117,7 +112,10 @@ class LoginController extends Controller
      */
     public function showLoginForm() : View
     {
-        if( !session()->has('url.intended') && Str::startsWith(url()->previous(), url(''))) {
+        if( !session()->has('url.intended') &&
+            Str::startsWith(url()->previous(), url('')) &&
+            !$this->isForbiddenIntendedUrlRoute( url()->previous() )
+        ) {
             if( config('google2fa.enabled') ) {
                 if( strpos( url()->previous(), route( "2fa@authenticate" ) ) !== false ) {
                     // Store intended url to redirect after login
@@ -327,5 +325,13 @@ class LoginController extends Controller
         $this->authenticated( $r, $result['user'] );
         session([ 'ixpm_external_2fa_completed' => true ]);
         return redirect('');
+    }
+
+    protected function isForbiddenIntendedUrlRoute(string $route): bool
+    {
+        return in_array($route, [
+            route('login@logout'),
+            route('login@showForm')
+        ], true);
     }
 }
