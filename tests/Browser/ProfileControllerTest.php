@@ -64,6 +64,7 @@ class ProfileControllerTest extends DuskTestCase
                 ->visit( '/login' )
                 ->type( 'username', $username )
                 ->type( 'password', $currentPassword )
+                ->check('remember')
                 ->press( '#login-btn' );
 
             if ($user->isSuperUser()) {
