@@ -420,4 +420,124 @@ class User2FAControllerTest extends DuskTestCase
         });
     }
 
+    public function testDisabling2FAClearsRememberMe2faComplete(): void
+    {
+        $this->browse( function ( Browser $browser ) {
+
+            $browser->resize( 1600, 1200 )
+                ->visit( '/logout' )
+                ->visit('/login')
+                ->waitForLocation('/login')
+                ->type('username', 'travis' )
+                ->type('password', 'travisci' )
+                ->check('remember')
+                ->press('#login-btn' )
+                ->waitForLocation( '/admin/dashboard' );
+
+            $user = User::whereUsername('travis')->first();
+            $this->assertCount(1, $user->userRememberTokens);
+            $token = $user->userRememberTokens[0];
+            $this->assertFalse($token->is_2fa_complete);
+
+            // enables 2FA:
+            $browser->visit('/profile')
+                ->assertPathIs('/profile')
+                ->click("#configue-2fa")
+                ->waitForLocation('/2fa/configure');
+
+            $google2FA = new Google2FA( request() );
+            $otp = $google2FA->getCurrentOtp( $user->user2FA->secret );
+
+            $browser->type( '#one_time_password', $otp )
+                ->type( 'password', 'travisci' )
+                ->press( 'Enable 2FA' )
+                ->waitForLocation( '/admin/dashboard')
+                ->assertSee( '2FA successfully enabled.',1);
+
+            // Session marked is_2fa_complete = true
+            $token->refresh();
+            $this->assertTrue($token->is_2fa_complete);
+
+            // Disable 2FA - should reset is_2fa_complete
+            $browser->visit('/profile')
+                ->assertPathIs('/profile')
+                ->click("#configue-2fa")
+                ->waitForLocation('/2fa/configure')
+                ->type('password', 'travisci')
+                ->press('Disable 2FA')
+                ->waitForLocation('/profile')
+                ->assertSee('2FA successfully disabled.');
+
+            $token->refresh();
+            $this->assertFalse($token->is_2fa_complete);
+        });
+    }
+
+
+    public function testSuperadminDisabling2FAClearsRememberMe2faComplete(): void
+    {
+        $this->browse( function ( Browser $browser0, Browser $browser1 ) {
+
+            $imCustAdmin = User::whereUsername('imcustadmin')->first();
+            $browser0->resize(1600, 1200)
+                ->visit( '/logout' )
+                ->visit('/login')
+                ->waitForLocation('/login')
+                ->type('username', 'imcustadmin' )
+                ->type('password', 'travisci' )
+                ->check('remember')
+                ->press('#login-btn' )
+                ->waitForLocation( '/dashboard' );
+
+            $user = User::whereUsername('imcustadmin')->first();
+            $this->assertCount(1, $user->userRememberTokens);
+            $token = $user->userRememberTokens[0];
+            $this->assertFalse($token->is_2fa_complete);
+
+            // enables 2FA:
+            $browser0->visit('/profile')
+                ->assertPathIs('/profile')
+                ->click("#configue-2fa")
+                ->waitForLocation('/2fa/configure');
+
+            $google2FA = new Google2FA( request() );
+            $otp = $google2FA->getCurrentOtp( $user->user2FA->secret );
+
+            $browser0->type( '#one_time_password', $otp )
+                ->type( 'password', 'travisci' )
+                ->press( 'Enable 2FA' )
+                ->waitForLocation( '/dashboard')
+                ->assertSee( '2FA successfully enabled.',1);
+
+            // Session marked is_2fa_complete = true
+            $token->refresh();
+            $this->assertTrue($token->is_2fa_complete);
+
+            // Super user deletes users 2FA, so is_2fa_complete should be reset
+            $browser1->resize(1600, 1200)
+                ->visit( '/logout' )
+                ->visit('/login')
+                ->waitForLocation('/login')
+                ->type('username', 'travis' )
+                ->type('password', 'travisci' )
+                ->check('remember')
+                ->press('#login-btn' )
+                ->waitForLocation( '/admin/dashboard' );
+
+            $browser1->visit('/user/list')
+                ->click('#d2f-more-options-' . $imCustAdmin->id)
+                ->pause(100)
+                ->click('#d2f-option-remove-2fa-' . $imCustAdmin->id)
+                ->pause(100)
+                ->waitForText('Do you really want to delete the 2FA for this user?')
+                ->waitForText('Delete')
+                ->press('Delete')
+                ->waitForLocation('/user/list')
+                ->assertSee('2FA successfully deleted for imcustadmin');
+
+            $token->refresh();
+            $this->assertFalse($token->is_2fa_complete);
+        });
+    }
+
 }

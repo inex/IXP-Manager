@@ -28,6 +28,7 @@ use Auth, Hash;
 use Illuminate\Auth\Recaller;
 use Illuminate\Contracts\View\Factory;
 
+use IXP\Services\Auth\UserRememberTokenService;
 use IXP\Models\{
     User,
     User2FA,
@@ -95,7 +96,7 @@ class User2FAController extends Controller
      *
      * @throws User2FAException
      */
-    public function enable( Request $r ): RedirectResponse
+    public function enable( Request $r, UserRememberTokenService $rememberTokenService ): RedirectResponse
     {
         if( !$this->checkUserPassword( $r ) || !$this->testOneTimeCode( $r ) ) {
             return redirect( route('2fa@configure' ) );
@@ -107,7 +108,7 @@ class User2FAController extends Controller
         if( $recallerName = $r->cookies->get( Auth::getRecallerName() ) ) {
             $recaller = new Recaller( $recallerName );
 
-            $r->user()->markRememberToken2faComplete( $recaller->token() );
+            $rememberTokenService->markTokenIs2faComplete( $r->user(), $recaller->token() );
         }
 
         $this->google2faLogin( $r );
@@ -122,12 +123,16 @@ class User2FAController extends Controller
      *
      * @return RedirectResponse
      */
-    public function disable( Request $r ): RedirectResponse
+    public function disable( Request $r, UserRememberTokenService $rememberTokenService ): RedirectResponse
     {
         if( !$this->checkUserPassword( $r ) ) {
             return redirect( route('2fa@configure' ) );
         }
         $r->user()->user2FA->delete();
+
+        // Reset any remember-me tokens so they cannot be used to silently bypass
+        // 2FA if/when it is re-enabled with a new secret:
+        $rememberTokenService->resetIs2faCompleteForTokens( $r->user() );
 
         $this->google2faLogin( $r, false );
         AlertContainer::push( "2FA successfully disabled.", Alert::SUCCESS );
@@ -141,9 +146,13 @@ class User2FAController extends Controller
      *
      * @return RedirectResponse
      */
-    public function delete( Request $r, User $user ): RedirectResponse
+    public function delete( Request $r, User $user, UserRememberTokenService $rememberTokenService ): RedirectResponse
     {
-        $user?->user2FA?->delete();
+        $user->user2FA?->delete();
+
+        // Reset any remember-me tokens so they cannot be used to silently bypass
+        // 2FA if/when it is re-enabled with a new secret:
+        $rememberTokenService->resetIs2faCompleteForTokens( $user );
 
         AlertContainer::push( "2FA successfully deleted for {$user->username}.", Alert::SUCCESS );
         return redirect( route('user@list' ) );
