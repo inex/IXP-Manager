@@ -24,6 +24,8 @@ namespace IXP\Utils\Foil\Extensions;
  */
 
 use IXP\Models\Customer;
+use IXP\Models\User;
+use IXP\Services\Auth\Google2FAAuthenticator;
 use IXP\Utils\View\Alert\Container as AlertContainer;
 
 use Foil\Contracts\ExtensionInterface;
@@ -93,7 +95,7 @@ class IXP implements ExtensionInterface
             'asNumber'               => [ $this, 'asNumber' ],
             'getCountriesSelection'  => [ $this, 'getCountriesSelection' ],
             'getSelectOptions'       => [ $this, 'getSelectOptions' ],
-            'google2faAuthenticator' => [ $this, 'google2faAuthenticator' ],
+            'isNotPending2FA'        => [ $this, 'isNotPending2FA' ],
             'logoManagementEnabled'  => [ $this, 'logoManagementEnabled' ],
             'maxFileUploadSize'      => [ $this, 'maxFileUploadSize' ],
             'nagiosHostname'         => [ $this, 'nagiosHostname' ],
@@ -433,13 +435,14 @@ class IXP implements ExtensionInterface
     }
 
     /**
-     * Get Google Authenticator
-     *
-     * @return GoogleAuthenticator
+     * Return true if the user is not required to enter a 2FA token.
+     * (no 2FA setup, or they have already done so)
      */
-    public function google2faAuthenticator(): GoogleAuthenticator
+    public function isNotPending2FA( User $user ): bool
     {
-        return new GoogleAuthenticator( request() );
+        $authenticator = new Google2FAAuthenticator( request() );
+
+        return !$user->user2FA || !$user->user2FA->isEnabled() || $authenticator->canPassWithoutOtp();
     }
 
 

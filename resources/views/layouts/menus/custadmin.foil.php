@@ -11,10 +11,7 @@ use PragmaRX\Google2FALaravel\Support\Authenticator as GoogleAuthenticator;
     </button>
 
     <?php
-        // hide most things until 2fa complete:
-        $authenticator = new GoogleAuthenticator( request() );
-
-        if( !Auth::getUser()->user2FA || !Auth::getUser()->user2FA->isEnabled() || $authenticator->isAuthenticated() ):
+        if( $this->isNotPending2FA( Auth::getUser() ) ):
     ?>
 
     <!-- Collect the nav links, forms, and other content for toggling -->

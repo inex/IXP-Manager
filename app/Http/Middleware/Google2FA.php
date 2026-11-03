@@ -1,9 +1,6 @@
 <?php
-
-namespace IXP\Http\Middleware;
-
 /*
- * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,12 +20,17 @@ namespace IXP\Http\Middleware;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Auth, Closure;
+declare(strict_types=1);
+
+namespace IXP\Http\Middleware;
+
+use Closure;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 use IXP\Models\User;
-use PragmaRX\Google2FALaravel\Support\Authenticator as GoogleAuthenticator;
+use IXP\Services\Auth\Google2FAAuthenticator;
 
 /**
  * Middleware: Google 2FA
@@ -47,6 +49,8 @@ class Google2FA
      */
     protected array $excludedForAll = [
         'login@logout',
+        '2fa@showForm',
+        '2fa@authenticate',
     ];
 
     /**
@@ -83,27 +87,34 @@ class Google2FA
             return $next( $r );
         }
 
+        $user = Auth::user();
+
         // If we've completed 2FA on peeringDB, or if it's an excluded route,
         // or we are using the Switch User feature (in which case we'll have
         // done 2FA already), don't do 2FA enforcement or 2FA challenge
         if( session( 'ixpm_external_2fa_completed', false )
-            || in_array( $r->route()->getName(), $this->excludedUrls( Auth::user() ), true )
+            || in_array( $r->route()->getName(), $this->excludedUrls( $user ), true )
             || session()->exists( "switched_user_from" )
         ) {
             return $next( $r );
         }
 
         // Force the user to enable 2FA?
-        if( $r->user()->is2faEnforced() ) {
+        if( $user->is2faEnforced() ) {
             return redirect( route( '2fa@configure' ) );
         }
 
-        $authenticator = new GoogleAuthenticator( $r );
-
-        if( !Auth::getUser()->user2FA || !Auth::getUser()->user2FA->isEnabled() || $authenticator->isAuthenticated() ) {
+        // 2FA might not be mandatory for this user - if not setup, skip 2FA
+        if( !$user->user2FA || !$user->user2FA->isEnabled() ) {
             return $next( $r );
         }
 
-        return $authenticator->makeRequestOneTimePasswordResponse();
+        $authenticator = new Google2FAAuthenticator( $r );
+
+        if( $authenticator->canPassWithoutOtp() ) {
+            return $next( $r );
+        }
+
+        return redirect()->route('2fa@authenticate');
     }
 }

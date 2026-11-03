@@ -106,6 +106,7 @@ class User2FAControllerTest extends DuskTestCase
                     ->type('username', $userUsername)
                     ->type('password', $userPassword)
                     ->press('#login-btn')
+                    ->waitForLocation('/2fa/authenticate')
                     ->waitForText('Enter the one time code from your authenticator app');
 
             /**
@@ -115,9 +116,17 @@ class User2FAControllerTest extends DuskTestCase
                     ->assertSee('Enter the one time code from your authenticator app');
 
             /**
-             * Try wrong OTP
+             * Form performs validation - 6 characters required
              */
             $browser->type('one_time_password', 'wrongOTP')
+                ->press('Authenticate')
+                ->waitForLocation('/2fa/authenticate')
+                ->assertSee('The one time password must be 6 characters.');
+
+            /**
+             * Try wrong OTP (has to be 6 characters)
+             */
+            $browser->type('one_time_password', '6chars')
                     ->press('Authenticate')
                     ->waitForLocation('/2fa/authenticate')
                     ->assertSee('The one time password entered was wrong.');
@@ -332,10 +341,7 @@ class User2FAControllerTest extends DuskTestCase
             $browser->visit(route( 'customer@list' ) )
                 ->assertSee('Enter the one time code from your authenticator app');
 
-            /**
-             * Try wrong OTP
-             */
-            $browser->type('one_time_password', 'wrongOTP')
+            $browser->type('one_time_password', '6chars')
                 ->press('Authenticate')
                 ->waitForLocation('/2fa/authenticate')
                 ->assertSee('The one time password entered was wrong.');

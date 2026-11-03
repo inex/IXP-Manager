@@ -48,7 +48,7 @@ use Illuminate\Support\Str;
 
 use IXP\Events\Auth\ForgotPassword as ForgotPasswordEvent;
 
-use PragmaRX\Google2FALaravel\Support\Authenticator as GoogleAuthenticator;
+use IXP\Services\Auth\Google2FAAuthenticator;
 
 use IXP\Traits\Observable;
 
@@ -364,9 +364,9 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
             return false;
         }
 
-        $authenticator = new GoogleAuthenticator( request() );
+        $authenticator = new Google2FAAuthenticator( request() );
 
-        if( $authenticator->isAuthenticated() ) {
+        if( $authenticator->canPassWithoutOtp() ) {
             return false;
         }
         return true;
