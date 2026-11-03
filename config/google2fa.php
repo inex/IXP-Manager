@@ -41,7 +41,7 @@ return [
     /*
      * One Time Password Window
      */
-    'window' => env( '2FA_WINDOW', 4 ),
+    'window' => env( '2FA_WINDOW', 1 ),
 
     /*
      * Forbid user to reuse One Time Passwords.
