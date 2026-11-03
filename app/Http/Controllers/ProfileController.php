@@ -23,10 +23,9 @@ namespace IXP\Http\Controllers;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Auth, Hash, Redirect;
+use Hash, Redirect;
 
-use Illuminate\Auth\Recaller;
-
+use Illuminate\Support\Facades\Auth;
 use IXP\Models\User;
 use Illuminate\Http\{
     RedirectResponse,
@@ -112,10 +111,7 @@ class ProfileController extends Controller
         $user = Auth::getUser();
 
         // get the token of the current session
-        if( $recallerName = $r->cookies->get( Auth::getRecallerName() ) ) {
-            $recaller = new Recaller( $recallerName );
-            $token = $recaller->token();
-        }
+        $token = Auth::recallerForUser( $user );
 
         $user->password      = Hash::make( $r->new_password );
         $user->lastupdatedby = $user->id;

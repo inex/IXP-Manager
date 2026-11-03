@@ -24,10 +24,7 @@ declare(strict_types=1);
 
 namespace IXP\Listeners\Auth;
 
-use Auth;
-
-use Illuminate\Auth\Recaller;
-
+use Illuminate\Support\Facades\Auth;
 use IXP\Models\User;
 
 use IXP\Services\Auth\UserRememberTokenService;
@@ -63,13 +60,8 @@ readonly final class Google2FALoginSucceeded
         /** @var User $user */
         $user = $e->user;
 
-        if( $r = request()->cookies->get( Auth::getRecallerName() ) ) {
-            $recaller = new Recaller( $r );
-            if( !$recaller->valid() || (int)$recaller->id() !== $user->id ) {
-                return;
-            }
-
-            $this->rememberTokenService->markTokenIs2faComplete( $user, $recaller->token() );
+        if( $token = Auth::recallerForUser($user) ) {
+            $this->rememberTokenService->markTokenIs2faComplete( $user, $token );
         }
     }
 }

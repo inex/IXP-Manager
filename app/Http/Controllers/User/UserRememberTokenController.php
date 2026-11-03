@@ -23,9 +23,8 @@ namespace IXP\Http\Controllers\User;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Auth, Route;
-
-use Illuminate\Auth\Recaller;
+use Illuminate\Support\Facades\Auth;
+use Route;
 
 use Illuminate\Database\Eloquent\Builder;
 
@@ -152,12 +151,7 @@ class UserRememberTokenController extends EloquentController
     {
         // We want to indicate which session is the user's //current// session so they can avoid logging themselves out.
         // We identify it by matching the remember me cookie token with the database token:
-        $token = null;
-
-        if( $r = request()->cookies->get( Auth::getRecallerName() ) ) {
-            $recaller = new Recaller( $r );
-            $token = $recaller->token();
-        }
+        $token = Auth::recallerForUser( request()->user() );
 
         $this->data['session_token'] = $token;
     }
@@ -203,15 +197,13 @@ class UserRememberTokenController extends EloquentController
     #[\Override]
     protected function postDeleteRedirect(): ?string
     {
-        if( $r = request()->cookies->get( Auth::getRecallerName() ) ) {
-            $recaller = new Recaller( $r );
-            if( $this->object->token === $recaller->token() ) {
-                // Since we've deleted our token, logout directly and redirect with the appropriate message.
-                Auth::logout();
-                AlertContainer::push( "You deleted your active remember me token and have been logged out." , Alert::SUCCESS );
-                return route('login@showForm');
-            }
+        if ( ( $token = Auth::recallerForUser( request()->user() ) ) && $token === $this->object->token ) {
+            // Since we've deleted our token, logout directly and redirect with the appropriate message.
+            Auth::logout();
+            AlertContainer::push( "You deleted your active remember me token and have been logged out." , Alert::SUCCESS );
+            return route('login@showForm');
         }
+
         return null;
     }
 }

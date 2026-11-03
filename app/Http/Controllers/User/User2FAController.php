@@ -25,14 +25,10 @@ namespace IXP\Http\Controllers\User;
 
 use Auth, Hash;
 
-use Illuminate\Auth\Recaller;
-use Illuminate\Contracts\View\Factory;
-
 use IXP\Services\Auth\UserRememberTokenService;
 use IXP\Models\{
     User,
     User2FA,
-    UserRememberToken
 };
 
 use Illuminate\Http\{
@@ -91,6 +87,7 @@ class User2FAController extends Controller
      * Enable 2FA for a user
      *
      * @param  Request  $r
+     * @param  UserRememberTokenService $rememberTokenService
      *
      * @return RedirectResponse
      *
@@ -105,10 +102,8 @@ class User2FAController extends Controller
         $r->user()->user2FA->enable();
 
         // We also need to mark the current session as 2fa complete:
-        if( $recallerName = $r->cookies->get( Auth::getRecallerName() ) ) {
-            $recaller = new Recaller( $recallerName );
-
-            $rememberTokenService->markTokenIs2faComplete( $r->user(), $recaller->token() );
+        if( $token = Auth::recallerForUser( $r->user() ) ) {
+            $rememberTokenService->markTokenIs2faComplete( $r->user(), $token );
         }
 
         $this->google2faLogin( $r );
@@ -120,6 +115,7 @@ class User2FAController extends Controller
      * Disable 2FA for a user
      *
      * @param Request $r
+     * @param UserRememberTokenService $rememberTokenService
      *
      * @return RedirectResponse
      */
