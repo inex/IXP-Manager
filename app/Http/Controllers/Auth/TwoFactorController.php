@@ -40,11 +40,11 @@ class TwoFactorController
 {
     public function showForm( Request $request ): View|RedirectResponse
     {
-        $authenticator = new Google2FAAuthenticator( $request );
         $user = Auth::user();
+        $authenticator = new Google2FAAuthenticator( $request );
 
         // If the user has no 2FA setup, or has already completed a 2FA challenge, redirect away.
-        if( !$user->user2FA || !$user->user2FA->isEnabled() || $authenticator->canPassWithoutOtp() ) {
+        if( $this->shouldntRequest2fa( $user, $authenticator) ) {
             return redirect('');
         }
 
@@ -53,12 +53,11 @@ class TwoFactorController
 
     public function verifyToken( VerifyTwoFactorToken $request ): View|RedirectResponse
     {
+        $user = Auth::user();
         $authenticator = new Google2FAAuthenticator( $request );
 
-        $user = Auth::user();
-
         // If user has no 2FA setup, or has already completed a 2FA challenge, redirect away.
-        if( !$user->user2FA || !$user->user2FA->isEnabled() || $authenticator->canPassWithoutOtp() ) {
+        if( $this->shouldntRequest2fa( $user, $authenticator ) ) {
             return redirect('');
         }
 
@@ -86,6 +85,11 @@ class TwoFactorController
             return redirect()->to( $intendedUrl );
         }
         return redirect( '' );
+    }
+
+    private function shouldntRequest2fa( User $user, Google2FAAuthenticator $authenticator ): bool
+    {
+        return !$user->user2FA || !$user->user2FA->isEnabled() || $authenticator->canPassWithoutOtp();
     }
 
     /**
