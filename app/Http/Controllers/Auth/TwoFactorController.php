@@ -76,7 +76,8 @@ class TwoFactorController
                 return $this->lockoutResponse( $user );
             }
 
-            return view('user.2fa.login-form');
+            AlertContainer::push("The one time password entered was wrong.", Alert::DANGER);
+            return redirect()->back();
         }
 
         RateLimiter::clear( $this->failedAttemptsKey( $user ) );
