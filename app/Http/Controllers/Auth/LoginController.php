@@ -113,22 +113,15 @@ class LoginController extends Controller
      */
     public function showLoginForm() : View
     {
+        // If a user manually navigates to login, record where they came from in url.intended so we can send them back there.
         if( !session()->has('url.intended') &&
             Str::startsWith(url()->previous(), url('')) &&
             !$this->isForbiddenIntendedUrlRoute( url()->previous() )
         ) {
-            if( config('google2fa.enabled') ) {
-                if( strpos( url()->previous(), route( "2fa@authenticate" ) ) !== false ) {
-                    // Store intended url to redirect after login
-                    session( [ 'url.intended' => url()->previous() ] );
-                    // Store intended url to redirect after 2FA
-                    session( [ 'url.intended.2fa' => url()->previous() ] );
-                }
-            } else {
-                // Store intended url to redirect after login
-                session( [ 'url.intended' => url()->previous() ] );
-            }
+            // Store intended url to redirect after login
+            session( [ 'url.intended' => url()->previous() ] );
         }
+
         return view( 'auth/login' );
     }
 
@@ -354,9 +347,13 @@ class LoginController extends Controller
 
     protected function isForbiddenIntendedUrlRoute(string $route): bool
     {
-        return in_array($route, [
+        $forbidden = [
             route('login@logout'),
-            route('login@showForm')
-        ], true);
+            route('login@showForm'),
+        ];
+        if (config('google2fa.enabled')) {
+            $forbidden[] = route('2fa@authenticate');
+        }
+        return in_array($route, $forbidden, true);
     }
 }

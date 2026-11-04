@@ -81,7 +81,7 @@ class TwoFactorController
 
         RateLimiter::clear( $this->failedAttemptsKey( $user ) );
 
-        return redirect()->to( session()->pull( "url.intended.2fa", '' ) );
+        return redirect()->intended('');
     }
 
     private function shouldntRequest2fa( User $user, Google2FAAuthenticator $authenticator ): bool

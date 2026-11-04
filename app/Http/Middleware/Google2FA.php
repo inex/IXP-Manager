@@ -101,7 +101,7 @@ class Google2FA
 
         // Force the user to enable 2FA?
         if( $user->is2faEnforced() ) {
-            return redirect( route( '2fa@configure' ) );
+            return redirect()->guest( route( '2fa@configure' ) );
         }
 
         // 2FA might not be mandatory for this user - if not setup, skip 2FA
@@ -115,6 +115,6 @@ class Google2FA
             return $next( $r );
         }
 
-        return redirect()->route('2fa@authenticate');
+        return redirect()->guest( route( '2fa@authenticate' ) );
     }
 }

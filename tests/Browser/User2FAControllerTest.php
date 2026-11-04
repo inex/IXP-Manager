@@ -110,9 +110,11 @@ class User2FAControllerTest extends DuskTestCase
                     ->waitForText('Enter the one time code from your authenticator app');
 
             /**
-             * Try to access to a page without typing the OTP
+             * Try to access to a page without typing the OTP. This page will be marked
+             * as url.intended, and after completing 2FA we'll be redirected there.
              */
             $browser->visit(route( 'customer@list' ) )
+                    ->waitForLocation('/2fa/authenticate')
                     ->assertSee('Enter the one time code from your authenticator app');
 
             /**
@@ -139,7 +141,7 @@ class User2FAControllerTest extends DuskTestCase
              */
             $browser->type('one_time_password', $otp)
                 ->press('Authenticate')
-                ->waitForLocation( '/admin/dashboard' )
+                ->waitForRoute( 'customer@list' )
                 ->assertDontSee('The one time password entered was wrong.');
 
 
@@ -336,7 +338,8 @@ class User2FAControllerTest extends DuskTestCase
             ]);
 
             /**
-             * Try to access to a page without typing the OTP
+             * Try to access to a page without typing the OTP. As 2FA is not complete,
+             * the middleware will record this URL as url.intended and redirect there after 2FA.
              */
             $browser->visit(route( 'customer@list' ) )
                 ->assertSee('Enter the one time code from your authenticator app');
@@ -359,7 +362,7 @@ class User2FAControllerTest extends DuskTestCase
              */
             $browser->type('one_time_password', $otp)
                 ->press('Authenticate')
-                ->waitForLocation( '/admin/dashboard' )
+                ->waitForRoute( 'customer@list' )
                 ->assertDontSee('The one time password entered was wrong.');
 
             $this->assertCount( 1, UserRememberToken::all());
@@ -537,6 +540,67 @@ class User2FAControllerTest extends DuskTestCase
 
             $token->refresh();
             $this->assertFalse($token->is_2fa_complete);
+        });
+    }
+
+    /**
+     * Test end to end url.intended redirection handling when 2FA challenges happen
+     *
+     * @return void
+     *
+     * @throws
+     */
+    public function testUrlIntendedRedirectFlow(): void
+    {
+        $this->browse( function ( Browser $browser) {
+
+            $userUsername = 'travis';
+            $userPassword = 'travisci';
+
+            $user = User::whereUsername( $userUsername )->first();
+
+            $browser->resize( 1600, 1200 )
+                ->visit( '/logout' )
+                ->visit('/login')
+                ->waitForLocation('/login')
+                ->type('username', $userUsername )
+                ->type('password', $userPassword )
+                ->press('#login-btn' )
+                ->waitForLocation( '/admin/dashboard' );
+
+            $browser->visit('/profile')
+                ->assertPathIs('/profile');
+
+            $browser->click("#configue-2fa")
+                ->waitForLocation('/2fa/configure');
+
+            $google2FA = new Google2FA( request() );
+            $otp = $google2FA->getCurrentOtp( $user->user2FA->secret );
+            $browser->type( '#one_time_password', $otp )
+                ->type( 'password', $userPassword )
+                ->press( 'Enable 2FA' )
+                ->waitForLocation( '/admin/dashboard')
+                ->assertSee( '2FA successfully enabled.',1);
+
+            /**
+             * Logout and test that OTP is required
+             */
+            $browser->visit('/logout')
+                ->waitForLocation('/login');
+
+            $browser->visit('/admin/validation/start')
+                ->waitForLocation('/login')
+                ->type('username', $userUsername)
+                ->type('password', $userPassword)
+                ->press('#login-btn')
+                ->waitForText('Enter the one time code from your authenticator app');
+
+            $google2FA = new Google2FA( request() );
+            $otp = $google2FA->getCurrentOtp( $user->user2FA->secret );
+
+            $browser->type('one_time_password', $otp)
+                ->press('Authenticate')
+                ->waitForLocation( '/admin/validation/start' );
         });
     }
 

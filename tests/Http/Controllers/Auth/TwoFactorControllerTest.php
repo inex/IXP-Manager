@@ -117,7 +117,7 @@ class TwoFactorControllerTest extends TestCase
     public function testAuthenticateRouteRedirectsToIntendedIfPresent(): void
     {
         // Providing the correct OTP resets the rate limit
-        session()->put('url.intended.2fa', route('validation@start'));
+        session()->put('url.intended', route('validation@start'));
 
         $user = $this->userWith2fa( $this->getCustUser() );
 
