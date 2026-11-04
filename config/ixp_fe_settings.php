@@ -755,7 +755,7 @@ return [
                     'config_key' => 'ixp_fe.interfaces.channelgroup_start',
                     'dotenv_key' => 'IXP_FE_CHANNELGROUP_START',
                     'type'       => 'text',
-                    'rules'      => 'nullable|integer|min:0',
+                    'rules'      => ['nullable', 'integer', 'min:0', new NoIllegalChars],
                     'name'       => 'Channel Group Start',
                     'help'       => 'First channel group number considered for automatic LAG assignment.
                                         Set to 0 to begin from the lowest number already in use for the switch and assign the next available number.',
@@ -765,7 +765,7 @@ return [
                     'config_key' => 'ixp_fe.interfaces.channelgroup_end',
                     'dotenv_key' => 'IXP_FE_CHANNELGROUP_END',
                     'type'       => 'text',
-                    'rules'      => 'nullable|integer|min:1|gt:channelgroup_start',
+                    'rules'      => ['nullable', 'integer', 'min:1', 'gt:channelgroup_start', new NoIllegalChars],
                     'name'       => 'Channel Group End',
                     'help'       => 'End range for automatic LAG assignment. For example, 1000 allows assignments up to 999.',
                 ],
