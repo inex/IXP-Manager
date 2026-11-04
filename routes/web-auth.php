@@ -183,7 +183,7 @@ if( config( 'google2fa.enabled' ) ) {
 
     Route::group( [ 'namespace' => 'Auth', 'prefix' => '2fa' ], function () {
         Route::get(  'authenticate',   'TwoFactorController@showForm'    )->name( '2fa@showForm'     );
-        Route::post( 'authenticate',   'TwoFactorController@verifyToken' )->name( '2fa@authenticate' )->middleware( [ '2fa', 'throttle:2fa-authenticate' ] );
+        Route::post( 'authenticate',   'TwoFactorController@verifyToken' )->name( '2fa@authenticate' )->middleware( [ '2fa' ] );
     } );
 }
 

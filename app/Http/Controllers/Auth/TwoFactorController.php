@@ -44,7 +44,7 @@ class TwoFactorController
         $authenticator = new Google2FAAuthenticator( $request );
 
         // If the user has no 2FA setup, or has already completed a 2FA challenge, redirect away.
-        if( $this->shouldntRequest2fa( $user, $authenticator) ) {
+        if( $this->shouldntRequest2fa( $user, $authenticator ) ) {
             return redirect('');
         }
 
@@ -75,7 +75,7 @@ class TwoFactorController
                 return $this->lockoutResponse( $user );
             }
 
-            AlertContainer::push("The one time password entered was wrong.", Alert::DANGER);
+            AlertContainer::push( "The one time password entered was wrong.", Alert::DANGER );
             return redirect()->back();
         }
 
