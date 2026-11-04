@@ -23,11 +23,12 @@ namespace IXP\Http\Requests;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Auth;
+use Auth, Closure;
 
 use IXP\Models\{
     Router,
-    User
+    User,
+    Vlan
 };
 
 use Illuminate\Foundation\Http\FormRequest;
@@ -60,9 +61,9 @@ class StoreRouter extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return string[]
+     * @return array
      *
-     * @psalm-return array{handle: string, pair_id: string, vlan_id: 'required|integer|exists:vlan,id', protocol: string, type: string, name: 'required|string|max:255', shortname: 'required|string|max:30', router_id: 'required|ipv4', peering_ip: string, asn: 'required|integer', software: string, software_version: 'nullable|string|max:255', operating_system: 'nullable|string|max:255', operating_system_version: 'nullable|string|max:255', mgmt_host: 'required|string|max:255', api_type: string, api: ''|'url|required|regex:/.*[^\/]$/', lg_access: string}
+     * @psalm-return array{handle: string, pair_id: string, vlan_id: 'required|integer|exists:vlan,id', protocol: string, type: string, name: 'required|string|max:255', shortname: 'required|string|max:30', router_id: 'required|ipv4', peering_ip: string, asn: 'required|integer', software: string, software_version: 'nullable|string|max:255', operating_system: 'nullable|string|max:255', operating_system_version: 'nullable|string|max:255', mgmt_host: 'required|string|max:255', api_type: string, api: ''|'url|required|regex:/.*[^\/]$/', lg_access: string, blackholing: list{'boolean', Closure}}
      */
     public function rules(): array
     {
@@ -87,6 +88,11 @@ class StoreRouter extends FormRequest
             'api_type'                 => 'required|integer|in:' . implode( ',', array_keys( Router::$API_TYPES ) ),
             'api'                      => ( $this->api_type != Router::API_TYPE_NONE ? 'url|required|regex:/.*[^\/]$/' : '' ),
             'lg_access'                => 'integer' . ( $this->api ? '|required|in:' . implode( ',', array_keys( User::$PRIVILEGES_ALL ) ) : '' ),
+            'blackholing'              => [ 'boolean', function( string $attribute, mixed $value, Closure $fail ) {
+                if( $value && !Vlan::find( $this->vlan_id )?->blackholeNexthop( (int)$this->protocol ) ) {
+                    $fail( 'Set a blackhole next-hop for this protocol on the VLAN before enabling blackholing.' );
+                }
+            } ],
         ];
     }
 
