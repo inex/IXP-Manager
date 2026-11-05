@@ -19,7 +19,7 @@
 #
 # http://www.gnu.org/licenses/gpl-2.0.html
 
-## VAGRANT provisioning script - IXP Manager v7 / 24.04 LTS / php8.3
+## VAGRANT provisioning script - IXP Manager v7 / 24.04 LTS / php8.4
 ##
 ## Barry O'Donovan 2015-2024
 
@@ -44,14 +44,9 @@ echo "Updating packages...."
 DEBIAN_FRONTEND=noninteractive apt-get update &>/dev/null
 DEBIAN_FRONTEND=noninteractive apt-get dist-upgrade -y
 
-# Defaults for MySQL and phpMyAdmin:
+# Defaults for MySQL:
 echo 'mysql-server mysql-server/root_password password password' | debconf-set-selections
 echo 'mysql-server mysql-server/root_password_again password password' | debconf-set-selections
-echo 'phpmyadmin phpmyadmin/dbconfig-install boolean true' | debconf-set-selections
-echo 'phpmyadmin phpmyadmin/app-password-confirm password password' | debconf-set-selections
-echo 'phpmyadmin phpmyadmin/mysql/admin-pass password password' | debconf-set-selections
-echo 'phpmyadmin phpmyadmin/mysql/app-pass password password' | debconf-set-selections
-echo 'phpmyadmin phpmyadmin/reconfigure-webserver multiselect apache2' | debconf-set-selections
 echo 'mrtg mrtg/conf_mods boolean true' | debconf-set-selections
 echo 'mrtg mrtg/create_www boolean true' | debconf-set-selections
 echo 'mrtg mrtg/fix_permissions boolean true' | debconf-set-selections
@@ -65,12 +60,12 @@ DEBIAN_FRONTEND=noninteractive apt-get install -yq software-properties-common
 add-apt-repository -y ppa:ondrej/php
 
 echo "Installing mysql, apache, php, etc..."
-DEBIAN_FRONTEND=noninteractive apt-get install -y apache2 php8.4 php8.4-intl php8.4-mysql php8.4-rrd php8.4-cli \
-    php8.4-snmp php8.4-curl  php8.4-memcached libapache2-mod-php8.4 mysql-server            \
-    mysql-client memcached snmp php8.4-mbstring php8.4-xml php8.4-gd bgpq3 bgpq4 unzip git  \
-    joe php8.4-bcmath php8.4-memcache unzip php8.4-zip git php8.4-yaml phpmyadmin     \
-    php8.4-ds libconfig-general-perl libnetaddr-ip-perl mrtg  libconfig-general-perl        \
-    libnetaddr-ip-perl rrdtool librrds-perl curl bash-completion &>/dev/null
+DEBIAN_FRONTEND=noninteractive apt-get install -y apache2 bash-completion bgpq3 bgpq4 curl  \
+    git joe libapache2-mod-php8.4 libconfig-general-perl libnetaddr-ip-perl librrds-perl    \
+    memcached mrtg mysql-client mysql-server php8.4 php8.4-bcmath php8.4-cli php8.4-curl    \
+    php8.4-ds php8.4-gd php8.4-intl php8.4-mbstring php8.4-memcache php8.4-memcached        \
+    php8.4-mysql php8.4-rrd php8.4-snmp php8.4-xml php8.4-yaml php8.4-zip rrdtool snmp      \
+    unzip &>/dev/null
 
 
 # Rather than packaged Bird on ubuntu which is a few versions behind, use NIX.CZ repo:
