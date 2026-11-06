@@ -100,8 +100,6 @@ class ForgotPasswordController extends Controller
      * @param Request $request
      *
      * @return RedirectResponse
-     *
-     * @throws
      */
     public function sendResetLinkEmail( Request $request ): RedirectResponse
     {

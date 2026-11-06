@@ -253,11 +253,6 @@
       <code><![CDATA[User::AUTH_CUSTUSER]]></code>
     </RedundantCondition>
   </file>
-  <file src="app/Http/Controllers/Auth/ForgotPasswordController.php">
-    <MissingDocblockType>
-      <code><![CDATA[public function sendResetLinkEmail( Request $r ): RedirectResponse]]></code>
-    </MissingDocblockType>
-  </file>
   <file src="app/Http/Controllers/Auth/LoginController.php">
     <MissingDocblockType>
       <code><![CDATA[public function peeringdbHandleProviderCallback( Request $r ): RedirectResponse]]></code>
