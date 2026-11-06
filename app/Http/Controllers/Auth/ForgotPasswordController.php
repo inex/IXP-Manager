@@ -62,8 +62,6 @@ use IXP\Utils\View\Alert\{
 class ForgotPasswordController extends Controller
 {
 
-    protected $redirectTo = 'auth/login';
-
     /*
     |--------------------------------------------------------------------------
     | Password Reset Controller
@@ -129,8 +127,8 @@ class ForgotPasswordController extends Controller
      */
     protected function sendResetLinkResponse(): RedirectResponse
     {
-        AlertContainer::push( 'If your email matches user(s) on the system, then an email listing those users has been sent to you.', Alert::INFO );
-        return redirect( route( 'login@login' ) );
+        AlertContainer::push( 'If your username exists on the system, then a password reset link has been sent to you.', Alert::INFO );
+        return redirect( route( 'login@showForm' ) );
     }
 
     /**
@@ -140,8 +138,8 @@ class ForgotPasswordController extends Controller
      */
     protected function sendResetLinkFailedResponse(): RedirectResponse
     {
-        AlertContainer::push( 'If your email matches user(s) on the system, then an email listing those users has been sent to you.', Alert::INFO );
-        return redirect( route( 'login@login' ) );
+        AlertContainer::push( 'If your username exists on the system, then a password reset link has been sent to you.', Alert::INFO );
+        return redirect( route( 'login@showForm' ) );
     }
 
     /**
