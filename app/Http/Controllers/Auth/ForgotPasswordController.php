@@ -62,8 +62,6 @@ use IXP\Utils\View\Alert\{
 class ForgotPasswordController extends Controller
 {
 
-    protected $redirectTo = 'auth/login';
-
     /*
     |--------------------------------------------------------------------------
     | Password Reset Controller
@@ -99,21 +97,19 @@ class ForgotPasswordController extends Controller
     /**
      * Send a reset link to the given user.
      *
-     * @param Request $r
+     * @param Request $request
      *
      * @return RedirectResponse
-     *
-     * @throws
      */
-    public function sendResetLinkEmail( Request $r ): RedirectResponse
+    public function sendResetLinkEmail( Request $request ): RedirectResponse
     {
-        $this->validate( $r, ['username' => 'required'] );
+        $this->validate( $request, ['username' => 'required'] );
 
         // We will send the password reset link to this user. Once we have attempted
         // to send the link, we will examine the response then see the message we
         // need to show to the user. Finally, we'll send out a proper response.
         $response = $this->broker()->sendResetLink(
-            $r->only('username')
+            $request->only('username')
         );
 
         return $response === Password::RESET_LINK_SENT
@@ -129,8 +125,8 @@ class ForgotPasswordController extends Controller
      */
     protected function sendResetLinkResponse(): RedirectResponse
     {
-        AlertContainer::push( 'If your email matches user(s) on the system, then an email listing those users has been sent to you.', Alert::INFO );
-        return redirect( route( 'login@login' ) );
+        AlertContainer::push( 'If your username exists on the system, then a password reset link has been sent to you.', Alert::INFO );
+        return redirect( route( 'login@showForm' ) );
     }
 
     /**
@@ -140,8 +136,8 @@ class ForgotPasswordController extends Controller
      */
     protected function sendResetLinkFailedResponse(): RedirectResponse
     {
-        AlertContainer::push( 'If your email matches user(s) on the system, then an email listing those users has been sent to you.', Alert::INFO );
-        return redirect( route( 'login@login' ) );
+        AlertContainer::push( 'If your username exists on the system, then a password reset link has been sent to you.', Alert::INFO );
+        return redirect( route( 'login@showForm' ) );
     }
 
     /**
