@@ -35,11 +35,17 @@
      * display or hide form section depending on the type selected
      */
     dd_type.change( () => {
-        if( dd_type.val() === "<?= \IXP\Models\Customer::TYPE_ASSOCIATE ?>" ) {  // associate member
+        const isAssociateSelected = dd_type.val() === "<?= \IXP\Models\Customer::TYPE_ASSOCIATE ?>";
+        if( isAssociateSelected ) {  // associate member
             $( '.full-member-details' ).slideUp( 'fast' );
         } else {
             $( '.full-member-details' ).slideDown( 'fast' );
         }
+
+        // 'required' prop only required when !isAssociateSelected
+        input_autsys.prop( 'required', !isAssociateSelected);
+        input_nocemail.prop( 'required', !isAssociateSelected);
+        input_peeringemail.prop( 'required', !isAssociateSelected);
     }).trigger('change');
 
 
