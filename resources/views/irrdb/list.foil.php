@@ -10,7 +10,7 @@
         </a>
         /
     <?php endif; ?>
-    IRRDB <?= $t->type === "asn" ? 'ASNs' : 'Prefixes' ?> IPv<?= $t->ee( $t->protocol ) ?> Entries (<?= count( $t->irrdbList ) ?>)
+    IRRDB <?= $t->type === "asn" ? 'ASNs' : 'Prefixes' ?> IPv<?= $t->ee( $t->protocol ) ?> Entries (<?= $t->irrdbList->total() ?>)
 <?php $this->append() ?>
 
 
@@ -41,7 +41,7 @@
   <div class="row">
       <div class="col-md-12">
           <?= $t->alerts() ?>
-          <?php if( $t->updatingIrrdb || $t->updatedIrrdb ): ?>
+          <?php if( $t->updatingIrrdb || ($t->updatedIrrdb && !$t->failedIrrdb) ): ?>
               <div class="alert alert-info" role="alert">
                   <?php if( $t->updatingIrrdb ): ?>
                       <p>
@@ -55,24 +55,24 @@
                       The IRRDB update process has completed. <?= $t->ee( $t->updatedIrrdb[ "msg" ] ) ?>
                       <br/><br/>
                       There are a total of <?= $t->ee( $t->updatedIrrdb[ "v" . $t->protocol ][ "count" ] ) ?> IPv<?= $t->ee( $t->protocol ) ?> <?= $t->type === "asn" ? 'ASNs' : 'prefixes' ?>
-                      of which <b><?= count( $t->updatedIrrdb[ "v" . $t->protocol ][ "new" ] ) ?> are new and have been added;
-                      and <?= count( $t->updatedIrrdb[ "v" . $t->protocol ][ "stale" ] ) ?> are stale and have been removed</b>.
+                      of which <b><?= ( $t->updatedIrrdb[ "v" . $t->protocol ][ "new_count" ] ?? count( $t->updatedIrrdb[ "v" . $t->protocol ][ "new" ] ) ) ?> are new and have been added;
+                      and <?= ( $t->updatedIrrdb[ "v" . $t->protocol ][ "stale_count" ] ?? count( $t->updatedIrrdb[ "v" . $t->protocol ][ "stale" ] ) ) ?> are stale and have been removed</b>.
 
-                      <?php if( count( $t->updatedIrrdb[ "v" . $t->protocol ][ "new" ] ) > 0): ?>
+                      <?php if( ( $t->updatedIrrdb[ "v" . $t->protocol ][ "new_count" ] ?? count( $t->updatedIrrdb[ "v" . $t->protocol ][ "new" ] ) ) > 0): ?>
                           <br><br>
                           <h6>New/Added IPv<?= $t->ee( $t->protocol ) ?> <?= $t->type === "asn" ? 'ASNs' : 'Prefixes' ?></h6>
                           <ul>
-                              <?php foreach( $t->updatedIrrdb[ "v" . $t->protocol ][ "new" ] as $new ): ?>
+                              <?php foreach( array_slice($t->updatedIrrdb[ "v" . $t->protocol ][ "new" ], 0, 50) as $new ): ?>
                                   <li> <?= $t->ee( $new ) ?> </li>
                               <?php endforeach; ?>
                           </ul>
                       <?php endif; ?>
 
-                      <?php if( count( $t->updatedIrrdb[ "v" . $t->protocol ][ "stale" ] ) > 0): ?>
+                      <?php if( ( $t->updatedIrrdb[ "v" . $t->protocol ][ "stale_count" ] ?? count( $t->updatedIrrdb[ "v" . $t->protocol ][ "stale" ] ) ) > 0): ?>
                           <br><br>
                           <h6>Stale/Removed IPv<?= $t->ee( $t->protocol ) ?> <?= $t->type === "asn" ? 'ASNs' : 'Prefixes' ?></h6>
                           <ul>
-                              <?php foreach( $t->updatedIrrdb[ "v" . $t->protocol ][ "stale" ] as $stale ): ?>
+                              <?php foreach( array_slice($t->updatedIrrdb[ "v" . $t->protocol ][ "stale" ], 0, 50) as $stale ): ?>
                                   <li> <?= $t->ee( $stale[$t->type] ) ?> </li>
                               <?php endforeach; ?>
                           </ul>
@@ -80,7 +80,16 @@
                   <?php endif; ?>
               </div>
           <?php endif; ?>
-          <table id='irrdb-list' class="table collapse table-striped table-responsive-ixp-with-header" width="100%">
+          <?php if( $t->failedIrrdb ): ?>
+              <div class="alert alert-danger">The last IRRDB update failed. Previously committed entries remain available. Please contact the NOC or retry the update.</div>
+          <?php endif; ?>
+          <form method="get" class="form-inline mb-3">
+              <label for="irrdb-search" class="mr-2">Prefix / ASN starts with</label>
+              <input id="irrdb-search" name="search" maxlength="100" class="form-control mr-2" value="<?= $t->ee($t->search) ?>">
+              <button class="btn btn-secondary" type="submit">Search</button>
+          </form>
+          <p>Showing <?= $t->irrdbList->firstItem() ?? 0 ?>–<?= $t->irrdbList->lastItem() ?? 0 ?> of <?= $t->irrdbList->total() ?> entries. Update details show at most 50 added and 50 removed entries.</p>
+          <table id='irrdb-list'  class="table collapse table-striped table-responsive-ixp-with-header" width="100%">
               <thead class="thead-dark">
                   <tr>
                       <th>
@@ -108,9 +117,14 @@
                           </td>
                       </tr>
                   <?php endforeach;?>
-              <tbody>
+              </tbody>
           </table>
 
+          <nav aria-label="IRRDB result pages" class="my-3">
+              <?php if( $t->irrdbList->previousPageUrl() ): ?><a class="btn btn-secondary" href="<?= $t->ee($t->irrdbList->previousPageUrl()) ?>">Previous</a><?php endif; ?>
+              <span class="mx-2">Page <?= $t->irrdbList->currentPage() ?> of <?= $t->irrdbList->lastPage() ?></span>
+              <?php if( $t->irrdbList->nextPageUrl() ): ?><a class="btn btn-secondary" href="<?= $t->ee($t->irrdbList->nextPageUrl()) ?>">Next</a><?php endif; ?>
+          </nav>
           <?php if( $t->updatedIrrdb ): ?>
               <div class="alert alert-info tw:mt-16">
                   <p>
@@ -144,6 +158,9 @@
                 stateDuration : DATATABLE_STATE_DURATION,
                 responsive: true,
                 paging: false,
+                searching: false,
+                ordering: false,
+                info: false,
                 columnDefs: [
                     { responsivePriority: 1, targets: 0 },
                     { responsivePriority: 2, targets: -1 }

@@ -272,22 +272,25 @@ abstract class UpdateDb
         try {
             $now = now()->format( 'Y-m-d H:i:s' );
 
-            foreach( $fromIrrdb as $p ) {
-                Log::debug( "INSERT [{$type}]: {$this->customer()->shortname} IPv{$protocol} {$p}" );
-                $model::create(
-                    [
-                        'customer_id'   => $this->customer()->id,
-                        $type           => $p,
-                        'protocol'      => $protocol,
-                        'last_seen'     => $now,
-                        'first_seen'    => $now,
-                    ]
-                );
+            foreach( array_chunk( $fromIrrdb, 1000 ) as $chunk ) {
+                $rows = [];
+                foreach( $chunk as $entry ) {
+                    $rows[] = [
+                        'customer_id' => $this->customer()->id,
+                        $type => $entry,
+                        'protocol' => $protocol,
+                        'first_seen' => $now,
+                        'last_seen' => $now,
+                        'created_at' => $now,
+                        'updated_at' => $now,
+                    ];
+                }
+                $model::insert( $rows );
             }
 
-            foreach( $fromDb as $i => $p ) {
-                Log::debug( "DELETE [{$type}]: {$this->customer()->shortname} IPv{$protocol} ID:{$p['id']} {$p[$type]}" );
-                $model::where( 'id', $p['id'] )->delete();
+            foreach( array_chunk( array_column( $fromDb, 'id' ), 1000 ) as $ids ) {
+                $model::where( 'customer_id', $this->customer()->id )
+                    ->where( 'protocol', $protocol )->whereIn( 'id', $ids )->delete();
             }
 
             $model::where( 'customer_id', $this->customer()->id )
@@ -304,7 +307,7 @@ abstract class UpdateDb
                 IrrdbAggregator::prefixesForRouterConfiguration( $this->customer(), $protocol, true );
             }
 
-        } catch( Exception $e ) {
+        } catch( \Throwable $e ) {
             DB::rollBack();
             $this->result['dbTime'] += $this->timeElapsed();
             throw $e;

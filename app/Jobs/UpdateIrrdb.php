@@ -71,7 +71,21 @@ class UpdateIrrdb extends Job implements ShouldQueue
      * @return void
      */
     public function __construct( public readonly CustomerModel $customer, public readonly string $type, public readonly int $protocol )
-    {}
+    {
+        if( $connection = config( 'irrdb-performance.connection' ) ) {
+            $this->onConnection( $connection )->onQueue( 'irrdb' );
+        }
+    }
+
+    public int $timeout = 1500;
+    public int $tries = 1;
+
+    public function failed( ?\Throwable $exception ): void
+    {
+        $key = $this->type . '-' . $this->protocol . '-' . $this->customer->id;
+        Cache::forget( 'updating-irrdb-' . $key );
+        Cache::put( 'failed-irrdb-' . $key, true, 3600 );
+    }
 
     /**
      * Execute the job.
@@ -87,14 +101,28 @@ class UpdateIrrdb extends Job implements ShouldQueue
             throw new GeneralException('A persistent cache is required to fetch filtered prefixes' );
         }
 
-        Cache::put( 'updating-irrdb-' . $this->type . '-' . $this->protocol . '-' . $this->customer->id, true, 3600 );
-
-        $updater = $this->type === "asn" ? new UpdateAsnDb( $irrdb, $this->customer ) : new UpdatePrefixDb( $irrdb, $this->customer );
-
-        $result = $updater->update();
-        $result[ "found_at" ] = now();
-
-        Cache::put( 'updated-irrdb-'  . $this->type . '-' . $this->protocol . '-' . $this->customer->id, $result , 900 );
-        Cache::put( 'updating-irrdb-' . $this->type . '-' . $this->protocol . '-' . $this->customer->id, false, 3600 );
+        $key = $this->type . '-' . $this->protocol . '-' . $this->customer->id;
+        Cache::put( 'updating-irrdb-' . $key, true, 1800 );
+        Cache::forget( 'failed-irrdb-' . $key );
+        try {
+            $updater = $this->type === 'asn'
+                ? new UpdateAsnDb( $irrdb, $this->customer, [ $this->protocol ] )
+                : new UpdatePrefixDb( $irrdb, $this->customer, [ $this->protocol ] );
+            $result = $updater->update();
+            $result['found_at'] = now();
+            foreach( [4, 6] as $family ) {
+                foreach( ['new', 'stale'] as $change ) {
+                    $entries = $result['v' . $family][$change];
+                    $result['v' . $family][$change . '_count'] = count( $entries );
+                    $result['v' . $family][$change] = array_slice( $entries, 0, 50 );
+                }
+            }
+            Cache::put( 'updated-irrdb-' . $key, $result, 900 );
+        } catch( \Throwable $e ) {
+            $this->failed( $e );
+            throw $e;
+        } finally {
+            Cache::forget( 'updating-irrdb-' . $key );
+        }
     }
 }

@@ -54,6 +54,13 @@ class UpdatePrefixDb extends UpdateDb
      */
     public function update(): array
     {
+        return \Illuminate\Support\Facades\Cache::lock(
+            'irrdb-writer-prefix-' . $this->customer()->id, 1800
+        )->block( 30, fn() => $this->performUpdate() );
+    }
+
+    protected function performUpdate(): array
+    {
         foreach( $this->protocols() as $protocol ) {
             if( $this->customer()->irrdbConfig && $this->customer()->routeServerClient( $protocol ) && $this->customer()->irrdbFiltered() ) {
                 $this->irrdb()
