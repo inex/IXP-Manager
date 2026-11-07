@@ -72,7 +72,9 @@ class UpdateIrrdb extends Job implements ShouldQueue
      */
     public function __construct( public readonly CustomerModel $customer, public readonly string $type, public readonly int $protocol )
     {
-        if( $connection = config( 'irrdb-performance.connection' ) ) {
+        /** @var string|null $connection Optional deployment-specific queue connection. */
+        $connection = config( 'irrdb-performance.connection' );
+        if( $connection !== null && $connection !== '' ) {
             $this->onConnection( $connection )->onQueue( 'irrdb' );
         }
     }
