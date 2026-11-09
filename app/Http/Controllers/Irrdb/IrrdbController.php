@@ -96,15 +96,24 @@ class IrrdbController extends Controller
         /** @var User $us */
         $us = Auth::getUser();
 
-        $irrdbList = IrrdbAggregator::forCustomerAndProtocol( $cust->id, $protocol, $type );
+        $model = $type === 'asn' ? \IXP\Models\IrrdbAsn::class : \IXP\Models\IrrdbPrefix::class;
+        $search = trim( substr( (string) $r->query( 'search', '' ), 0, 100 ) );
+        $query = $model::where( 'customer_id', $cust->id )->where( 'protocol', $protocol );
+        if( $search !== '' ) {
+            // Prefix match keeps the search bounded and treats SQL wildcards literally.
+            $query->whereRaw( "`" . $type . "` LIKE ? ESCAPE '!'", [ str_replace( ['!', '%', '_'], ['!!', '!%', '!_'], $search ) . '%' ] );
+        }
+        $irrdbList = $query->orderBy( 'id' )->paginate(100)->withQueryString();
 
         // are we busting the cache?
         if( $r->reset_cache === "1"  && $us->isSuperUser() ) {
-            Cache::forget('updated-irrdb-' . $type . '-' . $cust->id );
+            Cache::forget('updated-irrdb-' . $type . '-' . $protocol . '-' . $cust->id );
         }
 
         return view( 'irrdb/list' )->with([
             'irrdbList'         => $irrdbList,
+            'search' => $search,
+            'failedIrrdb' => Cache::get( 'failed-irrdb-' . $type . '-' . $protocol . '-' . $cust->id, false ),
             'type'              => $type,
             'customer'          => $cust,
             'protocol'          => $protocol,
@@ -135,10 +144,14 @@ class IrrdbController extends Controller
         // get the status of the irrdb update function
         $updatedIrrdb = Cache::get( 'updated-irrdb-' . $type . '-' . $protocol . '-' . $cust->id, false );
 
-        if( $updatedIrrdb === false ) {
+        if( $updatedIrrdb === false && Cache::add( 'updating-irrdb-' . $type . '-' . $protocol . '-' . $cust->id, true, 1800 ) ) {
             // no cached result so schedule a job to gather them:
-            Cache::put( 'updating-irrdb-' . $type . '-' . $protocol . '-' . $cust->id, true, 3600 );
-            UpdateIrrdb::dispatch( $cust, $type, $protocol );
+            try {
+                UpdateIrrdb::dispatch( $cust, $type, $protocol );
+            } catch( \Throwable $e ) {
+                Cache::forget( 'updating-irrdb-' . $type . '-' . $protocol . '-' . $cust->id );
+                throw $e;
+            }
         }
 
         return redirect( route( "irrdb@list", [ "cust" => $cust->id, "type" => $type , "protocol" => $protocol ] )  );

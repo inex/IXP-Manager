@@ -89,15 +89,14 @@ class UpdateIrrdbTest extends TestCase
         $this->assertEquals(0, IrrdbAsn::where('customer_id', $this->customer->id)->where('protocol', 6)->count());
 
         $bgp = Mockery::mock(IrrQuerier::class);
-        $bgp->expects('setWhois')->with($this->irrdbConfig->host)->times(2);
-        $bgp->expects('setSources')->with($this->irrdbConfig->source)->times(2);
+        $bgp->expects('setWhois')->with($this->irrdbConfig->host)->once();
+        $bgp->expects('setSources')->with($this->irrdbConfig->source)->once();
         $bgp->expects('getAsnList')->with('as1213', 4)->andReturn($asns);
-        $bgp->expects('getAsnList')->with('as1213', 6)->andReturn($asns);
         $job = new UpdateIrrdb($this->customer, 'asn', 4);
         $job->handle($bgp);
 
         $this->assertEquals(count($asns), IrrdbAsn::where('customer_id', $this->customer->id)->where('protocol', 4)->count());
-        $this->assertEquals(count($asns), IrrdbAsn::where('customer_id', $this->customer->id)->where('protocol', 6)->count());
+        $this->assertEquals(0, IrrdbAsn::where('customer_id', $this->customer->id)->where('protocol', 6)->count());
 
         $jobResult = \Cache::get( 'updated-irrdb-'  . $job->type . '-' . $job->protocol . '-' . $this->customer->id);
         $this->assertArrayHasKey('wiped', $jobResult);
@@ -123,15 +122,14 @@ class UpdateIrrdbTest extends TestCase
         $this->assertEquals(0, IrrdbPrefix::where('customer_id', $this->customer->id)->where('protocol', 6)->count());
 
         $bgp = Mockery::mock(IrrQuerier::class);
-        $bgp->expects('setWhois')->with($this->irrdbConfig->host)->times(2);
-        $bgp->expects('setSources')->with($this->irrdbConfig->source)->times(2);
+        $bgp->expects('setWhois')->with($this->irrdbConfig->host)->once();
+        $bgp->expects('setSources')->with($this->irrdbConfig->source)->once();
         $bgp->expects('getPrefixList')->with('as1213', 4)->andReturn($prefixesV4);
-        $bgp->expects('getPrefixList')->with('as1213', 6)->andReturn($prefixesV6);
         $job = new UpdateIrrdb($this->customer, 'prefix', 4);
         $job->handle($bgp);
 
         $this->assertEquals(count($prefixesV4), IrrdbPrefix::where('customer_id', $this->customer->id)->where('protocol', 4)->count());
-        $this->assertEquals(count($prefixesV6), IrrdbPrefix::where('customer_id', $this->customer->id)->where('protocol', 6)->count());
+        $this->assertEquals(0, IrrdbPrefix::where('customer_id', $this->customer->id)->where('protocol', 6)->count());
 
         $jobResult = \Cache::get( 'updated-irrdb-'  . $job->type . '-' . $job->protocol . '-' . $this->customer->id);
         $this->assertArrayHasKey('wiped', $jobResult);
