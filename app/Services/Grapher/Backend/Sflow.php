@@ -240,6 +240,17 @@ class Sflow extends GrapherBackend implements GrapherBackendContract
                 $rrd = new RrdUtil( $this->resolveFilePath( $graph, 'rrd' ), $graph );
                 return @file_get_contents( $rrd->png() );
             } catch( FileErrorException $e ) {
+                if( $graph instanceof Graph\P2p ) {
+                    $state = $e->isMissingRrd() ? 'no-measurable-traffic' : 'temporarily-unavailable';
+                    if( !$e->isMissingRrd() ) {
+                        Log::warning("[Grapher] sflow P2P graph unavailable: " . $e->getMessage());
+                    }
+                    $placeholder = file_get_contents( resource_path("images/grapher/{$state}.png") );
+                    if( $placeholder === false ) {
+                        throw new FileErrorException("Could not read graph placeholder");
+                    }
+                    return $placeholder;
+                }
                 Log::notice("[Grapher] {$this->name()} png(): could not load rrd file " . ( isset( $rrd ) ? $rrd->file() : '???' ) );
                 return ''; // FIXME check handling of this
             }
