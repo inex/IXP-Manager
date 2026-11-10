@@ -358,7 +358,9 @@ class PatchPanelPort extends Model
      */
     public function patchPanelPortHistories(): HasMany
     {
-        return $this->hasMany(PatchPanelPortHistory::class, 'patch_panel_port_id' );
+        return $this->hasMany(PatchPanelPortHistory::class, 'patch_panel_port_id' )
+            ->orderByDesc( 'created_at' )
+            ->orderByDesc( 'id' );
     }
 
     /**
@@ -620,10 +622,15 @@ class PatchPanelPort extends Model
     /**
      * Reset the port and set status to available (including slave ports)
      *
+     * @param bool $retainDuplex     Retain the existing duplex partner after resetting both ports
+     * @param bool $retainSwitchPort Retain the existing switch port connection
+     *
      * @return void
      */
-    public function reset(): void
+    public function reset( bool $retainDuplex = false, bool $retainSwitchPort = false ): void
     {
+        $duplexSlaveIds = $retainDuplex ? $this->duplexSlavePorts->pluck( 'id' ) : collect();
+
         foreach( $this->duplexSlavePorts as $pppsp ) {
             $pppsp->reset();
             $pppsp->update( [ 'duplex_master_id' => null ] );
@@ -631,6 +638,10 @@ class PatchPanelPort extends Model
 
         // Attributes that are not reset
         $excludedValues = [ 'id', 'patch_panel_id', 'number', 'owned_by', 'colo_billing_ref', 'updated_at', 'created_at' ];
+
+        if( $retainSwitchPort ) {
+            $excludedValues[] = 'switch_port_id';
+        }
 
         // Get for each attributes their default values
         $attributesToReset = DB::query()->selectRaw( 'COLUMN_NAME, COLUMN_DEFAULT, DATA_TYPE' )
@@ -648,6 +659,10 @@ class PatchPanelPort extends Model
         $this->state                = self::STATE_AVAILABLE;
         $this->last_state_change    = now();
         $this->save();
+
+        if( $retainDuplex ) {
+            self::whereIn( 'id', $duplexSlaveIds )->update( [ 'duplex_master_id' => $this->id ] );
+        }
     }
 
     /**
@@ -688,7 +703,7 @@ class PatchPanelPort extends Model
     /**
      * Move details / contents of a PPP to another PPP.
      *
-     * Moves the information and files from a patch panel port to an other one
+     * Moves the information and files from a patch panel port to another one
      * (and also move duplex slave if there is one). This function also:
      *
      * * Creates history of the old patch panel port
@@ -751,8 +766,8 @@ class PatchPanelPort extends Model
             $slave->update( [ 'duplex_master_id' => $dest->id ] );
         }
 
-        // Reset the old port
-        $this->reset();
+        // Reset the old port while retaining its existing duplex partner.
+        $this->reset( true );
 
         $history->update( [
             'private_notes' => "### " . now()->format('Y-m-d' ) . " - IXP Manager\n\nMoved to "
