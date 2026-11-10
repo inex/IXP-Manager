@@ -21,8 +21,6 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Illuminate\Database\DBAL\TimestampType;
-
 return [
 
 	/*
@@ -122,9 +120,4 @@ return [
         ],
     ],
 
-    'dbal' => [
-        'types' => [
-            'timestamp' => TimestampType::class,
-        ],
-    ],
 ];
