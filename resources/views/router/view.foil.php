@@ -244,6 +244,14 @@
                             </tr>
                             <tr>
                                 <td>
+                                    <b>Blackholing:</b>
+                                </td>
+                                <td>
+                                    <?= $rt->blackholing ? 'Yes' : 'No' ?>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
                                     <b>Template:</b>
                                 </td>
                                 <td>

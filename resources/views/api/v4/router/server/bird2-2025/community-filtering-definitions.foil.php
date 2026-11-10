@@ -50,6 +50,13 @@ define IXP_LC_INFO_IRRDB_FILTERED_STRICT = ( routeserverasn, 1001, 1001 );
 define IXP_LC_INFO_IRRDB_PREFIX_EMPTY    = ( routeserverasn, 1001, 1002 );
 
 define IXP_LC_INFO_SAME_AS_NEXT_HOP = ( routeserverasn, 1001, 1200 );
+<?php if( $t->router->blackholeNexthop() ): ?>
+
+define IXP_LC_INFO_BLACKHOLE = ( routeserverasn, 1001, 1300 );
+
+# IX specific alternative to the RFC 7999 BLACKHOLE community
+define IXP_LC_BLACKHOLE_REQUEST = ( routeserverasn, 666, 0 );
+<?php endif; ?>
 
 # ( routeserverasn, 1010, peerasn ) -> route learnt from peerasn via routeserverasn
 # ( routeserverasn, 1011, originasn ) -> route origin asn via routeserverasn

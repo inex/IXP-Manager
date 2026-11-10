@@ -69,6 +69,14 @@ $asn_filters = [];
     if( !in_array( $int['autsys'], $asn_filters ) ):
 
         $asn_filters[] = $int['autsys'];
+
+        $prefixes = [];
+        if( $int['irrdbfilter'] ?? true ):
+            $prefixes = IrrdbAggregator::prefixesForRouterConfiguration( $int[ 'cid' ], $t->router->protocol );
+        endif;
+
+        // blackholes must be covered by the member's IRRDB prefixes so no IRRDB filtering means no blackholing
+        $bh_prefixes = $t->router->blackholeNexthop() ? $prefixes : [];
 ?>
 
 
@@ -77,6 +85,10 @@ filter f_import_as<?= $int['autsys'] . "\n" ?>
     prefix set allnet;
     ip set allips;
     int set allas;
+<?php if( count( $bh_prefixes ) ): ?>
+    prefix set allnet_blackhole;
+    bool is_blackhole;
+<?php endif; ?>
 
 <?php
     // IXP Manauger UI based filters:
@@ -92,11 +104,16 @@ filter f_import_as<?= $int['autsys'] . "\n" ?>
     # RFC 8326 - facilitate Graceful BGP Session Shutdown
     if (65535, 0) ~ bgp_community then bgp_local_pref = 0;
 
+<?php if( count( $bh_prefixes ) ): ?>
+    # RFC 7999 blackholing
+    is_blackhole = ( (65535, 666) ~ bgp_community ) || ( IXP_LC_BLACKHOLE_REQUEST ~ bgp_large_community );
+
+<?php endif; ?>
     # Filter small prefixes
 <?php if( $t->router->protocol == 6 ): ?>
-    if ( net ~ [ ::/0{<?= config( 'ixp.irrdb.min_v6_subnet_size', 48 ) == 128 ? 128 : config( 'ixp.irrdb.min_v6_subnet_size', 48 ) + 1 ?>,128} ] ) then {
+    if ( <?= count( $bh_prefixes ) ? '!is_blackhole && ' : '' ?>net ~ [ ::/0{<?= config( 'ixp.irrdb.min_v6_subnet_size', 48 ) == 128 ? 128 : config( 'ixp.irrdb.min_v6_subnet_size', 48 ) + 1 ?>,128} ] ) then {
 <?php else: ?>
-    if ( net ~ [ 0.0.0.0/0{<?= config( 'ixp.irrdb.min_v4_subnet_size', 24 ) == 32 ? 32 : config( 'ixp.irrdb.min_v4_subnet_size', 24 ) + 1 ?>,32} ] ) then {
+    if ( <?= count( $bh_prefixes ) ? '!is_blackhole && ' : '' ?>net ~ [ 0.0.0.0/0{<?= config( 'ixp.irrdb.min_v4_subnet_size', 24 ) == 32 ? 32 : config( 'ixp.irrdb.min_v4_subnet_size', 24 ) + 1 ?>,32} ] ) then {
 <?php endif; ?>
         bgp_large_community.add( IXP_LC_FILTERED_PREFIX_LEN_TOO_LONG );
         accept;
@@ -174,6 +191,30 @@ filter f_import_as<?= $int['autsys'] . "\n" ?>
 <?php
     endif; ?>
 
+<?php if( count( $bh_prefixes ) ): ?>
+    allnet_blackhole = [ <?php echo $t->softwrap( $t->bird()->prefixExactToLessSpecific( $bh_prefixes, $t->router->protocol, $t->router->protocol === 6 ? 128 : 32 ),
+            4, ", ", ",", 15, $t->router->protocol === 6 ? 36 : 26 ); ?>
+
+    ];
+
+    <?php unset( $bh_prefixes ); ?>
+
+    # RPKI is skipped for blackholes as ROA max length would make them invalid
+    if is_blackhole then {
+        if ! (net ~ allnet_blackhole) then {
+            bgp_large_community.add( IXP_LC_FILTERED_IRRDB_PREFIX_FILTERED );
+            accept;
+        }
+
+        # NO_EXPORT / NO_ADVERTISE would stop us announcing the route at all, NO_EXPORT is added back on export
+        bgp_community.delete( [ (65535, 65281), (65535, 65282) ] );
+        bgp_next_hop = blackhole_nexthop;
+        bgp_large_community.add( IXP_LC_INFO_BLACKHOLE );
+        bgp_large_community.add( IXP_LC_INFO_RPKI_NOT_CHECKED );
+        accept;
+    }
+
+<?php endif; ?>
 <?php if( $t->router->rpki && config( 'ixp.rpki.rtr1.host' ) ): ?>
 
     # RPKI test - if it's INVALID or VALID, we are done
@@ -189,10 +230,7 @@ filter f_import_as<?= $int['autsys'] . "\n" ?>
 
 <?php
     // Only do IRRDB prefix filtering if this is enabled per client:
-    $prefixes = [];
     if( $int['irrdbfilter'] ?? true ):
-
-        $prefixes = IrrdbAggregator::prefixesForRouterConfiguration( $int[ 'cid' ], $t->router->protocol );
 
         if( count( $prefixes ) ):
 ?>
@@ -240,6 +278,14 @@ filter f_import_as<?= $int['autsys'] . "\n" ?>
 
 filter f_export_as<?= $int['autsys'] ?>
 {
+<?php if( $t->router->blackholeNexthop() ): ?>
+
+    # RFC 7999 section 3.2
+    if IXP_LC_INFO_BLACKHOLE ~ bgp_large_community then {
+        bgp_community.add( (65535, 666) );
+        bgp_community.add( (65535, 65281) );
+    }
+<?php endif; ?>
 
     # we should strip our own communities which we used for the looking glass and filtering
     bgp_large_community.delete( [( routeserverasn, *, * )] );
