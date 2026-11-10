@@ -217,18 +217,22 @@ abstract class UpdateDb
                 throw new GeneralException( 'Unknown type for updating: ' . $type );
         }
 
+        $table  = ( new $model )->getTable();
+        $field  = $type;                         // 'prefix' | 'asn' — column name equals $type
+        $custId = $this->customer()->id;
+
         $this->startTimer();
-        $fromDb = IrrdbAggregator::forCustomerAndProtocol( $this->customer()->id, $protocol, $type );
+        $existingCount = DB::table( $table )->where( 'customer_id', $custId )
+            ->where( 'protocol', $protocol )->count();
         $this->result['dbTime'] += $this->timeElapsed();
 
         // The calling function and the Bgpq3 class does a lot of validation and error
         // checking. But the last thing we need to do is start filtering all prefixes/ASNs if
         // something falls through to here. So, as a basic check, make sure we do not accept
         // an empty array of prefixes/ASNs for a customer that has a lot.
-
         if( count( $fromIrrdb ) === 0 ) {
             // make sure the customer doesn't have a non-empty prefix/ASN set that we're about to delete
-            if( count( $fromDb ) !== 0 ) {
+            if( $existingCount !== 0 ) {
                 $msg = "IRRDB {$type}: {$this->customer()->name} has a non-zero {$type} count for IPv{$protocol} in the database but "
                     . "BGPQ3 returned none. Please examine manually. No databases changes made for this customer.";
                 Log::alert( $msg );
@@ -241,27 +245,33 @@ abstract class UpdateDb
 
         $this->startTimer();
 
-        $fromIrrdbSet = new \Ds\Set( $fromIrrdb );
+        // Diff without materialising the existing set: start from the IRRDB set, then
+        // stream the rows already in the database, removing common members and collecting
+        // the stale rows. Runs and closes before beginTransaction() so no result set is open.
+        $toInsert = new \Ds\Set( $fromIrrdb );
+        $stale    = [];
 
-        foreach( $fromDb as $i => $p ) {
-            if( $fromIrrdbSet->contains( $p[ $type ] ) ) {
-                // ASN/prefix exists in both db and IRRDB - no action required
-                unset( $fromDb[ $i ] );
-                $fromIrrdbSet->remove( $p[$type] );
+        foreach( DB::table( $table )->where( 'customer_id', $custId )->where( 'protocol', $protocol )
+                     ->select( 'id', $field )->cursor() as $row ) {
+            if( $toInsert->contains( $row->{$field} ) ) {
+                // prefix/ASN exists in both db and IRRDB - no action required
+                $toInsert->remove( $row->{$field} );
+            } else {
+                $stale[] = [ 'id' => $row->id, $field => $row->{$field} ];
             }
         }
 
-        $fromIrrdb = $fromIrrdbSet->toArray();
+        $new = $toInsert->toArray();
+        unset( $toInsert );
 
-        // at this stage, the arrays are now:
-        // $fromDb      => asns/prefixes in the database that need to be deleted
-        // $fromIrrdb   => new asns/prefixes that need to be added
-
-        $this->result[ 'v'.$protocol ][ 'stale' ] = $fromDb;
-        $this->result[ 'v'.$protocol ][ 'new' ]   = $fromIrrdb;
+        // at this stage:
+        // $stale => prefixes/ASNs in the database that need to be deleted
+        // $new   => new prefixes/ASNs that need to be added
+        $this->result[ 'v'.$protocol ][ 'stale' ] = $stale;
+        $this->result[ 'v'.$protocol ][ 'new' ]   = $new;
 
         // validate any remaining IRRDB prefixes/ASNs before we put them near the database
-        $fromIrrdb = $this->validate( $fromIrrdb, $protocol );
+        $new = $this->validate( $new, $protocol );
 
         $this->result['procTime'] += $this->timeElapsed();
 
@@ -272,27 +282,29 @@ abstract class UpdateDb
         try {
             $now = now()->format( 'Y-m-d H:i:s' );
 
-            foreach( $fromIrrdb as $p ) {
-                Log::debug( "INSERT [{$type}]: {$this->customer()->shortname} IPv{$protocol} {$p}" );
-                $model::create(
-                    [
-                        'customer_id'   => $this->customer()->id,
-                        $type           => $p,
-                        'protocol'      => $protocol,
-                        'last_seen'     => $now,
-                        'first_seen'    => $now,
-                    ]
-                );
+            foreach( array_chunk( $new, 1000 ) as $chunk ) {
+                $insrows = [];
+                foreach( $chunk as $v ) {
+                    $insrows[] = [
+                        'customer_id' => $custId,
+                        $field        => $v,
+                        'protocol'    => $protocol,
+                        'first_seen'  => $now,
+                        'last_seen'   => $now,
+                        'created_at'  => $now,
+                        'updated_at'  => $now,
+                    ];
+                }
+                DB::table( $table )->insert( $insrows );
             }
 
-            foreach( $fromDb as $i => $p ) {
-                Log::debug( "DELETE [{$type}]: {$this->customer()->shortname} IPv{$protocol} ID:{$p['id']} {$p[$type]}" );
-                $model::where( 'id', $p['id'] )->delete();
+            foreach( array_chunk( array_column( $stale, 'id' ), 1000 ) as $ids ) {
+                DB::table( $table )->whereIn( 'id', $ids )->delete();
             }
 
-            $model::where( 'customer_id', $this->customer()->id )
+            DB::table( $table )->where( 'customer_id', $custId )
                 ->where( 'protocol', $protocol )
-                ->update( [ 'last_seen' => $now ] );
+                ->update( [ 'last_seen' => $now, 'updated_at' => $now ] );
 
             DB::commit();
             $this->result['dbTime'] += $this->timeElapsed();
