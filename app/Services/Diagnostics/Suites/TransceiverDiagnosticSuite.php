@@ -185,7 +185,7 @@ class TransceiverDiagnosticSuite extends DiagnosticSuite
 
             $t = $this->snmpClient($this->pi)->get( sprintf( self::OID_XCVR_DOM_TEMPERATURE_THRESHOLD, $this->oidPort( $this->pi->switchPort->name ) ) );
 
-        } catch( \Exception $e ) {
+        } catch( \Throwable $e ) {
 
             return new DiagnosticResult(
                 name: $mainName . ' - diagnostic failed to run',
@@ -227,7 +227,7 @@ class TransceiverDiagnosticSuite extends DiagnosticSuite
 
             $v = $this->snmpClient($this->pi)->get( sprintf( self::OID_XCVR_DOM_VOLTAGE_UNITS_THRESHOLD, $this->oidPort( $this->pi->switchPort->name ) ) );
 
-        } catch( \Exception $e ) {
+        } catch( \Throwable $e ) {
 
             return new DiagnosticResult(
                 name: $mainName . ' - diagnostic failed to run',
@@ -297,19 +297,28 @@ class TransceiverDiagnosticSuite extends DiagnosticSuite
 
                     $v = $this->snmpClient($this->pi)->get( sprintf( self::OID_XCVR_DOM_LANE_SENSOR_UNITS_THRESHOLD, $this->oidPort( $this->pi->switchPort->name ), $lane, $sensor ) );
 
-                } catch( \Exception $e ) {
+                } catch( \Throwable $e ) {
                     if( $lane > 1) {
                         continue;
                     }
 
                     $results[] = new DiagnosticResult(
-                        name: $mainName . ' - diagnostic failed to run',
+                        name: $mainName . $sensors[$sensor] . ' (lane ' . $lane . ') diagnostic failed to run',
                         result: DiagnosticResult::TYPE_UNKNOWN,
                         narrativeHtml: $e->getMessage(),
                     );
 
                     $readings[ $sensor ][ $lane ] = 'ERR';
 
+                    continue;
+                }
+
+                if( !is_string($v) ) {
+                    $results[] = new DiagnosticResult(
+                        name: $mainName . "{$sensors[$sensor]} for lane {$lane} - invalid response received",
+                        result: DiagnosticResult::TYPE_ERROR,
+                        narrative: var_export( $v, true ),
+                    );
                     continue;
                 }
 
@@ -335,13 +344,16 @@ class TransceiverDiagnosticSuite extends DiagnosticSuite
                 // "Sensor value 1.0030 mW is within bounds"
                 // "Sensor value 0.6926 mW is within bounds"
                 $matches = [];
-                preg_match( "/Sensor value ([\d\.]+) ([a-zA-Z]+)\s.*/", $v, $matches );
+
+                if (!preg_match( "/Sensor value (-?[\d\.]+) ([a-zA-Z]+)\s.*/", $v, $matches ) ) {
+                    $readings[ $sensor ][ $lane ] = 'x';
+                    continue;
+                }
 
                 if( isset( $matches[2] ) && $matches[2] == 'mW') {
                     $matches[1] = 10 * log10($matches[1]);  // to dbm
                 }
                 $readings[ $sensor ][ $lane ] = sprintf( "%+2.2f", $matches[ 1 ] );
-
             }
         }
 
@@ -354,7 +366,8 @@ class TransceiverDiagnosticSuite extends DiagnosticSuite
             ENDSWOUTPUT;
 
         foreach( $lanes as $lane ) {
-            $swoutput .= "{$lane}  {$readings[1][$lane]}    {$readings[2][$lane]}     {$readings[3][$lane]}\n";
+            $swoutput .= sprintf("%d  %8s  %8s  %8s\n", $lane,
+                $readings[1][$lane] ?? "?", $readings[2][$lane] ?? "?", $readings[3][$lane] ?? "?");
         }
 
         $results[] = new DiagnosticResult(
