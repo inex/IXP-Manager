@@ -445,7 +445,6 @@ class SwitchPort extends Model
      * @param SNMP $host An instance of the SNMP host object
      * @param bool $logger An instance of the logger or false
      *
-     * @throws
      */
     public function snmpUpdate( SNMP $host, bool $logger = false, bool $nosave = false, ?string $entityMedia = null, bool $opticDiscoveryFailed = false ): static
     {
