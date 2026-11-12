@@ -447,8 +447,10 @@ class SwitchPort extends Model
      *
      * @throws
      */
-    public function snmpUpdate( SNMP $host, bool $logger = false, bool $nosave = false ): static
+    public function snmpUpdate( SNMP $host, bool $logger = false, bool $nosave = false, ?string $entityMedia = null, bool $opticDiscoveryFailed = false ): static
     {
+        $previousMauType = $this->mauType;
+
         foreach( self::$SNMP_MAP as $snmp => $attribute ) {
 
             switch( $snmp ) {
@@ -532,6 +534,42 @@ class SwitchPort extends Model
             }
 
         } catch( \Exception $e ){}
+
+        // Use ENTITY-MIB only when MAU cannot identify the media.
+        if (
+            $entityMedia !== null
+            && (
+                $this->mauType === '(empty)'
+                || str_starts_with(
+                    $this->mauType ?? '',
+                    '(unknown type - oid:'
+                )
+            )
+        ) {
+            if ($previousMauType !== $entityMedia && $logger) {
+                Log::info(
+                    "[{$this->switcher->name}]:{$this->name} "
+                    . "ENTITY-MIB media changed from "
+                    . "[{$previousMauType}] to [{$entityMedia}]"
+                );
+            }
+
+            $this->mauType = $entityMedia;
+
+        } elseif (
+            $opticDiscoveryFailed
+            && $this->mauType === '(empty)'
+            && is_string($previousMauType)
+            && $previousMauType !== ''
+            && $previousMauType !== '(empty)'
+            && !str_starts_with(
+                $previousMauType,
+                '(unknown type - oid:'
+            )
+        ) {
+            // Preserve a previously known value during discovery failure.
+            $this->mauType = $previousMauType;
+        }
 
         $this->lastSnmpPoll = now();
 
