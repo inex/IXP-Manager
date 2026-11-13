@@ -89,6 +89,11 @@ class SetPassword extends Command
             );
 
             $uid = $this->anticipate( 'Enter ID to change password for', array_keys( $u ));
+
+            if (!array_key_exists($uid, $u)) {
+                $this->error( "That UID was not in the list of returned options" );
+                return -1;
+            }
         }
 
         if( !$user = User::find( $uid ) ){
@@ -117,6 +122,7 @@ class SetPassword extends Command
 
         /** @var User $user */
         $user->password = Hash::make( $password );
+        $user->resetLockoutState();
         $user->save();
 
         $this->info( "Password set." );

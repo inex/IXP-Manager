@@ -41,38 +41,11 @@ class TwoFactorControllerTest extends TestCase
     private string $secret;
 
     /**
-     * Configuration needed at boot time (routes are only registered if these are set)
-     */
-    private const array BOOT_CONFIG = [
-            'google2fa.enabled'           => true,
-        ];
-
-    /**
      * Provide custom configuration early so 2FA routes are registered
      */
-    #[\Override]
-    public function createApplication(): Application
+    public function postBootstrapLoadConfigurationHook( Application $app ): void
     {
-        // Set the configuration after it is loaded but before the service providers boot and
-        // register routes. Unlike environment variables, this cannot be shadowed by state left
-        // behind by other tests in the same process.
-        date_default_timezone_set( 'Europe/Dublin' );
-
-        if( !defined( 'LARAVEL_START' ) ) {
-            define( 'LARAVEL_START', microtime( true ) );
-        }
-
-        $app = require __DIR__ . '/../../../../bootstrap/app.php';
-
-        $app->afterBootstrapping( LoadConfiguration::class, function( Application $app ) {
-                $app['config']->set( self::BOOT_CONFIG );
-           } );
-
-        $app->make( ConsoleKernel::class )->bootstrap();
-
-        Hash::setRounds( 4 );
-
-        return $app;
+        $app['config']->set( [ 'google2fa.enabled' => true ] );
     }
 
     public function testLoadFormWhen2FASetup(): void
@@ -147,7 +120,8 @@ class TwoFactorControllerTest extends TestCase
             $this->actingAs( $user )
                 ->post( route( '2fa@authenticate' ), [ 'one_time_password' => $this->invalidOtp() ] )
                 ->assertRedirectToRoute( '2fa@showForm' );
-            $this->assertEquals($i + 1, RateLimiter::attempts('2fa:failed-otp:user:' . $user->id));
+            $user->user2FA->refresh();
+            $this->assertEquals($i + 1, $user->user2FA->fail_count);
         }
 
         // Hit too many failed attempts, it's back to login
@@ -155,14 +129,16 @@ class TwoFactorControllerTest extends TestCase
         $this->actingAs( $user )
             ->post( route( '2fa@authenticate' ), [ 'one_time_password' => $this->invalidOtp() ] )
             ->assertRedirectToRoute( 'login@showForm' );
-        $this->assertEquals(5, RateLimiter::attempts('2fa:failed-otp:user:' . $user->id));
+        $user->user2FA->refresh();
+        $this->assertEquals(5, $user->user2FA->fail_count);
 
         // after too many failed attempts, even correct token is rejected
         session()->put('_previous.url', route('2fa@showForm'));
         $this->actingAs( $user )
             ->post( route( '2fa@authenticate' ), [ 'one_time_password' => $this->validOtp() ] )
             ->assertRedirectToRoute( 'login@showForm' );
-        $this->assertEquals(5, RateLimiter::attempts('2fa:failed-otp:user:' . $user->id));
+        $user->user2FA->refresh();
+        $this->assertEquals(5, $user->user2FA->fail_count);
     }
 
     public function testCorrect2FAResetsRateLimit(): void
@@ -175,7 +151,8 @@ class TwoFactorControllerTest extends TestCase
             $this->actingAs( $user )
                 ->post( route( '2fa@authenticate' ), [ 'one_time_password' => $this->invalidOtp() ] )
                 ->assertRedirectToRoute( '2fa@showForm' );
-            $this->assertEquals($i + 1, RateLimiter::attempts('2fa:failed-otp:user:' . $user->id));
+            $user->user2FA->refresh();
+            $this->assertEquals($i + 1, $user->user2FA->fail_count);
         }
 
         // Providing the correct OTP resets the rate limit
@@ -183,9 +160,9 @@ class TwoFactorControllerTest extends TestCase
         $this->actingAs( $user )
             ->post( route( '2fa@authenticate' ), [ 'one_time_password' => $this->validOtp() ] )
             ->assertRedirect( '' );
-        $this->assertEquals(0, RateLimiter::attempts('2fa:failed-otp:user:' . $user->id));
+        $user->user2FA->refresh();
+        $this->assertEquals(0, $user->user2FA->fail_count);
     }
-
 
     /**
      * Enable 2FA for the given user and return it

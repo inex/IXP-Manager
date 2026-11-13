@@ -25,7 +25,7 @@ declare(strict_types=1);
 namespace IXP\Listeners\Auth;
 
 use Illuminate\Support\Facades\Log;
-use Mail;
+use Illuminate\Support\Facades\Mail;
 
 use IXP\Events\Auth\PasswordReset as PasswordResetEvent;
 
@@ -43,6 +43,8 @@ final class PasswordReset
 {
     public function handle( PasswordResetEvent $e ): void
     {
+        $e->user->resetLockoutState();
+
         Mail::to( $e->user->email )->send( new PasswordResetMailable( $e->user ) );
         Log::notice( $e->user->username . '(' . $e->user->name . ') reset their password' );
     }

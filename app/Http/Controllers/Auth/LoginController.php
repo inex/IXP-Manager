@@ -23,10 +23,16 @@ namespace IXP\Http\Controllers\Auth;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Auth, Socialite, Str;
+use Carbon\CarbonInterval;
+use Illuminate\Support\Facades\DB;
+use Socialite, Str;
 
+use Carbon\CarbonInterface;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Timebox;
 use Illuminate\Http\{
     JsonResponse,
     RedirectResponse,
@@ -41,8 +47,11 @@ use IXP\Models\{
     Aggregators\UserAggregator,
     Customer,
     CustomerToUser,
+    UnknownUserLoginAttempt,
     User
 };
+
+use IXP\Services\Auth\PasswordLockoutPolicy;
 
 use IXP\Utils\View\Alert\{
     Alert,
@@ -79,10 +88,17 @@ class LoginController extends Controller
     /**
      * Where to redirect users after login.
      *
-     * THis isn't used unless the RedirectIfAuthenticated middleware's handle() method is coded to use it.
      * @var string
      */
     protected $redirectTo = '';
+
+    /**
+     * Minimum duration of any login request that does not end in a successful login.
+     *
+     * Must be longer than the session guard's own timebox around the credential check (200ms) plus the
+     * slowest lockout bookkeeping path, otherwise the padding hides nothing.
+     */
+    private const int FAILED_LOGIN_MIN_MICROSECONDS = 1_200_000;
 
     /**
      * Get the login username to be used by the controller.
@@ -123,6 +139,77 @@ class LoginController extends Controller
         }
 
         return view( 'auth/login' );
+    }
+
+
+    /**
+     * Handle a login request to the application.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\Response|\Illuminate\Http\JsonResponse
+     *
+     * @throws \Illuminate\Validation\ValidationException
+     */
+    public function login(Request $request)
+    {
+        $this->validateLogin( $request );
+
+        // Failed logins should take a definite duration to prevent timing leaks
+        return app( Timebox::class )->call( function( Timebox $timebox ) use ( $request ) {
+
+            $username = $request->post( "username" );
+            $user     = User::whereUsername( $username )->first();
+            $state    = $user ?? UnknownUserLoginAttempt::whereUsername( $username )->first();
+
+            // Too many failed password attempts? Refuse the login without checking the password.
+            if( $lockoutUntil = $this->lockedOutUntil( $state ) ) {
+                Log::warning( 'Login refused for user [' . $username . '] from IP [' . ixp_get_client_ip() . '] - logins are throttled until ' . $lockoutUntil->toDateTimeString() );
+                $this->fireLockoutEvent( $request );
+                return $this->sendLockoutResponse( $request, $lockoutUntil );
+            }
+
+            if( $this->attemptLogin( $request ) ) {
+                // A successful login discloses that the account exists anyway, no need to pad it.
+                $timebox->returnEarly();
+
+                // Reset state if the attempt was successful.
+                $this->guard()->user()->resetLockoutState();
+                if( $request->hasSession() ) {
+                    $request->session()->put( 'auth.password_confirmed_at', time() );
+                }
+
+                return $this->sendLoginResponse( $request );
+            }
+
+            // Increment failed password attempts. This may also throttle logins for a while.
+            $state = $this->incrementFailedPasswordCount( $username, $state );
+
+            // Check again to see if logins are throttled after this failed attempt, to provide immediate feedback.
+            if( $lockoutUntil = $this->lockedOutUntil( $state ) ) {
+                $this->fireLockoutEvent( $request );
+                return $this->sendLockoutResponse( $request, $lockoutUntil, true );
+            }
+
+            return $this->sendFailedLoginResponse( $request );
+        }, $this->failedLoginMinMicroseconds() );
+    }
+
+    /**
+     * Display a message to the user telling them how long they have to wait before trying again.
+     */
+    protected function sendLockoutResponse( Request $request, CarbonInterface $lockoutUntil, bool $wasAttempt = false ): RedirectResponse
+    {
+        $seconds = now()->diffInSeconds( $lockoutUntil );
+
+        // produce a duration like '1 second' or '5 minutes', taking care of pluralisation.
+        $fmtDuration = $seconds < 30
+            ? CarbonInterval::seconds( $seconds )->cascade()->forHumans( [ 'parts' => 1 ] )
+            : CarbonInterval::minutes( ceil($seconds / 60) )->cascade()->forHumans( [ 'parts' => 1 ] );
+
+        $message = $wasAttempt ? "Invalid username or password. " : "";
+        $message .= "Your account is temporarily locked due to failed login attempts - try again in " . $fmtDuration . ".";
+        AlertContainer::push( $message, Alert::DANGER );
+        return redirect()->back()->withInput( $request->only('username') );
     }
 
     /**
@@ -345,7 +432,10 @@ class LoginController extends Controller
         return redirect('');
     }
 
-    protected function isForbiddenIntendedUrlRoute(string $route): bool
+    /**
+     * Some routes should not be taken as the url.intended. This function returns true if $route is one such route.
+     */
+    private function isForbiddenIntendedUrlRoute(string $route): bool
     {
         $forbidden = [
             route('login@logout'),
@@ -355,5 +445,64 @@ class LoginController extends Controller
             $forbidden[] = route('2fa@authenticate');
         }
         return in_array($route, $forbidden, true);
+    }
+
+    /**
+     * Load failed login minimum duration in microseconds.
+     */
+    private function failedLoginMinMicroseconds(): int
+    {
+        return config('auth.failed_login_min_duration');
+    }
+
+    /**
+     * If logins are throttled for this state, return the time at which the next attempt is allowed.
+     */
+    private function lockedOutUntil( User|UnknownUserLoginAttempt|null $state ): ?CarbonInterface
+    {
+        return $state?->no_login_until?->isFuture() ? $state->no_login_until : null;
+    }
+
+    /**
+     * Increment the failed password count for a given username, and return the updated state.
+     * If the count crosses the configured threshold, record the time a login can be attempted again.
+     *
+     * Failures older than the expiry window no longer count: the count then starts again from one.
+     */
+    private function incrementFailedPasswordCount( string $username, User|UnknownUserLoginAttempt|null $state ): User|UnknownUserLoginAttempt
+    {
+        // Create the row for an unknown username outside of the transaction - concurrent first attempts are
+        // settled by the unique index and the locking read below then always has a row to lock.
+        $state ??= UnknownUserLoginAttempt::firstOrCreate( [ 'username' => $username ] );
+
+        DB::transaction( function() use ( $state ) {
+            // effectively a refresh() on $state, but takes values from the locking read.
+            $locked = $state->newQuery()->whereKey( $state->getKey() )->lockForUpdate()->firstOrFail();
+            $state->setRawAttributes( $locked->getAttributes(), true );
+
+            if( !$state->password_last_fail_at || $state->password_last_fail_at->lt( PasswordLockoutPolicy::expiryCutoff() ) ) {
+                $state->password_fail_count = 0;
+                $state->no_login_until      = null;
+
+                if( $state instanceof User ) {
+                    $state->logins_throttled_notified_at = null;
+                }
+            }
+
+            $state->password_fail_count++;
+            $state->password_last_fail_at = now();
+            if( $noLoginUntil = PasswordLockoutPolicy::noLoginUntil( $state->password_fail_count ) ) {
+                $state->no_login_until = $noLoginUntil;
+            }
+            $state->save();
+        } );
+
+        // The notification email to a real user is sent by the SendLoginsThrottledNotifications job, not here,
+        // so that this request does the same work whether or not the username exists.
+        if( $state->password_fail_count === PasswordLockoutPolicy::threshold() ) {
+            Log::warning( 'Throttled logins to [' . $username . '] (client IP: ' . ixp_get_client_ip() . ') due to failed login attempts.' );
+        }
+
+        return $state;
     }
 }

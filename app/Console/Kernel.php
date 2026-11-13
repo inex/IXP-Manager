@@ -27,7 +27,9 @@ use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use IXP\Jobs\SendApiKeyExpiryReminders;
 use IXP\Jobs\SendAppPasswordExpiryReminders;
+use IXP\Jobs\SendLoginsThrottledNotifications;
 use IXP\Models\TaskLastRun;
+use IXP\Models\UnknownUserLoginAttempt;
 
 class Kernel extends ConsoleKernel
 {
@@ -50,6 +52,10 @@ class Kernel extends ConsoleKernel
 
         $schedule->job( new SendApiKeyExpiryReminders() )->dailyAt( '10:00' );
         $schedule->job( new SendAppPasswordExpiryReminders() )->dailyAt( '10:00' );
+
+        // Login throttling: email users whose logins were throttled, and drop expired state for unknown usernames.
+        $schedule->job( new SendLoginsThrottledNotifications() )->everyMinute();
+        $schedule->command( 'model:prune', [ '--model' => [ UnknownUserLoginAttempt::class ] ] )->dailyAt( '3:16' );
         
         // Grapher - https://docs.ixpmanager.org/latest/grapher/mrtg/#inserting-traffic-data-into-the-database-reporting-emails
         $schedule->command( 'grapher:upload-stats-to-db' )->dailyAt( '2:00' )

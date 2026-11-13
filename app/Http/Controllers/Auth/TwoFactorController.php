@@ -28,10 +28,12 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\RateLimiter;
+use IXP\Events\Auth\TwoFactorLocked;
 use IXP\Http\Requests\Auth\VerifyTwoFactorToken;
 use IXP\Models\User;
+use IXP\Models\User2FA;
 use IXP\Services\Auth\Google2FAAuthenticator;
 use IXP\Utils\View\Alert\Alert;
 use IXP\Utils\View\Alert\Container as AlertContainer;
@@ -64,22 +66,23 @@ class TwoFactorController
         // A 2FA challenge is required. If this user is locked out from too many failed
         // attempts, do not even evaluate the OTP - log them out and send them to login.
         if( $this->isLockedOut( $user ) ) {
-            return $this->lockoutResponse( $user );
+            Log::warning( 'Two factor attempt refused for user [' . $user->username . '] from IP [' . ixp_get_client_ip() . '] - two factor authentication is locked' );
+            return $this->sendLockoutResponse();
         }
 
         // Perform the 2FA token check.
         if( !$authenticator->isAuthenticated() ) {
-            RateLimiter::hit( $this->failedAttemptsKey( $user ), $this->lockoutMinutes() * 60 );
+            $this->incrementFailedAttempts( $user );
 
             if( $this->isLockedOut( $user ) ) {
-                return $this->lockoutResponse( $user );
+                return $this->sendLockoutResponse();
             }
 
             AlertContainer::push( "The one time password entered was wrong.", Alert::DANGER );
             return redirect()->back();
         }
 
-        RateLimiter::clear( $this->failedAttemptsKey( $user ) );
+        $this->resetFailedAttempts( $user );
 
         return redirect()->intended('');
     }
@@ -89,49 +92,44 @@ class TwoFactorController
         return !$user->user2FA || !$user->user2FA->isEnabled() || $authenticator->canPassWithoutOtp();
     }
 
+    private function isLockedOut( User $user ): bool
+    {
+        return $user->user2FA?->fail_count >= config('auth.lockout.two_factor_attempts');
+    }
+
+    private function incrementFailedAttempts(User $user): void
+    {
+        $user2fa = $user->user2FA;
+        DB::transaction( function () use ($user2fa) {
+            // effectively a refresh() on $user2fa, but takes values from the locking read.
+            $locked = User2FA::whereId( $user2fa->id )->lockForUpdate()->firstOrFail();
+            $user2fa->setRawAttributes( $locked->getAttributes(), true );
+            $user2fa->fail_count++;
+            $user2fa->save();
+        } );
+
+        if ($user2fa->fail_count === config('auth.lockout.two_factor_attempts')) {
+            event( new TwoFactorLocked( $user ) );
+        }
+    }
+
     /**
-     * Cache key for counting failed OTP attempts for a user.
-     *
-     * Keyed by user (not session / IP) so an attacker holding the password cannot
-     * reset the counter by logging in again or rotating IP addresses.
+     * Reset 2FA lockout state
      */
-    protected function failedAttemptsKey( User $user ): string
+    private function resetFailedAttempts( User $user ): void
     {
-        return '2fa:failed-otp:user:' . $user->id;
-    }
-
-    protected function maxAttempts(): int
-    {
-        return max( 1, config( 'google2fa.ixpm_max_failed_attempts' ) );
-    }
-
-    protected function lockoutMinutes(): int
-    {
-        return max( 1, config( 'google2fa.ixpm_lockout_minutes' ) );
-    }
-
-    protected function isLockedOut( User $user ): bool
-    {
-        return RateLimiter::tooManyAttempts( $this->failedAttemptsKey( $user ), $this->maxAttempts() );
+        $user->user2FA->resetLockoutState();
     }
 
     /**
      * Log the user out (also cycling any remember me token) and push them back to the login form.
      */
-    protected function lockoutResponse( User $user ): RedirectResponse
+    private function sendLockoutResponse(): RedirectResponse
     {
-        $minutes = (int)ceil( RateLimiter::availableIn( $this->failedAttemptsKey( $user ) ) / 60 );
-
-        Log::warning( sprintf(
-            '2FA: user %s (id %d) locked out after %d failed one time password attempts (from %s)',
-            $user->username, $user->id, $this->maxAttempts(), ixp_get_client_ip()
-        ) );
-
         Auth::logout();
 
         AlertContainer::push(
-            "Too many failed two factor authentication attempts. You have been logged out - "
-            . "please try again in " . max( 1, $minutes ) . " minute(s).",
+            "Too many failed two factor authentication attempts. You have been logged out. See your email for more info",
             Alert::DANGER
         );
 

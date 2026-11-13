@@ -117,4 +117,61 @@ class UserModelTest extends TestCase
         $this->assertEquals($expected->privs, $c2u->privs);
         $this->assertEquals($expected->privs, $user->privs());
     }
+
+    /**
+     * regression test: the query was sorting, but using an ambiguous column name
+     * this test catches it.
+     */
+    public function testUserCustomers(): void
+    {
+        $user = new User();
+        $user->save();
+
+        $this->assertEquals(0, $user->customers()->count());
+        $this->assertFalse($user->customers()->exists());
+
+        $customer = new Customer();
+        $customer->save();
+
+        $c2u = new CustomerToUser();
+        $c2u->privs       = User::AUTH_SUPERUSER;
+        $c2u->user_id     = $user->id;
+        $c2u->customer_id = $customer->id;
+        $c2u->save();
+
+        $this->assertEquals(1, $user->customers()->count());
+        $this->assertTrue($user->customers()->exists());
+    }
+
+    /**
+     * A reset must clear what is stored, even when this instance was loaded before the count was raised
+     * elsewhere and so has nothing to change itself.
+     */
+    public function testResetLockoutStateClearsStateRaisedAfterTheModelWasLoaded(): void
+    {
+        $stale = $this->getSuperUser();
+        $this->assertEquals( 0, $stale->password_fail_count );
+
+        $other = User::findOrFail( $stale->id );
+        $other->password_fail_count          = 6;
+        $other->no_login_until               = now()->addMinutes( 2 );
+        $other->password_last_fail_at        = now();
+        $other->logins_throttled_notified_at = now();
+        $other->save();
+
+        $stale->name = 'unsaved change';
+        $this->assertTrue( $stale->resetLockoutState() );
+
+        $fresh = User::findOrFail( $stale->id );
+        $this->assertEquals( 0, $fresh->password_fail_count );
+        $this->assertNull( $fresh->no_login_until );
+        $this->assertNull( $fresh->password_last_fail_at );
+        $this->assertNull( $fresh->logins_throttled_notified_at );
+
+        // other attributes of the instance are neither saved nor lost
+        $this->assertNotEquals( 'unsaved change', $fresh->name );
+        $this->assertEquals( 'unsaved change', $stale->name );
+        $this->assertTrue( $stale->isDirty( 'name' ) );
+        $this->assertFalse( $stale->isDirty( 'password_fail_count' ) );
+    }
 }

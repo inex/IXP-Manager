@@ -79,17 +79,6 @@ return [
      */
     'qrcode_image_backend' => Constants::QRCODE_IMAGE_BACKEND_SVG,
 
-
-    /*
-     * IXP Manager: brute force protection for one time passwords.
-     *
-     * After this many failed OTP attempts the user is logged out and cannot attempt
-     * 2FA again (even after re-entering their password) until the lockout expires.
-     * Counted per user across all sessions and IP addresses.
-     */
-    'ixpm_max_failed_attempts' => (int) env( '2FA_MAX_FAILED_ATTEMPTS', 5 ),
-    'ixpm_lockout_minutes'     => (int) env( '2FA_LOCKOUT_MINUTES', 15 ),
-
     /*
      * Require 2FA authentication for IXP users >= this level.
      *

@@ -24,7 +24,7 @@ declare(strict_types=1);
 
 namespace Tests\Listeners\Auth;
 
-use Auth;
+use Illuminate\Support\Facades\Auth;
 use IXP\Listeners\Auth\Google2FALoginSucceeded;
 use IXP\Models\UserRememberToken;
 use Illuminate\Http\Request;

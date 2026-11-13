@@ -135,4 +135,36 @@ return [
         'enabled'   => env( 'AUTH_PEERINGDB_ENABLED', false ),
         'privs'     => env( 'AUTH_PEERINGDB_PRIVS',   User::AUTH_CUSTUSER ),
     ],
+
+    /**
+     * Make a failed login attempt take this long to respond. Should be sufficient to swallowed up timing differences.
+     * (Failed login currently takes approx ~400ms on local machine or lightly less)
+     */
+    'failed_login_min_duration' => 1_200_000,
+
+    'lockout' => [
+        /**
+         * The number of failed password attempts before the user account is throttled.
+         * Defaults to 5 attempts.
+         */
+        'password_attempts'   => max(1, (int) env('AUTH_LOCKOUT_PASSWORD_ATTEMPTS', 5) ),
+
+        /**
+         * The longest duration allowed between login attempts when logins are throttled.
+         * Defaults to 15 minutes.
+         */
+        'max_login_throttle'  => max(1, (int) env('AUTH_LOCKOUT_MAX_LOGIN_THROTTLE', 15) ),
+
+        /**
+         * Minutes after which failed password attempts no longer count. A failure after this long
+         * starts the count again from one. Values below max_login_throttle are raised to it.
+         * Defaults to 24 hours.
+         */
+        'password_attempts_expiry' => max(1, (int) env('AUTH_LOCKOUT_PASSWORD_ATTEMPTS_EXPIRY', 1440) ),
+
+        /**
+         * The maximum number of login attempts before the user account is locked. Defaults to 5 attempts.
+         */
+        'two_factor_attempts' => max(1, (int) env('AUTH_LOCKOUT_2FA_ATTEMPTS', 5) ),
+    ]
 ];

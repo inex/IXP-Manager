@@ -24,6 +24,8 @@ declare(strict_types=1);
 
 namespace Tests\Browser;
 
+use IXP\Models\Customer;
+use IXP\Models\CustomerToUser;
 use IXP\Models\User;
 use IXP\Models\User2FA;
 use IXP\Models\UserRememberToken;
@@ -601,7 +603,118 @@ class User2FAControllerTest extends DuskTestCase
             $browser->type('one_time_password', $otp)
                 ->press('Authenticate')
                 ->waitForLocation( '/admin/validation/start' );
-        });
+        } );
+    }
+
+    public function testReset2FALockoutState(): void
+    {
+        $this->browse( function( Browser $browser ) {
+            $browser->resize( 1600, 1200 )
+                ->visit( '/logout' )
+                ->visit( '/login' )
+                ->type( 'username', 'travis' )
+                ->type( 'password', 'travisci' )
+                ->press( '#login-btn' )
+                ->waitForLocation( '/admin/dashboard' );
+
+            $targetUser = User::whereUsername('imcustadmin')->firstOrFail();
+            $user2FA = User2FA::setupForUser($targetUser, 'secret');
+            $user2FA->fail_count = config('auth.lockout.two_factor_attempts');
+            $user2FA->save();
+
+            $browser->visit('/user/list');
+            $element = $browser->element('#lockout-state-' . $targetUser->id);
+            $this->assertNotNull($element, "should have flag icon for lockout state");
+            $this->assertEquals('2FA', $element->getText());
+
+            $browser->click("#d2f-more-options-" . $targetUser->id)
+                ->waitForText("Reset 2FA lockout state")
+                ->click("#d2f-option-reset-2fa-lockout-state-" . $targetUser->id)
+                ->waitForText("Do you really want to reset the 2FA failure count for this user?")
+                ->press("Reset")
+                ->waitForLocation("/user/list")
+                ->assertSee("2FA lockout state reset for " . $targetUser->username);
+
+            $targetUser->refresh();
+            $this->assertEquals(0, $targetUser->password_fail_count);
+        } );
+    }
+
+    public function testReset2FALockoutStateCustadmin(): void
+    {
+        $this->browse( function( Browser $browser ) {
+            $browser->resize( 1600, 1200 )
+                ->visit( '/logout' )
+                ->visit( '/login' )
+                ->type( 'username', 'imcustadmin' )
+                ->type( 'password', 'travisci' )
+                ->press( '#login-btn' )
+                ->waitForLocation( '/dashboard' );
+
+            $targetUser = User::whereUsername('imcustuser')->firstOrFail();
+            $user2FA = User2FA::setupForUser($targetUser, 'secret');
+            $user2FA->fail_count = config('auth.lockout.two_factor_attempts');
+            $user2FA->save();
+
+            $browser->visit('/user/list');
+            $element = $browser->element('#lockout-state-' . $targetUser->id);
+            $this->assertNotNull($element, "should have flag icon for lockout state");
+            $this->assertEquals('2FA', $element->getText());
+
+            $browser->click("#d2f-more-options-" . $targetUser->id)
+                ->waitForText("Reset 2FA lockout state")
+                ->click("#d2f-option-reset-2fa-lockout-state-" . $targetUser->id)
+                ->waitForText("Do you really want to reset the 2FA failure count for this user?")
+                ->press("Reset")
+                ->waitForLocation("/user/list")
+                ->assertSee("2FA lockout state reset for " . $targetUser->username);
+
+            $targetUser->refresh();
+            $this->assertEquals(0, $targetUser->password_fail_count);
+        } );
+    }
+
+    public function testCustAdminCannotReset2FAWhenSubjectHasMultipleCustomers(): void
+    {
+        $this->browse( function( Browser $browser ) {
+            $browser->resize( 1600, 1200 )
+                ->visit( '/logout' )
+                ->visit( '/login' )
+                ->type( 'username', 'imcustadmin' )
+                ->type( 'password', 'travisci' )
+                ->press( '#login-btn' )
+                ->waitForLocation( '/dashboard' );
+
+            $targetUser = User::whereUsername('imcustuser')->firstOrFail();
+            $user2FA = User2FA::setupForUser($targetUser, 'secret');
+            $user2FA->fail_count = config('auth.lockout.two_factor_attempts');
+            $user2FA->save();
+
+            $otherCustomer = new Customer();
+            $otherCustomer->save();
+
+            $c2u = new CustomerToUser();
+            $c2u->user_id = $targetUser->id;
+            $c2u->customer_id = $otherCustomer->id;
+            $c2u->privs = User::AUTH_CUSTUSER;
+            $c2u->save();
+
+            $browser->visit('/user/list');
+            $element = $browser->element('#lockout-state-' . $targetUser->id);
+            $this->assertNotNull($element, "should have flag icon for lockout state");
+            $this->assertEquals('2FA', $element->getText());
+
+            $browser->click("#d2f-more-options-" . $targetUser->id)
+                ->waitForText("Reset 2FA lockout state")
+                ->click("#d2f-option-reset-2fa-lockout-state-" . $targetUser->id)
+                ->waitForText("Do you really want to reset the 2FA failure count for this user?")
+                ->press("Reset")
+                ->waitForLocation("/user/list")
+                ->assertSee("{$targetUser->username} is associated with multiple customers - their 2FA can only be unlocked by support.");
+
+            $targetUser->refresh();
+            $this->assertEquals(0, $targetUser->password_fail_count);
+        } );
     }
 
 }

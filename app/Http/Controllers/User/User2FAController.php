@@ -23,8 +23,10 @@ namespace IXP\Http\Controllers\User;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Auth, Hash;
-
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Hash;
+use IXP\Http\Requests\User\ResetTwoFactorLockoutRequest;
 use IXP\Services\Auth\UserRememberTokenService;
 use IXP\Models\{
     User,
@@ -151,6 +153,34 @@ class User2FAController extends Controller
         $rememberTokenService->resetIs2faCompleteForTokens( $user );
 
         AlertContainer::push( "2FA successfully deleted for {$user->username}.", Alert::SUCCESS );
+        return redirect( route('user@list' ) );
+    }
+
+    /**
+     * Reset any 2FA lockout state for a user.
+     */
+    public function resetLockoutState( ResetTwoFactorLockoutRequest $r, User $user ): RedirectResponse
+    {
+        // Form Request takes care of authorization logic
+
+        // This next check is business logic we want to inform the user about - while custadmins can reset 2FA for
+        // users in their customer account, they cannot reset 2FA of an account that is a member of multiple customers.
+        if ( Auth::user()->isCustAdmin() ) {
+            if ( $user->customers()->count() > 1 ) {
+                AlertContainer::push( "{$user->username} is associated with multiple customers - their 2FA can only be unlocked by support.", Alert::WARNING );
+                return redirect()->route('user@list' );
+            }
+        }
+
+        if ( !$user->user2FA ) {
+            AlertContainer::push( "This user does not have 2FA enabled", Alert::WARNING );
+            return redirect()->route('user@list' );
+        }
+
+        $user->user2FA->resetLockoutState();
+        Log::notice( "User 2FA lockout state reset by " . Auth::user()->username . " for " . $user->username );
+
+        AlertContainer::push( "2FA lockout state reset for {$user->username}.", Alert::SUCCESS );
         return redirect( route('user@list' ) );
     }
 

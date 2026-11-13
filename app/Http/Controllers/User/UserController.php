@@ -23,12 +23,18 @@ namespace IXP\Http\Controllers\User;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Auth, Former, Hash, Log, Mail;
+use Former;
 
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Routing\Redirector;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\{
+    Auth,
+    DB,
+    Hash,
+    Log,
+    Mail
+};
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 
@@ -42,11 +48,11 @@ use IXP\Events\User\UserCreated as UserCreatedEvent;
 use IXP\Http\Controllers\Controller;
 
 use IXP\Http\Requests\User\{
-    CheckEmail      as CheckEmailRequest,
-    Delete          as DeleteRequest,
-    Store           as StoreUser,
-    Update          as UpdateUser,
-};
+    CheckEmail as CheckEmailRequest,
+    Delete as DeleteRequest,
+    ResetPasswordLockoutRequest,
+    Store as StoreUser,
+    Update as UpdateUser};
 
 use IXP\Mail\User\UserCreated as UserCreatedeMailable;
 
@@ -56,6 +62,8 @@ use IXP\Models\{
     CustomerToUser,
     User
 };
+
+use IXP\Services\Auth\PasswordLockoutPolicy;
 
 use IXP\Utils\View\Alert\{
     Alert,
@@ -88,7 +96,7 @@ class UserController extends Controller
     }
 
     /**
-     * Get tge list of user Depending on the Privilege
+     * Get the list of user Depending on the Privilege
      *
      * @param User|null $u
      *
@@ -105,14 +113,20 @@ class UserController extends Controller
                         u.disabled as disabled, 
                         u.peeringdb_id as peeringdb_id,
                         u.updated_at AS lastupdated,
-                        u.creator as creator, 
+                        u.creator as creator,
+                        IF( u.password_last_fail_at >= ?, u.password_fail_count, 0 ) as password_fail_count,
+                        IF( u.no_login_until > ?, 1, 0 ) as password_throttled,
                         c.id as custid, 
                         c.name as customer,
                         COUNT( c2u.id ) as nbC2U,
                         MAX( c2u.privs ) as privileges,
                         c2u.id as c2uid,
                         u2fa.enabled as u2fa_enabled,
-                        u2fa.id as psid ' )
+                        u2fa.fail_count as u2fa_fail_count,
+                        u2fa.id as psid ',
+            // A failed password count older than the expiry window no longer counts, but stays stored until the
+            // next failure, so it is expired here too. Logins are throttled only while no_login_until is in the future.
+            [ PasswordLockoutPolicy::expiryCutoff(), now() ] )
             ->from( 'user AS u' )
             ->leftJoin( 'cust AS c', 'c.id', 'u.custid' )
             ->leftJoin( 'customer_to_users AS c2u', 'c2u.user_id', 'u.id' )
@@ -506,6 +520,21 @@ class UserController extends Controller
         }
 
         return redirect( route( "user@list" ) );
+    }
+
+
+    /**
+     * Reset any password lockout state for a user
+     */
+    public function resetPasswordLockoutState( ResetPasswordLockoutRequest $r, User $user ): RedirectResponse
+    {
+        // Form Request takes care of authorization logic (only allow admins)
+
+        $user->resetLockoutState();
+        Log::notice( "User password lockout state reset by " . Auth::user()->username . " for " . $user->username );
+
+        AlertContainer::push( "Password lockout state reset for {$user->username}.", Alert::SUCCESS );
+        return redirect( route('user@list' ) );
     }
 
     /**

@@ -86,29 +86,9 @@ class Google2FATest extends TestCase
     /**
      * Provide custom configuration early so 2FA routes are registered
      */
-    #[\Override]
-    public function createApplication(): Application
+    public function postBootstrapLoadConfigurationHook( Application $app ): void
     {
-        // Set the configuration after it is loaded but before the service providers boot and
-        // register routes. Unlike environment variables, this cannot be shadowed by state left
-        // behind by other tests in the same process.
-        date_default_timezone_set( 'Europe/Dublin' );
-
-        if( !defined( 'LARAVEL_START' ) ) {
-            define( 'LARAVEL_START', microtime( true ) );
-        }
-
-        $app = require __DIR__ . '/../../../bootstrap/app.php';
-
-        $app->afterBootstrapping( LoadConfiguration::class, function( Application $app ) {
-            $app['config']->set( self::BOOT_CONFIG );
-        } );
-
-        $app->make( ConsoleKernel::class )->bootstrap();
-
-        Hash::setRounds( 4 );
-
-        return $app;
+        $app['config']->set( [ 'google2fa.enabled' => true ] );
     }
 
     /**

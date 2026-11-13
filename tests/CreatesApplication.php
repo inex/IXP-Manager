@@ -1,8 +1,4 @@
 <?php
-declare(strict_types = 1);
-
-namespace Tests;
-
 /*
  * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
@@ -24,7 +20,12 @@ namespace Tests;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+declare(strict_types=1);
+
+namespace Tests;
+
 use Illuminate\Foundation\Application;
+use Illuminate\Foundation\Bootstrap\LoadConfiguration;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Contracts\Console\Kernel;
 
@@ -54,6 +55,13 @@ trait CreatesApplication
         }
 
         $app = require __DIR__ . '/../bootstrap/app.php';
+
+        // Allow tests to hook into the configuration loading process
+        if ( method_exists( $this, 'postBootstrapLoadConfigurationHook' ) ) {
+            $app->afterBootstrapping( LoadConfiguration::class, function( Application $app ) {
+                $this->postBootstrapLoadConfigurationHook( $app );
+            } );
+        }
 
         $app->make( Kernel::class )->bootstrap();
 

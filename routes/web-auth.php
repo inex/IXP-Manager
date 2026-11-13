@@ -179,6 +179,8 @@ if( config( 'google2fa.enabled' ) ) {
         Route::get('configure', 'User2FAController@configure'   )->name('2fa@configure'     );
         Route::post('enable',   'User2FAController@enable'      )->name( "2fa@enable"       );
         Route::post('disable',  'User2FAController@disable'     )->name( "2fa@disable"      );
+
+        Route::post('reset-lockout-state/{user}',  'User2FAController@resetLockoutState'     )->name( "2fa@reset-lockout-state"      );
     } );
 
     Route::group( [ 'namespace' => 'Auth', 'prefix' => '2fa' ], function () {

@@ -48,4 +48,6 @@
 <?php endif; ?>
 
 <?= $t->insert( 'user/js/delete-2fa' ); ?>
+<?= $t->insert( 'user/js/reset-2fa-lockout-state' ); ?>
+<?= $t->insert( 'user/js/reset-password-lockout-state' ); ?>
 

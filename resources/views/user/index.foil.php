@@ -101,6 +101,21 @@
                                     <span class="badge badge-danger">2FA</span>
                                 <?php endif; ?>
 
+                                <?php if ( $u[ 'password_throttled' ] || ( config('google2fa.enabled') && $u[ 'u2fa_fail_count' ] >= config( 'auth.lockout.two_factor_attempts' ) ) ): ?>
+                                    <span id="lockout-state-<?= $u['id'] ?>" class="badge badge-danger"><i class="fa fa-lock"></i>
+                                        <?php
+                                        $locks = [];
+                                        if ( $u[ 'password_throttled' ] ) {
+                                            $locks[] = 'PW';
+                                        }
+                                        if ( $u[ 'u2fa_fail_count' ] >= config( 'auth.lockout.two_factor_attempts' ) ) {
+                                            $locks[] = '2FA';
+                                        }
+                                        ?>
+                                        <?= implode( ' + ', $locks ) ?>
+                                    </span>
+                                <?php endif; ?>
+
                                 <?php if( config( 'auth.peeringdb.enabled' ) && $u['peeringdb_id'] ): ?>
                                     <span class="badge badge-info">OAuth</span>
                                 <?php endif; ?>
@@ -150,6 +165,29 @@
                                                     Remove 2FA
                                                 </a>
                                             <?php endif; ?>
+
+                                            <?php if( $u['password_fail_count'] > 0 ): ?>
+                                                <a id="d2f-option-reset-password-lockout-state-<?= $u[ 'id' ] ?>" class="dropdown-item reset-password-lockout-state" href="<?= route('user@reset-password-lockout-state', [ 'user' => $u[ 'id' ] ] ) ?>">
+                                                    Reset password lockout state
+                                                </a>
+                                            <?php endif;?>
+
+                                            <?php if( config('google2fa.enabled') && $u['u2fa_fail_count'] > 0 ): ?>
+                                                <a id="d2f-option-reset-2fa-lockout-state-<?= $u[ 'id' ] ?>" class="dropdown-item reset-2fa-lockout-state" href="<?= route('2fa@reset-lockout-state', [ 'user' => $u[ 'id' ] ] ) ?>">
+                                                    Reset 2FA lockout state
+                                                </a>
+                                            <?php endif;?>
+                                        </ul>
+
+                                    <?php elseif ( Auth::user()->isCustAdmin() && (config('google2fa.enabled') && $u[ 'u2fa_fail_count' ] >= config( 'auth.lockout.two_factor_attempts' ) ) ): ?>
+                                    <?php // This dropdown contains a single button that's only there when specific conditions are met. Check them before creating the dropdown. ?>
+                                        <button id="d2f-more-options-<?= $u[ 'id' ] ?>" type="button" class="btn btn-white dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
+                                        <ul class="dropdown-menu dropdown-menu-right">
+                                            <?php if( $u['u2fa_fail_count'] > 0 ): ?>
+                                                <a id="d2f-option-reset-2fa-lockout-state-<?= $u[ 'id' ] ?>" class="dropdown-item reset-2fa-lockout-state" href="<?= route( '2fa@reset-lockout-state', [ 'user' => $u[ 'id' ] ] ) ?>">
+                                                    Reset 2FA lockout state
+                                                </a>
+                                            <?php endif;?>
                                         </ul>
                                     <?php endif;?>
                                 </div>
@@ -164,7 +202,7 @@
     <div class="tw:mt-16 tw:border-2 tw:border-gray-400 tw:rounded-lg">
         <p class="tw:p-6 tw:m-0">
             <b>Privileges:</b> CU - Cust User; CA - Cust Admin; SU - Super User.<br>
-            <b>Flags:</b> <span class="badge badge-success">2FA</span> - Two-factor authentication is enabled; <span class="badge badge-success">OAuth</span> - user created via PeeringDB OAuth.<br>
+            <b>Flags:</b> <span class="badge badge-success">2FA</span> - Two-factor authentication is enabled; <span class="badge badge-success">OAuth</span> - user created via PeeringDB OAuth; <span class="badge badge-danger"><i class="fa fa-lock"></i>PW</span> - user's login is throttled due to recent failed password attempts; <span class="badge badge-danger"><i class="fa fa-lock"></i>2FA</span> - user's 2FA is locked because of <?= config('auth.lockout.two_factor_attempts') ?> failed attempts. <br>
             <b>Disabled Users:</b> - identified with <span class="badge badge-danger">X</span> badge beside username.
         </p>
     </div>
