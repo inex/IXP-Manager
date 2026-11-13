@@ -33,7 +33,7 @@
             <div class="card">
                 <div class="card-header tw:flex">
                     <div class="mr-auto">
-                        Details for User (DB ID: <?= $t->u[ 'id' ] ?>
+                        Details for User (DB ID: <?= $t->u[ 'id' ] ?>)
                     </div>
 
                     <?php if( !config( 'ixp_fe.frontend.disabled.logs' ) && method_exists( \IXP\Models\User::class, 'logSubject') && Auth::user()->isSuperUser() ): ?>
