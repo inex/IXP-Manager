@@ -23,13 +23,16 @@ namespace IXP\Http\Controllers\Customer;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use App, Auth, Cache, Countries, Former, Mail;
-
 use Carbon\Carbon;
+use Former\Facades\Former;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Database\Eloquent\Builder;
 
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use IXP\Exceptions\GeneralException;
 use IXP\Utils\CountryUtils;
 use Illuminate\Http\{
@@ -71,6 +74,7 @@ use IXP\Utils\View\Alert\{
 };
 
 use IXP\Services\Grapher;
+use Webpatser\Countries\CountriesFacade as Countries;
 
 /**
  * Customer Controller
@@ -564,8 +568,6 @@ class CustomerController extends Controller
                 'c'                     => $cust,
                 'admins'                => $cust->customerToUser()->custAdmin()->get(),
                 'netinfo'               => NetworkInfo::vlanProtocol(),
-                'identityEmail'         => config('identity.email'),
-                'identityOrgname'       => config('identity.orgname'),
             ])->render()
         ]);
     }

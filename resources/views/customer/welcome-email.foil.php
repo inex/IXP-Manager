@@ -27,7 +27,8 @@
             ?>
 
             <?= Former::text( 'to' )
-                ->label( 'To' );
+                ->label( 'To' )
+                ->required();
             ?>
 
             <?= Former::text( 'cc' )
@@ -39,7 +40,8 @@
             ?>
 
             <?= Former::text( 'subject' )
-                ->label( 'Subject' );
+                ->label( 'Subject' )
+                ->required();
             ?>
 
             <div class="col-lg-offset-2 col-sm-offset-2">
@@ -57,7 +59,7 @@
 
                     <div class="tab-content card-body">
                         <div role="tabpanel" class="tab-pane show active" id="body">
-                            <textarea class="bootbox-input bootbox-input-textarea form-control" style="font-family:monospace;" rows="30" id="message" name="message"><?= old( 'message' ) ?? $t->body ?></textarea>
+                            <textarea class="bootbox-input bootbox-input-textarea form-control" style="font-family:monospace;" rows="30" id="message" name="message"><?= old( 'message' ) === null ? $t->body : $t->ee( old( 'message' ) ) ?></textarea>
                         </div>
                         <div role="tabpanel" class="tab-pane" id="preview">
                             <div class="bg-light p-4 well-preview">

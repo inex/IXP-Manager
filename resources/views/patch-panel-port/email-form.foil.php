@@ -22,7 +22,8 @@ $this->layout( 'layouts/ixpv4' );
             ->actionButtonsCustomClass( "grey-box");
         ?>
         <?= Former::text( 'email_to' )
-            ->label( 'To' );
+            ->label( 'To' )
+            ->required();
         ?>
 
         <?= Former::text( 'email_cc' )
@@ -34,7 +35,8 @@ $this->layout( 'layouts/ixpv4' );
         ?>
 
         <?= Former::text( 'email_subject' )
-            ->label( 'Subject' );
+            ->label( 'Subject' )
+            ->required();
         ?>
 
         <?php if( $t->emailType !== PatchPanelPort::EMAIL_LOA ): ?>
@@ -61,7 +63,7 @@ $this->layout( 'layouts/ixpv4' );
 
                 <div class="tab-content card-body">
                     <div role="tabpanel" class="tab-pane show active" id="body">
-                        <textarea class="form-control" style="font-family:monospace;" rows="30" id="email_text" name="email_text"><?= $t->ee( $t->body )?></textarea>
+                        <textarea class="form-control" style="font-family:monospace;" rows="30" id="email_text" name="email_text"><?= old( 'email_text' ) === null ? $t->body : $t->ee( old( 'email_text' ) ) ?></textarea>
                     </div>
                     <div role="tabpanel" class="tab-pane" id="preview">
                         <div class="bg-light p-4 well-preview">

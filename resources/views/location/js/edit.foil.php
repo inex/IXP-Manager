@@ -17,7 +17,7 @@
                 <?php if( $t->data[ 'params'][ 'object' ] && $t->data[ 'params'][ 'object' ]->pdb_facility_id ): ?>
                     selectedpdb = <?= $t->data[ 'params'][ 'object' ]->pdb_facility_id ?>;
                 <?php elseif( Request::old('pdb_facility_id' ) ): ?>
-                    selectedpdb = <?= Request::old('pdb_facility_id' ) ?>;
+                    selectedpdb = <?= (int)Request::old( 'pdb_facility_id' ) ?>;
                 <?php else: ?>
                     selectedpdb = false;
                 <?php endif; ?>

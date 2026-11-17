@@ -75,7 +75,7 @@ use Illuminate\Support\Js;
         // if the protocol is not set to 'all'
         // if we have a peer selected and it is not 'all peers'
         if( dd_protocol.val() !== '' && dd_peer.val() !== null && dd_peer.val() !== '0' && dd_peer.val() !== ''  ) {
-            let old = '<?= old( 'received_prefix' ) ?>';
+            let old = <?= Js::from( old( 'received_prefix', '' ) ) ?>;
             getPrefixes( dd_peer.val(), 'received', old );
         } else {
             // otherwise create the prefix as input text and disable it
@@ -92,8 +92,7 @@ use Illuminate\Support\Js;
     function setAdvertisePrefixes() {
         // if protocol is not 'all', get the prefixes
         if( dd_protocol.val() !== '' ) {
-            let old = <?= Js::from( old( 'advertised_prefix' ) ) ?>;
-            console.log(old);
+            let old = <?= Js::from( old( 'advertised_prefix', '' ) ) ?>;
             getPrefixes( <?= $this->c->id ?>, 'advertised', old );
         } else {
             // if protocol is 'all', create the prefix as input text and disable it
