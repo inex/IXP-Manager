@@ -22,7 +22,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Http\Requests\Docstore;
+namespace Tests\Http\Requests\DocstoreCustomer;
 
 use Illuminate\Foundation\Testing\TestCase;
 use IXP\Http\Requests\Docstore\StoreDocstoreFileRequest;
