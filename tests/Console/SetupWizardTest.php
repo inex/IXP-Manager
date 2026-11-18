@@ -35,13 +35,16 @@ use IXP\Models\Infrastructure;
 use IXP\Models\User;
 use PHPUnit\Framework\Attributes\WithEnvironmentVariable;
 use Tests\CreatesApplication;
+use Tests\Trait\SetsPasswordPolicy;
+
 /**
- * This test covers the setup wizard
+ * This test covers the setup wizard. Doesn't use normal TestCase which seeds the database.
  */
 class SetupWizardTest extends TestCase
 {
     use CreatesApplication;
     use RefreshDatabase;
+    use SetsPasswordPolicy;
 
     #[\Override]
     public static function setUpBeforeClass(): void
@@ -465,6 +468,66 @@ class SetupWizardTest extends TestCase
         ;
 
         $this->assertDatabaseCount( Customer::class, 0 );
+    }
+
+    public function testImplementsPasswordPolicy(): void
+    {
+        $args = [
+            '--ixp-shortname' => 'SCIX2',
+            '--admin-name' => 'Mr Bloggy',
+            '--admin-username' => 'bloggy',
+            '--admin-password' => 'abcd',
+            '--admin-email' => 'bloggy@ixp.local',
+            '--asn' => '1234',
+        ];
+        $this->artisan("ixp-manager:setup-wizard", $args)
+            ->expectsQuestion("Do you want to continue?", "yes")
+            ->assertExitCode(2)
+            ->expectsOutput("The following errors occurred:")
+            ->expectsOutput("\tThe admin-password must be at least 8 characters.")
+        ;
+
+        $this->setPasswordPolicy( 9 );
+
+        $this->artisan("ixp-manager:setup-wizard", $args)
+            ->expectsQuestion("Do you want to continue?", "yes")
+            ->assertExitCode(2)
+            ->expectsOutput("The following errors occurred:")
+            ->expectsOutput("\tThe admin-password must be at least 9 characters.")
+        ;
+    }
+
+    public function testGeneratedPasswordRespectsPasswordPolicy(): void
+    {
+        $this->artisan("ixp-manager:setup-wizard", [
+            '--ixp-shortname' => 'SCIX2',
+            '--admin-name' => 'Mr Bloggy',
+            '--admin-username' => 'bloggy',
+            '--admin-email' => 'bloggy@ixp.local',
+            '--asn' => '1234',
+        ])
+            ->expectsQuestion("Do you want to continue?", "yes")
+            ->expectsQuestion("Is this information correct, and do you want to continue to create the database objects?", "yes")
+            ->assertExitCode(0)
+        ;
+    }
+
+    public function testGeneratedPasswordRespectsPasswordPolicyMaxLength(): void
+    {
+        // Create a condition where we have to defer to the maximum when generating a random password!
+        $this->setPasswordPolicy(72, 72);
+
+        $this->artisan("ixp-manager:setup-wizard", [
+            '--ixp-shortname' => 'SCIX2',
+            '--admin-name' => 'Mr Bloggy',
+            '--admin-username' => 'bloggy',
+            '--admin-email' => 'bloggy@ixp.local',
+            '--asn' => '1234',
+        ])
+            ->expectsQuestion("Do you want to continue?", "yes")
+            ->expectsQuestion("Is this information correct, and do you want to continue to create the database objects?", "yes")
+            ->assertExitCode(0);
+
     }
 
     private function getTableName(string $class): string

@@ -23,7 +23,6 @@ namespace IXP\Services\Auth;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Illuminate\Auth\Recaller;
 use Illuminate\Auth\SessionGuard as BaseGuard;
 
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;

@@ -27,6 +27,7 @@ use Hash, Redirect;
 
 use Illuminate\Support\Facades\Auth;
 use IXP\Models\User;
+use IXP\Utils\PasswordPolicyExplainer;
 use Illuminate\Http\{
     RedirectResponse,
     Request
@@ -64,7 +65,7 @@ class ProfileController extends Controller
      *
      * @return View
      */
-    public function edit(): View
+    public function edit(PasswordPolicyExplainer $explainer): View
     {
         /** @var User $user */
         $user = Auth::getUser();
@@ -93,6 +94,7 @@ class ProfileController extends Controller
             "details"                          =>  $details,
             "notesNotifications"               =>  $notesNotifications,
             "mailingListSubscriptions"         =>  $mailingListSubscriptions,
+            'passwordPolicy'                   =>  $explainer->explainDefault(),
         ]);
     }
 

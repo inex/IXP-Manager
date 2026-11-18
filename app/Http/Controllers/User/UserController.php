@@ -268,7 +268,7 @@ class UserController extends Controller
         // Creating the User object
         $user = new User;
         $user->creator          = $us->username;
-        $user->password         = Hash::make( Str::random(16) );
+        $user->password         = Hash::make( Str::password(32) );
         $user->name             = $r->name;
         $user->authorisedMobile = $r->authorisedMobile;
         $user->username         = strtolower( $r->username );

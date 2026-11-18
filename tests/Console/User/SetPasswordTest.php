@@ -25,9 +25,12 @@ declare(strict_types=1);
 namespace Tests\Console\User;
 
 use Tests\TestCase;
+use Tests\Trait\SetsPasswordPolicy;
 
 class SetPasswordTest extends TestCase
 {
+    use SetsPasswordPolicy;
+
     public function testSetPasswordUsingUid(): void
     {
         $user = $this->getSuperUser();
@@ -110,24 +113,6 @@ class SetPasswordTest extends TestCase
             ->expectsOutput('The passwords does not match!');
     }
 
-    public function testSetPasswordGenerated(): void
-    {
-        $user = $this->getSuperUser();
-        $oldPassword = $user->password;
-
-        $this->artisan('user:set-password', [
-            '--search' => "tra",
-        ])
-            ->expectsQuestion('Enter ID to change password for', '1')
-            ->expectsQuestion('Password or (return to have one generated)', '')
-            ->expectsOutputToContain('Generated password: ')
-            ->assertExitCode(0)
-            ->expectsOutput('Password set.');
-
-        $user->refresh();
-        $this->assertNotEquals($oldPassword, $user->password);
-    }
-
     public function testSetPasswordUsingSearchInvalidUID(): void
     {
         $user = $this->getSuperUser();
@@ -176,5 +161,60 @@ class SetPasswordTest extends TestCase
         $this->assertNull($user->no_login_until);
         $this->assertNull($user->password_last_fail_at);
         $this->assertNull($user->logins_throttled_notified_at);
+    }
+
+    public function testImplementsPasswordPolicy(): void
+    {
+        $args = [
+            '--search' => "travis",
+            '--password' => 'abcd',
+        ];
+
+        $this->artisan('user:set-password', $args)
+            ->expectsQuestion('Enter ID to change password for', '1')
+            ->assertExitCode(-1)
+            ->expectsOutput('The password must be at least 8 characters.');
+
+        $this->setPasswordPolicy( 9 );
+
+        $this->artisan('user:set-password', $args)
+            ->expectsQuestion('Enter ID to change password for', '1')
+            ->assertExitCode(-1)
+            ->expectsOutput('The password must be at least 9 characters.');
+    }
+
+    public function testGeneratedPasswordRespectsPasswordPolicy(): void
+    {
+        $user = $this->getSuperUser();
+        $oldPassword = $user->password;
+
+        $this->artisan('user:set-password', [
+            '--search' => "travis",
+        ])
+            ->expectsQuestion('Enter ID to change password for', '1')
+            ->expectsQuestion('Password or (return to have one generated)', '')
+            ->expectsOutputToContain('Generated password: ')
+            ->assertExitCode(0)
+            ->expectsOutput('Password set.');
+
+        $user->refresh();
+        $this->assertNotEquals($oldPassword, $user->password);
+
+        // Create a condition where we have to defer to the maximum when generating a random password!
+        $this->setPasswordPolicy(72, 72);
+
+        $oldPassword2 = $user->password;
+
+        $this->artisan('user:set-password', [
+            '--search' => "travis",
+        ])
+            ->expectsQuestion('Enter ID to change password for', '1')
+            ->expectsQuestion('Password or (return to have one generated)', '')
+            ->expectsOutputToContain('Generated password: ')
+            ->assertExitCode(0)
+            ->expectsOutput('Password set.');
+
+        $user->refresh();
+        $this->assertNotEquals($oldPassword2, $user->password);
     }
 }

@@ -24,25 +24,21 @@ namespace IXP\Http\Controllers\Auth;
  */
 
 use Carbon\CarbonInterval;
-use Illuminate\Support\Facades\DB;
-use Socialite, Str;
-
 use Carbon\CarbonInterface;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
-
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 use Illuminate\Support\Timebox;
+use Illuminate\Validation\Rules\Password;
 use Illuminate\Http\{
     JsonResponse,
     RedirectResponse,
     Request
 };
-
 use Illuminate\View\View;
-
 use IXP\Http\Controllers\Controller;
-
 use IXP\Models\{
     Aggregators\UserAggregator,
     Customer,
@@ -50,14 +46,12 @@ use IXP\Models\{
     UnknownUserLoginAttempt,
     User
 };
-
 use IXP\Services\Auth\PasswordLockoutPolicy;
-
 use IXP\Utils\View\Alert\{
     Alert,
     Container as AlertContainer
 };
-
+use Laravel\Socialite\Facades\Socialite;
 use Symfony\Component\HttpFoundation\RedirectResponse as RedirectResponseFoundation;
 
 /**
@@ -90,7 +84,7 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '';
+    protected string $redirectTo = '';
 
     /**
      * Minimum duration of any login request that does not end in a successful login.
@@ -150,7 +144,7 @@ class LoginController extends Controller
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function login(Request $request)
+    public function login( Request $request )
     {
         $this->validateLogin( $request );
 
@@ -222,6 +216,10 @@ class LoginController extends Controller
      */
     protected function authenticated( Request $request, User $user )
     {
+        if ($this->isPasswordInvalidUnderPolicy($request)) {
+            return $this->logout( $request, [ 'message' => "Your password no longer meets the password policy requirements. <a href='" . route("forgot-password@show-form") . "'>Reset your password to login.</a>", 'class' => Alert::WARNING ] );
+        }
+
         // Check if the user has Customer(s) linked
         if( !$user->customers()->count() ) {
             return $this->logout( $request, [ 'message' => "Your user account is not associated with any " . config( "ixp_fe.lang.customer.many" ) . ".", 'class' => Alert::DANGER ] );
@@ -257,18 +255,18 @@ class LoginController extends Controller
     /**
      * Send the response after the user was authenticated.
      */
-    protected function sendLoginResponse(Request $request): RedirectResponse|JsonResponse
+    protected function sendLoginResponse( Request $request ): RedirectResponse|JsonResponse
     {
         $request->session()->regenerate();
 
-        $this->clearLoginAttempts($request);
+        $this->clearLoginAttempts( $request );
 
-        if ($response = $this->authenticated($request, $this->guard()->user())) {
+        if ( $response = $this->authenticated( $request, $this->guard()->user() ) ) {
             return $response;
         }
 
         // Catch any unwanted 'intended url' redirects after login. For example, to logout or login form.
-        $intended = $request->session()->get('url.intended');
+        $intended = $request->session()->get( 'url.intended' );
         if ($intended !== null && $this->isForbiddenIntendedUrlRoute( $intended )) {
             $request->session()->forget('url.intended');
         }
@@ -430,6 +428,16 @@ class LoginController extends Controller
         $this->authenticated( $r, $result['user'] );
         session([ 'ixpm_external_2fa_completed' => true ]);
         return redirect('');
+    }
+
+    /**
+     * Check if the password the user logged in with no longer meets the password policy.
+     */
+    private function isPasswordInvalidUnderPolicy( Request $r ): bool
+    {
+        return $this->getValidationFactory()->make(
+            $r->only('password'), ['password' => Password::default()]
+        )->fails();
     }
 
     /**

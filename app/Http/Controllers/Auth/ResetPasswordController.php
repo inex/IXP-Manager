@@ -1,9 +1,6 @@
 <?php
-
-namespace IXP\Http\Controllers\Auth;
-
 /*
- * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,27 +20,21 @@ namespace IXP\Http\Controllers\Auth;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Former, Hash;
+declare(strict_types=1);
 
-use Illuminate\Validation\Rules\Password;
-use Illuminate\Http\{
-    RedirectResponse
-};
+namespace IXP\Http\Controllers\Auth;
 
+use Former\Facades\Former;
 use Illuminate\Foundation\Auth\ResetsPasswords;
-use Illuminate\Http\Request;
+use Illuminate\Http\{RedirectResponse, Request};
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules\Password;
 use Illuminate\View\View;
-
+use IXP\Events\Auth\PasswordReset as PasswordResetEvent;
 use IXP\Http\Controllers\Controller;
-
-use IXP\Events\Auth\PasswordReset   as PasswordResetEvent;
-
 use IXP\Models\User;
-
-use IXP\Utils\View\Alert\{
-    Alert,
-    Container as AlertContainer
-};
+use IXP\Utils\PasswordPolicyExplainer;
+use IXP\Utils\View\Alert\{Alert, Container as AlertContainer};
 
 /**
  * ResetPasswordController
@@ -75,7 +66,7 @@ class ResetPasswordController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '';
+    protected string $redirectTo = '';
 
     /**
      * Create a new controller instance.
@@ -92,21 +83,25 @@ class ResetPasswordController extends Controller
      *
      * If no token is present, display the link request form.
      *
-     * @param Request       $request
-     * @param string|null   $token
+     * @param Request                    $request
+     * @param PasswordPolicyExplainer    $policyExplainer
+     * @param string|null                $token
      *
      * @return View
      */
-    public function showResetForm( Request $request, #[\SensitiveParameter] ?string $token = null ): View
+    public function showResetForm( Request $request, PasswordPolicyExplainer $policyExplainer, #[\SensitiveParameter] ?string $token = null ): View
     {
         Former::populate( [
             'username'      => request()->old( 'username',  $request->username    ),
             'token'         => request()->old( 'token',     $token                ),
         ] );
 
+        $messages = $policyExplainer->explainDefault();
+
         return view('auth/reset-password')->with( [
             'token'     => $token,
-            'username'  => $request->username
+            'username'  => $request->username,
+            'policy'    => $messages,
         ] );
     }
 
@@ -122,20 +117,20 @@ class ResetPasswordController extends Controller
         return [
             'token'     => 'required',
             'username'  => 'required|string',
-            'password'  => [ 'required', 'confirmed', Password::min(8)->letters()->mixedCase()->numbers() ],
+            'password'  => [ 'required', 'confirmed', Password::default() ],
         ];
     }
 
     /**
      * Get the password reset credentials from the request.
      *
-     * @param Request $r
+     * @param Request $request
      *
      * @return array
      */
-    protected function credentials( Request $r ): array
+    protected function credentials( Request $request ): array
     {
-        return $r->only(
+        return $request->only(
             'username', 'password', 'password_confirmation', 'token'
         );
     }
@@ -160,24 +155,25 @@ class ResetPasswordController extends Controller
     /**
      * Get the response for a failed password reset.
      *
-     * @param Request   $r
+     * @param Request   $request
      * @param  string   $response
      *
      * @return RedirectResponse
      */
-    protected function sendResetFailedResponse(Request $r, string $response ): RedirectResponse
+    protected function sendResetFailedResponse( Request $request, string $response ): RedirectResponse
     {
         AlertContainer::push( trans( $response ) , Alert::DANGER );
-        return redirect()->back()->withInput( $r->only('username' ) );
+        return redirect()->back()->withInput( $request->only('username' ) );
     }
 
     /**
      * Get the response for a successful password reset.
      *
-     * @param Request   $r
-     * @param string   $response
+     * @param Request $request
+     * @param string  $response
+     * @return RedirectResponse
      */
-    protected function sendResetResponse( Request $r, string $response ): RedirectResponse
+    protected function sendResetResponse( Request $request, string $response ): RedirectResponse
     {
         AlertContainer::push( trans( $response ) , Alert::SUCCESS );
         return redirect( $this->redirectPath() );

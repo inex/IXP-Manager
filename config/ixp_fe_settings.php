@@ -560,7 +560,77 @@ return [
                     'help'       => 'PeeringDB OAuth - post authentication redirect target on IXP Manager. Assuming your '
                                         . 'APP_URL is correct, then: <code>' . config('app.url') . '/auth/login/peeringdb/callback</code>'
                 ],
-                
+
+                'password_policy_minimum_length' => [
+                    'config_key' => 'password_policy.minimum_length',
+                    'dotenv_key' => 'PASSWORD_POLICY_MINIMUM_LENGTH',
+                    'type'       => 'integer',
+                    'name'       => 'Password Policy: Minimum password length?',
+                    'rules'      => ['nullable', 'integer', 'min:8', 'max:72', 'lt:password_policy_maximum_length', new NoIllegalChars],
+                    'docs_url'   => 'https://docs.ixpmanager.org/latest/usage/authentication#password-policy',
+                    'help'       => 'The minimum password length. This cannot be lower than 6 for security reasons, and cannot be higher than 72 as IXP Manager uses the bcrypt hashing algorithm.',
+                ],
+
+                'password_policy_maximum_length' => [
+                    'config_key' => 'password_policy.maximum_length',
+                    'dotenv_key' => 'PASSWORD_POLICY_MAXIMUM_LENGTH',
+                    'type'       => 'integer',
+                    'name'       => 'Password Policy: Maximum password length?',
+                    'rules'      => ['nullable', 'integer', 'min:8', 'max:72', new NoIllegalChars],
+                    'docs_url'   => 'https://docs.ixpmanager.org/latest/usage/authentication#password-policy',
+                    'help'       => 'The maximum password length. This is set to 72 by default as IXP Manager uses the bcrypt hashing algorithm, and because of this it cannot be set to higher value. It probably should not be reduced unless mandated by your organizations password policy.',
+                ],
+
+                'password_policy_not_compromised' => [
+                    'config_key' => 'password_policy.not_compromised',
+                    'dotenv_key' => 'PASSWORD_POLICY_REQUIRE_NOT_COMPROMISED',
+                    'type'       => 'radio',
+                    'name'       => 'Password Policy: Compromised password check?',
+                    'rules'      => 'boolean',
+                    'docs_url'   => 'https://docs.ixpmanager.org/latest/usage/authentication#password-policy',
+                    'help'       => "Reject passwords which are known to be compromised. Passwords will be checked against the Have I Been Pwned database. The full password is not sent to a third party, but rather, the first 5 characters of it's SHA-1 hash is used to query for compromised passwords with the same prefix, and the rest of the check is performed on the IXP Manager webserver.",
+                ],
+
+                'password_policy_require_letters' => [
+                    'config_key' => 'password_policy.require_letters',
+                    'dotenv_key' => 'PASSWORD_POLICY_REQUIRE_LETTERS',
+                    'type'       => 'radio',
+                    'name'       => 'Password Policy: Require letters?',
+                    'rules'      => 'boolean|declined_if:password_policy_require_mixed_case,1',
+                    'docs_url'   => 'https://docs.ixpmanager.org/latest/usage/authentication#password-policy',
+                    'help'       => 'Choose whether passwords must contain at one letter. May not be selected if mixed case is required. Composition requirements such as this are no longer recommended by NIST.',
+                ],
+
+                'password_policy_require_mixed_case' => [
+                    'config_key' => 'password_policy.require_mixed_case',
+                    'dotenv_key' => 'PASSWORD_POLICY_REQUIRE_MIXED_CASE',
+                    'type'       => 'radio',
+                    'name'       => 'Password Policy: Require mixed case?',
+                    'rules'      => 'boolean',
+                    'docs_url'   => 'https://docs.ixpmanager.org/latest/usage/authentication#password-policy',
+                    'help'       => 'Choose whether passwords must contain at least one uppercase and lowercase letter. Composition requirements such as this are no longer recommended by NIST.',
+                ],
+
+                'password_policy_require_numbers' => [
+                    'config_key' => 'password_policy.require_numbers',
+                    'dotenv_key' => 'PASSWORD_POLICY_REQUIRE_NUMBERS',
+                    'type'       => 'radio',
+                    'name'       => 'Password Policy: Require numbers?',
+                    'rules'      => 'boolean',
+                    'docs_url'   => 'https://docs.ixpmanager.org/latest/usage/authentication#password-policy',
+                    'help'       => 'Choose whether passwords must contain at least one number. Composition requirements such as this are no longer recommended by NIST.',
+                ],
+
+                'password_policy_require_symbols' => [
+                    'config_key' => 'password_policy.require_symbols',
+                    'dotenv_key' => 'PASSWORD_POLICY_REQUIRE_SYMBOLS',
+                    'type'       => 'radio',
+                    'name'       => 'Password Policy: Require symbols?',
+                    'rules'      => 'boolean',
+                    'docs_url'   => 'https://docs.ixpmanager.org/latest/usage/authentication#password-policy',
+                    'help'       => 'Choose whether passwords must contain at least one symbol. Composition requirements such as this are no longer recommended by NIST.',
+                ],
+
                 'ripe_api_key'          => [
                     'config_key' => 'ixp_api.rir.ripe_api_key',
                     'dotenv_key' => 'IXP_RIPE_API_KEY',

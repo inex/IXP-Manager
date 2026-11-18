@@ -69,12 +69,12 @@ class DiagnosticsServiceProvider extends ServiceProvider
     /**
      * Register the application services.
      *
-     * @return void|Diagnostics
+     * @return void
      *
      * @throws
      */
     #[\Override]
-    public function register()
+    public function register(): void
     {
         $this->app->singleton(
             Diagnostics::class, function() {

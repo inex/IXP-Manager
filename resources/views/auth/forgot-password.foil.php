@@ -1,7 +1,7 @@
 <?php $this->layout( 'layouts/ixpv4' ) ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-    Forget Password
+    Reset Password
 <?php $this->append() ?>
 
 <?php $this->section( 'content' ) ?>
