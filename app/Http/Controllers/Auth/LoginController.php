@@ -87,14 +87,6 @@ class LoginController extends Controller
     protected string $redirectTo = '';
 
     /**
-     * Minimum duration of any login request that does not end in a successful login.
-     *
-     * Must be longer than the session guard's own timebox around the credential check (200ms) plus the
-     * slowest lockout bookkeeping path, otherwise the padding hides nothing.
-     */
-    private const int FAILED_LOGIN_MIN_MICROSECONDS = 1_200_000;
-
-    /**
      * Get the login username to be used by the controller.
      *
      * @return string
