@@ -38,13 +38,19 @@ X-IXP-Manager-API-Key: ixpm_ident1234567_sec876543210...
 
 A non-superuser key gets `403`; no key gets `401`.
 
+The key is the only credential these endpoints accept. A browser session is not accepted in
+place of a key, and not alongside one either: the cookies of a request carrying a key are
+discarded before the session starts, so a logged-in superuser's browser cannot vouch for a key
+that is wrong.
+
 Two operational points:
 
 - **Keys expire after at most 12 months** (`ixp_fe.api_keys.max_expires_duration`). An
   unattended service will fail with `401` exactly once a year unless the key is rotated.
-- **`allowed_ips` on an API key is not enforced anywhere in the code**, and request throttling
-  is commented out. The key is therefore a full-access superuser credential. Restrict the
-  endpoint at the web server or firewall to the address of the calling system.
+- **`allowed_ips` on an API key is enforced on these endpoints** — for modern and legacy keys
+  alike — and nowhere else in IXP Manager. The same key used against other API v4 endpoints
+  is not restricted by it, so it remains a full-access superuser credential there. Restrict
+  `/admin` at the web server or firewall to the address of the calling system as well.
 
 ## Conventions
 

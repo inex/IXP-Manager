@@ -36,14 +36,18 @@ info:
        errors render as JSON and a `ValidationException` becomes a `422` rather than a `302`.
        Callers do not have to send the header themselves.
     2. `RequireApiKey` — refuses a request with no `X-IXP-Manager-API-Key` header with `401`,
-       even when a superuser browser session is present. Disableable with
-       `IXP_API_PROVISIONING_REQUIRE_KEY=false`, which is not recommended.
+       even when a superuser browser session is present. On a request which has the header
+       it discards all cookies and forgets any user already resolved, so the key is the only
+       credential `ApiAuthenticate` can see: a session can neither stand in for a key nor
+       vouch for an invalid one. Disableable with `IXP_API_PROVISIONING_REQUIRE_KEY=false`,
+       which is not recommended.
     3. `api/v4` (`apibase` + `apiauth`) — resolves the key and logs its owner in via
        `Auth::onceUsingId()`.
     4. `assert.privilege:3` — the key's user must be a superuser (`AUTH_SUPERUSER`), else `403`.
     5. `RestrictSourceAddress` — `403` when the source address is covered by neither
        `ixp_api.provisioning.allowed_ips` nor, if set, the `allowed_ips` column of the API key
-       presented. An empty list at a layer means "no restriction at this layer", not "deny".
+       presented — modern (`ixpm_…`) and legacy keys alike. An empty list at a layer means
+       "no restriction at this layer", not "deny".
     6. `throttle:{rate_limit},1` — added only when `ixp_api.provisioning.rate_limit` is greater
        than zero. Default 60 requests per minute; `0` disables throttling entirely.
 
@@ -1318,17 +1322,18 @@ components:
         `ixpm_ident1234567_sec876543210...`.
 
         The key's owner must have `AUTH_SUPERUSER` (privilege `3`); anything less is `403`.
-        A browser session is not accepted in place of a key: `RequireApiKey` rejects a request
-        without the header before `ApiAuthenticate` ever sees the session.
+        A browser session is not accepted in place of a key, nor alongside one: `RequireApiKey`
+        rejects a request without the header, and discards the cookies of a request with it,
+        before `ApiAuthenticate` ever sees a session. The key alone decides who is calling.
 
         **Keys expire after at most 12 months** (`ixp_fe.api_keys.max_expires_duration`), so an
         unattended service fails with `401 API key expired` exactly once a year unless the key
         is rotated.
 
         The `allowed_ips` column of the key **is** enforced on these endpoints by
-        `RestrictSourceAddress` — this is the only place in IXP Manager that reads it. A source
-        address outside it, or outside the global `ixp_api.provisioning.allowed_ips` list, gets
-        `403`.
+        `RestrictSourceAddress`, for modern and legacy keys alike — this is the only place in
+        IXP Manager that reads it. A source address outside it, or outside the global
+        `ixp_api.provisioning.allowed_ips` list, gets `403`.
 
   parameters:
 

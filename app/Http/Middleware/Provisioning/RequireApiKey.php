@@ -25,6 +25,7 @@ namespace IXP\Http\Middleware\Provisioning;
 use Closure;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 /**
@@ -39,8 +40,15 @@ use Illuminate\Support\Facades\Log;
  * endpoints which create members it is not, because it makes them reachable by any page that
  * can persuade an administrator's browser to issue a request.
  *
- * Runs before the `api/v4` group so that a stale session is gone before ApiAuthenticate looks
- * at it.
+ * Requiring the header is not enough on its own. ApiAuthenticate never validates the key when
+ * Auth::check() is already true, so a request carrying a superuser's session or remember-me
+ * cookie *and* any value at all in the header would be authenticated by the cookie - with the
+ * key unchecked, and with its `allowed_ips` never applied. This middleware therefore also
+ * discards the request's cookies and forgets any user already resolved, so that the key is
+ * the only credential ApiAuthenticate can see. Machine callers have no use for cookies here.
+ *
+ * Runs before the `api/v4` group so that this happens before the session is started and
+ * before ApiAuthenticate looks at it.
  *
  * @author     KleyReX
  * @category   IXP
@@ -72,6 +80,10 @@ class RequireApiKey
                     . 'A browser session is not accepted here.',
             ], 401 );
         }
+
+        // The key, and only the key: no session or remember-me cookie may stand in for it.
+        $r->cookies->replace( [] );
+        Auth::forgetUser();
 
         return $next( $r );
     }

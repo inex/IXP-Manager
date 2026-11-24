@@ -86,6 +86,10 @@ class RestrictSourceAddress
     /**
      * The API key behind this request, if one was resolved.
      *
+     * Looked up the same two ways ApiAuthenticate accepts a key, so that every key which can
+     * authenticate here also has its allow-list applied - a legacy key included. Skipping
+     * legacy keys would leave exactly the oldest, least rotated credentials unrestricted.
+     *
      * @return ApiKey|null
      */
     private function apiKey(): ?ApiKey
@@ -94,16 +98,17 @@ class RestrictSourceAddress
             return null;
         }
 
-        // Match on the identifier rather than the secret: keys are stored hashed.
-        if( !str_starts_with( $token, ApiKey::PREFIX ) ) {
-            return null;
+        // Modern keys: match on the identifier rather than the secret, which is stored hashed.
+        if( str_starts_with( $token, ApiKey::PREFIX ) ) {
+            $parts = explode( '_', $token );
+
+            return isset( $parts[ 1 ] )
+                ? ApiKey::where( 'token_identifier', $parts[ 1 ] )->first()
+                : null;
         }
 
-        $parts = explode( '_', $token );
-
-        return isset( $parts[ 1 ] )
-            ? ApiKey::where( 'token_identifier', $parts[ 1 ] )->first()
-            : null;
+        // Legacy keys: ApiAuthenticate matches these on the stored value itself.
+        return ApiKey::where( 'api_key', $token )->first();
     }
 
     /**

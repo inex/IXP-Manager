@@ -478,8 +478,9 @@ class ConnectionTest extends TestCase
      *
      * Note this test makes no superuser call first, deliberately: ApiAuthenticate skips the
      * key check entirely when Auth::check() is already true, and that state survives between
-     * requests within one test. Creating a member here first would leave the superuser
-     * authenticated and the assertion would pass for the wrong reason.
+     * requests within one test. RequireApiKey now forgets any such user before the key is
+     * checked, but the test does not lean on that - a superuser call first would make the
+     * assertion depend on the very guard it is not here to test.
      */
     public function testConnectionEndpointsRequireSuperuser(): void
     {

@@ -22,6 +22,8 @@ namespace Tests\Api\Provisioning;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+use Illuminate\Support\Facades\DB;
+
 use IXP\Http\Middleware\Provisioning\RestrictSourceAddress;
 use Tests\TestCase;
 
@@ -93,6 +95,34 @@ class AccessControlTest extends TestCase
         $this->get( self::URL )->assertStatus( 200 );
     }
 
+    /**
+     * A session must not vouch for a key which is worthless.
+     *
+     * Regression test. ApiAuthenticate never validates the key while Auth::check() is true, so
+     * RequireApiKey used to let a session plus any value in the header through - the key never
+     * checked, and its allow-list never applied.
+     */
+    public function test_a_browser_session_does_not_vouch_for_a_bogus_key(): void
+    {
+        $this->actingAs( $this->getSuperUser() );
+
+        $this->withHeader( 'X-IXP-Manager-API-Key', 'ixpm_not_a_real_key' )
+            ->get( self::URL )
+            ->assertStatus( 401 );
+    }
+
+    /**
+     * With a session and a valid key, the key decides - not the user of the session.
+     */
+    public function test_the_key_not_the_session_decides_the_privilege(): void
+    {
+        $this->actingAs( $this->getSuperUser() );
+
+        $this->withHeader( 'X-IXP-Manager-API-Key', self::API_KEY_CUSTUSER )
+            ->get( self::URL )
+            ->assertStatus( 403 );
+    }
+
     // ------------------------------------------------------------- source addresses
 
     public function test_an_empty_allow_list_permits_everything(): void
@@ -159,6 +189,33 @@ class AccessControlTest extends TestCase
     {
         $this->assertTrue(  $this->permits( '192.0.2.1', 'nonsense, 192.0.2.0/24' ) );
         $this->assertFalse( $this->permits( '203.0.113.1', 'nonsense, 192.0.2.0/24' ) );
+    }
+
+    /**
+     * The allow-list of a legacy key is enforced as well.
+     *
+     * Regression test. Only keys with the `ixpm_` prefix used to be looked up, so a legacy
+     * key - the oldest and least rotated kind - authenticated with its allow-list ignored.
+     */
+    public function test_the_allow_list_of_a_legacy_key_is_enforced(): void
+    {
+        $key = 'provisioning-access-control-test-legacy-key';
+
+        DB::table( 'api_keys' )->insert( [
+            'user_id'     => $this->getSuperUser()->id,
+            'api_key'     => $key,
+            'expires'     => now()->addYear(),
+            'allowed_ips' => '192.0.2.1',
+            'description' => 'AccessControlTest legacy key',
+            'created_at'  => now(),
+        ] );
+
+        // the test client connects from 127.0.0.1, which this key does not allow:
+        $this->withHeader( 'X-IXP-Manager-API-Key', $key )->get( self::URL )->assertStatus( 403 );
+
+        DB::table( 'api_keys' )->where( 'api_key', $key )->update( [ 'allowed_ips' => '127.0.0.1' ] );
+
+        $this->withHeader( 'X-IXP-Manager-API-Key', $key )->get( self::URL )->assertStatus( 200 );
     }
 
     // ------------------------------------------------------------- the feature flag
