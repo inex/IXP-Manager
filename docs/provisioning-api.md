@@ -26,7 +26,13 @@ must not be able to expose an installation to something it did not choose.
 
 Further keys under `ixp_api.provisioning`: `require_api_key` (default true), `allowed_ips`
 (comma-separated addresses and CIDR ranges, empty means unrestricted) and `rate_limit`
-(default 60 a minute, zero disables).
+(default 60 a minute per user — the owner of the key, so several keys of one user share it —
+zero disables).
+
+`allowed_ips` is checked against the address Laravel reports for the request. IXP Manager
+configures no trusted proxies, so behind a reverse proxy on another host every request appears
+to come from the proxy: list the proxy only if it admits nobody but the calling system, or
+configure trusted proxies first.
 
 ## Authentication
 

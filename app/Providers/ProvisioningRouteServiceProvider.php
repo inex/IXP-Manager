@@ -59,7 +59,8 @@ use IXP\Models\User;
  *   3. **Source addresses can be restricted**, both globally and per key. The latter honours
  *      `api_keys.allowed_ips`, a column which exists and is exposed in the UI but which
  *      nothing in IXP Manager has ever read.
- *   4. **Rate limited** per key, defaulting to 60 requests a minute.
+ *   4. **Rate limited** per user - the owner of the key, so several keys of one user share
+ *      the limit - defaulting to 60 requests a minute.
  *
  * None of that replaces restricting `/admin` at the web server, which is what the prefix
  * introduced in v7.1.0 is for. It is a second lock on the same door.
@@ -68,8 +69,9 @@ use IXP\Models\User;
  * reproduced: these endpoints write, so they must never be reachable without a key.
  *
  * This is kept as a separate provider - rather than another map*() method on
- * RouteServiceProvider - so that the feature stays additive. Registering this class in
- * config/app.php is the only change made to a pre-existing file.
+ * RouteServiceProvider - so that the feature stays additive: registering this class in
+ * config/app.php, its settings in config/ixp_api.php and switching it on for the test suite
+ * in phpunit.xml are the only changes it needs in pre-existing files.
  *
  * Note that $namespace is deliberately left null: it would otherwise be applied globally
  * by setRootControllerNamespace(). The controller namespace is scoped to the route group

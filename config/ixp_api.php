@@ -244,13 +244,19 @@ return [
         | Empty means no restriction at this layer. Note that a restriction here is
         | not a substitute for one at the web server, which is where the /admin
         | prefix introduced in v7.1.0 is meant to be enforced - it is a second lock
-        | on the same door, useful when the application is reachable through a proxy
-        | whose ACL you do not control.
+        | on the same door.
+        |
+        | The address checked is the one Laravel reports for the request, and IXP
+        | Manager configures no trusted proxies. Behind a reverse proxy on another
+        | host every request therefore appears to come from the proxy: list the
+        | proxy here only if it admits nobody but the calling system, or configure
+        | trusted proxies first.
         */
         'allowed_ips' => env( 'IXP_API_PROVISIONING_ALLOWED_IPS', '' ),
 
         /*
-        | Requests per minute per API key. Zero disables throttling.
+        | Requests per minute per user - the owner of the API key, so several keys
+        | of one user share the limit. Zero disables throttling.
         */
         'rate_limit' => (int) env( 'IXP_API_PROVISIONING_RATE_LIMIT', 60 ),
     ],

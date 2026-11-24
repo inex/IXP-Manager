@@ -47,9 +47,12 @@ info:
     5. `RestrictSourceAddress` — `403` when the source address is covered by neither
        `ixp_api.provisioning.allowed_ips` nor, if set, the `allowed_ips` column of the API key
        presented — modern (`ixpm_…`) and legacy keys alike. An empty list at a layer means
-       "no restriction at this layer", not "deny".
+       "no restriction at this layer", not "deny". The address checked is the one Laravel
+       reports for the request; IXP Manager configures no trusted proxies, so behind a reverse
+       proxy on another host every request appears to come from the proxy.
     6. `throttle:{rate_limit},1` — added only when `ixp_api.provisioning.rate_limit` is greater
-       than zero. Default 60 requests per minute; `0` disables throttling entirely.
+       than zero. Default 60 requests per minute **per user** — the owner of the key, so
+       several keys of one user share the limit; `0` disables throttling entirely.
 
     ## Configuration
 
@@ -58,7 +61,7 @@ info:
     | `IXP_API_PROVISIONING_ENABLED` | `false` | master switch; nothing is registered when false |
     | `IXP_API_PROVISIONING_REQUIRE_KEY` | `true` | refuse ambient browser credentials |
     | `IXP_API_PROVISIONING_ALLOWED_IPS` | `""` | comma-separated addresses / CIDR, IPv4 and IPv6 |
-    | `IXP_API_PROVISIONING_RATE_LIMIT` | `60` | requests per minute; `0` disables |
+    | `IXP_API_PROVISIONING_RATE_LIMIT` | `60` | requests per minute per user (the key's owner); `0` disables |
 
     ## Conventions
 
@@ -1450,7 +1453,8 @@ components:
 
     TooManyRequests:
       description: |
-        The per-key rate limit was exceeded. Defaults to 60 requests a minute
+        The rate limit was exceeded. It counts per user — the owner of the key, so several keys
+        of one user share it — and defaults to 60 requests a minute
         (`ixp_api.provisioning.rate_limit`); setting it to `0` removes the throttle middleware
         from the stack entirely.
       headers:

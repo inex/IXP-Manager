@@ -55,9 +55,8 @@ use IXP\Models\{
  *
  * The two store methods mirror the web controllers rather than calling them: those return
  * redirects and push flash messages, neither of which a machine caller can use. What matters
- * is that the resulting database state is identical, which CustomerContractTest and
- * UserContractTest assert directly by posting the same payload to both entry points and
- * diffing the rows.
+ * is that the resulting database state is identical, which MemberContractTest asserts
+ * directly by posting the same payload to both entry points and diffing the rows.
  *
  * @see \IXP\Http\Controllers\Customer\CustomerController::store()   the web equivalent
  * @see \IXP\Http\Controllers\User\UserController::store()           the web equivalent
