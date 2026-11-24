@@ -1929,7 +1929,10 @@ components:
           type: boolean
         channelgroup:
           type: [ integer, 'null' ]
-          description: Assigned by `setBundleDetails()` when the interface is LAG framed.
+          description: |
+            Assigned by `setBundleDetails()` when the interface is LAG framed: the first number
+            free on the switch within `ixp_fe.interfaces.channelgroup_start` / `_end`
+            (`IXP_FE_CHANNELGROUP_START` / `_END`, default 1 to 999).
         physical_interfaces:
           type: array
           items:
@@ -2039,10 +2042,17 @@ components:
           description: '`irrdbconfig.id`. Must exist.'
         nocphone:
           type: [ string, 'null' ]
-          maxLength: 255
+          minLength: 7
+          maxLength: 25
+          description: |
+            Validated by the inherited `IXP\Rules\IsPhone`: 7 to 25 characters, made of digits,
+            spaces and `+ - ( ) .` only, with a `+` allowed only in front, and at least 7
+            digits — for example `+49 69 1234567`. Anything else is `422`.
         noc24hphone:
           type: [ string, 'null' ]
-          maxLength: 255
+          minLength: 7
+          maxLength: 25
+          description: Same rule as `nocphone`.
         nocemail:
           type: string
           format: email
@@ -2098,7 +2108,11 @@ components:
           description: Lowercased on write. The welcome email goes here.
         authorisedMobile:
           type: [ string, 'null' ]
-          maxLength: 50
+          minLength: 7
+          maxLength: 25
+          description: |
+            Validated by the inherited `IXP\Rules\IsPhone`, as `nocphone` on the member: 7 to 25
+            characters of digits, spaces and `+ - ( ) .`, at least 7 digits.
         privs:
           type: integer
           enum: [ 1, 2, 3 ]
