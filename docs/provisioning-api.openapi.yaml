@@ -84,8 +84,9 @@ info:
       unattended caller that turns a typo into a stray address record nothing will clean up.
     - **`reference` makes onboarding retries safe.** Passing the caller's own order identifier
       makes `POST /onboarding` idempotent: the first call returns `201` with `created: true`,
-      any repeat of the same reference returns `200` with `created: false` and the member the
-      first call produced. Without a reference a retry creates a second member.
+      any repeat of the same reference returns `200` with `created: false` and what the first
+      call produced — the member, and the user and connection where it created them. Without a
+      reference a retry creates a second member.
     - **No address reservation endpoint.** An address held by nothing but a promise leaks when
       the caller then fails. Allocation happens inside the connection transaction, where it
       either sticks or is rolled back with everything else.
@@ -1109,9 +1110,13 @@ paths:
         `reference` is the caller's own order identifier and makes retries safe:
 
         - First call with a new reference: `201`, `created: true`, plus the ids created.
-        - Any later call with the same reference: **`200`**, `created: false`, and the member
-          the first call produced. `user` and `connection` are not present on this response —
-          only the reference and the member are recorded.
+        - Any later call with the same reference: **`200`**, `created: false`, the member the
+          first call produced, and `user` and `connection` when the first call created them and
+          they still exist. A caller which timed out never saw the first response; the replay
+          is how it learns those ids. References recorded by earlier versions of this API carry
+          the member only.
+        - The payload of a repeat is **not** compared with the original: a reference always
+          answers with what its first call created, whatever the repeat asks for.
 
         The check runs twice. `ShortCircuitKnownReference` middleware answers before validation
         even runs, because by the time a caller retries, the `shortname` it asks for exists and
@@ -1177,8 +1182,9 @@ paths:
       responses:
         '200':
           description: |
-            This reference has been seen before. Nothing was created; the member the original
-            call produced is returned. `user` and `connection` are not part of this response.
+            This reference has been seen before. Nothing was created; what the original call
+            produced is returned — the member always, `user` and `connection` when the original
+            call created them and they still exist.
           content:
             application/json:
               schema:
@@ -1189,6 +1195,11 @@ paths:
                 member:
                   id: 97
                   shortname: examplenet
+                user:
+                  id: 314
+                  username: examplenet-noc
+                connection:
+                  id: 501
         '201':
           description: |
             The order landed in full. `user` and `connection` are `null` when those sections
@@ -2325,9 +2336,11 @@ components:
       type: object
       title: OnboardingReplay
       description: |
-        The `200` response — this reference was seen before and nothing was created. Note that
-        `user` and `connection` are **absent**, not null: only the reference-to-member link is
-        recorded, so a replay cannot report what else the original call produced.
+        The `200` response — this reference was seen before and nothing was created.
+
+        `user` and `connection` are **absent**, never null, when there is nothing to report:
+        the original call did not create one, it has since been deleted, or the reference was
+        recorded by an earlier version of this API, which kept the member only.
       required: [ created, reference, member ]
       properties:
         created:
@@ -2337,3 +2350,20 @@ components:
           type: string
         member:
           $ref: '#/components/schemas/OnboardingMemberRef'
+        user:
+          type: object
+          description: The user the original call created, if it did and the user still exists.
+          required: [ id, username ]
+          properties:
+            id:
+              type: integer
+            username:
+              type: string
+        connection:
+          type: object
+          description: The connection the original call created, if it did and it still exists.
+          required: [ id ]
+          properties:
+            id:
+              type: integer
+              description: '`virtualinterface.id`.'

@@ -66,14 +66,10 @@ class ShortCircuitKnownReference
             return $next( $r );
         }
 
-        if( !( $cust = ProvisioningReference::customerFor( $reference ) ) ) {
+        if( !( $replay = ProvisioningReference::replay( $reference ) ) ) {
             return $next( $r );
         }
 
-        return response()->json( [
-            'created'   => false,
-            'reference' => $reference,
-            'member'    => [ 'id' => $cust->id, 'shortname' => $cust->shortname ],
-        ] );
+        return response()->json( $replay );
     }
 }

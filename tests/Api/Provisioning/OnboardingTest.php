@@ -230,6 +230,54 @@ class OnboardingTest extends TestCase
     }
 
     /**
+     * A replay reports the user and the connection the first call created, not only the member.
+     *
+     * The case references exist for is a caller which timed out and never saw the first
+     * response. Without this it could not learn the id of the user it created at all: no
+     * endpoint lists a member's users.
+     */
+    public function testRepeatedReferenceReplaysUserAndConnection(): void
+    {
+        Event::fake( [ UserCreatedEvent::class ] );
+
+        $order = $this->order( 'r' );
+
+        $first = $this->key()->post( '/admin/api/v4/provisioning/onboarding', $order );
+        $first->assertStatus( 201 );
+
+        $this->assertNotNull( $first->json( 'user.id' ) );
+        $this->assertNotNull( $first->json( 'connection.id' ) );
+
+        $this->key()->post( '/admin/api/v4/provisioning/onboarding', $order )
+            ->assertStatus( 200 )
+            ->assertJsonPath( 'created', false )
+            ->assertJsonPath( 'member.id', $first->json( 'member.id' ) )
+            ->assertJsonPath( 'user.id', $first->json( 'user.id' ) )
+            ->assertJsonPath( 'user.username', $first->json( 'user.username' ) )
+            ->assertJsonPath( 'connection.id', $first->json( 'connection.id' ) );
+
+        // and the welcome email went out once, for the call which created the user:
+        Event::assertDispatchedTimes( UserCreatedEvent::class, 1 );
+    }
+
+    /**
+     * A member-only order replays the member only - nothing is invented for the absent parts.
+     */
+    public function testReplayOfAMemberOnlyOrderCarriesNoUserOrConnection(): void
+    {
+        $order = $this->order( 's' );
+        unset( $order[ 'user' ], $order[ 'connection' ] );
+
+        $this->key()->post( '/admin/api/v4/provisioning/onboarding', $order )->assertStatus( 201 );
+
+        $this->key()->post( '/admin/api/v4/provisioning/onboarding', $order )
+            ->assertStatus( 200 )
+            ->assertJsonPath( 'created', false )
+            ->assertJsonMissingPath( 'user' )
+            ->assertJsonMissingPath( 'connection' );
+    }
+
+    /**
      * A failure in the connection section must roll back the member and the user with it.
      *
      * This is the whole reason the endpoint exists: calling the three endpoints in sequence

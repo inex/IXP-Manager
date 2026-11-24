@@ -90,4 +90,46 @@ class ProvisioningReference extends Model
 
         return $ref ? Customer::find( $ref->model_id ) : null;
     }
+
+    /**
+     * The answer to a repeated onboarding request: what the first call with this reference
+     * created, as far as it still exists.
+     *
+     * The member is always there - without it there is nothing to replay and null is returned.
+     * `user` and `connection` are present when the first call created them and they still
+     * exist. A caller retrying after a timeout never saw the first response, so the replay is
+     * its only way to learn those ids: there is no endpoint which lists a member's users.
+     *
+     * References recorded before user and connection were recorded carry the member only.
+     *
+     * @param  string|null  $reference
+     *
+     * @return array|null
+     */
+    public static function replay( ?string $reference ): ?array
+    {
+        if( !( $cust = self::customerFor( $reference ) ) ) {
+            return null;
+        }
+
+        $out = [
+            'created'   => false,
+            'reference' => $reference,
+            'member'    => [ 'id' => $cust->id, 'shortname' => $cust->shortname ],
+        ];
+
+        $ids = self::where( 'reference', $reference )
+            ->whereIn( 'model_type', [ User::class, VirtualInterface::class ] )
+            ->pluck( 'model_id', 'model_type' );
+
+        if( isset( $ids[ User::class ] ) && ( $user = User::find( $ids[ User::class ] ) ) ) {
+            $out[ 'user' ] = [ 'id' => $user->id, 'username' => $user->username ];
+        }
+
+        if( isset( $ids[ VirtualInterface::class ] ) && ( $vi = VirtualInterface::find( $ids[ VirtualInterface::class ] ) ) ) {
+            $out[ 'connection' ] = [ 'id' => $vi->id ];
+        }
+
+        return $out;
+    }
 }

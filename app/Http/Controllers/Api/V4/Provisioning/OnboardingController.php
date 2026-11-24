@@ -90,12 +90,8 @@ class OnboardingController extends Common
     {
         $reference = $r->input( 'reference' );
 
-        if( $reference && ( $existing = ProvisioningReference::customerFor( $reference ) ) ) {
-            return response()->json( [
-                'created'   => false,
-                'reference' => $reference,
-                'member'    => [ 'id' => $existing->id, 'shortname' => $existing->shortname ],
-            ] );
+        if( $reference && ( $replay = ProvisioningReference::replay( $reference ) ) ) {
+            return response()->json( $replay );
         }
 
         try {
@@ -111,12 +107,8 @@ class OnboardingController extends Common
             //
             // Telling the second case "use a new reference" would be actively harmful: the
             // caller would burn an order number and retry onto the same occupied port.
-            if( $reference && ( $existing = ProvisioningReference::customerFor( $reference ) ) ) {
-                return response()->json( [
-                    'created'   => false,
-                    'reference' => $reference,
-                    'member'    => [ 'id' => $existing->id, 'shortname' => $existing->shortname ],
-                ] );
+            if( $reference && ( $replay = ProvisioningReference::replay( $reference ) ) ) {
+                return response()->json( $replay );
             }
 
             if( $reference && str_contains( $e->getMessage(), 'provisioning_references' ) ) {
@@ -176,12 +168,20 @@ class OnboardingController extends Common
         $vi   = isset( $validated[ 'connection' ] ) ? $this->createConnection( $validated[ 'connection' ], $cust ) : null;
 
         if( $reference ) {
-            ProvisioningReference::create( [
-                'reference'  => $reference,
-                'model_type' => Customer::class,
-                'model_id'   => $cust->id,
-                'created_by' => Auth::id(),
-            ] );
+            // One row per kind of thing created - the unique index is (reference, model_type) for
+            // exactly this. The member row is what makes a repeat a repeat; the user and
+            // connection rows let the replay report them, which matters most in the case
+            // references exist for: a caller that timed out and never saw this response.
+            foreach( [ Customer::class => $cust, User::class => $user, VirtualInterface::class => $vi ] as $type => $model ) {
+                if( $model ) {
+                    ProvisioningReference::create( [
+                        'reference'  => $reference,
+                        'model_type' => $type,
+                        'model_id'   => $model->id,
+                        'created_by' => Auth::id(),
+                    ] );
+                }
+            }
         }
 
         return [ 'customer' => $cust, 'user' => $user, 'vi' => $vi ];

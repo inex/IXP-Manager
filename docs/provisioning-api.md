@@ -207,10 +207,16 @@ times out and retries with the same reference gets the original result back:
 
 ```json
 { "created": false, "reference": "ORD-2026-04711",
-  "member": { "id": 97, "shortname": "example" } }
+  "member": { "id": 97, "shortname": "example" },
+  "user": { "id": 314, "username": "example-noc" },
+  "connection": { "id": 501 } }
 ```
 
-with status `200` rather than `201`. Without a reference, a retry creates a second member.
+with status `200` rather than `201`. `user` and `connection` are present when the first call
+created them and they still exist — a caller which timed out never saw the first response, and
+no endpoint lists a member's users, so the replay is how it learns those ids. References
+recorded by earlier versions carry the member only. The payload of a repeat is not compared
+with the original. Without a reference, a retry creates a second member.
 
 This endpoint does not orchestrate anything beyond the database. Rolling configuration out to
 switches, regenerating route server configuration and updating reverse DNS remain the caller's
