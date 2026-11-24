@@ -802,9 +802,11 @@ paths:
         the redirects and flash messages a machine caller cannot use.
 
         **Everything happens in one transaction, including the address allocation**: the row
-        lock `IpAllocator` takes is only meaningful until commit, so two orders provisioned at
-        the same moment cannot be handed the same address. The transaction is attempted up to
-        three times on deadlock.
+        lock `IpAllocator` takes is only meaningful until commit. The transaction is attempted
+        up to three times on deadlock. Two orders provisioned at the same moment cannot both
+        keep the same switch port or address: where the checks race, the unique indexes on
+        `physicalinterface.switchportid` and `vlaninterface.ipv4addressid` / `ipv6addressid`
+        refuse the loser, which is answered with `409` and nothing written.
 
         Differences from the web wizard, all deliberate:
 
@@ -933,6 +935,22 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '404':
           $ref: '#/components/responses/NotFound'
+        '409':
+          description: |
+            Another request took the switch port or one of the addresses between the checks and
+            the insert, and a unique index refused this one. **Nothing was created** — the
+            transaction was rolled back. The port check and `IpAllocator` run before anything is
+            written, so this only happens when two orders race; retrying will normally produce a
+            `422` naming the resource that is now taken.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: >-
+                  Another request took the switch port or an address of this connection while it
+                  was being created. Nothing was created. Check the port and the addresses and
+                  retry.
         '422':
           description: |
             Either the payload failed validation (`message` **and** `errors`), or the switch

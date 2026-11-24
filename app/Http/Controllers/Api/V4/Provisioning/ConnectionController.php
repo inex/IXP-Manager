@@ -27,6 +27,7 @@ use Auth, Log;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\UniqueConstraintViolationException;
 
 use IXP\Http\Controllers\Interfaces\Common;
 use IXP\Http\Requests\Api\V4\Provisioning\StoreConnection;
@@ -83,8 +84,9 @@ class ConnectionController extends Common
      * Create a connection for a member.
      *
      * Everything happens in one transaction, including the address allocation: the row lock
-     * IpAllocator takes is only meaningful until commit, so two orders provisioned at the same
-     * moment cannot be handed the same address.
+     * IpAllocator takes is only meaningful until commit. Two orders provisioned at the same
+     * moment therefore cannot both keep the same port or address - where the checks race, the
+     * unique indexes refuse the loser, and that is answered with 409 rather than a 500.
      *
      * Differences from the web wizard, all deliberate:
      *
@@ -161,6 +163,17 @@ class ConnectionController extends Common
             } , attempts: 3 );
         } catch( IpAllocationException $e ) {
             return response()->json( [ 'message' => $e->getMessage() ], 422 );
+        } catch( UniqueConstraintViolationException $e ) {
+            // The port check above and the address check in claim() run before the inserts, so
+            // a second request for the same port or the same address can pass them while this
+            // one is still in flight. The unique indexes on physicalinterface.switchportid and
+            // vlaninterface.ipv4addressid / ipv6addressid then refuse the loser - which is a
+            // conflict with another order, not a server error. The transaction has been rolled
+            // back, so nothing of this connection exists.
+            return response()->json( [
+                'message' => 'Another request took the switch port or an address of this connection while it was '
+                    . 'being created. Nothing was created. Check the port and the addresses and retry.',
+            ], 409 );
         }
 
         $this->warnIfIrrdbFilteringButNoIrrdbSourceSet( $vi->vlanInterfaces()->first() );

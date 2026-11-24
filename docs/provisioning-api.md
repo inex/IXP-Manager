@@ -235,12 +235,15 @@ exactly that, which is what it is for.)
 
 ## Concurrency
 
-Address allocation takes a row lock inside the request's transaction, so two orders provisioned
-at the same moment cannot receive the same address. The unique indexes on
-`vlaninterface.ipv4addressid` / `ipv6addressid` are the backstop.
+Address allocation takes a row lock inside the request's transaction. Switch port assignment is
+checked before anything is written, and the write happens in the same transaction.
 
-Switch port assignment is checked before anything is written, and the write happens in the same
-transaction.
+Neither check can see a competing order which has not committed yet, so two orders for the same
+port or the same address can both pass them. The unique indexes on
+`physicalinterface.switchportid` and `vlaninterface.ipv4addressid` / `ipv6addressid` then refuse
+whichever loses. Both write endpoints answer that with `409` and roll back everything:
+`/member/{cust}/connection` and `/onboarding` alike. A retry will normally produce a `422`
+naming the resource that is now taken.
 
 ## What is deliberately absent
 
@@ -257,6 +260,7 @@ transaction.
 build step. 11 paths, 22 schemas, every field derived from the controllers and the merged
 validation rules rather than from this prose.
 
-Worth knowing when reading it: a taken switch port at `/onboarding` answers `422`, not `409`.
-`409` arises only from a reused reference whose member has since been deleted, from a raced
-resource, and from the core-bundle guard on `DELETE /connection/{vi}`.
+Worth knowing when reading it: a taken switch port answers `422`, not `409`. `409` arises only
+from a reused reference whose member has since been deleted, from a raced resource at
+`/onboarding` or `/member/{cust}/connection`, and from the core-bundle guard on
+`DELETE /connection/{vi}`.

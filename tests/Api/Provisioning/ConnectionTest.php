@@ -30,6 +30,7 @@ use IXP\Models\PhysicalInterface;
 use IXP\Models\SwitchPort;
 use IXP\Models\VirtualInterface;
 use IXP\Models\Vlan;
+use IXP\Models\VlanInterface;
 
 use Tests\TestCase;
 
@@ -487,5 +488,85 @@ class ConnectionTest extends TestCase
         $this->withHeader( 'X-IXP-Manager-API-Key', self::API_KEY_CUSTADMIN )
             ->post( "/admin/api/v4/provisioning/member/{$cust->id}/connection", [] )
             ->assertStatus( 403 );
+    }
+
+    /**
+     * Losing a race for the switch port is a conflict, not a server error.
+     *
+     * switchPortRejection() runs before the transaction, so two orders for the same free port
+     * can both pass it, and the unique index on physicalinterface.switchportid refuses the
+     * second insert. Two requests cannot be raced from inside one PHP process, so the other
+     * order is simulated: the moment this request inserts its physical interface, an existing
+     * one is moved onto the same port - the state a concurrent commit would have left.
+     */
+    public function testLosingTheRaceForASwitchPortIsAConflict(): void
+    {
+        $cust  = $this->createMember( self::PREFIX . 'n' );
+        $vlan  = $this->vlanWithFreeAddresses();
+        $sp    = $this->freeSwitchPort();
+        $other = PhysicalInterface::whereNotNull( 'switchportid' )->firstOrFail();
+        $was   = (int)$other->switchportid;
+        $raced = false;
+
+        PhysicalInterface::creating( function( PhysicalInterface $pi ) use ( $other, &$raced ) {
+            if( !$raced ) {
+                $raced = true;
+                DB::table( 'physicalinterface' )->where( 'id', $other->id )
+                    ->update( [ 'switchportid' => $pi->switchportid ] );
+            }
+        } );
+
+        $this->key()->post(
+            "/admin/api/v4/provisioning/member/{$cust->id}/connection",
+            $this->payload( $vlan, $sp )
+        )
+            ->assertStatus( 409 )
+            ->assertJsonPath( 'message', fn( $m ) => str_contains( $m, 'Nothing was created' ) );
+
+        $this->assertTrue( $raced, 'the simulated competing order never ran' );
+        $this->assertNull( VirtualInterface::where( 'custid', $cust->id )->first(), 'a rollback did not happen' );
+        $this->assertSame(
+            $was,
+            (int)DB::table( 'physicalinterface' )->where( 'id', $other->id )->value( 'switchportid' ),
+            'the transaction was not rolled back as a whole'
+        );
+    }
+
+    /**
+     * Losing a race for an address is a conflict too.
+     *
+     * The same simulation as above, one step later: just before this request writes its VLAN
+     * interface, another one takes the address it was given. The unique index on
+     * vlaninterface.ipv4addressid refuses the insert.
+     */
+    public function testLosingTheRaceForAnAddressIsAConflict(): void
+    {
+        $cust  = $this->createMember( self::PREFIX . 'o' );
+        $vlan  = $this->vlanWithFreeAddresses();
+        $sp    = $this->freeSwitchPort();
+        $other = VlanInterface::whereNotNull( 'ipv4addressid' )->firstOrFail();
+        $was   = (int)$other->ipv4addressid;
+        $raced = false;
+
+        VlanInterface::creating( function( VlanInterface $vli ) use ( $other, &$raced ) {
+            if( !$raced && $vli->ipv4addressid ) {
+                $raced = true;
+                DB::table( 'vlaninterface' )->where( 'id', $other->id )
+                    ->update( [ 'ipv4addressid' => $vli->ipv4addressid ] );
+            }
+        } );
+
+        $this->key()->post(
+            "/admin/api/v4/provisioning/member/{$cust->id}/connection",
+            $this->payload( $vlan, $sp )
+        )->assertStatus( 409 );
+
+        $this->assertTrue( $raced, 'the simulated competing order never ran' );
+        $this->assertNull( VirtualInterface::where( 'custid', $cust->id )->first(), 'a rollback did not happen' );
+        $this->assertSame(
+            $was,
+            (int)DB::table( 'vlaninterface' )->where( 'id', $other->id )->value( 'ipv4addressid' ),
+            'the transaction was not rolled back as a whole'
+        );
     }
 }
