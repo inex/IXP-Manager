@@ -55,7 +55,7 @@ class Kernel extends ConsoleKernel
 
         // Login throttling: email users whose logins were throttled, and drop expired state for unknown usernames.
         $schedule->job( new SendLoginsThrottledNotifications() )->everyMinute();
-        $schedule->command( 'model:prune', [ '--model' => [ UnknownUserLoginAttempt::class ] ] )->dailyAt( '3:16' );
+        $schedule->command( 'model:prune', [ '--model' => [ UnknownUserLoginAttempt::class ] ] )->hourly();
         
         // Grapher - https://docs.ixpmanager.org/latest/grapher/mrtg/#inserting-traffic-data-into-the-database-reporting-emails
         $schedule->command( 'grapher:upload-stats-to-db' )->dailyAt( '2:00' )
