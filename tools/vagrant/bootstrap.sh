@@ -56,11 +56,14 @@ DEBIAN_FRONTEND=noninteractive apt-get install -yq ubuntu-minimal openssl wget n
 
 # We need PHP 8.4 for IXP Manager v7 and we need to get this from
 # Ondrej's super PPA:
-DEBIAN_FRONTEND=noninteractive apt-get install -yq software-properties-common
-add-apt-repository -y ppa:ondrej/php
+DEBIAN_FRONTEND=noninteractive apt-get -y install lsb-release ca-certificates curl
+curl -sSLo /tmp/debsuryorg-archive-keyring.deb https://packages.sury.org/debsuryorg-archive-keyring.deb
+dpkg -i /tmp/debsuryorg-archive-keyring.deb
+sh -c 'echo "deb [signed-by=/usr/share/keyrings/debsuryorg-archive-keyring.gpg] https://packages.sury.org/php/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/php.list'
+apt-get update
 
 echo "Installing mysql, apache, php, etc..."
-DEBIAN_FRONTEND=noninteractive apt-get install -y apache2 bash-completion bgpq3 bgpq4 curl  \
+DEBIAN_FRONTEND=noninteractive apt-get install -y apache2 bash-completion bgpq3 bgpq4       \
     git joe libapache2-mod-php8.4 libconfig-general-perl libnetaddr-ip-perl librrds-perl    \
     memcached mrtg mysql-client mysql-server php8.4 php8.4-bcmath php8.4-cli php8.4-curl    \
     php8.4-ds php8.4-gd php8.4-intl php8.4-mbstring php8.4-memcache php8.4-memcached        \
