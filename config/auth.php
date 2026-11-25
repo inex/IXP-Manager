@@ -151,14 +151,17 @@ return [
 
         /**
          * The longest duration allowed between login attempts when logins are throttled.
-         * Defaults to 15 minutes.
+         * Defaults to 15 minutes. Unit: minutes.
          */
         'max_login_throttle'  => max(1, (int) env('AUTH_LOCKOUT_MAX_LOGIN_THROTTLE', 15) ),
 
         /**
          * Minutes after which failed password attempts no longer count. A failure after this long
          * starts the count again from one. Values below max_login_throttle are raised to it.
-         * Defaults to 24 hours.
+         *
+         * This is the main control over account getting a clean slate, and when `unknown_user_login_attempts`
+         * rows can be pruned.
+         * Defaults to 24 hours. Unit: minutes.
          */
         'password_attempts_expiry' => max(1, (int) env('AUTH_LOCKOUT_PASSWORD_ATTEMPTS_EXPIRY', 1440) ),
 
