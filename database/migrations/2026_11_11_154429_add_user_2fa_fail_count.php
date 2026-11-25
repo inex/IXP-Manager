@@ -14,7 +14,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('user_2fa', function (Blueprint $table): void {
-            $table->unsignedSmallInteger('fail_count')->default(0);
+            $table->unsignedSmallInteger('fail_count')->default(0)->after('secret');
         });
     }
 
