@@ -74,21 +74,31 @@ class InPeeringDb extends  Command
             return 2;
         }
 
-        // easiest thing to do here is, in a transaction, set all in_peeringdb to false
-        // and then update those that are in peeringdb to true
+        // only write to a customer when its in_peeringdb state actually changes so that
+        // updated_at is not touched needlessly on every run
 
         DB::transaction( function () use ( $asns ) {
-            $qualifying = Customer::trafficking()->current()->count();
-            $before     = Customer::trafficking()->current()->where([ 'in_peeringdb' => true ])->count();
+            $customers  = Customer::trafficking()->current()->get();
+            $qualifying = $customers->count();
+            $before     = $customers->filter( fn( Customer $c ) => (bool)$c->in_peeringdb )->count();
             $after      = 0;
 
-            DB::table( 'cust' )->update( [ 'in_peeringdb' => false ] );
+            // customers outside the qualifying set should not be flagged (no updated_at change, as before)
+            DB::table( 'cust' )
+                ->where( 'in_peeringdb', true )
+                ->whereNotIn( 'id', $customers->pluck( 'id' ) )
+                ->update( [ 'in_peeringdb' => false ] );
 
-            foreach( Customer::trafficking()->current()->get() as $c ) {
-                if( in_array( $c->autsys, $asns, false ) ) {
-                    $c->in_peeringdb = true;
-                    $c->save();
+            foreach( $customers as $c ) {
+                $inPdb = in_array( $c->autsys, $asns, false );
+
+                if( $inPdb ) {
                     $after++;
+                }
+
+                if( (bool)$c->in_peeringdb !== $inPdb ) {
+                    $c->in_peeringdb = $inPdb;
+                    $c->save();
                 }
             }
 
