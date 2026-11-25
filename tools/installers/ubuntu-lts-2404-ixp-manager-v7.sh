@@ -293,8 +293,11 @@ debconf-set-selections <<< "mysql-server mysql-server/root_password_again passwo
 # Ondrej's super PPA:
 
 log_break
-apt-get install -yq software-properties-common &>> /tmp/ixp-manager-install.log
-add-apt-repository -y ppa:ondrej/php &>> /tmp/ixp-manager-install.log
+apt-get -y install lsb-release ca-certificates curl &>> /tmp/ixp-manager-install.log
+curl -sSLo /tmp/debsuryorg-archive-keyring.deb https://packages.sury.org/debsuryorg-archive-keyring.deb &>> /tmp/ixp-manager-install.log
+dpkg -i /tmp/debsuryorg-archive-keyring.deb &>> /tmp/ixp-manager-install.log
+sh -c 'echo "deb [signed-by=/usr/share/keyrings/debsuryorg-archive-keyring.gpg] https://packages.sury.org/php/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/php.list' &>> /tmp/ixp-manager-install.log
+apt-get update &>> /tmp/ixp-manager-install.log
 
 echo -n "Installing PHP, Apache, MySQL, etc. Please be very patient..."
 
