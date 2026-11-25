@@ -148,6 +148,7 @@ class LoginController extends Controller
             $state    = $user ?? UnknownUserLoginAttempt::whereUsername( $username )->first();
 
             // Too many failed password attempts? Refuse the login without checking the password.
+            // Check then increment is weak against bursts of requests - this risk is accepted for the time being.
             if( $lockoutUntil = $this->lockedOutUntil( $state ) ) {
                 Log::warning( 'Login refused for user [' . $username . '] from IP [' . ixp_get_client_ip() . '] - logins are throttled until ' . $lockoutUntil->toDateTimeString() );
                 $this->fireLockoutEvent( $request );

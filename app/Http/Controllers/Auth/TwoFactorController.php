@@ -65,6 +65,7 @@ class TwoFactorController
 
         // A 2FA challenge is required. If this user is locked out from too many failed
         // attempts, do not even evaluate the OTP - log them out and send them to login.
+        // Check then increment is weak against bursts of requests - this risk is accepted for the time being.
         if( $this->isLockedOut( $user ) ) {
             Log::warning( 'Two factor attempt refused for user [' . $user->username . '] from IP [' . ixp_get_client_ip() . '] - two factor authentication is locked' );
             return $this->sendLockoutResponse();
