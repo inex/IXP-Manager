@@ -121,9 +121,11 @@ class InPeeringDb extends  Command
      */
     private function setInPeeringDb( Customer $c, bool $inPdb ): void
     {
-        $c->in_peeringdb = $inPdb;
+        $c->in_peeringdb = (int)$inPdb;
         $c->save();
 
+        // config value varies per installation; psalm sees only the local value
+        /** @psalm-suppress RedundantCondition */
         if( !config( 'ixp_fe.frontend.disabled.logs' ) ) {
             Customer::logChange( $c, Log::ACTION_UPDATED );
         }
