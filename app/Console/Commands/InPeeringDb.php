@@ -3,7 +3,7 @@
 namespace IXP\Console\Commands;
 
 /*
- * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -24,7 +24,10 @@ namespace IXP\Console\Commands;
  */
 use Illuminate\Support\Facades\DB;
 
-use IXP\Models\Customer;
+use IXP\Models\{
+    Customer,
+    Log
+};
 use IXP\Services\PeeringDb;
 
 /**
@@ -74,20 +77,21 @@ class InPeeringDb extends  Command
             return 2;
         }
 
-        // only write to a customer when its in_peeringdb state actually changes so that
-        // updated_at is not touched needlessly on every run
-
+        // only update cust in_peeringdb if it actually changes
         DB::transaction( function () use ( $asns ) {
             $customers  = Customer::trafficking()->current()->get();
             $qualifying = $customers->count();
             $before     = $customers->filter( fn( Customer $c ) => (bool)$c->in_peeringdb )->count();
             $after      = 0;
 
-            // customers outside the qualifying set should not be flagged (no updated_at change, as before)
-            DB::table( 'cust' )
-                ->where( 'in_peeringdb', true )
+            // customers outside the qualifying set should not be flagged
+            $stale = Customer::where( 'in_peeringdb', true )
                 ->whereNotIn( 'id', $customers->pluck( 'id' ) )
-                ->update( [ 'in_peeringdb' => false ] );
+                ->get();
+
+            foreach( $stale as $c ) {
+                $this->setInPeeringDb( $c, false );
+            }
 
             foreach( $customers as $c ) {
                 $inPdb = in_array( $c->autsys, $asns, false );
@@ -97,8 +101,7 @@ class InPeeringDb extends  Command
                 }
 
                 if( (bool)$c->in_peeringdb !== $inPdb ) {
-                    $c->in_peeringdb = $inPdb;
-                    $c->save();
+                    $this->setInPeeringDb( $c, $inPdb );
                 }
             }
 
@@ -106,5 +109,27 @@ class InPeeringDb extends  Command
 
         });
         return 0;
+    }
+
+    /**
+     * Update cust in_peeringdb and record the change in the log.
+     *
+     * @param Customer  $c
+     * @param bool      $inPdb
+     *
+     * @return void
+     */
+    private function setInPeeringDb( Customer $c, bool $inPdb ): void
+    {
+        $c->in_peeringdb = $inPdb;
+        $c->save();
+
+        if( !config( 'ixp_fe.frontend.disabled.logs' ) ) {
+            Customer::logChange( $c, Log::ACTION_UPDATED );
+        }
+
+        if( $this->getOutput()->isVerbose() ) {
+            $this->line( "{$c->name} (AS{$c->autsys}): in_peeringdb " . ( $inPdb ? 'set' : 'cleared' ) );
+        }
     }
 }
