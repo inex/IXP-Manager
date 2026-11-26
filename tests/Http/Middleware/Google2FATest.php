@@ -24,13 +24,10 @@ declare(strict_types=1);
 
 namespace Tests\Http\Middleware;
 
-use Illuminate\Contracts\Console\Kernel as ConsoleKernel;
 use Illuminate\Foundation\Application;
-use Illuminate\Foundation\Bootstrap\LoadConfiguration;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Route;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Request as RequestFacade;
 use IXP\Http\Middleware\Google2FA as Google2FAMiddleware;
 use IXP\Models\User;
@@ -42,13 +39,6 @@ use Tests\TestCase;
 
 class Google2FATest extends TestCase
 {
-    /**
-     * Configuration needed at boot time (routes are only registered if these are set)
-     */
-    private const array BOOT_CONFIG = [
-        'google2fa.enabled'           => true,
-    ];
-
     /** Data Provider with names of routes that are globally excluded from the 2FA redirect */
     public static function globallyExcludedRoutes(): array
     {

@@ -56,6 +56,18 @@ use PHPUnit\Framework\Attributes\BeforeClass;
  */
 abstract class DuskTestCase extends BaseTestCase
 {
+    /**
+     * Signal that DuskTests have run and the database is dirty.
+     * Between Dusk test cases we truncate. However the last Dusk test leaves state in the database, and
+     * migrations are trusted to have been run. In some scenarios this polluted state can affect subsequent tests.
+     * See TestCase setUpBeforeClass for corresponding migration state reset.
+     *   TestCase -> DuskTestCase - truncates
+     *   DuskTest -> DuskTestCase - truncates
+     *   DuskTest -> TestCase     - needs to reset DB state
+     * SetupWizardTest needs something similar due to need for empty tables if further issues come up.
+     */
+    public static bool $leftDirtyDatabase = false;
+
     use CreatesApplication;
     use DatabaseTruncation;
 
@@ -70,6 +82,8 @@ abstract class DuskTestCase extends BaseTestCase
     #[BeforeClass]
     public static function prepare(): void
     {
+        self::$leftDirtyDatabase = true;
+
         static::startChromeDriver([
             '--port=9515'
         ]);
