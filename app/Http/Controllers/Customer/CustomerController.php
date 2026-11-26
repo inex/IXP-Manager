@@ -93,101 +93,307 @@ class CustomerController extends Controller
      */
     public function list( Request $r ): View
     {
-        if( ( $state = $r->state ) !== null ) {
-            if( isset( Customer::$CUST_STATUS_TEXT[ $state ] ) ) {
-                $r->session()->put( "cust-list-state", $state );
-            } else {
-                $r->session()->remove( "cust-list-state" );
-            }
-        } else if( $r->session()->exists( "cust-list-state" ) ) {
-            $state = $r->session()->get( "cust-list-state" );
+        $clearFilters = $r->boolean( "clear-filters" );
+        $filtersSubmitted = $r->boolean( "filters-submitted" );
+
+        if( $clearFilters ) {
+            $r->session()->forget( [
+                "cust-list-state",
+                "cust-list-type",
+                "cust-list-peering-policy",
+                "cust-list-route-server",
+                "cust-list-joined-from",
+                "cust-list-joined-to",
+                "cust-list-left-from",
+                "cust-list-left-to",
+                "cust-list-reseller-type",
+                "cust-list-show-resellers",
+                "cust-list-show-resold",
+                "cust-list-show-other",
+                "cust-list-reseller",
+                "cust-list-current-only",
+                "cust-list-tag",
+                "cust-list-filter-tags",
+                "cust-list-include-tags",
+                "cust-list-exclude-tags",
+                "cust-list-include-tags-mode",
+                "cust-list-exclude-tags-mode",
+            ] );
         }
 
-        if( ( $type = $r->type ) !== null ) {
-            if( isset( Customer::$CUST_TYPES_TEXT[ $type ] ) ) {
-                $r->session()->put( "cust-list-type", $type );
+        $multiValueFilter = function( string $input, string $sessionKey, array $allowed, bool $integerValues = false ) use( $r, $filtersSubmitted ): array {
+            $values = $filtersSubmitted || $r->has( $input )
+                ? (array)$r->input( $input, [] )
+                : (array)$r->session()->get( $sessionKey, [] );
+            $values = $integerValues ? array_map( "intval", $values ) : array_map( "strval", $values );
+            $values = array_values( array_unique( array_filter(
+                $values,
+                static fn( int|string $value ): bool => isset( $allowed[ $value ] )
+            ) ) );
+
+            if( count( $values ) ) {
+                $r->session()->put( $sessionKey, $values );
             } else {
-                $r->session()->remove( "cust-list-type" );
+                $r->session()->remove( $sessionKey );
             }
-        } else if( $r->session()->exists( "cust-list-type" ) ) {
-            $type = $r->session()->get( "cust-list-type" );
+
+            return $values;
+        };
+
+        $states = $multiValueFilter( "state", "cust-list-state", Customer::$CUST_STATUS_TEXT, true );
+        $types = $multiValueFilter( "type", "cust-list-type", Customer::$CUST_TYPES_TEXT, true );
+        $peeringPolicies = $multiValueFilter( "peering-policy", "cust-list-peering-policy", Customer::$PEERING_POLICIES );
+        $routeServers = $multiValueFilter( "route-server", "cust-list-route-server", [ "yes" => true, "no" => true ] );
+
+        $validDate = static function( mixed $value ): bool {
+            if( !is_string( $value ) || !preg_match( "/^(\d{4})-(\d{2})-(\d{2})$/", $value, $matches ) ) {
+                return false;
+            }
+
+            return checkdate( (int)$matches[ 2 ], (int)$matches[ 3 ], (int)$matches[ 1 ] );
+        };
+
+        $dateFilters = [];
+        foreach( [ "joined-from", "joined-to", "left-from", "left-to" ] as $dateFilter ) {
+            $sessionKey = "cust-list-" . $dateFilter;
+
+            if( $filtersSubmitted ) {
+                $value = trim( (string)$r->input( $dateFilter, "" ) );
+                if( $validDate( $value ) ) {
+                    $dateFilters[ $dateFilter ] = $value;
+                    $r->session()->put( $sessionKey, $value );
+                } else {
+                    $dateFilters[ $dateFilter ] = false;
+                    $r->session()->remove( $sessionKey );
+                }
+            } else {
+                $value = $r->session()->get( $sessionKey, false );
+                $dateFilters[ $dateFilter ] = $validDate( $value ) ? $value : false;
+            }
         }
 
-        $resellerTypes = [
-            'resold'               => 'Resold',
-            'reseller'             => 'Reseller',
-            'not-resold'           => 'Not resold',
-            'not-reseller'         => 'Not reseller',
-            'not-resold-reseller'  => 'Not resold/reseller',
-        ];
+        $joinedFrom = $dateFilters[ "joined-from" ];
+        $joinedTo = $dateFilters[ "joined-to" ];
+        $leftFrom = $dateFilters[ "left-from" ];
+        $leftTo = $dateFilters[ "left-to" ];
+
+        $resellers = $this->resellerMode()
+            ? Customer::select( [ "id", "name", "abbreviatedName" ] )->resellerOnly()->orderBy( "name" )->get()
+            : collect();
 
         if( !$this->resellerMode() ) {
-            $resellerType = false;
-            $r->session()->remove( 'cust-list-reseller-type' );
-        } elseif( ( $resellerType = $r->input( 'reseller-type' ) ) !== null ) {
-            if( isset( $resellerTypes[ $resellerType ] ) ) {
-                $r->session()->put( 'cust-list-reseller-type', $resellerType );
-            } else {
-                $resellerType = false;
-                $r->session()->remove( 'cust-list-reseller-type' );
-            }
-        } elseif( $r->session()->exists( 'cust-list-reseller-type' ) ) {
-            $resellerType = $r->session()->get( 'cust-list-reseller-type' );
+            $showResellers = true;
+            $showResold = true;
+            $showOther = true;
+            $r->session()->remove( "cust-list-show-resellers" );
+            $r->session()->remove( "cust-list-show-resold" );
+            $r->session()->remove( "cust-list-show-other" );
+            $r->session()->remove( "cust-list-reseller-type" );
+        } elseif( $filtersSubmitted ) {
+            $resellerTypes = array_values( array_unique( array_filter(
+                array_map( "strval", (array)$r->input( "reseller-type", [] ) ),
+                static fn( string $type ): bool => in_array( $type, [ "reseller", "resold", "other" ], true )
+            ) ) );
+            $showAllResellerTypes = count( $resellerTypes ) === 0;
+            $showResellers = $showAllResellerTypes || in_array( "reseller", $resellerTypes, true );
+            $showResold = $showAllResellerTypes || in_array( "resold", $resellerTypes, true );
+            $showOther = $showAllResellerTypes || in_array( "other", $resellerTypes, true );
+            $r->session()->put( "cust-list-show-resellers", $showResellers );
+            $r->session()->put( "cust-list-show-resold", $showResold );
+            $r->session()->put( "cust-list-show-other", $showOther );
         } else {
-            $resellerType = false;
+            $showResellers = (bool)$r->session()->get( "cust-list-show-resellers", true );
+            $showResold = (bool)$r->session()->get( "cust-list-show-resold", true );
+            $showOther = (bool)$r->session()->get( "cust-list-show-other", true );
         }
 
-        if( ( $showCurrentOnly = $r->input( 'current-only' ) ) !== null ) {
+        $resellerTypes = array_keys( array_filter( [
+            "reseller" => $showResellers,
+            "resold"   => $showResold,
+            "other"    => $showOther,
+        ] ) );
+
+        if( !$this->resellerMode() ) {
+            $resellerId = false;
+            $r->session()->remove( "cust-list-reseller" );
+        } elseif( ( $resellerId = $r->input( "reseller" ) ) !== null ) {
+            $resellerId = (int)$resellerId;
+            if( $resellers->contains( "id", $resellerId ) ) {
+                $r->session()->put( "cust-list-reseller", $resellerId );
+            } else {
+                $resellerId = false;
+                $r->session()->remove( "cust-list-reseller" );
+            }
+        } elseif( $r->session()->exists( "cust-list-reseller" ) ) {
+            $resellerId = (int)$r->session()->get( "cust-list-reseller" );
+        } else {
+            $resellerId = false;
+        }
+
+        if( $filtersSubmitted ) {
+            $showCurrentOnly = $r->boolean( "current-only" );
             $r->session()->put( "cust-list-current-only", $showCurrentOnly );
-        } else if( $r->session()->exists( "cust-list-current-only" ) ) {
-            $showCurrentOnly = $r->session()->get( "cust-list-current-only" );
         } else {
-            $showCurrentOnly = false;
+            $showCurrentOnly = (bool)$r->session()->get( "cust-list-current-only", true );
         }
 
-        $tags = CustomerTag::all()->keyBy( 'id' )->toArray();
+        $tags = CustomerTag::orderBy( "display_as" )->get()->keyBy( "id" )->toArray();
+        $includeTagsMode = $filtersSubmitted
+            ? (string)$r->input( "include-tags-mode", "all" )
+            : (string)$r->session()->get( "cust-list-include-tags-mode", "all" );
 
-        if( $r->tag  !== null ) {
-            if(  isset( $tags[ $r->tag ] ) ) {
-                $tid = $tags[ $r->tag ][ 'id' ];
-                $r->session()->put( "cust-list-tag", $tid );
-            } else {
-                $r->session()->remove( "cust-list-tag" );
-                $tid = false;
-            }
-        } else if( $r->session()->exists( "cust-list-tag" ) ) {
-            $tid = $r->session()->get( "cust-list-tag" );
-        } else {
-            $tid = false;
+        if( !in_array( $includeTagsMode, [ "all", "any" ], true ) ) {
+            $includeTagsMode = "all";
         }
+
+        if( $filtersSubmitted ) {
+            $r->session()->put( "cust-list-include-tags-mode", $includeTagsMode );
+        }
+
+        $excludeTagsMode = $filtersSubmitted
+            ? (string)$r->input( "exclude-tags-mode", "any" )
+            : (string)$r->session()->get( "cust-list-exclude-tags-mode", "any" );
+
+        if( !in_array( $excludeTagsMode, [ "all", "any" ], true ) ) {
+            $excludeTagsMode = "any";
+        }
+
+        if( $filtersSubmitted ) {
+            $r->session()->put( "cust-list-exclude-tags-mode", $excludeTagsMode );
+        }
+
+        if( $filtersSubmitted ) {
+            $includeTags = array_values( array_unique( array_filter(
+                array_map( "intval", (array)$r->input( "include-tags", [] ) ),
+                fn( int $tagId ): bool => isset( $tags[ $tagId ] )
+            ) ) );
+            $excludeTags = array_values( array_unique( array_filter(
+                array_map( "intval", (array)$r->input( "exclude-tags", [] ) ),
+                fn( int $tagId ): bool => isset( $tags[ $tagId ] )
+            ) ) );
+
+            $r->session()->put( "cust-list-include-tags", $includeTags );
+            $r->session()->put( "cust-list-exclude-tags", $excludeTags );
+            $r->session()->remove( "cust-list-filter-tags" );
+            $r->session()->remove( "cust-list-tag" );
+        } else {
+            $includeTags = (array)$r->session()->get( "cust-list-include-tags", [] );
+            $excludeTags = (array)$r->session()->get( "cust-list-exclude-tags", [] );
+        }
+
+        $includeTags = array_values( array_filter( $includeTags, fn( int $tagId ): bool => isset( $tags[ $tagId ] ) ) );
+        $excludeTags = array_values( array_filter( $excludeTags, fn( int $tagId ): bool => isset( $tags[ $tagId ] ) ) );
+        $filterTags = count( $includeTags ) > 0 || count( $excludeTags ) > 0;
 
         return view( 'customer/list' )->with([
-            'state'                 => $state           ?? false,
-            'type'                  => $type            ?? false,
-            'resellerType'          => $resellerType,
-            'resellerTypes'         => $resellerTypes,
+            'states'                => $states,
+            'clearFilters'          => $clearFilters,
+            'types'                 => $types,
+            'peeringPolicies'       => $peeringPolicies,
+            'routeServers'          => $routeServers,
+            'joinedFrom'            => $joinedFrom,
+            'joinedTo'              => $joinedTo,
+            'leftFrom'              => $leftFrom,
+            'leftTo'                => $leftTo,
+            'showResellers'         => $showResellers,
+            'showResold'            => $showResold,
+            "showOther"             => $showOther,
+            "resellerTypes"          => $resellerTypes,
+            'resellerId'            => $resellerId,
+            'resellers'             => $resellers,
             'showCurrentOnly'       => $showCurrentOnly ?? false,
-            'tag'                   => $tid ?? false,
+            'filterTags'            => $filterTags,
+            'includeTags'           => $includeTags,
+            'includeTagsMode'       => $includeTagsMode,
+            'excludeTags'           => $excludeTags,
+            'excludeTagsMode'       => $excludeTagsMode,
             'tags'                  => $tags,
-            'custs'                 => Customer::selectRaw( 'cust.*' )
-                ->when( $tid, function( Builder $q, $tid ) {
-                    return $q->leftJoin( 'cust_to_cust_tag AS t', 't.customer_id', 'cust.id' )
-                        ->where( 't.customer_tag_id', $tid );
-                } )->when( $state && isset( Customer::$CUST_STATUS_TEXT[ $state ] ), function( Builder $q ) use( $state ) {
-                    return $q->where( 'cust.status', $state );
-                } )->when( $type && isset( Customer::$CUST_TYPES_TEXT[ $type ] ), function( Builder $q ) use( $type ) {
-                    return $q->where( 'cust.type', $type );
-                } )->when( $resellerType === 'resold', function( Builder $q ) {
-                    return $q->whereNotNull( 'cust.reseller' );
-                } )->when( $resellerType === 'reseller', function( Builder $q ) {
-                    return $q->where( 'cust.isReseller', true );
-                } )->when( $resellerType === 'not-resold', function( Builder $q ) {
-                    return $q->whereNull( 'cust.reseller' );
-                } )->when( $resellerType === 'not-reseller', function( Builder $q ) {
-                    return $q->where( 'cust.isReseller', false );
-                } )->when( $resellerType === 'not-resold-reseller', function( Builder $q ) {
-                    return $q->whereNull( 'cust.reseller' )
-                        ->where( 'cust.isReseller', false );
+            'custs'                 => Customer::with( [ 'resellerObject', 'tags', 'companyRegisteredDetail' ] )
+                ->selectRaw( 'cust.*' )
+                ->withExists( [ 'vlanInterfaces as route_server_client' => function( Builder $q ) {
+                    $q->where( 'vlaninterface.rsclient', true )
+                        ->where( function( Builder $protocolQuery ) {
+                            $protocolQuery->where( 'vlaninterface.ipv4enabled', true )
+                                ->orWhere( 'vlaninterface.ipv6enabled', true );
+                        } );
+                } ] )
+                ->when( $filterTags, function( Builder $q ) use( $includeTags, $excludeTags, $includeTagsMode, $excludeTagsMode ) {
+                    if( $includeTagsMode === "any" && count( $includeTags ) ) {
+                        $q->whereHas( "tags", fn( Builder $tagQuery ) => $tagQuery->whereIn( "cust_tag.id", $includeTags ) );
+                    } else {
+                        foreach( $includeTags as $tagId ) {
+                            $q->whereHas( "tags", fn( Builder $tagQuery ) => $tagQuery->where( "cust_tag.id", $tagId ) );
+                        }
+                    }
+
+                    if( $excludeTagsMode === "all" && count( $excludeTags ) ) {
+                        $q->where( function( Builder $excludeQuery ) use( $excludeTags ) {
+                            foreach( $excludeTags as $tagId ) {
+                                $excludeQuery->orWhereDoesntHave( "tags", fn( Builder $tagQuery ) => $tagQuery->where( "cust_tag.id", $tagId ) );
+                            }
+                        } );
+                    } elseif( count( $excludeTags ) ) {
+                        $q->whereDoesntHave( "tags", fn( Builder $tagQuery ) => $tagQuery->whereIn( "cust_tag.id", $excludeTags ) );
+                    }
+
+                    return $q;
+                } )->when( count( $states ), function( Builder $q ) use( $states ) {
+                    return $q->whereIn( 'cust.status', $states );
+                } )->when( count( $types ), function( Builder $q ) use( $types ) {
+                    return $q->whereIn( 'cust.type', $types );
+                } )->when( count( $peeringPolicies ), function( Builder $q ) use( $peeringPolicies ) {
+                    return $q->whereIn( 'cust.peeringpolicy', $peeringPolicies );
+                } )->when( $joinedFrom, function( Builder $q ) use( $joinedFrom ) {
+                    return $q->whereDate( "cust.datejoin", ">=", $joinedFrom );
+                } )->when( $joinedTo, function( Builder $q ) use( $joinedTo ) {
+                    return $q->whereDate( "cust.datejoin", "<=", $joinedTo );
+                } )->when( $leftFrom, function( Builder $q ) use( $leftFrom ) {
+                    return $q->whereDate( "cust.dateleave", ">=", $leftFrom );
+                } )->when( $leftTo, function( Builder $q ) use( $leftTo ) {
+                    return $q->whereDate( "cust.dateleave", "<=", $leftTo );
+                } )->when( $routeServers === [ "yes" ], function( Builder $q ) {
+                    return $q->whereRaw( Customer::SQL_CUST_CURRENT )
+                        ->whereHas( 'vlanInterfaces', function( Builder $vlanInterfaceQuery ) {
+                            $vlanInterfaceQuery->where( 'vlaninterface.rsclient', true )
+                                ->where( function( Builder $protocolQuery ) {
+                                    $protocolQuery->where( 'vlaninterface.ipv4enabled', true )
+                                        ->orWhere( 'vlaninterface.ipv6enabled', true );
+                                } );
+                        } );
+                } )->when( $routeServers === [ "no" ], function( Builder $q ) {
+                    return $q->whereRaw( Customer::SQL_CUST_CURRENT )
+                        ->whereDoesntHave( 'vlanInterfaces', function( Builder $vlanInterfaceQuery ) {
+                            $vlanInterfaceQuery->where( 'vlaninterface.rsclient', true )
+                                ->where( function( Builder $protocolQuery ) {
+                                    $protocolQuery->where( 'vlaninterface.ipv4enabled', true )
+                                        ->orWhere( 'vlaninterface.ipv6enabled', true );
+                                } );
+                        } );
+                } )->when( $this->resellerMode() && !( $showResellers && $showResold && $showOther ), function( Builder $q ) use( $showResellers, $showResold, $showOther ) {
+                    return $q->where( function( Builder $categoryQuery ) use( $showResellers, $showResold, $showOther ) {
+                        if( !$showResellers && !$showResold && !$showOther ) {
+                            return $categoryQuery->whereRaw( "0 = 1" );
+                        }
+
+                        if( $showResellers ) {
+                            $categoryQuery->orWhere( "cust.isReseller", true );
+                        }
+
+                        if( $showResold ) {
+                            $categoryQuery->orWhereNotNull( "cust.reseller" );
+                        }
+
+                        if( $showOther ) {
+                            $categoryQuery->orWhere( function( Builder $otherQuery ) {
+                                $otherQuery->where( "cust.isReseller", false )
+                                    ->whereNull( "cust.reseller" );
+                            } );
+                        }
+
+                        return $categoryQuery;
+                    } );
+                } )->when( $resellerId, function( Builder $q ) use( $resellerId ) {
+                    return $q->where( 'cust.reseller', $resellerId );
                 } )->when( $showCurrentOnly, function( Builder $q ) {
                     return $q->whereRaw( Customer::SQL_CUST_CURRENT );
                 } )->orderByRaw( 'cust.name' )->get(),
