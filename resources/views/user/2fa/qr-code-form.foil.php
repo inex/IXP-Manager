@@ -27,8 +27,9 @@ $this->layout( 'layouts/ixpv4' )
                         Two factor authentication (2FA) strengthens access security by requiring two authentication methods to verify your identity. Two factor authentication protects against phishing, social engineering and password brute force attacks and secures your logins from attackers exploiting weak or stolen credentials.
                     </p>
                     <p class="tw:pb-8 tw:border-b-2">
-                        <b>IXP Manager</b> supports a Google Authenticator compatible HMAC-Based One-time Password (HOTP) algorithm as specified in <a href="https://tools.ietf.org/html/rfc4226">RFC 4226</a>
-                        and the Time-based One-time Password (TOTP) algorithm specified in <a href="https://tools.ietf.org/html/rfc6238">RFC 6238</a>.
+                        <b>IXP Manager</b> supports a Time-based One-time Password (TOTP) algorithm specified in
+                        <a href="https://tools.ietf.org/html/rfc6238">RFC 6238</a> and is compatible with all major
+                        two factor authentication apps.
                     </p>
                     <p class="tw:pt-4">
                         To enable two factor authentication on your account, you need to do the following steps.
