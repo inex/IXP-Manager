@@ -27,6 +27,7 @@ use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\UserProvider as IlluminateUserProvider;
 use Illuminate\Contracts\Hashing\Hasher;
 use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
 use IXP\Models\UserRememberToken;
@@ -195,7 +196,7 @@ class EloquentUserProvider implements IlluminateUserProvider
     /**
      * Rehash the user's password if required and supported.
      *
-     * @param  \Illuminate\Contracts\Auth\Authenticatable&\Illuminate\Database\Eloquent\Model  $user
+     * @param  \Illuminate\Contracts\Auth\Authenticatable  $user
      * @param  array  $credentials
      * @param  bool  $force
      * @return void
@@ -204,6 +205,12 @@ class EloquentUserProvider implements IlluminateUserProvider
     public function rehashPasswordIfRequired( Authenticatable $user, #[\SensitiveParameter] array $credentials, bool $force = false ): void
     {
         if (! $this->hasher->needsRehash($user->getAuthPassword()) && ! $force) {
+            return;
+        }
+
+        // can't express this via function signature or phpdoc without running into errors, so do
+        // type checking here since User is Authenticatable and a Model
+        if (! $user instanceof Model) {
             return;
         }
 
