@@ -24,6 +24,7 @@ declare(strict_types=1);
 
 namespace Tests\Http\Controllers\Auth;
 
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Testing\TestResponse;
 use Tests\TestCase;
 
@@ -41,6 +42,27 @@ class LoginTest extends TestCase
         $this->get(route( 'login@showForm'))
             ->assertSee('Your password no longer meets the password policy requirements.')
             ->assertSee('Reset your password to login.');
+    }
+
+    public function testRehashesPasswordIfRoundsChange(): void
+    {
+        $user = $this->getSuperUser();
+
+        Hash::setRounds(4);
+        $user->password = $originalPassword = Hash::make('travisci');
+        $user->save();
+
+        $info = password_get_info($originalPassword);
+        $this->assertEquals(4, $info['options']['cost']);
+
+        Hash::setRounds(5);
+
+        $this->submitLoginForm('travis', 'travisci')
+            ->assertRedirect('');
+
+        $this->assertNotEquals($originalPassword, $user->refresh()->password);
+        $info = password_get_info($user->password);
+        $this->assertEquals(5, $info['options']['cost']);
     }
 
 

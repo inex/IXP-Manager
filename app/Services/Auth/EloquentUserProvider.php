@@ -33,6 +33,7 @@ use IXP\Models\UserRememberToken;
 
 use IXP\Utils\IpAddress;
 
+use Override;
 use Wolfcast\BrowserDetection;
 
 
@@ -78,7 +79,7 @@ class EloquentUserProvider implements IlluminateUserProvider
      *
      * @return Authenticatable|null
      */
-    #[\Override]
+    #[Override]
     public function retrieveByToken( $identifier, #[\SensitiveParameter] $token ): ?Authenticatable
     {
         $urt = UserRememberToken::where( [ 'user_id' => $identifier ] )->where( [ 'token' => $token ] )->first();
@@ -130,7 +131,7 @@ class EloquentUserProvider implements IlluminateUserProvider
      *
      * @return Authenticatable|null
      */
-    #[\Override]
+    #[Override]
     public function retrieveById( $identifier ): ?Authenticatable
     {
         return $this->model::find( $identifier );
@@ -144,7 +145,7 @@ class EloquentUserProvider implements IlluminateUserProvider
      *
      * @return void
      */
-    #[\Override]
+    #[Override]
     public function updateRememberToken( Authenticatable $user, #[\SensitiveParameter] $token ){}
 
     /**
@@ -154,7 +155,7 @@ class EloquentUserProvider implements IlluminateUserProvider
      *
      * @return Authenticatable|null
      */
-    #[\Override]
+    #[Override]
     public function retrieveByCredentials( #[\SensitiveParameter] array $credentials ): ?Authenticatable
     {
         // First we will add each credential element to the query as a where clause.
@@ -185,24 +186,29 @@ class EloquentUserProvider implements IlluminateUserProvider
      *
      * @return bool
      */
-    #[\Override]
+    #[Override]
     public function validateCredentials( Authenticatable $user, #[\SensitiveParameter] array $credentials ): bool
     {
         return $this->hasher->check( $credentials['password'], $user->getAuthPassword() );
     }
 
-
     /**
      * Rehash the user's password if required and supported.
      *
-     * @param \Illuminate\Contracts\Auth\Authenticatable $user
-     * @param array $credentials
-     * @param bool $force
+     * @param  \Illuminate\Contracts\Auth\Authenticatable&\Illuminate\Database\Eloquent\Model  $user
+     * @param  array  $credentials
+     * @param  bool  $force
      * @return void
      */
-    #[\Override]
-    public function rehashPasswordIfRequired( Authenticatable $user, #[\SensitiveParameter] array $credentials, bool $force = false )
+    #[Override]
+    public function rehashPasswordIfRequired( Authenticatable $user, #[\SensitiveParameter] array $credentials, bool $force = false ): void
     {
-        // TODO: Implement rehashPasswordIfRequired() method.
+        if (! $this->hasher->needsRehash($user->getAuthPassword()) && ! $force) {
+            return;
+        }
+
+        $user->forceFill([
+            $user->getAuthPasswordName() => $this->hasher->make($credentials['password']),
+        ])->save();
     }
 }

@@ -25,6 +25,7 @@ declare(strict_types=1);
 namespace Tests\Http\Controllers\Auth;
 
 use Carbon\Carbon;
+use Carbon\CarbonInterface;
 use Illuminate\Testing\TestResponse;
 use IXP\Models\UnknownUserLoginAttempt;
 use IXP\Models\User;
@@ -348,7 +349,7 @@ class LoginRateLimitTest extends TestCase
      */
     public function testPruneRemovesExpiredUnknownUsernames(): void
     {
-        $make = function( string $username, ?Carbon $lastFail ): void {
+        $make = function( string $username, ?CarbonInterface $lastFail ): void {
             $row = UnknownUserLoginAttempt::create( [ 'username' => $username ] );
             $row->password_fail_count   = 1;
             $row->password_last_fail_at = $lastFail;
