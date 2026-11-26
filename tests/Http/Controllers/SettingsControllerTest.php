@@ -27,8 +27,10 @@ namespace Tests\Http\Controllers;
 use Dotenv\Dotenv;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Testing\TestResponse;
+use IXP\Models\User;
 use IXP\Rules\IsCountry;
 use IXP\Rules\NoIllegalChars;
+use IXP\Rules\ValidPasswordMinLength;
 use Tests\TestCase;
 use Tests\Trait\ModifiesEnv;
 
@@ -42,6 +44,16 @@ use Tests\Trait\ModifiesEnv;
 class SettingsControllerTest extends TestCase
 {
     use ModifiesEnv;
+
+    #[\Override]
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        // .env.ci has 2FA disabled with a minimum password length of 8, which ValidPasswordMinLength
+        // rejects. Start from a valid state so tests resubmitting the current settings pass validation.
+        config()->set( 'password_policy.minimum_length', 42 );
+    }
 
     /**
      * This test ensures that each Setting definition contains a config_key which is present in config().
@@ -250,8 +262,8 @@ class SettingsControllerTest extends TestCase
     public function test2FaPrivilegeMustBeValid(): void
     {
         $this->submitSettings( [
-                '2fa_enabled' => 1,
-                'ixpm_2fa_enforce_for_users' => 99,
+                '2fa_enabled' => '1',
+                'ixpm_2fa_enforce_for_users' => '99',
             ] )
             ->assertRedirect()
             ->assertSessionHasErrors( [
@@ -259,8 +271,8 @@ class SettingsControllerTest extends TestCase
             ] );
 
         $this->submitSettings( [
-                '2fa_enabled' => 1,
-                'ixpm_2fa_enforce_for_users' => 0,
+                '2fa_enabled' => '1',
+                'ixpm_2fa_enforce_for_users' => '0',
             ] )
             ->assertRedirect()
             ->assertSessionHasErrors( [
@@ -274,8 +286,8 @@ class SettingsControllerTest extends TestCase
 
         $this
             ->submitSettings( [
-                '2fa_enabled' => 1,
-                'ixpm_2fa_enforce_for_users' => $setting,
+                '2fa_enabled' => '1',
+                'ixpm_2fa_enforce_for_users' => (string) $setting,
             ])
             ->assertRedirect()
             ->assertSessionHasNoErrors();
@@ -462,6 +474,77 @@ class SettingsControllerTest extends TestCase
         $this->assertEquals('bgpq4', $updatedEnv[ $this->getEnvVarForId('bgpq4_path') ] );
     }
 
+    public function testPasswordPolicyMinLengthNo2FA(): void
+    {
+        config()->set( 'google2fa.enabled', false);
+
+        // Rejects invalid input
+        $this->submitSettings( [ 'password_policy_minimum_length' => '!abc15', ] )
+            ->assertRedirect()
+            ->assertSessionHasErrors( [
+                'password_policy_minimum_length' => 'The password policy minimum length must be an integer.',
+            ] );
+
+        // Can't be under 15 unless 2FA is active and active for all user levels
+        $this->submitSettings( [ 'password_policy_minimum_length' => '14', ] )
+            ->assertRedirect()
+            ->assertSessionHasErrors( [
+                'password_policy_minimum_length' => 'The password policy minimum length must be at least 15 characters unless 2FA is on for all users.',
+            ] );
+
+        // Accepts 15 until then though
+        $this->submitSettings( [ 'password_policy_minimum_length' => '15', ] )
+            ->assertRedirect()
+            ->assertSessionHasNoErrors();
+
+        // Find result in the .env file
+        $updatedEnv = Dotenv::parse(file_get_contents(base_path('.env')));
+        $this->assertEquals('15', $updatedEnv[ $this->getEnvVarForId('password_policy_minimum_length') ] );
+    }
+
+    public function testPasswordPolicyMinLength2FAForAllConfig(): void
+    {
+        // Can set to 8 if these conditions are met
+        config()->set( 'google2fa.enabled', true);
+        config()->set( 'google2fa.ixpm_2fa_enforce_for_users', User::AUTH_CUSTUSER);
+        $this->submitSettings( [ 'password_policy_minimum_length' => '8', ] )
+            ->assertRedirect()
+            ->assertSessionHasNoErrors();
+
+        // Find result in the .env file
+        $updatedEnv = Dotenv::parse(file_get_contents(base_path('.env')));
+        $this->assertEquals('8', $updatedEnv[ $this->getEnvVarForId('password_policy_minimum_length') ] );
+    }
+
+    public function testPasswordPolicyMinLength2FAForAllRequest(): void
+    {
+        config()->set( 'google2fa.enabled', false);
+        config()->set( 'google2fa.ixpm_2fa_enforce_for_users', 4);
+
+        // Can't be under 15 unless 2FA is active and active for all user levels
+        $this->submitSettings( [ '2fa_enabled' => '0', 'ixpm_2fa_enforce_for_users' => (string) User::AUTH_CUSTUSER, 'password_policy_minimum_length' => '14', ] )
+            ->assertRedirect()
+            ->assertSessionHasErrors( [
+                'password_policy_minimum_length' => 'The password policy minimum length must be at least 15 characters unless 2FA is on for all users.',
+            ] );
+
+        // Can't be under 15 unless 2FA is active and active for all user levels
+        $this->submitSettings( [ '2fa_enabled' => '1', 'ixpm_2fa_enforce_for_users' => (string) User::AUTH_CUSTADMIN, 'password_policy_minimum_length' => '14', ] )
+            ->assertRedirect()
+            ->assertSessionHasErrors( [
+                'password_policy_minimum_length' => 'The password policy minimum length must be at least 15 characters unless 2FA is on for all users.',
+            ] );
+
+        // The request can enable 2fa and set ixpm_2fa_enforce_for_users to the right level
+        $this->submitSettings( [ '2fa_enabled' => '1', 'ixpm_2fa_enforce_for_users' => (string) User::AUTH_CUSTUSER, 'password_policy_minimum_length' => '8', ] )
+            ->assertRedirect()
+            ->assertSessionHasNoErrors();
+
+        // Find result in the .env file
+        $updatedEnv = Dotenv::parse(file_get_contents(base_path('.env')));
+        $this->assertEquals('8', $updatedEnv[ $this->getEnvVarForId('password_policy_minimum_length') ] );
+    }
+
     /**
      * Safeguard - for text fields we require the NoIllegalChars.
      */
@@ -547,9 +630,11 @@ class SettingsControllerTest extends TestCase
 
     private function submitSettings(array $changes = [] ): TestResponse
     {
+        $data = $this->buildRequestWithChanges( $changes );
+
         return $this
             ->actingAs($this->getSuperUser())
-            ->post( route( 'settings@update' ), $this->buildRequestWithChanges( $changes ) );
+            ->post( route( 'settings@update' ), $data );
     }
 
     /**

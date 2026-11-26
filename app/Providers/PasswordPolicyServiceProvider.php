@@ -45,7 +45,6 @@ class PasswordPolicyServiceProvider extends ServiceProvider
         Password::defaults( function (): Password {
             return Password::min(config('password_policy.minimum_length'))
                 ->max(config('password_policy.maximum_length'))
-                ->when(config('password_policy.require_letters'),    fn( Password $policy ) => $policy->letters()       )
                 ->when(config('password_policy.require_numbers'),    fn( Password $policy ) => $policy->numbers()       )
                 ->when(config('password_policy.require_mixed_case'), fn( Password $policy ) => $policy->mixedCase()     )
                 ->when(config('password_policy.require_symbols'),    fn( Password $policy ) => $policy->symbols()       )
@@ -58,7 +57,7 @@ class PasswordPolicyServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->extend( UncompromisedVerifier::class, function( UncompromisedVerifier $verifier, Application $app ): NotPwnedVerifier {
-            return new NotPwnedVerifier( $app[ HttpFactory::class ], 5 );
+            return new NotPwnedVerifier( $app[ HttpFactory::class ], 10 );
         } );
     }
 }

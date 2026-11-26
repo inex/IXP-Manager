@@ -26,12 +26,9 @@ namespace IXP\Providers;
 
 
 use Illuminate\Contracts\Foundation\Application;
-use Illuminate\Contracts\Validation\UncompromisedVerifier;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
-use Illuminate\Http\Client\Factory as HttpFactory;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Validation\NotPwnedVerifier;
 use IXP\Services\Auth\EloquentUserProvider;
 use IXP\Services\Auth\SessionGuard;
 

@@ -31,6 +31,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator as ValidatorFacade;
 use Illuminate\Validation\NotPwnedVerifier;
 use Illuminate\Validation\Rules\Password;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 use Tests\Trait\SetsPasswordPolicy;
 
@@ -43,7 +44,7 @@ class PasswordPolicyProviderTest extends TestCase
         $verifier = app(UncompromisedVerifier::class);
         $this->assertInstanceOf(NotPwnedVerifier::class, $verifier);
         $reflectionClass = new \ReflectionClass($verifier);
-        $this->assertEquals(5, $reflectionClass->getProperty("timeout")->getValue($verifier));
+        $this->assertEquals(10, $reflectionClass->getProperty("timeout")->getValue($verifier));
     }
 
     public function testUncompromisedVerifierWorks(): void
@@ -86,12 +87,6 @@ class PasswordPolicyProviderTest extends TestCase
         $this->assertTrue($tooLong->fails());
         $this->assertStringContainsString('The password must not be greater than 72 characters.', $tooLong->errors()->first('password'));
 
-        $missingLetters = $this
-            ->setPasswordPolicy( minLength: 12, maxLength: 72, requireLetters: true )
-            ->validate(str_repeat('1', 13));
-        $this->assertTrue($missingLetters->fails());
-        $this->assertStringContainsString('The password must contain at least one letter.', $missingLetters->errors()->first('password'));
-
         $missingMixedCase = $this
             ->setPasswordPolicy( minLength: 12, maxLength: 72, requireMixedCase: true )
             ->validate(str_repeat('A', 13));
@@ -110,13 +105,7 @@ class PasswordPolicyProviderTest extends TestCase
         $this->assertTrue($missingSymbols->fails());
         $this->assertStringContainsString('The password must contain at least one symbol.', $missingSymbols->errors()->first('password'));
 
-        # mixedCase takes precedence over letters
-        $this->setPasswordPolicy( minLength: 12, maxLength: 72, requireLetters: true, requireNumbers: true, requireSymbols: true );
-        $onlyMissingMixedCase = $this->validate("12345678901#");
-        $this->assertTrue($onlyMissingMixedCase->fails());
-        $this->assertStringContainsString('The password must contain at least one letter.', $onlyMissingMixedCase->errors()->first('password'));
-
-        $this->setPasswordPolicy( minLength: 12, maxLength: 72, requireLetters: true, requireMixedCase: true, requireNumbers: true, requireSymbols: true );
+        $this->setPasswordPolicy( minLength: 12, maxLength: 72, requireMixedCase: true, requireNumbers: true, requireSymbols: true );
         $onlyMissingMixedCase = $this->validate("12345678901#");
         $this->assertTrue($onlyMissingMixedCase->fails());
         $this->assertStringContainsString('The password must contain at least one uppercase and one lowercase letter.', $onlyMissingMixedCase->errors()->first('password'));

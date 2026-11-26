@@ -52,9 +52,24 @@ return [
     |
     */
 
-    'lifetime' => env('SESSION_LIFETIME', 120),
+    'lifetime' => env('SESSION_LIFETIME', 60),
 
-    'expire_on_close' => false,
+    /*
+    |--------------------------------------------------------------------------
+    | Expire on close
+    |--------------------------------------------------------------------------
+    |
+    | This setting sets whether the browser should drop the session cookie when
+    | the browser is closed. This is done by not setting an age/expiry on the
+    | session cookie.
+    | Note: this is not a very robust feature. Closing a tab, or even a single
+    | browser window may not be enough if other windows are open, or if the
+    | browser remains running in the background. Session restore can also
+    | restore the dropped session cookie when re-opening.
+    | Note: remember me is not affected.
+    */
+
+    'expire_on_close' => true,
 
     /*
     |--------------------------------------------------------------------------

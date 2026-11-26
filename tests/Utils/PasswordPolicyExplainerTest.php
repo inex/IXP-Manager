@@ -45,7 +45,7 @@ class PasswordPolicyExplainerTest extends TestCase
 
         // no doubling up of letters + mixedCase rule
         $this
-            ->setPasswordPolicy( minLength: 8, maxLength: 16, requireLetters: true,requireMixedCase: true, requireNumbers: true, requireSymbols: true, notCompromised: true )
+            ->setPasswordPolicy( minLength: 8, maxLength: 16, requireMixedCase: true, requireNumbers: true, requireSymbols: true, notCompromised: true )
             ->assertEquals([
                 "Minimum length is 8 characters",
                 "Maximum length is 16 characters",
@@ -57,11 +57,10 @@ class PasswordPolicyExplainerTest extends TestCase
 
         // letters rule there when mixedCase isn't active
         $this
-            ->setPasswordPolicy( minLength: 8, maxLength: 16, requireLetters: true, requireMixedCase: false, requireNumbers: true, requireSymbols: true, notCompromised: true )
+            ->setPasswordPolicy( minLength: 8, maxLength: 16, requireMixedCase: false, requireNumbers: true, requireSymbols: true, notCompromised: true )
             ->assertEquals([
                 "Minimum length is 8 characters",
                 "Maximum length is 16 characters",
-                "Password must contain at least one letter",
                 "Password must contain at least one number",
                 "Password must contain at least one symbol",
                 "Password must not be found in leaked password lists",

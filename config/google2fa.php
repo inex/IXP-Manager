@@ -8,7 +8,7 @@ return [
      * Auth container binding
      */
 
-    'enabled' => env( '2FA_ENABLED', true ),
+    'enabled' => (bool) env( '2FA_ENABLED', true ),
 
     /*
      * Lifetime in minutes.
@@ -90,6 +90,6 @@ return [
      * - all custadmins and superusers, set this to \IXP\Models\User::AUTH_CUSTADMIN (2);
      * - all users set this to \IXP\Models\User::AUTH_CUSTUSER (1 or less);
      */
-    'ixpm_2fa_enforce_for_users' => env( '2FA_ENFORCE_FOR_USERS', \IXP\Models\User::AUTH_CUSTUSER ),
+    'ixpm_2fa_enforce_for_users' => (int) env( '2FA_ENFORCE_FOR_USERS', \IXP\Models\User::AUTH_CUSTUSER ),
 
 ];

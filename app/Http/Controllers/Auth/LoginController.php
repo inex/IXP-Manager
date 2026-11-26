@@ -25,10 +25,12 @@ namespace IXP\Http\Controllers\Auth;
 
 use Carbon\CarbonInterval;
 use Carbon\CarbonInterface;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\MessageBag;
 use Illuminate\Support\Str;
 use Illuminate\Support\Timebox;
 use Illuminate\Validation\Rules\Password;
@@ -209,8 +211,8 @@ class LoginController extends Controller
      */
     protected function authenticated( Request $request, User $user )
     {
-        if ($this->isPasswordInvalidUnderPolicy($request)) {
-            return $this->logout( $request, [ 'message' => "Your password no longer meets the password policy requirements. <a href='" . route("forgot-password@show-form") . "'>Reset your password to login.</a>", 'class' => Alert::WARNING ] );
+        if ($errors = $this->passwordPolicyErrors($request)) {
+            return $this->logout( $request, [ 'message' => "Your password no longer meets the password policy requirements. <a href='" . route("forgot-password@show-form") . "'>Reset your password to login</a>.<br />Reason: " . $errors->first(), 'class' => Alert::WARNING ] );
         }
 
         // Check if the user has Customer(s) linked
@@ -426,11 +428,15 @@ class LoginController extends Controller
     /**
      * Check if the password the user logged in with no longer meets the password policy.
      */
-    private function isPasswordInvalidUnderPolicy( Request $r ): bool
+    private function passwordPolicyErrors( Request $r ): ?MessageBag
     {
-        return $this->getValidationFactory()->make(
+        $validator = $this->getValidationFactory()->make(
             $r->only('password'), ['password' => Password::default()]
-        )->fails();
+        );
+        if (!$validator->fails()) {
+            return null;
+        }
+        return $validator->errors();
     }
 
     /**

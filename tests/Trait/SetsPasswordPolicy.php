@@ -28,13 +28,12 @@ use Illuminate\Support\Facades\Config;
 
 trait SetsPasswordPolicy
 {
-    protected function setPasswordPolicy( int $minLength = 8, int $maxLength = 72, bool $requireLetters = false, bool $requireMixedCase = false,
+    protected function setPasswordPolicy( int  $minLength = 8, int $maxLength = 72, bool $requireMixedCase = false,
                                           bool $requireNumbers = false, bool $requireSymbols = false, bool $notCompromised = false ): static
     {
         Config::set('password_policy', [
             'minimum_length'  => $minLength,
             'maximum_length'  => $maxLength,
-            'require_letters' => $requireLetters,
             'require_mixed_case' => $requireMixedCase,
             'require_numbers' => $requireNumbers,
             'require_symbols' => $requireSymbols,

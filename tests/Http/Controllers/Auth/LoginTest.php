@@ -41,7 +41,7 @@ class LoginTest extends TestCase
 
         $this->get(route( 'login@showForm'))
             ->assertSee('Your password no longer meets the password policy requirements.')
-            ->assertSee('Reset your password to login.');
+            ->assertSee('Reset your password to login');
     }
 
     public function testRehashesPasswordIfRoundsChange(): void

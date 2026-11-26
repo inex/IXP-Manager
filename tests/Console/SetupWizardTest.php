@@ -515,7 +515,7 @@ class SetupWizardTest extends TestCase
     public function testGeneratedPasswordRespectsPasswordPolicyMaxLength(): void
     {
         // Create a condition where we have to defer to the maximum when generating a random password!
-        $this->setPasswordPolicy(72, 72);
+        $this->setPasswordPolicy( 72, 72 );
 
         $this->artisan("ixp-manager:setup-wizard", [
             '--ixp-shortname' => 'SCIX2',

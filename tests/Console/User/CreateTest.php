@@ -246,7 +246,7 @@ class CreateTest extends TestCase
             ->expectsOutput( 'The password must be at least 8 characters.' )
             ->assertExitCode(-1);
 
-        $this->setPasswordPolicy(9);
+        $this->setPasswordPolicy( 9 );
 
         $this->artisan( 'user:create', $args)
             ->expectsOutput( 'The password must be at least 9 characters.' )

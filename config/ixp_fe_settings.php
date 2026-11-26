@@ -30,6 +30,7 @@
 use IXP\Rules\IsCountry;
 use IXP\Rules\NoIllegalChars;
 use IXP\Rules\IpOrHostname;
+use IXP\Rules\ValidPasswordMinLength;
 
 return [
 
@@ -566,19 +567,9 @@ return [
                     'dotenv_key' => 'PASSWORD_POLICY_MINIMUM_LENGTH',
                     'type'       => 'integer',
                     'name'       => 'Password Policy: Minimum password length?',
-                    'rules'      => ['nullable', 'integer', 'min:8', 'max:72', 'lt:password_policy_maximum_length', new NoIllegalChars],
+                    'rules'      => ['nullable', 'integer', new ValidPasswordMinLength(), 'max:72', new NoIllegalChars],
                     'docs_url'   => 'https://docs.ixpmanager.org/latest/usage/authentication#password-policy',
-                    'help'       => 'The minimum password length. This cannot be lower than 6 for security reasons, and cannot be higher than 72 as IXP Manager uses the bcrypt hashing algorithm.',
-                ],
-
-                'password_policy_maximum_length' => [
-                    'config_key' => 'password_policy.maximum_length',
-                    'dotenv_key' => 'PASSWORD_POLICY_MAXIMUM_LENGTH',
-                    'type'       => 'integer',
-                    'name'       => 'Password Policy: Maximum password length?',
-                    'rules'      => ['nullable', 'integer', 'min:8', 'max:72', new NoIllegalChars],
-                    'docs_url'   => 'https://docs.ixpmanager.org/latest/usage/authentication#password-policy',
-                    'help'       => 'The maximum password length. This is set to 72 by default as IXP Manager uses the bcrypt hashing algorithm, and because of this it cannot be set to higher value. It probably should not be reduced unless mandated by your organizations password policy.',
+                    'help'       => 'The minimum password length. When 2FA is enabled, the lower limit is 8 characters. When disabled, the lower limit is 15 characters. The setting cannot be higher than 72 as IXP Manager uses the bcrypt hashing algorithm.',
                 ],
 
                 'password_policy_not_compromised' => [
@@ -591,16 +582,6 @@ return [
                     'help'       => "Reject passwords which are known to be compromised. Passwords will be checked against the Have I Been Pwned database. The full password is not sent to a third party, but rather, the first 5 characters of it's SHA-1 hash is used to query for compromised passwords with the same prefix, and the rest of the check is performed on the IXP Manager webserver.",
                 ],
 
-                'password_policy_require_letters' => [
-                    'config_key' => 'password_policy.require_letters',
-                    'dotenv_key' => 'PASSWORD_POLICY_REQUIRE_LETTERS',
-                    'type'       => 'radio',
-                    'name'       => 'Password Policy: Require letters?',
-                    'rules'      => 'boolean|declined_if:password_policy_require_mixed_case,1',
-                    'docs_url'   => 'https://docs.ixpmanager.org/latest/usage/authentication#password-policy',
-                    'help'       => 'Choose whether passwords must contain at one letter. May not be selected if mixed case is required. Composition requirements such as this are no longer recommended by NIST.',
-                ],
-
                 'password_policy_require_mixed_case' => [
                     'config_key' => 'password_policy.require_mixed_case',
                     'dotenv_key' => 'PASSWORD_POLICY_REQUIRE_MIXED_CASE',
@@ -608,7 +589,7 @@ return [
                     'name'       => 'Password Policy: Require mixed case?',
                     'rules'      => 'boolean',
                     'docs_url'   => 'https://docs.ixpmanager.org/latest/usage/authentication#password-policy',
-                    'help'       => 'Choose whether passwords must contain at least one uppercase and lowercase letter. Composition requirements such as this are no longer recommended by NIST.',
+                    'help'       => 'Choose whether passwords must contain at least one uppercase and lowercase letter. Note: Composition requirements conflict with <a href="https://pages.nist.gov/800-63-4/sp800-63b.html" target="_blank">NIST guidelines</a>.',
                 ],
 
                 'password_policy_require_numbers' => [
@@ -618,7 +599,7 @@ return [
                     'name'       => 'Password Policy: Require numbers?',
                     'rules'      => 'boolean',
                     'docs_url'   => 'https://docs.ixpmanager.org/latest/usage/authentication#password-policy',
-                    'help'       => 'Choose whether passwords must contain at least one number. Composition requirements such as this are no longer recommended by NIST.',
+                    'help'       => 'Choose whether passwords must contain at least one number. Note: Composition requirements conflict with <a href="https://pages.nist.gov/800-63-4/sp800-63b.html" target="_blank">NIST guidelines</a>.',
                 ],
 
                 'password_policy_require_symbols' => [
@@ -628,7 +609,7 @@ return [
                     'name'       => 'Password Policy: Require symbols?',
                     'rules'      => 'boolean',
                     'docs_url'   => 'https://docs.ixpmanager.org/latest/usage/authentication#password-policy',
-                    'help'       => 'Choose whether passwords must contain at least one symbol. Composition requirements such as this are no longer recommended by NIST.',
+                    'help'       => 'Choose whether passwords must contain at least one symbol. Note: Composition requirements conflict with <a href="https://pages.nist.gov/800-63-4/sp800-63b.html" target="_blank">NIST guidelines</a>.',
                 ],
 
                 'ripe_api_key'          => [

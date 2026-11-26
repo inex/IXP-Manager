@@ -201,7 +201,7 @@ class SetPasswordTest extends TestCase
         $this->assertNotEquals($oldPassword, $user->password);
 
         // Create a condition where we have to defer to the maximum when generating a random password!
-        $this->setPasswordPolicy(72, 72);
+        $this->setPasswordPolicy( 72, 72 );
 
         $oldPassword2 = $user->password;
 
