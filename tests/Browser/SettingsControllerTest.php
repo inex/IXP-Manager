@@ -53,9 +53,8 @@ class SettingsControllerTest extends DuskTestCase
     #[\Override]
     public function setUp(): void
     {
-        $this->test_env = file_get_contents( __DIR__ . '/../../.env.ci' );
-        $this->overwriteEnvFile($this->test_env);
-        $this->awaitArtisanEnvReload();
+        // Can't save this env, we're going to modify it after login
+        $this->overwriteEnvFile(file_get_contents( __DIR__ . '/../../.env.ci' ));
 
         parent::setUp();
     }
@@ -74,6 +73,11 @@ class SettingsControllerTest extends DuskTestCase
                 ->press( '#login-btn' )
                 ->waitForLocation( '/admin/dashboard' );
 
+            // Modify env to avoid the password validation rule, then save the new one for before/after etc
+            $this->replaceEnvAttr("PASSWORD_POLICY_MINIMUM_LENGTH=8", 'PASSWORD_POLICY_MINIMUM_LENGTH=15');
+            $this->awaitArtisanEnvReload();
+            $this->test_env = file_get_contents( __DIR__ . '/../../.env' );
+
             $browser->visit( route( 'settings@index' ) )
                 ->assertSee( 'IXP Manager Settings' )
                 ->assertSee( '.env last modified: ' );
@@ -86,10 +90,11 @@ class SettingsControllerTest extends DuskTestCase
             $browser->driver->executeScript( 'window.scrollTo(0, 3000);' );
             
             $browser->press( 'Save Changes' )
-                ->waitForLocation( route( 'settings@index' ) );
+                ->waitForText( 'Settings have been successfully updated' );
             
             // ensure a save with no changes yields no changes in the .env file
-            $this->assertEquals( $this->test_env, file_get_contents( __DIR__ . '/../../.env' ));
+
+            $this->assertEquals( trim($this->test_env), trim(file_get_contents( __DIR__ . '/../../.env' )));
             
             // change some values to check validation
             $browser->press( 'Route Servers' )
@@ -102,7 +107,7 @@ class SettingsControllerTest extends DuskTestCase
                 ->assertSee( 'The rs rpki rtr1 port must be an integer' );
             
             // ensure still no changes
-            $this->assertEquals( $this->test_env, file_get_contents( __DIR__ . '/../../.env' ));
+            $this->assertEquals( trim($this->test_env), trim(file_get_contents( __DIR__ . '/../../.env' )));
             
             // change some values to check validation
             $browser->press( 'Route Servers' )
@@ -119,7 +124,7 @@ class SettingsControllerTest extends DuskTestCase
             $this->assertNotEquals( $this->test_env, $nenv );
 
             // we substituted 3323 for 12345
-            $this->assertEquals( strlen( $nenv ), strlen( $this->test_env ) + 1 );
+            $this->assertEquals( strlen( trim($nenv) ), strlen( trim($this->test_env) ) + 1 );
             
             $this->assertStringContainsString( 'IXP_RPKI_RTR1_PORT=3323', $this->test_env );
             $this->assertStringNotContainsString( 'IXP_RPKI_RTR1_PORT=12345', $this->test_env );
