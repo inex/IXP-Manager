@@ -218,6 +218,7 @@ return [
         IXP\Providers\HorizonServiceProvider::class,
         IXP\Providers\TelescopeServiceProvider::class,
         IXP\Providers\RouteServiceProvider::class,
+        IXP\Providers\ProvisioningRouteServiceProvider::class,
 
         IXP\Providers\HelpdeskServiceProvider::class,
         IXP\Providers\GrapherServiceProvider::class,
