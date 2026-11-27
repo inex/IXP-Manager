@@ -291,6 +291,7 @@ class TransceiverDiagnosticSuite extends DiagnosticSuite
 
         foreach( array_keys( $sensors ) as $sensor ) {
             foreach( $lanes as $lane ) {
+                $readings[ $sensor ][ $lane ] = 'N/A';
                 $v = null;
 
                 try {
@@ -322,6 +323,29 @@ class TransceiverDiagnosticSuite extends DiagnosticSuite
                     continue;
                 }
 
+                $matches = [];
+                if( !preg_match( '/Sensor value ([+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?) (mA|mW|dBm)\s/', $v, $matches )
+                    || ( $sensor === 1 ? $matches[2] !== 'mA' : !in_array( $matches[2], ['mW','dBm'], true ) ) ) {
+                    $results[] = new DiagnosticResult(
+                        name: $mainName . "{$sensors[$sensor]} for lane {$lane} - reading unavailable",
+                        result: DiagnosticResult::TYPE_UNKNOWN,
+                        narrative: 'The sensor did not return a usable value.',
+                    );
+                    continue;
+                }
+                $value = (float)$matches[1];
+                if( !is_finite( $value ) || ( $matches[2] === 'mW' && $value < 0 ) ) {
+                    $results[] = new DiagnosticResult(
+                        name: $mainName . "{$sensors[$sensor]} for lane {$lane} - reading unavailable",
+                        result: DiagnosticResult::TYPE_UNKNOWN,
+                        narrative: 'The sensor did not return a usable value.',
+                    );
+                    continue;
+                }
+                $readings[ $sensor ][ $lane ] = $matches[2] === 'mW' && $value === 0.0
+                    ? '-Inf'
+                    : sprintf( "%+2.2f", $matches[2] === 'mW' ? 10 * log10( $value ) : $value );
+
                 if( str_ends_with( $v, 'is within bounds' ) ) {
 
                     $results[] = new DiagnosticResult(
@@ -340,20 +364,6 @@ class TransceiverDiagnosticSuite extends DiagnosticSuite
 
                 }
 
-                // "Sensor value 42.21 mA is within bounds"
-                // "Sensor value 1.0030 mW is within bounds"
-                // "Sensor value 0.6926 mW is within bounds"
-                $matches = [];
-
-                if (!preg_match( "/Sensor value (-?[\d\.]+) ([a-zA-Z]+)\s.*/", $v, $matches ) ) {
-                    $readings[ $sensor ][ $lane ] = 'x';
-                    continue;
-                }
-
-                if( isset( $matches[2] ) && $matches[2] == 'mW') {
-                    $matches[1] = 10 * log10($matches[1]);  // to dbm
-                }
-                $readings[ $sensor ][ $lane ] = sprintf( "%+2.2f", $matches[ 1 ] );
             }
         }
 
