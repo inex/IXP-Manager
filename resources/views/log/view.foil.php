@@ -57,9 +57,15 @@
                                 <b>User</b>
                             </td>
                             <td>
-                                <a href="<?= route( 'user@view', [ 'u' => $log->user_id ] ) ?>">
-                                    <?= $t->ee( $log->user->username ) ?>
-                                </a>
+                                <?php if( $log->user ): ?>
+                                    <a href="<?= route( 'user@view', [ 'u' => $log->user_id ] ) ?>">
+                                        <?= $t->ee( $log->user->username ) ?>
+                                    </a>
+                                <?php elseif( $log->user_id ): ?>
+                                    <em>deleted user (id: <?= (int)$log->user_id ?>)</em>
+                                <?php else: ?>
+                                    <em>system</em>
+                                <?php endif; ?>
                             </td>
                         </tr>
                         <tr>
