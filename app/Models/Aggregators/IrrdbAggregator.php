@@ -98,13 +98,16 @@ final class IrrdbAggregator
 
         // Pull these out of the cache if possible, otherwise the database.
         return Cache::store()->rememberForever( 'irrdb:prefix:ipv' . $protocol . ':' . $cust->asMacro( $protocol ), function() use ($cust,$protocol) {
-            return IrrdbPrefix::select('prefix')
-                ->where( 'customer_id', $cust->id )
-                ->where('protocol', $protocol )
-                ->orderByRaw( 'INET' . ( $protocol === 6 ? '6' : '' ) . '_ATON( prefix ) ASC' )
-                ->orderBy( 'id', 'ASC' )
-                ->pluck('prefix')
-                ->toArray();
+            $list = [];
+            foreach( DB::table( 'irrdb_prefix' )
+                         ->where( 'customer_id', $cust->id )
+                         ->where( 'protocol', $protocol )
+                         ->orderByRaw( 'INET' . ( $protocol === 6 ? '6' : '' ) . '_ATON( prefix ) ASC' )
+                         ->orderBy( 'id', 'ASC' )
+                         ->select( 'prefix' )->cursor() as $r ) {
+                $list[] = $r->prefix;
+            }
+            return $list;
         });
     }
 
@@ -133,13 +136,16 @@ final class IrrdbAggregator
 
         // Pull these out of the cache if possible, otherwise the database.
         return Cache::store()->rememberForever( 'irrdb:asn:ipv' . $protocol . ':' . $cust->asMacro( $protocol ), function() use ($cust,$protocol) {
-            return IrrdbAsn::select('asn')
-                ->where( 'customer_id', $cust->id )
-                ->where('protocol', $protocol )
-                ->orderBy( 'asn', 'ASC' )
-                ->orderBy( 'id', 'ASC' )
-                ->pluck('asn')
-                ->toArray();
+            $list = [];
+            foreach( DB::table( 'irrdb_asn' )
+                         ->where( 'customer_id', $cust->id )
+                         ->where( 'protocol', $protocol )
+                         ->orderBy( 'asn', 'ASC' )
+                         ->orderBy( 'id', 'ASC' )
+                         ->select( 'asn' )->cursor() as $r ) {
+                $list[] = $r->asn;
+            }
+            return $list;
         });
     }
 }
