@@ -53,6 +53,9 @@ log syslog name "bird-<?= $t->handle ?>" all;
 
 define routeserverasn     = <?= $t->router->asn ?>;
 define routeserveraddress = <?= $t->router->peering_ip ?>;
+<?php if( $t->router->blackholeNexthop() ): ?>
+define blackhole_nexthop  = <?= $t->router->blackholeNexthop() ?>;
+<?php endif; ?>
 
 
 router id <?= $t->router->router_id ?>;

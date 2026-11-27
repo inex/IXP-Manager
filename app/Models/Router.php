@@ -61,6 +61,7 @@ use IXP\Traits\Observable;
  * @property string|null $operating_system
  * @property string|null $operating_system_version
  * @property int $rfc1997_passthru
+ * @property bool $blackholing
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read Router|null $pair
@@ -81,6 +82,7 @@ use IXP\Traits\Observable;
  * @method static Builder<static>|Router whereApiType($value)
  * @method static Builder<static>|Router whereAsn($value)
  * @method static Builder<static>|Router whereBgpLc($value)
+ * @method static Builder<static>|Router whereBlackholing($value)
  * @method static Builder<static>|Router whereCreatedAt($value)
  * @method static Builder<static>|Router whereHandle($value)
  * @method static Builder<static>|Router whereId($value)
@@ -143,6 +145,7 @@ class Router extends Model
         'operating_system',
         'operating_system_version',
         'rfc1997_passthru',
+        'blackholing',
         'last_updated',
     ];
     /**
@@ -156,6 +159,7 @@ class Router extends Model
         'bgp_lc'              => 'boolean',
         'skip_md5'            => 'boolean',
         'rpki'                => 'boolean',
+        'blackholing'         => 'boolean',
         'last_updated'        => 'datetime',
         'last_update_started' => 'datetime',
     ];
@@ -446,6 +450,16 @@ class Router extends Model
     public function isType( int $type ): bool
     {
         return $this->type === $type;
+    }
+
+    /**
+     * Get the RFC 7999 blackhole next-hop if blackholing is enabled and configured on the VLAN
+     *
+     * @return string|null
+     */
+    public function blackholeNexthop(): ?string
+    {
+        return $this->blackholing ? $this->vlan->blackholeNexthop( (int)$this->protocol ) : null;
     }
 
 
