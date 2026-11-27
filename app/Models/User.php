@@ -73,10 +73,6 @@ use IXP\Traits\Observable;
  * @property array<array-key, mixed>|null $prefs
  * @property Carbon $created_at
  * @property Carbon|null $updated_at
- * @property int $password_fail_count
- * @property Carbon|null $no_login_until
- * @property Carbon|null $password_last_fail_at
- * @property Carbon|null $logins_throttled_notified_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\ApiKey> $apiKeys
  * @property-read int|null $api_keys_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\AppPassword> $appPasswords
@@ -106,12 +102,8 @@ use IXP\Traits\Observable;
  * @method static Builder<static>|User whereExtraAttributes($value)
  * @method static Builder<static>|User whereId($value)
  * @method static Builder<static>|User whereLastupdatedby($value)
- * @method static Builder<static>|User whereLoginsThrottledNotifiedAt($value)
  * @method static Builder<static>|User whereName($value)
- * @method static Builder<static>|User whereNoLoginUntil($value)
  * @method static Builder<static>|User wherePassword($value)
- * @method static Builder<static>|User wherePasswordFailCount($value)
- * @method static Builder<static>|User wherePasswordLastFailAt($value)
  * @method static Builder<static>|User wherePeeringdbId($value)
  * @method static Builder<static>|User wherePrefs($value)
  * @method static Builder<static>|User whereUid($value)

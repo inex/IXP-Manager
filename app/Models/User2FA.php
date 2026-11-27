@@ -38,14 +38,12 @@ use Illuminate\Database\Eloquent\{
  * @property string|null $secret
  * @property \Illuminate\Support\Carbon $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property int $fail_count
  * @property-read \IXP\Models\User $user
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User2FA newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User2FA newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User2FA query()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User2FA whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User2FA whereEnabled($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|User2FA whereFailCount($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User2FA whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User2FA whereSecret($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User2FA whereUpdatedAt($value)
