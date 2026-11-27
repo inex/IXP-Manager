@@ -1,7 +1,3 @@
-<?php
-    use PragmaRX\Google2FALaravel\Support\Authenticator as GoogleAuthenticator;
-?>
-
 <nav id="navbar-header" class="navbar navbar-expand-lg navbar-dark bg-dark">
     <button class="navbar-toggler d-block-sm d-md-none" type="button" id="sidebarCollapse" >
         <i id="menu-icon" class="fa fa-bars"></i>

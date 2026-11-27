@@ -32,7 +32,6 @@ use Foil\Contracts\ExtensionInterface;
 
 use Illuminate\Support\Facades\Auth;
 
-use PragmaRX\Google2FALaravel\Support\Authenticator as GoogleAuthenticator;
 use Countries;
 use function count;
 

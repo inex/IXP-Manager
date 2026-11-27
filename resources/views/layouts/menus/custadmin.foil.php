@@ -1,8 +1,3 @@
-<?php
-
-use PragmaRX\Google2FALaravel\Support\Authenticator as GoogleAuthenticator;
-
-?>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <?= $this->insert('layouts/ixp-logo-header'); ?>
 
