@@ -42,9 +42,19 @@ use IXP\Services\Auth\PasswordLockoutPolicy;
  * The username column has the same collation as user.username, so MySQL decides which spellings are the
  * same name in the same way for both tables.
  *
+ * @property int $id
+ * @property string $username
+ * @property int $password_fail_count
+ * @property \Illuminate\Support\Carbon|null $no_login_until
+ * @property \Illuminate\Support\Carbon|null $password_last_fail_at
  * @method static Builder<static>|UnknownUserLoginAttempt newModelQuery()
  * @method static Builder<static>|UnknownUserLoginAttempt newQuery()
  * @method static Builder<static>|UnknownUserLoginAttempt query()
+ * @method static Builder<static>|UnknownUserLoginAttempt whereId($value)
+ * @method static Builder<static>|UnknownUserLoginAttempt whereNoLoginUntil($value)
+ * @method static Builder<static>|UnknownUserLoginAttempt wherePasswordFailCount($value)
+ * @method static Builder<static>|UnknownUserLoginAttempt wherePasswordLastFailAt($value)
+ * @method static Builder<static>|UnknownUserLoginAttempt whereUsername($value)
  * @mixin \Eloquent
  */
 class UnknownUserLoginAttempt extends Model
