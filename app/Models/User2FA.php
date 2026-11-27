@@ -36,6 +36,7 @@ use Illuminate\Database\Eloquent\{
  * @property int $user_id
  * @property bool $enabled
  * @property string|null $secret
+ * @property int $fail_count
  * @property \Illuminate\Support\Carbon $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \IXP\Models\User $user
@@ -44,6 +45,7 @@ use Illuminate\Database\Eloquent\{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User2FA query()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User2FA whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User2FA whereEnabled($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User2FA whereFailCount($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User2FA whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User2FA whereSecret($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User2FA whereUpdatedAt($value)
