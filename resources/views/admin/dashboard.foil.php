@@ -15,14 +15,14 @@
                 <div class="col-12 col-xl-6">
                     <div>
                         <h4>
-                          Overall <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?> Numbers
+                          Overall <?= $t->ee( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ) ?> Numbers
                         </h4>
 
                         <table class="table table-sm table-striped tw:shadow-md tw:rounded-sm table-hover tw:mt-6">
                             <thead>
                                 <tr>
                                     <th>
-                                        <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?> Type
+                                        <?= $t->ee( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ) ?> Type
                                     </th>
                                     <th class="tw:text-right">
                                         Count
@@ -49,7 +49,7 @@
                     <?php if( count( $t->stats[ "percentByVlan" ] ) > 1 ): ?>
                         <div class="tw:my-12">
                             <h4 class="tw:mb-6">
-                                <?= ucfirst( config( 'ixp_fe.lang.customer.many' ) ) ?> by VLAN
+                                <?= $t->ee( ucfirst( config( 'ixp_fe.lang.customer.many' ) ) ) ?> by VLAN
                             </h4>
 
                             <p>
@@ -63,7 +63,7 @@
                                             VLAN
                                         </th>
                                         <th class="tw:text-right">
-                                            <?= ucfirst( config( 'ixp_fe.lang.customer.many' ) ) ?>
+                                            <?= $t->ee( ucfirst( config( 'ixp_fe.lang.customer.many' ) ) ) ?>
                                         </th>
                                         <th class="tw:text-right">
                                             Percentage
@@ -94,7 +94,7 @@
                     <?php if( count( $t->stats[ "custsByLocation" ] ) ): ?>
                         <div class="tw:my-12">
                             <h4 class="tw:mb-6">
-                                <?= ucfirst( config( 'ixp_fe.lang.customer.many' ) ) ?> by Location
+                                <?= $t->ee( ucfirst( config( 'ixp_fe.lang.customer.many' ) ) ) ?> by Location
                             </h4>
 
                             <table class="table table-sm table-hover table-striped tw:shadow-md tw:rounded-sm">
@@ -104,7 +104,7 @@
                                           Location
                                       </th>
                                       <th class="tw:text-right">
-                                          <?= ucfirst( config( 'ixp_fe.lang.customer.many' ) ) ?>
+                                          <?= $t->ee( ucfirst( config( 'ixp_fe.lang.customer.many' ) ) ) ?>
                                       </th>
                                   </tr>
                                 </thead>
@@ -129,7 +129,7 @@
                     <?php if( count( $t->stats[ "byLocation" ] ) ): ?>
                         <div class="tw:my-12">
                             <h4 class="tw:mb-6">
-                                <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?> Ports by Location
+                                <?= $t->ee( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ) ?> Ports by Location
                             </h4>
                             <table class="table table-sm table-hover table-striped tw:shadow-md tw:rounded-sm">
                                 <thead class="tw:text-sm">
@@ -212,7 +212,7 @@
                     <?php if( count( $t->stats[ "byLan" ] ) ): ?>
                         <div class="tw:my-10">
                             <h4  class="tw:mb-6">
-                                <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?> Ports by Infrastructure
+                                <?= $t->ee( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ) ?> Ports by Infrastructure
                             </h4>
 
                             <table class="table table-sm table-hover table-striped tw:shadow-md tw:rounded-sm">
@@ -308,7 +308,7 @@
                     <?php if( count( $t->stats[ "usage" ] ) ): ?>
                         <div class="tw:my-10">
                             <h4 class="tw:mb-6">
-                                <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?> Route Server Usage by VLAN
+                                <?= $t->ee( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ) ?> Route Server Usage by VLAN
                             </h4>
 
                             <table class="table table-sm table-hover table-striped tw:shadow-md tw:rounded-sm">
@@ -381,7 +381,7 @@
                     <?php if( count( $t->stats[ "usage" ] ) ): ?>
                         <div class="tw:my-10">
                             <h4 class="tw:mb-6">
-                                <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?> IPv6 Usage by VLAN
+                                <?= $t->ee( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ) ?> IPv6 Usage by VLAN
                             </h4>
 
                             <table class="table table-sm table-hover table-striped tw:shadow-md tw:rounded-sm">
@@ -463,7 +463,7 @@
                     <?php if( count( $t->stats[ "byLocation" ] ) ): ?>
                         <div class="tw:my-12">
                             <h4 class="tw:mb-6">
-                                <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?> Ports by Rack
+                                <?= $t->ee( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ) ?> Ports by Rack
                             </h4>
 
 
@@ -542,7 +542,7 @@
                     <?php if( count( $t->stats[ "rateLimitedPorts" ] ) ): ?>
                         <div class="tw:my-12">
                             <h4 class="tw:mb-6" id="rate_limited_details">
-                                <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?> Rate Limited / Partial Speed Ports
+                                <?= $t->ee( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ) ?> Rate Limited / Partial Speed Ports
                             </h4>
 
                             <p>

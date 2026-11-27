@@ -10,7 +10,7 @@ $row = $t->row;
 
     <td>
         <?php if( $row['token_identifier'] ): ?>
-            <?= $row['token_identifier'] ?>
+            <?= $t->ee( $row['token_identifier'] ) ?>
         <?php else: ?>
             <?= Str::limit(  $t->ee( $row['api_key'] ), 6 ) ?> (<i class="fa fa-exclamation-triangle text-danger"></i> Legacy)
         <?php endif; ?>

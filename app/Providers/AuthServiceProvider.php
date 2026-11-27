@@ -1,8 +1,6 @@
 <?php
-namespace IXP\Providers;
-
 /*
- * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -21,12 +19,17 @@ namespace IXP\Providers;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-use Auth, Gate;
 
+declare(strict_types=1);
+
+namespace IXP\Providers;
+
+
+use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
-
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use IXP\Services\Auth\EloquentUserProvider;
-
 use IXP\Services\Auth\SessionGuard;
 
 /**
@@ -56,16 +59,16 @@ class AuthServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
+    public function boot(): void
     {
         $this->registerPolicies();
 
         // autoload model policies
-        Gate::guessPolicyNamesUsing( function ( $modelClass ) {
+        Gate::guessPolicyNamesUsing( function ( string|object $modelClass ): string {
             return 'IXP\\Policies\\' . class_basename( $modelClass ) . 'Policy';
         });
 
-        Auth::extend('session', function ( $app, $name, $config ) {
+        Auth::extend('session', function ( Application $app, string $name, array $config ): SessionGuard {
             $provider = $app[ 'auth' ]->createUserProvider( $config['provider'] ?? null );
 
             $guard = new SessionGuard( $name, $provider, $app[ 'session.store' ], request() );
@@ -89,8 +92,8 @@ class AuthServiceProvider extends ServiceProvider
             return $guard;
         });
 
-        Auth::provider('eloquent', function ( $app, array $config ) {
+        Auth::provider('eloquent', function ( Application $app, array $config ): EloquentUserProvider {
             return new EloquentUserProvider( $app['hash'], $config['model'] );
-        });
+        } );
     }
 }

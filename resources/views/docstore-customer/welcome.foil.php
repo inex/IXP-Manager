@@ -1,21 +1,21 @@
 <div class="tw:max-w-lg">
     <h3 class="tw:mb-8">
-      Welcome to the <?= ucfirst( config( 'ixp_fe.lang.customer.one') ) ?> Document Store!
+      Welcome to the <?= $t->ee( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ) ?> Document Store!
     </h3>
 
     <p>
-        This is <b>IXP Manager's</b> <b><u>per-<?= config( 'ixp_fe.lang.customer.one') ?></u></b> document store allowing
-        administrators to upload documents into individual <?= config( 'ixp_fe.lang.customer.one') ?>-silos.
+        This is <b>IXP Manager's</b> <b><u>per-<?= $t->ee( config( 'ixp_fe.lang.customer.one' ) ) ?></u></b> document store allowing
+        administrators to upload documents into individual <?= $t->ee( config( 'ixp_fe.lang.customer.one' ) ) ?>-silos.
     </p>
 
     <p>
-        Any <?= config( 'ixp_fe.lang.customer.one') ?> which has one or more files uploaded to their own
-        document store will be listed here. If a <?= config( 'ixp_fe.lang.customer.one') ?> does not appear
+        Any <?= $t->ee( config( 'ixp_fe.lang.customer.one' ) ) ?> which has one or more files uploaded to their own
+        document store will be listed here. If a <?= $t->ee( config( 'ixp_fe.lang.customer.one' ) ) ?> does not appear
         in this list then it means that no files have been uploaded to their store.
     </p>
 
     <p>
-        The per-<?= config( 'ixp_fe.lang.customer.one') ?> document store supports:
+        The per-<?= $t->ee( config( 'ixp_fe.lang.customer.one' ) ) ?> document store supports:
     </p>
 
     <ul>

@@ -27,10 +27,13 @@ use Illuminate\Support\Facades\Event;
 use IXP\Models\CustomerToUser;
 use IXP\Models\User;
 use Tests\TestCase;
+use Tests\Trait\SetsPasswordPolicy;
 
 
 class CreateTest extends TestCase
 {
+    use SetsPasswordPolicy;
+
     public function testOkProvidedAllArguments_ok()
     {
         Event::fake();
@@ -224,5 +227,29 @@ class CreateTest extends TestCase
             $c2u->extra_attributes, []);
 
         Event::assertNotDispatched(\IXP\Events\User\UserCreated::class);
+    }
+
+    public function testImplementsPasswordPolicy()
+    {
+        $customer = $this->getCustAdminUser()->customer;
+        $args = [
+            '--email'    => 'administrator@ixp.local',
+            '--name'     => 'IXP Operator',
+            '--username' => 'testuser',
+            '--mobile'   => '+353809999999',
+            '--custid'   => $customer->id,
+            '--priv'     => User::AUTH_CUSTADMIN,
+            '--password' => 'abcd',
+        ];
+
+        $this->artisan( 'user:create', $args)
+            ->expectsOutput( 'The password must be at least 8 characters.' )
+            ->assertExitCode(-1);
+
+        $this->setPasswordPolicy( 9 );
+
+        $this->artisan( 'user:create', $args)
+            ->expectsOutput( 'The password must be at least 9 characters.' )
+            ->assertExitCode(-1);
     }
 }

@@ -23,12 +23,14 @@ namespace IXP\Http\Controllers\PatchPanel\Port;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Former, Mail, Redirect;
-
 use Barryvdh\DomPDF\PDF;
+
+use Former\Facades\Former;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Redirect;
 use IXP\Models\PatchPanelPort;
 
 use Illuminate\Http\{
@@ -101,12 +103,7 @@ class EmailController extends Common
             $mailable->checkIfSendable();
         } catch( MailableException $e ) {
             AlertContainer::push( $e->getMessage(), Alert::DANGER );
-
-            return view( 'patch-panel-port/email-form' )->with([
-                'ppp'                           => $ppp,
-                'emailType'                     => $type,
-                'mailable'                      => $mailable
-            ]);
+            return back()->withInput();
         }
 
         if( $type === PatchPanelPort::EMAIL_LOA || $r->loa ) {

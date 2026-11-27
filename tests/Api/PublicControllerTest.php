@@ -12,6 +12,7 @@ use IXP\Models\Customer;
 use IXP\Models\CustomerToUser;
 use IXP\Models\Infrastructure;
 use IXP\Models\User;
+use IXP\Models\User2FA;
 use Tests\TestCase;
 
 class PublicControllerTest extends TestCase
@@ -25,6 +26,7 @@ class PublicControllerTest extends TestCase
         parent::setUp();
         $this->customer = Customer::create();
         $this->customer->name = "Test Customer/Member";
+        $this->customer->status = Customer::STATUS_NORMAL;
         $this->customer->save();
 
         $this->user = User::create();
@@ -58,6 +60,7 @@ class PublicControllerTest extends TestCase
     public function testTestWhileAuthenticated()
     {
         $this->actingAs($this->user);
+
         $response = $this->get( '/api/v4/test?format=json' );
         $response->assertStatus(200);
         $response->assertHeader('Content-Type', 'application/json');
@@ -79,6 +82,40 @@ class PublicControllerTest extends TestCase
         $response->assertStatus(200);
         $response->assertContent("API Test Function!\n\nAuthenticated: Yes, as: Test User\n\n");
         $response->assertHeader('Content-Type', 'text/plain; charset=utf-8');
+    }
+
+    public function testTestWhileAuthenticatedCustomerWrongStatus(): void
+    {
+        $this->customer->status = null;
+        $this->customer->save();
+
+        $this->actingAs($this->user);
+        $response = $this->get( '/api/v4/test?format=json' );
+        $response->assertStatus(401);
+        $response->assertSee("Customer of the user is disabled");
+    }
+
+    public function testTestWhileAuthenticatedUserDisabled(): void
+    {
+        $this->user->disabled = 1;
+        $this->user->save();
+
+        $this->actingAs($this->user);
+        $response = $this->get( '/api/v4/test?format=json' );
+        $response->assertStatus(401);
+        $response->assertSee("User is disabled");
+    }
+
+    public function testTestWhileAuthenticatedUser2FAIncomplete(): void
+    {
+        config()->set('google2fa.enabled', true);
+        $user2FA = User2FA::setupForUser($this->user, 'abcd');
+        $user2FA->enable();
+
+        $this->actingAs($this->user);
+        $response = $this->get( '/api/v4/test?format=json' );
+        $response->assertStatus(401);
+        $response->assertSee("User has not completed 2FA authentication");
     }
 
     public function testTestWithLegacyApiKey()

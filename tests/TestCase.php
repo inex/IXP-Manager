@@ -26,19 +26,22 @@ namespace Tests;
 
 use Database\Seeders\Tests\CiTestDataSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\RefreshDatabaseState;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 
 use IXP\Models\User;
+use Override;
 
 /**
  * TestCase
  *
  * This base test class is used for feature testing beyond point unit tests, that is,
  * the code under test requires a database and/or a full application environment. For
- * pure unit tests, extend the PHPUnit TestCase class.
+ * pure unit tests, extend the PHPUnit TestCase, or for slightly more Laravel integration,
+ * their Illuminate\Foundation\Testing\TestCase class.
  *
- * This test uses the RefreshDatabase trait to migrate the database, seed it with test
- * data, and reset state after testing so that each test is isolated from the others.
+ * This test uses the RefreshDatabase trait to migrate the database (just once), seed it with test
+ * data, and wrap test runs in a transaction which will be rolled back after each test.
  *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
@@ -55,9 +58,21 @@ abstract class TestCase extends BaseTestCase
 
     protected $seeder = CiTestDataSeeder::class;
 
-    public const API_KEY_CUSTUSER  = 'ixpm_v7zO4TmaX3Ft_bo4NB55lMRFPSqoNDCv34xDkwg8d2WK01bMzif';
-    public const API_KEY_CUSTADMIN = 'ixpm_GcMPPjWig7w2_G6yoQYvkQSLhfkOuhwEYoULcsM512Vjt2sQ532';
-    public const API_KEY_SUPERUSER = 'ixpm_iqLw1OF50aPU_XX3U8cGvlRiaf7YLX8a41uSJVqBbRAAl0LfKVo';
+    public const string API_KEY_CUSTUSER  = 'ixpm_v7zO4TmaX3Ft_bo4NB55lMRFPSqoNDCv34xDkwg8d2WK01bMzif';
+    public const string API_KEY_CUSTADMIN = 'ixpm_GcMPPjWig7w2_G6yoQYvkQSLhfkOuhwEYoULcsM512Vjt2sQ532';
+    public const string API_KEY_SUPERUSER = 'ixpm_iqLw1OF50aPU_XX3U8cGvlRiaf7YLX8a41uSJVqBbRAAl0LfKVo';
+
+    #[Override]
+    public static function setUpBeforeClass(): void
+    {
+        parent::setUpBeforeClass();
+
+        // See DuskTestCase::$leftDirtyDatabase for details
+        if (DuskTestCase::$leftDirtyDatabase) {
+            RefreshDatabaseState::$migrated = false;
+            DuskTestCase::$leftDirtyDatabase = false;
+        }
+    }
 
     /**
      * Utility function to get a customer user

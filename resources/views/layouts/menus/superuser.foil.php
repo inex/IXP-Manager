@@ -1,7 +1,3 @@
-<?php
-    use PragmaRX\Google2FALaravel\Support\Authenticator as GoogleAuthenticator;
-?>
-
 <nav id="navbar-header" class="navbar navbar-expand-lg navbar-dark bg-dark">
     <button class="navbar-toggler d-block-sm d-md-none" type="button" id="sidebarCollapse" >
         <i id="menu-icon" class="fa fa-bars"></i>
@@ -15,23 +11,21 @@
 
     <?php
         // hide most things until 2fa complete:
-        $authenticator = new GoogleAuthenticator( request() );
-
-        if( !Auth::getUser()->user2FA || !Auth::getUser()->user2FA->isEnabled() || $authenticator->isAuthenticated() ):
+        if( $this->isNotPending2FA( Auth::getUser() ) ):
     ?>
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle center-dd-caret d-flex <?= !request()->is( 'customer/details', 'customer/associates', 'switch/configuration' ) ?: 'active' ?>" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?> Information
+                    <?= $t->ee( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ) ?> Information
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                     <a class="dropdown-item <?= !request()->is( 'customer/details' ) ?: 'active' ?>" href="<?= route('customer@details') ?>">
-                        <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?> Details
+                        <?= $t->ee( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ) ?> Details
                     </a>
                     <a class="dropdown-item <?= !request()->is(  'customer/associates' ) ?: 'active' ?>" href="<?= route( "customer@associates" ) ?>">
-                        Associate <?= ucfirst( config( 'ixp_fe.lang.customer.many' ) ) ?>
+                        Associate <?= $t->ee( ucfirst( config( 'ixp_fe.lang.customer.many' ) ) ) ?>
                     </a>
                     <a class="dropdown-item <?= !request()->is( 'switch/configuration' ) ?: 'active' ?>" href="<?= route('switch@configuration') ?>">
                         Switch Configuration
@@ -107,7 +101,7 @@
 
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item <?= !request()->is( 'statistics/members') ?: 'active' ?>" href="<?= route( 'statistics@members' ) ?>">
-                        <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?> Graphs
+                        <?= $t->ee( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ) ?> Graphs
                     </a>
 
                     <a class="dropdown-item <?= !request()->is( 'statistics/league-table') ?: 'active' ?>" href="<?= route( 'statistics@league-table' ) ?>">
@@ -118,7 +112,7 @@
                         <div class="dropdown-divider"></div>
 
                         <?php foreach( config( 'ixp_tools.weathermap' ) as $k => $w ): ?>
-                            <a class="dropdown-item <?= !request()->is( 'weather-map/'.$k) ?: 'active' ?>" href="<?= route( 'weathermap' , [ 'id' => $k ] ) ?>"><?= $w['menu'] ?></a>
+                            <a class="dropdown-item <?= !request()->is( 'weather-map/'.$k) ?: 'active' ?>" href="<?= route( 'weathermap' , [ 'id' => $k ] ) ?>"><?= $t->ee( $w['menu'] ) ?></a>
                         <?php endforeach; ?>
                     <?php endif; ?>
                 </div>

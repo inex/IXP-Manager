@@ -46,7 +46,7 @@
             </button>
             <div class="dropdown-menu dropdown-menu-right">
                 <a class="dropdown-item" href="<?= route( 'customer@edit' , [ 'cust' => $c->id ] ) ?>">
-                    Edit <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?> Details
+                    Edit <?= $t->ee( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ) ?> Details
                 </a>
 
                 <a class="dropdown-item" href="<?= route( 'customer@billing-registration' , [ 'cust' => $c->id ] ) ?>" >
@@ -60,7 +60,7 @@
                 <?php if( !config( 'ixp_fe.frontend.disabled.docstore_customer' ) ): ?>
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" href="<?= route( 'docstore-c-dir@list', [ 'cust' => $c->id ] ) ?>">
-                        <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?> Documents...
+                        <?= $t->ee( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ) ?> Documents...
                     </a>
                 <?php endif; ?>
 
@@ -78,7 +78,7 @@
 
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="<?= route( 'customer@delete-recap', [ 'cust' => $c->id ] ) ?>">
-                  Delete <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?>...
+                  Delete <?= $t->ee( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ) ?>...
                 </a>
             </div>
         </div>
@@ -201,7 +201,7 @@
                 <?php if( $t->resellerMode() && $c->isReseller ): ?>
                     <li role="resold-customers" class="nav-item <?php if( $t->tab === 'resold-customers' ): ?>active<?php endif; ?>">
                         <a class="nav-link " data-toggle="tab" href="#resold-customers" data-toggle="tab">
-                            Resold <?= ucfirst( config( 'ixp_fe.lang.customer.many' ) ) ?>
+                            Resold <?= $t->ee( ucfirst( config( 'ixp_fe.lang.customer.many' ) ) ) ?>
                         </a>
                     </li>
                 <?php endif; ?>

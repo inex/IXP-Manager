@@ -144,7 +144,7 @@ $c = $t->c; /** @var \IXP\Models\Customer $c */
                         <td>
                             <?php if( !$c->typeAssociate() ): ?>
                                 <?php if( $c->nochours      ): ?>   <?= $t->ee( $c->nochours ) ?> <br />    <?php endif; ?>
-                                <?php if( $c->nocemail      ): ?>   <a href="mailto:<?= $t->ee( $c->nocemail ) ?>"> <?= $t->ee( $c->nocemail ) ?> </a><br /><?php endif; ?>
+                                <?php if( $c->nocemail      ): ?>   <a href="mailto:<?= $t->ee( $c->nocemail, "attr" ) ?>"> <?= $t->ee( $c->nocemail ) ?> </a><br /><?php endif; ?>
                                 <?php if( $c->nocwww        ): ?>   <a href="<?= $t->ee( $c->nocwww, "attr" ) ?>"> <?= $t->ee( $c->nocwww ) ?> </a><br /><?php endif; ?>
                                 <?php if( $c->nocphone      ): ?>   <?= $t->ee( $c->nocphone ) ?> <br />    <?php endif; ?>
                                 <?php if( $c->noc24hphone   ): ?>   <?= $t->ee( $c->noc24hphone ) ?> (24h) <?php endif; ?>
@@ -281,19 +281,19 @@ $c = $t->c; /** @var \IXP\Models\Customer $c */
                             <?php endforeach; ?>
 
                             <?php if( $c->maxprefixes || count( $arrayVal ) ): ?>
-                                <?= $c->maxprefixes ?>
+                                <?= $t->ee( $c->maxprefixes ) ?>
                                 <?php if( count( $arrayVal ) ): ?>
                                     <span class="badge badge-secondary" data-toggle="tooltip" data-placement="top"
-                                          title="Global max of <?= $c->maxprefixes ?> is overridden on <?= count( $arrayVal ) ?> VLAN(s)"
+                                          title="Global max of <?= $t->ee( $c->maxprefixes, "attr" ) ?> is overridden on <?= count( $arrayVal ) ?> VLAN(s)"
                                     >
-                                            (<?= implode( ', ', $arrayVal ) ?>)
+                                            (<?= $t->ee( implode( ', ', $arrayVal ) ) ?>)
                                     </span>
                                 <?php endif; ?>
                             <?php else: ?>
                                 <span class="badge badge-warning" data-toggle="tooltip" data-placement="top"
                                       title="No max prefixes configured on customer or VLAN interface, default value imposed."
                                 >
-                                            <?= config( 'ixp.default_maxprefixes.v4' ) ?>
+                                            <?= $t->ee( config( 'ixp.default_maxprefixes.v4' ) ) ?>
                                 </span>
                             <?php endif; ?>
                         </td>
@@ -313,19 +313,19 @@ $c = $t->c; /** @var \IXP\Models\Customer $c */
                             <?php endforeach; ?>
 
                             <?php if( $c->maxprefixes || count( $arrayVal ) ): ?>
-                                <?= $c->maxprefixesv6 ?>
+                                <?= $t->ee( $c->maxprefixesv6 ) ?>
                                 <?php if( count( $arrayVal ) ): ?>
                                     <span class="badge badge-secondary" data-toggle="tooltip" data-placement="top"
-                                          title="Global max of <?= $c->maxprefixesv6 ?> is overridden on <?= count( $arrayVal ) ?> VLAN(s)"
+                                          title="Global max of <?= $t->ee( $c->maxprefixesv6, "attr" ) ?> is overridden on <?= count( $arrayVal ) ?> VLAN(s)"
                                     >
-                                            (<?= implode( ', ', $arrayVal ) ?>)
+                                            (<?= $t->ee( implode( ', ', $arrayVal ) ) ?>)
                                     </span>
                                 <?php endif; ?>
                             <?php else: ?>
                                 <span class="badge badge-warning" data-toggle="tooltip" data-placement="top"
                                       title="No max prefixes configured on customer or VLAN interface, default value imposed."
                                 >
-                                            <?= config( 'ixp.default_maxprefixes.v6' ) ?>
+                                            <?= $t->ee( config( 'ixp.default_maxprefixes.v6' ) ) ?>
                                 </span>
                             <?php endif; ?>
                         </td>

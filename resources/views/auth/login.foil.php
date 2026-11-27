@@ -1,7 +1,7 @@
 <?php $this->layout( 'layouts/ixpv4' ) ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-    Login to <?= config( "identity.sitename" ) ?>
+    Login to <?= $t->ee( config( "identity.sitename" ) ) ?>
 <?php $this->append() ?>
 
 <?php $this->section( 'content' ) ?>
@@ -10,7 +10,7 @@
             <?= $t->alerts() ?>
             <div class="tw:text-center tw:my-6">
                 <?php if( config( "identity.biglogo" ) ) :?>
-                    <img class="tw:inline img-fluid tw:w-full tw:max-w-sm tw:mx-auto" src="<?= config( "identity.biglogo" ) ?>" />
+                    <img alt="IXP Manager Logo" class="tw:inline img-fluid tw:w-full tw:max-w-sm tw:mx-auto" src="<?= $t->ee( config( "identity.biglogo" ), "attr" ) ?>" />
                 <?php else: ?>
                     <h2>
                         [Your Logo Here]

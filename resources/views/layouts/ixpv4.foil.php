@@ -7,7 +7,7 @@
         <meta charset="utf-8">
 
         <title>
-            <?= config('identity.sitename' ) ?>
+            <?= $t->ee( config('identity.sitename' ) ) ?>
         </title>
 
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -116,7 +116,8 @@
                 });
 
                 <?php if( $authCheck && $privs === User::AUTH_SUPERUSER ): ?>
-                    $( "#menu-select-customer" ).select2({ width: '100%',placeholder: "Jump to <?= config( 'ixp_fe.lang.customer.one' ) ?>...", allowClear: true }).change( function(){
+                    let userType = "<?= $t->ee( $t->ee( config( 'ixp_fe.lang.customer.one' ), 'html' ), 'js' ) ?>";
+                    $( "#menu-select-customer" ).select2({ width: '100%',placeholder: `Jump to ${userType}...`, allowClear: true }).change( function(){
                         document.location.href = '<?= url( "/admin/customer/overview" ) ?>/' + $( "#menu-select-customer" ).val();
                     });
 

@@ -16,7 +16,7 @@
 
     <div class="row">
         <?= $t->insert( 'profile/password-form' ); ?>
-        <?= $t->insert( 'profile/details-form', [ 'details' => $t->details] ); ?>
+        <?= $t->insert( 'profile/details-form', [ 'details' => $t->details ] ); ?>
     </div>
 
     <div class="row mt-4">
@@ -26,4 +26,9 @@
 
         <?= $t->insert( 'profile/mailling-lists-form', [ 'mailingListSubscriptions' => $t->mailingListSubscriptions ] ); ?>
     </div>
+<?php $this->append() ?>
+
+
+<?php $this->section( 'scripts' ) ?>
+<?= $this->insert( 'profile/js/show-password-policy' ); ?>
 <?php $this->append() ?>

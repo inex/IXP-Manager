@@ -26,6 +26,7 @@
       <directory suffix="Test.php">./tests/Listeners</directory>
       <directory suffix="Test.php">./tests/Models</directory>
       <directory suffix="Test.php">./tests/Rules</directory>
+      <directory suffix="Test.php">./tests/Providers</directory>
       <directory suffix="Test.php">./tests/Policies</directory>
       <directory suffix="Test.php">./tests/Services</directory>
       <directory suffix="Test.php">./tests/Tasks</directory>

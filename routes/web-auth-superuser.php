@@ -278,6 +278,10 @@ Route::group( [ 'namespace' => 'User' ], function() {
     Route::group( [ 'prefix' => 'admin/customer-to-user' ], function() {
         Route::post('privs',     'CustomerToUserController@updatePrivs' )->name( "customer-to-user@privs" );
     });
+
+    Route::group( ['prefix' => 'admin/user' ], function () {
+        Route::post("reset-password-lockout-state/{user}", 'UserController@resetPasswordLockoutState' )->name( "user@reset-password-lockout-state" );
+    });
 });
 
 /////////////////////////////////////////////////////////////////////////////////////////////////

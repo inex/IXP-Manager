@@ -29,12 +29,12 @@
             <div class="row">
                 <div class="col-sm-6">
                     <?= Former::select( 'custid' )
-                        ->label( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) )
+                        ->label( $t->ee( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ) )
                         ->fromQuery( $t->custs , fn ( $model ) => $t->ee( $model->name ) )
-                        ->placeholder( 'Choose a ' . config( 'ixp_fe.lang.customer.one' ) )
+                        ->placeholder( $t->ee( 'Choose a ' . config( 'ixp_fe.lang.customer.one' ), "attr" ) )
                         ->addClass( 'chzn-select' )
                         ->disabled( $t->selectedCust ? true : false )
-                        ->blockHelp( 'The ' . config( 'ixp_fe.lang.customer.one' ) . ' who owns this virtual interface.' );
+                        ->blockHelp( 'The ' . $this->ee( config( 'ixp_fe.lang.customer.one' ) ) . ' who owns this virtual interface.' );
                     ?>
 
                     <?php if( $t->selectedCust ): ?>
@@ -185,7 +185,7 @@
                 if( $t->cb ) {
                     $bbtn = '<a href="' . route( 'core-bundle@edit', [ 'cb' => $t->cb->id ] ) . '" class="btn btn-secondary mb-2 mb-md-2 mb-lg-0">Return to Core Bundle</a>';
                 } elseif( $t->vi ) {
-                    $bbtn  = '<a href="' . route( "customer@overview" , [ 'cust' => $t->vi->customer->id, "tab" => "ports" ] ) . '" class="btn btn-secondary mb-2 mb-md-2 mb-lg-0">Return to ' . ucfirst( config( 'ixp_fe.lang.customer.one' ) ) . ' Overview</a>';
+                    $bbtn  = '<a href="' . route( "customer@overview" , [ 'cust' => $t->vi->customer->id, "tab" => "ports" ] ) . '" class="btn btn-secondary mb-2 mb-md-2 mb-lg-0">Return to ' . $t->ee( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ) . ' Overview</a>';
                     $related = $t->resellerMode() && ( count( $t->vi->peeringPhysicalInterface() ) || count( $t->vi->fanoutPhysicalInterface() ) ) ? "data-related='1'" : '';
                     $bbtn .= '<a class="collapse btn btn-danger mb-2 mb-md-2 mt-lg-2 ml-1 btn-delete-vi"  id="delete-vi-' . $t->vi->id . '" href="' . route( 'virtual-interface@delete', [ 'vi' => $t->vi->id ]  ) . '" ' . $related . ' >Delete Interface</a>';
                 } else {

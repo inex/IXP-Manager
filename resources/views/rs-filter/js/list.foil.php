@@ -68,7 +68,7 @@
 
         let html = `<div>
                 Are you sure you want to commit your changes to production?<br>
-                <?= config( 'ixp_fe.rs-filters.ttl' ) ?>
+                <?= $t->ee( $t->ee( config( 'ixp_fe.rs-filters.ttl' ), 'html' ), 'js' ) ?>
             </div>`;
 
         bootbox.dialog({

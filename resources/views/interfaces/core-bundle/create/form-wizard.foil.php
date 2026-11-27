@@ -46,13 +46,13 @@
                             </h4>
                             <hr>
                             <?= Former::select( 'custid' )
-                                ->label( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) )
+                                ->label( $t->ee( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ) )
                                 ->fromQuery( $t->customers , fn ( $model ) => $t->ee( $model->name ) )
-                                ->placeholder( 'Choose a ' . config( 'ixp_fe.lang.customer.one' ) )
+                                ->placeholder( $t->ee( 'Choose a ' . config( 'ixp_fe.lang.customer.one' ), "attr" ) )
                                 ->addClass( 'chzn-select' )
                                 ->required( true )
-                                ->blockHelp( "All core bundles must be associated with the internal IXP " . config( 'ixp_fe.lang.customer.one' )
-                                        . ". This is the " . config( 'ixp_fe.lang.customer.one' ) . " you would have creating during installation "
+                                ->blockHelp( "All core bundles must be associated with the internal IXP " . $t->ee( config( 'ixp_fe.lang.customer.one' ) )
+                                        . ". This is the " . $t->ee( config( 'ixp_fe.lang.customer.one' ) ) . " you would have creating during installation "
                                         . "to represent your own IXP and where your superadmin users are associated."
                                     );
                             ?>

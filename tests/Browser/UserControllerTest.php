@@ -50,7 +50,15 @@ use Tests\DuskTestCase;
 class UserControllerTest extends DuskTestCase
 {
     /**
-     * A Dusk test example.
+     * Login as super user and test user related functions:
+     *  - add new user
+     *  - add existing user to customer
+     *  - edit user
+     *  - edit + add user to customer
+     *  - delete user from customer
+     *  - delete user and all links to customers
+     *  - add/delete user via customer overview
+     *  - test switch customer feature
      *
      * @return void
      *
@@ -291,7 +299,7 @@ class UserControllerTest extends DuskTestCase
              *
              */
             $browser->click( "#btn-edit-" . $u->id )
-                ->waitForText('Users / Edit')
+                ->waitForText( 'Users / Edit' )
                 ->click( "#add-c2u-btn" )
                 ->click( "#user-" . $u->id )
                 ->select( "#privs", User::AUTH_CUSTADMIN )
@@ -381,7 +389,7 @@ class UserControllerTest extends DuskTestCase
                 ->check( 'disabled' )
                 ->type( 'authorisedMobile', '12125551000' )
                 ->press( 'Create' )
-                ->waitForLocation(  route( 'customer@overview', [ 'cust' => 5, 'tab' => 'users' ] )  )
+                ->waitForLocation( route( 'customer@overview', [ 'cust' => 5, 'tab' => 'users' ] ) )
                 ->assertSee( 'User created. A welcome email' )
                 ->assertSee( 'Test User 2' )
                 ->assertSee( 'testuser2' )
@@ -523,7 +531,7 @@ class UserControllerTest extends DuskTestCase
             $browser->visit( '/user/list' )
                 ->assertSee( 'imagine-custuser@example.com' )
                 ->assertSee( 'imcustuser' )
-                ->assertSee('Users');
+                ->assertSee( 'Users' );
 
             /**
              *
@@ -542,7 +550,7 @@ class UserControllerTest extends DuskTestCase
 
 
             // 1. test add :
-            $browser->waitForText('Privilege')
+            $browser->waitForText( 'Privilege' )
                 ->assertInputValue( "email", 'test-user11@example.com' )
                 ->type( 'name', 'Test User 11' )
                 ->type( 'username', 'testuser11' )
@@ -676,7 +684,7 @@ class UserControllerTest extends DuskTestCase
 
 
             $browser->click( '#btn-edit-' . $u2->id )
-                ->pause(500)
+                ->pause( 500 )
                 ->type( 'name', 'Test Test 1' )
                 ->type( 'authorisedMobile', '12125551000' )
                 ->press( 'Save Changes' )
@@ -729,7 +737,7 @@ class UserControllerTest extends DuskTestCase
 
             // 1. customer overview -> non internal customer -> add user from tab -> no super option
             $browser->visit( route( 'customer@overview', [ 'cust' => $nonInternalCust->id, 'tab' => 'users' ] ) )
-                ->pause(500)
+                ->pause( 500 )
                 ->press( "#users-add-btn" )
                 ->type( '#email', 'test@example.com' )
                 ->click( '.btn-primary' )
@@ -799,7 +807,6 @@ class UserControllerTest extends DuskTestCase
                 ->waitForText( "You are not allowed to set super user privileges" );
 
 
-
             // 7. lhs users menu option -> add -> non existing user super set on internal -> success + warning
             $browser->visit( 'user/list' )
                 ->click( "#add-user" )
@@ -814,7 +821,7 @@ class UserControllerTest extends DuskTestCase
                 ->check( 'disabled' )
                 ->type( 'authorisedMobile', '12125551000' )
                 ->press( 'Create' )
-                ->waitForText("Please note that you have given this user full administrative access" );
+                ->waitForText( "Please note that you have given this user full administrative access" );
 
             // 8. lhs users menu option -> add -> existing user super set on internal -> success + warning
             $browser->visit( 'user/list' )
@@ -823,12 +830,12 @@ class UserControllerTest extends DuskTestCase
                 ->type( "#email", "heanet-custadmin@example.com" )
                 ->press( 'Create' )
                 ->waitForText( 'The following user(s) have been found' )
-                ->assertSee('hecustadmin')
+                ->assertSee( 'hecustadmin' )
                 ->click( '#user-5' )
                 ->select( 'privs', 3 )
                 ->select( 'customer_id', 1 )
                 ->press( 'Create User' )
-                ->waitForText("Please note that you have given this user full administrative access" );
+                ->waitForText( "Please note that you have given this user full administrative access" );
 
             // 9. lhs users menu option -> edit -> non-internal -> no super option
             $browser->visit( 'user/list' )
@@ -891,10 +898,45 @@ class UserControllerTest extends DuskTestCase
 //            $c2u->delete();
 
             $browser->visit( "/user/edit/" . $addedUser2->id )
-                ->waitForText('INEX')
+                ->waitForText( 'INEX' )
                 ->click( "#btn-delete-c2u-" . $c2u->id )
                 ->waitForText( "Do you really want to unlink this" )
                 ->press( "Delete" );
+        } );
+    }
+
+    public function testResetPasswordLockoutState(): void
+    {
+        $this->browse( function( Browser $browser0 ) {
+            $browser0->resize( 1600, 1200 )
+                ->visit( '/logout' )
+                ->visit( '/login' )
+                ->type( 'username', 'travis' )
+                ->type( 'password', 'travisci' )
+                ->press( '#login-btn' )
+                ->waitForLocation( '/admin/dashboard' );
+
+            $targetUser = User::whereUsername('imcustadmin')->firstOrFail();
+            $targetUser->password_fail_count = config('auth.lockout.password_attempts');
+            $targetUser->no_login_until = now()->addMinute();
+            $targetUser->password_last_fail_at = now();
+            $targetUser->save();
+
+            $browser0->visit('/user/list');
+            $element = $browser0->element('#lockout-state-' . $targetUser->id);
+            $this->assertNotNull($element, "should have flag icon for lockout state");
+            $this->assertEquals('PW', $element->getText());
+
+            $browser0->click("#d2f-more-options-" . $targetUser->id)
+                ->waitForText("Reset password lockout state")
+                ->click("#d2f-option-reset-password-lockout-state-" . $targetUser->id)
+                ->waitForText("Do you really want to reset the password failure count for this user?")
+                ->press("Reset")
+                ->waitForLocation("/user/list")
+                ->assertSee("Password lockout state reset for " . $targetUser->username);
+
+            $targetUser->refresh();
+            $this->assertEquals(0, $targetUser->password_fail_count);
         } );
     }
 }

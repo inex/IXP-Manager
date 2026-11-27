@@ -6,7 +6,8 @@
 
     <?php if( $t->form === "email" ): ?>
         <?= Former::text( 'to' )
-            ->label( 'To' );
+            ->label( 'To' )
+            ->required();
         ?>
 
         <?= Former::text( 'cc' )
@@ -18,7 +19,8 @@
         ?>
 
         <?= Former::text( 'subject' )
-            ->label( 'Subject' );
+            ->label( 'Subject' )
+            ->required();
         ?>
 
         <div class="form-group">
@@ -36,7 +38,7 @@
 
                 <div class="tab-content card-body">
                     <div role="tabpanel" class="tab-pane show active" id="body">
-                        <textarea class="bootbox-input bootbox-input-textarea form-control" style="font-family:monospace;" rows="30" id="message" name="message"><?= $t->insert( 'peering-manager/peering-message', [ "peer" => $t->peer, "pp" => $t->pp, "user" => \IXP\Models\User::find( Auth::id() ) ] ); ?></textarea>
+                        <textarea class="bootbox-input bootbox-input-textarea form-control" style="font-family:monospace;" rows="30" id="message" name="message"><?= $t->insert( 'peering-manager/peering-message', [ "peer" => $t->peer, "pp" => $t->pp, "user" => \IXP\Models\User::find( Auth::id() ) ] ) ?></textarea>
                     </div>
                     <div role="tabpanel" class="tab-pane" id="preview">
                         <div class="bg-light p-4 well-preview">

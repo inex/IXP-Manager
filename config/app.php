@@ -229,6 +229,7 @@ return [
         IXP\Providers\IxpServiceProvider::class,
         IXP\Providers\RipeAtlasProvider::class,
         IXP\Providers\RipeRestApiProvider::class,
+        IXP\Providers\PasswordPolicyServiceProvider::class,
         IXP\Providers\ValidationServiceProvider::class,
 
         IXP\Providers\DiagnosticsServiceProvider::class,

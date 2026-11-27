@@ -23,15 +23,14 @@ namespace IXP\Http\Controllers\User;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Auth, Hash;
-
-use Illuminate\Auth\Recaller;
-use Illuminate\Contracts\View\Factory;
-
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Hash;
+use IXP\Http\Requests\User\ResetTwoFactorLockoutRequest;
+use IXP\Services\Auth\UserRememberTokenService;
 use IXP\Models\{
     User,
     User2FA,
-    UserRememberToken
 };
 
 use Illuminate\Http\{
@@ -90,12 +89,13 @@ class User2FAController extends Controller
      * Enable 2FA for a user
      *
      * @param  Request  $r
+     * @param  UserRememberTokenService $rememberTokenService
      *
      * @return RedirectResponse
      *
      * @throws User2FAException
      */
-    public function enable( Request $r ): RedirectResponse
+    public function enable( Request $r, UserRememberTokenService $rememberTokenService ): RedirectResponse
     {
         if( !$this->checkUserPassword( $r ) || !$this->testOneTimeCode( $r ) ) {
             return redirect( route('2fa@configure' ) );
@@ -104,10 +104,8 @@ class User2FAController extends Controller
         $r->user()->user2FA->enable();
 
         // We also need to mark the current session as 2fa complete:
-        if( $recallerName = $r->cookies->get( Auth::getRecallerName() ) ) {
-            $recaller = new Recaller( $recallerName );
-
-            $r->user()->markRememberToken2faComplete( $recaller->token() );
+        if( $token = Auth::recallerForUser( $r->user() ) ) {
+            $rememberTokenService->markTokenIs2faComplete( $r->user(), $token );
         }
 
         $this->google2faLogin( $r );
@@ -119,15 +117,20 @@ class User2FAController extends Controller
      * Disable 2FA for a user
      *
      * @param Request $r
+     * @param UserRememberTokenService $rememberTokenService
      *
      * @return RedirectResponse
      */
-    public function disable( Request $r ): RedirectResponse
+    public function disable( Request $r, UserRememberTokenService $rememberTokenService ): RedirectResponse
     {
         if( !$this->checkUserPassword( $r ) ) {
             return redirect( route('2fa@configure' ) );
         }
         $r->user()->user2FA->delete();
+
+        // Reset any remember-me tokens so they cannot be used to silently bypass
+        // 2FA if/when it is re-enabled with a new secret:
+        $rememberTokenService->resetIs2faCompleteForTokens( $r->user() );
 
         $this->google2faLogin( $r, false );
         AlertContainer::push( "2FA successfully disabled.", Alert::SUCCESS );
@@ -141,11 +144,43 @@ class User2FAController extends Controller
      *
      * @return RedirectResponse
      */
-    public function delete( Request $r, User $user ): RedirectResponse
+    public function delete( Request $r, User $user, UserRememberTokenService $rememberTokenService ): RedirectResponse
     {
-        $user?->user2FA?->delete();
+        $user->user2FA?->delete();
+
+        // Reset any remember-me tokens so they cannot be used to silently bypass
+        // 2FA if/when it is re-enabled with a new secret:
+        $rememberTokenService->resetIs2faCompleteForTokens( $user );
 
         AlertContainer::push( "2FA successfully deleted for {$user->username}.", Alert::SUCCESS );
+        return redirect( route('user@list' ) );
+    }
+
+    /**
+     * Reset any 2FA lockout state for a user.
+     */
+    public function resetLockoutState( ResetTwoFactorLockoutRequest $r, User $user ): RedirectResponse
+    {
+        // Form Request takes care of authorization logic
+
+        // This next check is business logic we want to inform the user about - while custadmins can reset 2FA for
+        // users in their customer account, they cannot reset 2FA of an account that is a member of multiple customers.
+        if ( Auth::user()->isCustAdmin() ) {
+            if ( $user->customers()->count() > 1 ) {
+                AlertContainer::push( "{$user->username} is associated with multiple customers - their 2FA can only be unlocked by support.", Alert::WARNING );
+                return redirect()->route('user@list' );
+            }
+        }
+
+        if ( !$user->user2FA ) {
+            AlertContainer::push( "This user does not have 2FA enabled", Alert::WARNING );
+            return redirect()->route('user@list' );
+        }
+
+        $user->user2FA->resetLockoutState();
+        Log::notice( "User 2FA lockout state reset by " . Auth::user()->username . " for " . $user->username );
+
+        AlertContainer::push( "2FA lockout state reset for {$user->username}.", Alert::SUCCESS );
         return redirect( route('user@list' ) );
     }
 

@@ -15,18 +15,6 @@ $this->layout( 'layouts/ixpv4' )
 
         <?= $t->alerts() ?>
 
-        <?php if( request()->exists( "one_time_password" ) ): ?>
-            <div class="alert alert-danger alert-dismissible mb-16" role="alert">
-                <div class="d-flex align-items-center">
-                    <div class="text-center">
-                        <i class="fa fa-exclamation-triangle fa-2x "></i>
-                    </div>
-                    <div class="col-sm-12">
-                        <?= config( "google2fa.error_messages.wrong_otp" ) ?>
-                    </div>
-                </div>
-            </div>
-        <?php endif; ?>
         <div class=" tw:w-full tw:max-w-md tw:mx-auto">
             <div class="card">
                 <div class="card-header">

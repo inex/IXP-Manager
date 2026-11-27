@@ -161,11 +161,6 @@
       <code><![CDATA[public function handle(): int]]></code>
     </MissingDocblockType>
   </file>
-  <file src="app/Http/Controllers/AdminController.php">
-    <MissingDocblockType>
-      <code><![CDATA[private function publicPeeringGraphs( Request $r ): array]]></code>
-    </MissingDocblockType>
-  </file>
   <file src="app/Http/Controllers/Api/V4/Customer/Note/CustomerNotesController.php">
     <MissingDocblockType>
       <code><![CDATA[public function create( Request $r, Customer $cust ): JsonResponse]]></code>

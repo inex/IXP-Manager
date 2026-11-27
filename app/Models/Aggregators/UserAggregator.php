@@ -58,6 +58,10 @@ use IXP\Models\{
  * @property array<array-key, mixed>|null $prefs
  * @property \Illuminate\Support\Carbon $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property int $password_fail_count
+ * @property \Illuminate\Support\Carbon|null $no_login_until
+ * @property \Illuminate\Support\Carbon|null $password_last_fail_at
+ * @property \Illuminate\Support\Carbon|null $logins_throttled_notified_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\ApiKey> $apiKeys
  * @property-read int|null $api_keys_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\AppPassword> $appPasswords
@@ -87,8 +91,12 @@ use IXP\Models\{
  * @method static Builder<static>|UserAggregator whereExtraAttributes($value)
  * @method static Builder<static>|UserAggregator whereId($value)
  * @method static Builder<static>|UserAggregator whereLastupdatedby($value)
+ * @method static Builder<static>|UserAggregator whereLoginsThrottledNotifiedAt($value)
  * @method static Builder<static>|UserAggregator whereName($value)
+ * @method static Builder<static>|UserAggregator whereNoLoginUntil($value)
  * @method static Builder<static>|UserAggregator wherePassword($value)
+ * @method static Builder<static>|UserAggregator wherePasswordFailCount($value)
+ * @method static Builder<static>|UserAggregator wherePasswordLastFailAt($value)
  * @method static Builder<static>|UserAggregator wherePeeringdbId($value)
  * @method static Builder<static>|UserAggregator wherePrefs($value)
  * @method static Builder<static>|UserAggregator whereUid($value)

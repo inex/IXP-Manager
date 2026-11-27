@@ -44,11 +44,13 @@ use Illuminate\Contracts\Auth\{
     Authenticatable as AuthenticatableContract
 };
 
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 use IXP\Events\Auth\ForgotPassword as ForgotPasswordEvent;
 
-use PragmaRX\Google2FALaravel\Support\Authenticator as GoogleAuthenticator;
+use IXP\Services\Auth\Google2FAAuthenticator;
 
 use IXP\Traits\Observable;
 
@@ -69,8 +71,12 @@ use IXP\Traits\Observable;
  * @property int|null $peeringdb_id
  * @property array<array-key, mixed>|null $extra_attributes (DC2Type:json)
  * @property array<array-key, mixed>|null $prefs
- * @property \Illuminate\Support\Carbon $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property Carbon $created_at
+ * @property Carbon|null $updated_at
+ * @property int $password_fail_count
+ * @property Carbon|null $no_login_until
+ * @property Carbon|null $password_last_fail_at
+ * @property Carbon|null $logins_throttled_notified_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\ApiKey> $apiKeys
  * @property-read int|null $api_keys_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \IXP\Models\AppPassword> $appPasswords
@@ -100,8 +106,12 @@ use IXP\Traits\Observable;
  * @method static Builder<static>|User whereExtraAttributes($value)
  * @method static Builder<static>|User whereId($value)
  * @method static Builder<static>|User whereLastupdatedby($value)
+ * @method static Builder<static>|User whereLoginsThrottledNotifiedAt($value)
  * @method static Builder<static>|User whereName($value)
+ * @method static Builder<static>|User whereNoLoginUntil($value)
  * @method static Builder<static>|User wherePassword($value)
+ * @method static Builder<static>|User wherePasswordFailCount($value)
+ * @method static Builder<static>|User wherePasswordLastFailAt($value)
  * @method static Builder<static>|User wherePeeringdbId($value)
  * @method static Builder<static>|User wherePrefs($value)
  * @method static Builder<static>|User whereUid($value)
@@ -127,6 +137,9 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     protected $casts = [
         'extra_attributes'  => 'json',
         'prefs'             => 'json',
+        'no_login_until'    => 'datetime',
+        'password_last_fail_at'        => 'datetime',
+        'logins_throttled_notified_at' => 'datetime',
     ];
 
     protected $attributes = [
@@ -250,7 +263,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     public function customers(): BelongsToMany
     {
         return $this->belongsToMany(Customer::class, 'customer_to_users', 'user_id' )
-            ->orderBy( 'id', 'asc' );
+            ->orderBy( 'cust.id' );
     }
 
     /**
@@ -364,9 +377,9 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
             return false;
         }
 
-        $authenticator = new GoogleAuthenticator( request() );
+        $authenticator = new Google2FAAuthenticator( request() );
 
-        if( $authenticator->isAuthenticated() ) {
+        if( $authenticator->canPassWithoutOtp() ) {
             return false;
         }
         return true;
@@ -425,12 +438,29 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     }
 
     /**
-     * Mark users remember me token (if there is any) as having completed 2FA
+     * Clear the failed password count and any login throttle.
+     *
+     * The current values are read under a row lock first. This instance may have been loaded before failed
+     * attempts in other requests raised the stored count, and saving it as it is would then change nothing.
      */
-    public function markRememberToken2faComplete(#[\SensitiveParameter] string $token): bool
+    public function resetLockoutState(): bool
     {
-        return $this->userRememberTokens()->whereToken($token)->first()
-            ?->record2faIsComplete() ?? false;
+        $cleared = [
+            'password_fail_count'          => 0,
+            'no_login_until'               => null,
+            'password_last_fail_at'        => null,
+            'logins_throttled_notified_at' => null,
+        ];
+
+        $saved = DB::transaction( function() use ( $cleared ) {
+            $locked = self::whereId( $this->id )->lockForUpdate()->firstOrFail();
+            return $locked->forceFill( $cleared )->save();
+        } );
+
+        // reflect the stored values on this instance without touching any other attribute
+        $this->forceFill( $cleared )->syncOriginalAttributes( array_keys( $cleared ) );
+
+        return $saved;
     }
 
     /**

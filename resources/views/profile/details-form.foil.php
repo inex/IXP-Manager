@@ -28,7 +28,7 @@
 
     <?= Former::text( 'authorisedMobile' )
         ->label( 'Mobile' )
-        ->placeholder( config( 'ixp_fe.customer.form.placeholders.phone' ) )
+        ->placeholder( $t->ee( config( 'ixp_fe.customer.form.placeholders.phone' ), "attr" ) )
     ?>
 
     <?= Former::password( 'actual_password' )

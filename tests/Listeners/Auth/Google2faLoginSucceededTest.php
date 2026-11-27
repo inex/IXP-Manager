@@ -24,7 +24,7 @@ declare(strict_types=1);
 
 namespace Tests\Listeners\Auth;
 
-use Auth;
+use Illuminate\Support\Facades\Auth;
 use IXP\Listeners\Auth\Google2FALoginSucceeded;
 use IXP\Models\UserRememberToken;
 use Illuminate\Http\Request;
@@ -51,7 +51,7 @@ class Google2faLoginSucceededTest extends TestCase
         ]);
         $this->app->instance('request', $request);
 
-        new Google2FALoginSucceeded()->handle(new LoginSucceeded($this->getSuperUser()));
+        app(Google2FALoginSucceeded::class)->handle(new LoginSucceeded($this->getSuperUser()));
 
         $this->assertTrue($urt->fresh()->is_2fa_complete);
     }

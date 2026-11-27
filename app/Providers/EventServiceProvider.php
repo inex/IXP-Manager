@@ -35,7 +35,8 @@ use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvi
 use IXP\Events\Auth\{
     ForgotPassword,
     ForgotUsername,
-    PasswordReset
+    PasswordReset,
+    TwoFactorLocked
 };
 
 use IXP\Events\Customer\BillingDetailsChanged;
@@ -53,11 +54,12 @@ use IXP\Events\User\{
 };
 
 use IXP\Listeners\Auth\{
+    Google2FALoginFailed,
     Google2FALoginSucceeded,
     InvalidSessionOnLogout,
     LoginFailed,
-    LoginSuccessful
-};
+    LoginSuccessful,
+    SendTwoFactorLockedNotification};
 
 use IXP\Listeners\Customer\Note\EmailOnChange;
 
@@ -68,7 +70,10 @@ use IXP\Listeners\User\{
     SendUserAddedToCustomerWelcomeEmail
 };
 
-use PragmaRX\Google2FALaravel\Events\LoginSucceeded;
+use PragmaRX\Google2FALaravel\Events\{
+    LoginFailed as Google2FALoginFailedEvent,
+    LoginSucceeded as Google2FALoginSucceededEvent,
+};
 
 use SocialiteProviders\Manager\SocialiteWasCalled;
 
@@ -139,8 +144,16 @@ class EventServiceProvider extends ServiceProvider
             \IXP\Listeners\Auth\PasswordReset::class
         ],
 
-        LoginSucceeded::class => [
+        Google2FALoginSucceededEvent::class => [
             Google2FALoginSucceeded::class
+        ],
+
+        Google2FALoginFailedEvent::class => [
+            Google2FALoginFailed::class
+        ],
+
+        TwoFactorLocked::class => [
+            SendTwoFactorLockedNotification::class,
         ],
 
         Logout::class => [

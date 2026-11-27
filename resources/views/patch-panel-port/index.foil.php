@@ -71,7 +71,7 @@
                             Description / Switch / Port
                         </th>
                         <th>
-                            <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?>
+                            <?= $t->ee( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ) ?>
                         </th>
                         <th>
                             Colocation Ref
@@ -169,11 +169,11 @@
                                     <?php endif; ?>
                                 </td>
                                 <td>
-                                    <?= $ppp->assigned_at ?>
+                                    <?= $t->ee( $ppp->assigned_at ) ?>
                                 </td>
                                 <td>
                                     <span title="" class="badge badge-<?= \IXP\Models\PatchPanelPort::stateCssClass( $ppp->state, $isSuperUser ) ?>">
-                                        <?= \IXP\Models\PatchPanelPort::$STATES[ $ppp->state ] ?>
+                                        <?= $t->ee( $ppp->states() ) ?>
                                     </span>
                                 </td>
                                 <td width="200px">

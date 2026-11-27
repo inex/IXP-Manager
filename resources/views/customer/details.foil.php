@@ -5,7 +5,7 @@
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-    <?= $t->associates ? 'Associate' : '' ?> <?= ucfirst( config( 'ixp_fe.lang.customer.many' ) ) ?>
+    <?= $t->associates ? 'Associate' : '' ?> <?= $t->ee( ucfirst( config( 'ixp_fe.lang.customer.many' ) ) ) ?>
 <?php $this->append() ?>
 
 
@@ -18,7 +18,7 @@
                 <thead class="thead-dark">
                     <tr>
                         <th>
-                            <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?>
+                            <?= $t->ee( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ) ?>
                         </th>
                         <th class="tw:hidden tw:md:table-cell">
                             Joined
@@ -84,7 +84,7 @@
 
                                 <?php if( Auth::check() ): ?>
                                     <td  class="hidden tw:lg:table-cell">
-                                        <a href="mailto:<?= $t->ee( $c->peeringemail ) ?>">
+                                        <a href="mailto:<?= $t->ee( $c->peeringemail, "attr" ) ?>">
                                             <?= $t->ee( $c->peeringemail ) ?>
                                         </a>
                                     </td>

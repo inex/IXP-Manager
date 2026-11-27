@@ -1,9 +1,6 @@
 <?php
-
-namespace IXP\Console\Commands\User;
-
 /*
- * Copyright (C) 2009 - 2021 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,7 +20,12 @@ namespace IXP\Console\Commands\User;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+declare(strict_types=1);
+
+namespace IXP\Console\Commands\User;
+
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules\Password;
 use IXP\Console\Commands\Command;
 use IXP\Events\User\UserCreated as UserCreatedEvent;
 use IXP\Models\CustomerToUser;
@@ -74,7 +76,7 @@ class Create extends Command
             'mobile'            => ['nullable', 'string', 'max:25', new IsPhone()],
             'custid'            => 'required|integer|exists:cust,id',
             'priv'              => 'required|integer|in:' . User::AUTH_SUPERUSER . ',' . User::AUTH_CUSTADMIN  . ',' . User::AUTH_CUSTUSER ,
-            'password'          => 'required|string|min:8|max:255',
+            'password'          => ['required', 'string', Password::default()],
         ];
     }
 
@@ -105,7 +107,7 @@ class Create extends Command
                 $validator = \Validator::make( [ $option => $value], [$option => $this->getRules()[ $option ] ] );
                 if( $value && $validator->fails() ) {
                     $this->error( $validator->errors()->first( $option ) );
-                    return 0;
+                    return -1;
                 }
 
                 if( $option === 'priv' ) {

@@ -117,12 +117,12 @@ class GrapherServiceProvider extends ServiceProvider
     /**
      * Register the application services.
      *
-     * @return void|Grapher
+     * @return void
      *
      * @throws
      */
     #[\Override]
-    public function register()
+    public function register(): void
     {
         // make sure the config is okay:
         foreach( $this->app[ 'config' ][ 'grapher' ][ 'backend' ] as $backend ) {

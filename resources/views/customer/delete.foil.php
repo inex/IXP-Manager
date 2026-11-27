@@ -98,7 +98,7 @@
                             </div>
                             <div class="col-sm-12 d-flex">
                                 <b class="mr-auto my-auto">
-                                    If you want to return without deleting the <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?>:
+                                    If you want to return without deleting the <?= $t->ee( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ) ?>:
                                 </b>
                                 <a class="btn btn-success mr-4" href="<?= route( 'customer@overview', [ 'cust' => $t->c->id ] ) ?>">
                                     Cancel
@@ -114,7 +114,7 @@
                             </div>
                             <div class="col-sm-12 d-flex">
                                 <b class="mr-auto my-auto">
-                                    If you are sure you want to delete this <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?>:
+                                    If you are sure you want to delete this <?= $t->ee( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ) ?>:
                                 </b>
                                 <a class="btn btn-danger mr-4" id="delete-customer" href="#">
                                     Delete

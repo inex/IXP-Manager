@@ -1,17 +1,17 @@
-# <?= config( 'identity.orgname' ) ?> Operations Welcome E-mail
+# {{ config( 'identity.orgname' ) }} Operations Welcome E-mail
 
 
-Dear New <?= config( 'identity.orgname' ) ?> Member,
+Dear New {{ config( 'identity.orgname' ) }} Member,
 
-Firstly, welcome to <?= config( 'identity.orgname' ) ?>! This is your <?= config( 'identity.orgname' ) ?> Operations welcome e-mail.
+Firstly, welcome to {{ config( 'identity.orgname' ) }}! This is your {{ config( 'identity.orgname' ) }} Operations welcome e-mail.
 
-If you are unfamiliar with how IXPs work, please grab a cup of coffee and take some time to read this email -- it contains important information concerning your <?= config( 'identity.orgname' ) ?> membership.
+If you are unfamiliar with how IXPs work, please grab a cup of coffee and take some time to read this email -- it contains important information concerning your {{ config( 'identity.orgname' ) }} membership.
 
 
 ## Connection Details
 
 
-You have opted to connect to <?= config( 'identity.orgname' ) ?> using {{ $c->virtualInterfaces()->count()}} ports. We have assigned the following IP addresses and switch ports for your connections:
+You have opted to connect to {{ config( 'identity.orgname' ) }} using {{ $c->virtualInterfaces()->count()}} ports. We have assigned the following IP addresses and switch ports for your connections:
 
 @foreach( $c->virtualInterfaces as $vi )
 
@@ -87,7 +87,7 @@ of all other members, a Peering Manager tool, documentation, support information
 management and much more.
 
 @if( count( $admins ) )
-<?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?> users with *admin* privileges can create and manage other user accounts.
+{{ ucfirst( config( 'ixp_fe.lang.customer.one' ) ) }} users with *admin* privileges can create and manage other user accounts.
 
 We have created your administration account(s) with the following username(s) and email address(es):
 

@@ -24,6 +24,7 @@ declare(strict_types=1);
 
 namespace Tests\Listeners\Auth;
 
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use IXP\Events\Auth\PasswordReset as PasswordResetEvent;
@@ -49,5 +50,22 @@ class PasswordResetTest extends TestCase
             $this->assertSame($user, $mail->user);
             return $user->id === $mail->user->id;
         });
+    }
+
+    public function testListenerResetsPwLockoutState()
+    {
+        Mail::fake();
+        Log::spy();
+
+        $user = $this->getCustUser();
+        $user->password_fail_count = 5;
+        $user->no_login_until = Carbon::now()->addMinute(1);
+        $user->save();
+
+        new PasswordReset()->handle(new PasswordResetEvent($user));
+
+        $user->refresh();
+        $this->assertEquals(0, $user->password_fail_count);
+        $this->assertNull($user->no_login_until);
     }
 }

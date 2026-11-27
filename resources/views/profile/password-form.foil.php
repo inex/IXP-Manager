@@ -1,18 +1,13 @@
+<?php
+
+use Illuminate\Support\Js;
+
+?>
 <div class="col-lg-6 col-md-12 mb-4">
     <h3>
         Change Your Password
     </h3>
     <hr>
-    <div class="alert alert-info mt-4" role="alert">
-        <div class="d-flex align-items-center">
-            <div class="text-center">
-                <i class="fa fa-info-circle fa-2x"></i>
-            </div>
-            <div class="col-sm-12">
-                Passwords are stored in IXP Manager using <a href="https://en.wikipedia.org/wiki/Bcrypt">bcrypt</a>.
-            </div>
-        </div>
-    </div>
 
     <?= Former::open()
         ->method( 'post' )
@@ -41,7 +36,8 @@
     ?>
 
     <?= Former::actions(
-        Former::primary_submit( 'Update Password' )
+            Former::secondary_link( 'Password Policy' )->href("#")->class( "btn-password-policy" )->data_policy( Js::encode( $this->passwordPolicy ) ),
+            Former::primary_submit( 'Update Password' ),
     );
     ?>
 

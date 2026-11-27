@@ -5,7 +5,7 @@
         </h3>
         <hr>
         <p>
-            <?= config( "identity.orgname" ) ?> operates the below mailing lists to help us interact with our
+            <?= $t->ee( config( "identity.orgname" ) ) ?> operates the below mailing lists to help us interact with our
             members and for our members to interact with each other.
         </p>
         <p>

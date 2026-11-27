@@ -73,7 +73,7 @@
                                 <input type="checkbox" name="select-all" id="select-all" value="" <?= old( 'selected_custs' ) && count( old( 'selected_custs' ) ) == count( $t->data[ 'params'][ 'custs'] ) ? "checked" : "" ?>/>
                             </div>
                             <div class="mt-1 label-cust">
-                                <?= ucfirst( config( "ixp_fe.lang.customer.many" ) )?>
+                                <?= $t->ee( ucfirst( config( "ixp_fe.lang.customer.many" ) ) ) ?>
                             </div>
                         </th>
                         <th class="border-bottom-0" colspan="2"></th>

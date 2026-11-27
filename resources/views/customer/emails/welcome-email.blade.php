@@ -1,21 +1,21 @@
-# <?= config( 'identity.orgname' ) ?> Operations Welcome E-mail
+# {{ config( 'identity.orgname' ) }} Operations Welcome E-mail
 
 
 **NB: this is a sample IXP Manager welcome email. You should copy this file and skin it as
 per the instructions at: https://docs.ixpmanager.org/latest/features/skinning/ **
 
 
-Dear New <?= config( 'identity.orgname' ) ?> Member,
+Dear New {{ config( 'identity.orgname' ) }} Member,
 
-Firstly, welcome to <?= config( 'identity.orgname' ) ?>! This is your <?= config( 'identity.orgname' ) ?> Operations welcome e-mail.
+Firstly, welcome to {{ config( 'identity.orgname' ) }}! This is your {{ config( 'identity.orgname' ) }} Operations welcome e-mail.
 
-If you are unfamiliar with how IXPs work, take some time to read this email -- it contains important information concerning your <?= config( 'identity.orgname' ) ?> membership.
+If you are unfamiliar with how IXPs work, take some time to read this email -- it contains important information concerning your {{ config( 'identity.orgname' ) }} membership.
 
 
 ## Connection Details
 
 
-You have opted to connect to <?= config( 'identity.orgname' ) ?> using {{ $c->virtualInterfaces()->count() }} port(s). We have assigned the following IP address(es) and switch port(s) for your connection(s):
+You have opted to connect to {{ config( 'identity.orgname' ) }} using {{ $c->virtualInterfaces()->count() }} port(s). We have assigned the following IP address(es) and switch port(s) for your connection(s):
 
 @foreach( $c->virtualInterfaces as $vi )
 

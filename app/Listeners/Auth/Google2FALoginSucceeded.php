@@ -24,12 +24,10 @@ declare(strict_types=1);
 
 namespace IXP\Listeners\Auth;
 
-use Auth;
-
-use Illuminate\Auth\Recaller;
-
+use Illuminate\Support\Facades\Auth;
 use IXP\Models\User;
 
+use IXP\Services\Auth\UserRememberTokenService;
 use PragmaRX\Google2FALaravel\Events\LoginSucceeded;
 
 /**
@@ -40,8 +38,12 @@ use PragmaRX\Google2FALaravel\Events\LoginSucceeded;
  * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-final class Google2FALoginSucceeded
+readonly final class Google2FALoginSucceeded
 {
+    public function __construct(
+        private UserRememberTokenService $rememberTokenService
+    ) {}
+
     /**
      * Handle a Google2FA login event.
      *
@@ -58,13 +60,8 @@ final class Google2FALoginSucceeded
         /** @var User $user */
         $user = $e->user;
 
-        if( $r = request()->cookies->get( Auth::getRecallerName() ) ) {
-            $recaller = new Recaller( $r );
-            if( !$recaller->valid() || (int)$recaller->id() !== $user->id ) {
-                return;
-            }
-
-            $user->markRememberToken2faComplete( $recaller->token() );
+        if( $token = Auth::recallerForUser($user) ) {
+            $this->rememberTokenService->markTokenIs2faComplete( $user, $token );
         }
     }
 }

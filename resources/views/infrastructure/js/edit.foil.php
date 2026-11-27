@@ -29,7 +29,7 @@
                 <?php if( $t->data[ 'params'][ 'object' ] && $t->data[ 'params'][ 'object' ]->ixf_ix_id ): ?>
                     selectedixp = <?= $t->data[ 'params'][ 'object' ]->ixf_ix_id ?>;
                 <?php elseif( Request::old('ixf_ix_id' ) ): ?>
-                    selectedixp = <?= Request::old('ixf_ix_id' ) ?>;
+                    selectedixp = <?= (int)Request::old( 'ixf_ix_id' ) ?>;
                 <?php else: ?>
                     selectedixp = false;
                 <?php endif; ?>
@@ -75,7 +75,7 @@
                 <?php if( $t->data[ 'params'][ 'object' ] && $t->data[ 'params'][ 'object' ]->peeringdb_ix_id ): ?>
                     selectedpdb = <?= $t->data[ 'params'][ 'object' ]->peeringdb_ix_id ?>;
                 <?php elseif( Request::old('peeringdb_ix_id' ) ): ?>
-                    selectedpdb = <?= Request::old('peeringdb_ix_id' ) ?>;
+                    selectedpdb = <?= (int)Request::old( 'peeringdb_ix_id' ) ?>;
                 <?php else: ?>
                     selectedpdb = false;
                 <?php endif; ?>

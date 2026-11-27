@@ -27,8 +27,9 @@ namespace IXP\Console\Commands;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Carbon;
-
-
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rules\Password;
 use IXP\Models\{CompanyBillingDetail, CompanyRegisteredDetail, Customer, CustomerToUser, Infrastructure, User};
 use IXP\Rules\IsPhone;
 
@@ -246,7 +247,7 @@ class SetupWizard extends Command
             $user = new User;
             $user->name = $data['admin-name'];
             $user->username = $data['admin-username'];
-            $user->password = password_hash( $data['admin-password'], PASSWORD_BCRYPT, [ 'cost' => config( 'hashing.bcrypt.rounds' ) ] );
+            $user->password = Hash::make( $data['admin-password'] );
             $user->email = $data['admin-email'];
             $user->save();
 
@@ -339,7 +340,7 @@ class SetupWizard extends Command
                         // Unset the variable as soon as we read it to reduce the risk of it leaking.
                         putenv( 'IXP_SETUP_ADMIN_PASSWORD' );
                     } else {
-                        $this->ixpdata[$setting][ 'value' ] = str()->random( 12 );
+                        $this->ixpdata[$setting][ 'value' ] = $this->buildPasswordRespectingPolicy();
                     }
 
                 } else {
@@ -370,7 +371,7 @@ class SetupWizard extends Command
             'admin-name' => 'required|string',
             'admin-username' => 'required|string|min:3|max:255|regex:/^[a-z0-9\-_\.]{3,255}$/',
             'admin-email' => 'required|email',
-            'admin-password' => 'required|string|min:10',
+            'admin-password' => ['required', 'string', Password::default()],
             'ixp-phone' => ['required', 'string', 'max:25', new IsPhone()],
             'ixp-email' => 'required|email',
             'ixp-billing-phone' => ['required', 'string', 'max:25', new IsPhone()],
@@ -396,4 +397,13 @@ class SetupWizard extends Command
         return [null, $data];
     }
 
+    /**
+     * Since the password policy may require a password of a certain length, we need to generate a password that respects that policy.
+     */
+    private function buildPasswordRespectingPolicy(): string
+    {
+        // How long should our new password be? Take 50% more than the minimum length using the max if its too large.
+        $length = min( config( 'password_policy.maximum_length' ), (int) ceil( config( 'password_policy.minimum_length' ) * 1.5) );
+        return Str::password($length);
+    }
 }

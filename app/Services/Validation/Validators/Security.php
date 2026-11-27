@@ -28,6 +28,8 @@ use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Facades\Http;
 use IXP\Contracts\Validation\ValidationBackend;
 use IXP\Contracts\Validation\Validator;
+use IXP\Models\User;
+use IXP\Services\Validation\Dto\Result;
 
 /**
  * @author Thomas Kerin <thomas@islandbridgenetworks.ie>
@@ -56,6 +58,14 @@ final class Security implements Validator
     #[\Override]
     public function run( ValidationBackend $backend ): void
     {
+        $siteWide2FA = config('google2fa.enabled') && config('google2fa.ixpm_2fa_enforce_for_users') === User::AUTH_CUSTUSER;
+        if (config('password_policy.minimum_length') < 15 && !$siteWide2FA) {
+            $backend->warning( "The password policy minimum length should be at least 15 characters unless 2FA is enforced for all users.")
+                ->when(!config('google2fa.enabled'), fn(Result $result) => $result->addAdditionalInfoText("To safely use a lower password length, 2FA needs to be turned on"))
+                ->when(config('google2fa.enabled') && config('google2fa.ixpm_2fa_enforce_for_users') !== User::AUTH_CUSTUSER, fn(Result $result) => $result->addAdditionalInfoText("To safely use a lower password length, 2FA needs to be enforced for all user levels"))
+            ;
+        }
+
         if (config('ixp_api.unsecured_api_access')) {
             $backend->error("Unsecured API Access is enabled - this is strongly discouraged, and support will be removed in a future release. Update any dependent software and disable this ASAP.")
                 ->withDocsPath( "install/security/#securing-administrative-functions" )

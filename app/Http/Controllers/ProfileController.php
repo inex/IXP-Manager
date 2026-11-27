@@ -23,11 +23,11 @@ namespace IXP\Http\Controllers;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Auth, Hash, Redirect;
+use Hash, Redirect;
 
-use Illuminate\Auth\Recaller;
-
+use Illuminate\Support\Facades\Auth;
 use IXP\Models\User;
+use IXP\Utils\PasswordPolicyExplainer;
 use Illuminate\Http\{
     RedirectResponse,
     Request
@@ -65,7 +65,7 @@ class ProfileController extends Controller
      *
      * @return View
      */
-    public function edit(): View
+    public function edit(PasswordPolicyExplainer $explainer): View
     {
         /** @var User $user */
         $user = Auth::getUser();
@@ -94,6 +94,7 @@ class ProfileController extends Controller
             "details"                          =>  $details,
             "notesNotifications"               =>  $notesNotifications,
             "mailingListSubscriptions"         =>  $mailingListSubscriptions,
+            'passwordPolicy'                   =>  $explainer->explainDefault(),
         ]);
     }
 
@@ -112,10 +113,7 @@ class ProfileController extends Controller
         $user = Auth::getUser();
 
         // get the token of the current session
-        if( $recallerName = $r->cookies->get( Auth::getRecallerName() ) ) {
-            $recaller = new Recaller( $recallerName );
-            $token = $recaller->token();
-        }
+        $token = Auth::recallerForUser( $user );
 
         $user->password      = Hash::make( $r->new_password );
         $user->lastupdatedby = $user->id;

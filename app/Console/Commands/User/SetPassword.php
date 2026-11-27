@@ -1,9 +1,6 @@
 <?php
-
-namespace IXP\Console\Commands\User;
-
 /*
- * Copyright (C) 2009 - 2024 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2026 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,10 +20,17 @@ namespace IXP\Console\Commands\User;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+declare(strict_types=1);
+
+namespace IXP\Console\Commands\User;
+
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator as ValidatorFacade;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rules\Password;
 use IXP\Console\Commands\Command;
 use IXP\Models\User;
-use Illuminate\Support\Str;
 
 /**
  * Artisan command to set the password of a user
@@ -57,11 +61,6 @@ class SetPassword extends Command
      */
     protected $description = "Set a user's password";
 
-    protected $rules = [
-        'password'          => 'required|string|min:8|max:255',
-        'confirm_password'  => 'required|same:password',
-    ];
-
     /**
      * Execute the console command.
      *
@@ -89,6 +88,11 @@ class SetPassword extends Command
             );
 
             $uid = $this->anticipate( 'Enter ID to change password for', array_keys( $u ));
+
+            if (!array_key_exists($uid, $u)) {
+                $this->error( "That UID was not in the list of returned options" );
+                return -1;
+            }
         }
 
         if( !$user = User::find( $uid ) ){
@@ -99,8 +103,6 @@ class SetPassword extends Command
         if( !$password ){  // --password option not specified, ask for password
             $password = $this->secret( 'Password or (return to have one generated)' );
             if( $password ){ // if the user type a password
-                $pw_valid = $this->validateOrExit( $this->rules['password'], 'password', $password );
-
                 $confirmPassword = $this->secret( 'Confirm password' );
 
                 if( $password !== $confirmPassword ){// check if password match
@@ -108,15 +110,20 @@ class SetPassword extends Command
                     return -1;
                 }
             } else {// if the user type return generate password
-                $password = Str::random(16 );
+                $password = $this->buildPasswordRespectingPolicy();
                 $this->info( "Generated password: " . $password );
             }
-        } else {
-            $this->validateOrExit( $this->rules['password'], 'password', $password );
+        }
+
+        $pwValidator = $this->validator( $this->passwordRules(), 'password', $password );
+        if ($pwValidator->fails()) {
+            $this->error($pwValidator->errors()->first());
+            return -1;
         }
 
         /** @var User $user */
         $user->password = Hash::make( $password );
+        $user->resetLockoutState();
         $user->save();
 
         $this->info( "Password set." );
@@ -124,4 +131,27 @@ class SetPassword extends Command
         return 0;
     }
 
+    /**
+     * Since the password policy may require a password of a certain length, we need to generate a password that respects that policy.
+     */
+    private function buildPasswordRespectingPolicy(): string
+    {
+        // How long should our new password be? Take 50% more than the minimum length using the max if its too large.
+        $length = min( config( 'password_policy.maximum_length' ), (int) ceil( config( 'password_policy.minimum_length' ) * 1.5) );
+        return Str::password($length);
+    }
+
+    /**
+     * Return the validation rules for the command. Function instead of array property due to
+     * function call - can't have expressions in property initializers
+     */
+    protected function passwordRules(): array
+    {
+        return [ 'required', 'string', Password::default() ];
+    }
+
+    protected function validator( string|array $rule, string $fieldName, mixed $value): Validator
+    {
+        return ValidatorFacade::make( [ $fieldName => $value ], [ $fieldName => $rule ] );
+    }
 }

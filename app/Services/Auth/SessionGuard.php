@@ -22,6 +22,7 @@ namespace IXP\Services\Auth;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+
 use Illuminate\Auth\SessionGuard as BaseGuard;
 
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
@@ -225,5 +226,25 @@ class SessionGuard extends BaseGuard
             $user = $this->user();
             $user->userRememberTokens()->whereToken( $this->recaller()->token() )->delete();
         }
+    }
+
+    /**
+     * For a given user, returns the recaller token from cookies only if it refers to the user in question
+     *
+     * @param AuthenticatableContract $user
+     * @return string|null
+     */
+    public function recallerForUser( AuthenticatableContract $user ): ?string
+    {
+        $recaller = $this->recaller();
+        if (is_null($recaller)) {
+            return null;
+        }
+
+        if( !$recaller->valid() || (int)$recaller->id() !== (int) $user->getAuthIdentifier() ) {
+            return null;
+        }
+
+        return $recaller->token();
     }
 }

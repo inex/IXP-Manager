@@ -8,10 +8,10 @@
 <?php $this->section( 'page-header-preamble' ) ?>
     <?php if( Auth::check() && $isSuperUser ): ?>
         <a href="<?= route( $c->typeAssociate() ? 'customer@associates' : 'customer@details' )?>">
-            <?= $c->typeAssociate() ? 'Associate ' : '' ?><?= ucfirst( config( 'ixp_fe.lang.customer.many' ) ) ?>
+            <?= $c->typeAssociate() ? 'Associate ' : '' ?><?= $t->ee( ucfirst( config( 'ixp_fe.lang.customer.many' ) ) ) ?>
         </a>
     <?php else: ?>
-        <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?> Detail
+        <?= $t->ee( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ) ?> Detail
     <?php endif; ?>
 
     <?php if( Auth::check() && $isSuperUser ): ?>
@@ -79,7 +79,7 @@
                                     <span class="tw:font-bold tw:mr-4">Peering&nbsp;Email:</span>
                                 </div>
                                 <div class="col-12 col-md-9 tw:text-center tw:md:text-left">
-                                    <a href="mailto:<?= $c->peeringemail ?>">
+                                    <a href="mailto:<?= $t->ee( $c->peeringemail, "attr" ) ?>">
                                         <?= $t->ee( $c->peeringemail ) ?>
                                     </a>
                                 </div>
@@ -92,7 +92,7 @@
                             </div>
                             <div class="col-12 col-md-9 tw:text-center tw:md:text-left">
                                 <?php if( filter_var( $c->nocemail, FILTER_VALIDATE_EMAIL ) ): ?>
-                                    <a href="mailto:<?= $t->ee( $c->nocemail ) ?>">
+                                    <a href="mailto:<?= $t->ee( $c->nocemail, "attr" ) ?>">
                                         <?= $t->ee( $c->nocemail ) ?>
                                     </a> /
                                 <?php endif; ?>

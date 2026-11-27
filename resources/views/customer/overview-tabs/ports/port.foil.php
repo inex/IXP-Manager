@@ -186,7 +186,7 @@
                             <h4>
                                 &nbsp;&nbsp;&nbsp;Private VLAN Service
                                 <small>
-                                    <?= config( "identity.orgname" ) ?> Reference: #<?= $vli->vlanid ?>
+                                    <?= $t->ee( config( "identity.orgname" ) ) ?> Reference: #<?= $t->ee( $vli->vlanid ) ?>
                                 </small>
                             </h4>
 
