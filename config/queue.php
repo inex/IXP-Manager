@@ -51,6 +51,13 @@ return [
 
     'connections' => [
 
+        'irrdb' => [
+            'driver' => 'database',
+            'table' => 'irrdb_jobs',
+            'queue' => 'irrdb',
+            'retry_after' => 1800,
+        ],
+
         'sync' => [
             'driver' => 'sync',
         ],
