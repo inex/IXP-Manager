@@ -30,6 +30,7 @@ use Illuminate\Process\InvokedProcess;
 use Illuminate\Process\PendingProcess;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Process;
+use Illuminate\Support\Str;
 use Laravel\SerializableClosure\SerializableClosure;
 
 /**
@@ -86,16 +87,21 @@ class ConcurrentJobRunner
 
         // Build our pending processes. We don't use Pool here because we need
         // direct access to the InvokedProcesses to monitor if they're still running.
-        $pendingProcesses = array_map(
-            fn(\Closure $task) => Process::timeout( $this->timeout )
+        // Each task gets its own key, used by the child to HMAC-sign its result envelope.
+        $envelopeKeys = [];
+        $pendingProcesses = [];
+        foreach( $tasks as $key => $task ) {
+            $envelopeKeys[ $key ] = bin2hex( random_bytes( 32 ) );
+            $pendingProcesses[ $key ] = Process::timeout( $this->timeout )
                 ->command( $artisanCommand )
                 ->path( base_path() )
                 ->env( [
-                    'LARAVEL_INVOKABLE_CLOSURE' => base64_encode(
+                    'LARAVEL_CONCURRENCY_HMAC_KEY' => $envelopeKeys[ $key ],
+                    'LARAVEL_INVOKABLE_CLOSURE'    => base64_encode(
                         serialize( new SerializableClosure( $task ) )
                     ),
-                ] ),
-            $tasks);
+                ] );
+        }
 
         // Start our processes in the background.
         /** @var InvokedProcess[] $invokedProcesses */
@@ -111,7 +117,7 @@ class ConcurrentJobRunner
                         $completedTaskKeys[] = $key;
 
                         // Safely extract and unserialize the closure return value
-                        $cmdJsonOutput = $this->processOutput($process);
+                        $cmdJsonOutput = $this->processOutput($process, $envelopeKeys[$key]);
 
                         if (! $cmdJsonOutput['successful']) {
                             $exception = new $cmdJsonOutput['exception'](
@@ -147,7 +153,7 @@ class ConcurrentJobRunner
             // Final pass in case we missed any tasks that stopped
             foreach ($invokedProcesses as $key => $process) {
                 if (!in_array($key, $completedTaskKeys)) {
-                    $cmdJsonOutput = $this->processOutput($process);
+                    $cmdJsonOutput = $this->processOutput($process, $envelopeKeys[$key]);
 
                     if (! $cmdJsonOutput['successful']) {
                         $exception = new $cmdJsonOutput['exception'](
@@ -202,18 +208,42 @@ class ConcurrentJobRunner
      *     'line' => $e->getLine(),
      *     'parameters' => $parameters,
      * ]
-     * This function was extracted from Laravel's ProcessDriver class
+     * The child writes the JSON inside a signed envelope:
+     *     "\n@@LARAVEL-CONCURRENCY-V1@@<base64 json>@@<hmac-sha256 hex>@@\n"
+     * Any other output (stray echoes, the gzip bytes from laravel/framework#59224) is ignored.
+     * If no validly signed envelope is found, a failure result wrapping a RuntimeException is returned.
+     *
+     * Mirrors Laravel's ProcessDriver::parseEnvelope(), which is protected.
      */
-    protected function processOutput(InvokedProcess $process): mixed
+    protected function processOutput(InvokedProcess $process, string $envelopeKey): array
     {
-        $rawOutput = $process->output();
+        $output = $process->output();
+        $marker = '@@LARAVEL-CONCURRENCY-V1@@';
+        $length = strlen( $output );
+        $position = strrpos( $output, $marker );
 
-        // Workaround for https://github.com/laravel/framework/pull/59224
-        if (($pos = strpos($rawOutput, "\x1f\x8b")) !== false) {
-            $rawOutput = substr($rawOutput, 0, $pos);
+        // Scan backwards so the last validly signed envelope wins
+        while( $position !== false ) {
+            if( preg_match( '/\G([A-Za-z0-9+\/=]+)@@([0-9a-f]{64})@@/', $output, $matches, 0, $position + strlen( $marker ) )
+                && hash_equals( hash_hmac( 'sha256', $matches[1], $envelopeKey ), $matches[2] ) ) {
+                $payload = base64_decode( $matches[1], true );
+                $result = is_string( $payload ) ? json_decode( $payload, true ) : null;
+
+                if( is_array( $result ) && array_key_exists( 'successful', $result ) ) {
+                    return $result;
+                }
+            }
+
+            $position = $position === 0 ? false : strrpos( $output, $marker, $position - $length - 1 );
         }
 
-        return json_decode($rawOutput, true);
+        return [
+            'successful' => false,
+            'exception'  => \RuntimeException::class,
+            'message'    => 'The concurrent process did not return a valid result envelope. Output: '
+                . Str::limit( trim( $output . "\n" . $process->errorOutput() ), 200 ),
+            'parameters' => [],
+        ];
     }
 
     /**
