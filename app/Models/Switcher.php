@@ -375,6 +375,50 @@ class Switcher extends Model
         // clone the ports currently known to this switch as we'll be playing with this array
         $existingPorts = clone $this->switchPorts;
 
+        // Optional Arista ENTITY-MIB media discovery.
+        $opticMedia = [];
+        $opticDiscoveryFailed = false;
+
+        if (
+            config('optics.enabled', false)
+            && in_array(
+                (int) $this->id,
+                array_map(
+                    'intval',
+                    array_filter(
+                        array_map(
+                            'trim',
+                            explode(
+                                ',',
+                                (string) (
+                                    config('optics.switch_ids')
+                                    ?: config('optics.switch_id', 0)
+                                )
+                            )
+                        ),
+                        fn($id) => ctype_digit($id) && (int) $id > 0
+                    )
+                ),
+                true
+            )
+            && strcasecmp(trim($this->vendor?->name ?? ''), 'Arista') === 0
+        ) {
+            $discovery = \IXP\Optics\TransceiverDiscovery::discoverWithStatus(
+                $host,
+                true
+            );
+
+            $opticMedia = $discovery['media'];
+            $opticDiscoveryFailed = !$discovery['success'];
+
+            if ($opticDiscoveryFailed) {
+                Log::warning(
+                    "ENTITY-MIB discovery failed for {$this->name}: "
+                    . ($discovery['error'] ?? 'Unknown error')
+                );
+            }
+        }
+
         $foundIfIndexes = [];
 
         // iterate over all the ports discovered on the switch:
@@ -432,7 +476,32 @@ class Switcher extends Model
             }
 
             // update / set port details from SNMP
-            $sp->snmpUpdate( $host, $logger, $nosave );
+            $ifName = $host->useIface()->names()[$index] ?? '';
+            $entityMedia = null;
+
+            // Match exact interface or its immediate physical parent.
+            // Never climb multiple levels in the interface hierarchy.
+            if (preg_match('/^Ethernet[0-9]+(?:\/[0-9]+)*$/', $ifName)) {
+                if (isset($opticMedia[$ifName])) {
+                    $entityMedia = $opticMedia[$ifName];
+                } elseif (str_contains($ifName, '/')) {
+                    $parent = substr(
+                        $ifName,
+                        0,
+                        strrpos($ifName, '/')
+                    );
+
+                    $entityMedia = $opticMedia[$parent] ?? null;
+                }
+            }
+
+            $sp->snmpUpdate(
+                $host,
+                $logger,
+                $nosave,
+                $entityMedia,
+                $opticDiscoveryFailed
+            );
         }
 
         if( $existingPorts->count() ) {
