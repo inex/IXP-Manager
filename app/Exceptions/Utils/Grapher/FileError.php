@@ -25,4 +25,19 @@ namespace IXP\Exceptions\Utils\Grapher;
 
 use Exception;
 
-final class FileError extends Exception {}
+final class FileError extends Exception
+{
+    private bool $missingRrd = false;
+
+    public static function missingRrd( string $message ): self
+    {
+        $error = new self( $message );
+        $error->missingRrd = true;
+        return $error;
+    }
+
+    public function isMissingRrd(): bool
+    {
+        return $this->missingRrd;
+    }
+}

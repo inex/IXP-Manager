@@ -216,6 +216,20 @@ class Rrd
     {
         // if it's already local, just return
         if( strpos($this->realfile, 'http') !== 0) {
+            if( !file_exists( $this->realfile ) ) {
+                // An inaccessible parent must not be mistaken for an absent traffic pair.
+                $parent = dirname( $this->realfile );
+                while( !file_exists( $parent ) && dirname( $parent ) !== $parent ) {
+                    $parent = dirname( $parent );
+                }
+                if( !is_dir( $parent ) || !is_readable( $parent ) || !is_executable( $parent ) ) {
+                    throw new FileErrorException("Could not access RRD directory");
+                }
+                throw FileErrorException::missingRrd("RRD file does not exist");
+            }
+            if( !is_file( $this->realfile ) || !is_readable( $this->realfile ) ) {
+                throw new FileErrorException("Could not read RRD file");
+            }
             $this->file = $this->realfile;
             return $this->file;
         }
@@ -224,12 +238,34 @@ class Rrd
 
         // does the local file exist and is it less than 5mins old?
         if( !file_exists($this->localfile) || !( time() - filemtime($this->localfile) < 300 ) ) {
-            if( !( ( $r = @file_get_contents( $this->realfile ) ) && @file_put_contents( $this->localfile, $r ) ) ) {
+            [ $r, $status ] = $this->fetchRemoteRrd();
+            if( $status === 404 ) {
+                throw FileErrorException::missingRrd("Remote RRD file does not exist");
+            }
+            if( $status !== 200 || $r === false || $r === '' ) {
+                throw new FileErrorException("Could not fetch remote RRD file");
+            }
+            if( @file_put_contents( $this->localfile, $r ) === false ) {
                 throw new FileErrorException("Could not create local RRD copy");
             }
         }
 
         return $this->localfile;
+    }
+
+    /** @return array{0: false|string, 1: int} */
+    protected function fetchRemoteRrd(): array
+    {
+        http_clear_last_response_headers();
+        $data = @file_get_contents( $this->realfile );
+        $status = 0;
+        // Redirects can add several status lines; the final response determines the result.
+        foreach( http_get_last_response_headers() ?? [] as $header ) {
+            if( preg_match( '~^HTTP/\S+\s+(\d{3})\b~', $header, $matches ) ) {
+                $status = (int)$matches[1];
+            }
+        }
+        return [ $data, $status ];
     }
 
     /**
