@@ -170,3 +170,9 @@ IXP Manager Settings
     </div>
 </div>
 <?php $this->append() ?>
+
+<?php if( app()->environment( 'testing' ) ): ?>
+<?php $this->section( 'scripts' ) ?>
+    <?= $this->insert('settings/js/tests-delay-redirect.foil.php') ?>
+<?php $this->append() ?>
+<?php endif; ?>
