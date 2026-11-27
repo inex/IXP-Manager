@@ -48,15 +48,21 @@ final class MovePatchPanelPort extends FormRequest
      *
      * @return string[]
      *
-     * @psalm-return array{id: 'required|integer|exists:patch_panel_port,id', port_id: 'required|integer|exists:patch_panel_port,id', slave_id: ''|'required|integer|different:port_id|exists:patch_panel_port,id'}
+     * @psalm-return array{id: 'required|integer|exists:patch_panel_port,id', port_id: 'required|integer|exists:patch_panel_port,id', slave_id: 'nullable'|'required|integer|different:port_id|exists:patch_panel_port,id'}
      */
     public function rules(): array
     {
-        $master = PatchPanelPort::find( $this->port_id );
+        $source      = PatchPanelPort::find( $this->id );
+        $destination = PatchPanelPort::find( $this->port_id );
+        $requiresSlave = $source && $source->duplexSlavePorts()->exists()
+            && $destination && !$destination->duplexSlavePorts()->exists();
+
         return [
             'id'                 => 'required|integer|exists:patch_panel_port,id',
             'port_id'            => 'required|integer|exists:patch_panel_port,id',
-            'slave_id'           => $master->isDuplexPort() ? 'required|integer|different:port_id|exists:patch_panel_port,id' : '',
+            'slave_id'           => $requiresSlave
+                ? 'required|integer|different:port_id|exists:patch_panel_port,id'
+                : 'nullable',
         ];
     }
 }

@@ -9,7 +9,7 @@
     </button>
 
     <ul class="dropdown-menu dropdown-menu-right">
-        <?php if( $t->tpl === "index"):?>
+        <?php if( in_array( $t->tpl, [ "index", "view" ], true ) ):?>
             <a class="dropdown-item btn-edit-notes" data-object-id="<?= $ppp->id ?>"  href="<?= url()->current() ?>" >
                 Notes...
             </a>
